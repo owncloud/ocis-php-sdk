@@ -7,5 +7,7 @@
             "Owncloud\\OcisSdkPhp\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "sabre/dav": "^4.4"
+    }
 }
