@@ -1,18 +1,18 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
-require_once(__DIR__ . '/../../../src/ocis.php');
+namespace unit\Owncloud\OcisSdkPhp;
 
+use Owncloud\OcisSdkPhp\OrderDirection;
 use PHPUnit\Framework\TestCase;
 
-class DriveOrderTest extends TestCase
+class OrderDirectionTest extends TestCase
 {
 
     public function validDriveTypes(): array {
         return [
             [null],
-            ["name"],
-            ["lastModifiedDateTime"]
+            ["asc"],
+            ["desc"]
         ];
     }
 
@@ -22,13 +22,13 @@ class DriveOrderTest extends TestCase
      * @dataProvider validDriveTypes
      */
     public function testValidDriveType(?string $type): void {
-        $this->assertTrue(DriveOrder::isOrderValid($type));
+        $this->assertTrue(OrderDirection::isOrderDirectionValid($type));
     }
 
     /**
      * @return void
      */
     public function testInvalidDriveType(): void {
-        $this->assertFalse(DriveOrder::isOrderValid("some string"));
+        $this->assertFalse(OrderDirection::isOrderDirectionValid("some string"));
     }
 }
