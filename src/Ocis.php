@@ -47,6 +47,7 @@ class Ocis {
         );
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
         $filter = $this->getListDrivesFilterString($type);
+        $drives = [];
         foreach ($apiInstance->listAllDrives($order, $filter)->getValue() as $apiDrive) {
             $drive = new Drive($apiDrive);
             $drives[] = $drive;
