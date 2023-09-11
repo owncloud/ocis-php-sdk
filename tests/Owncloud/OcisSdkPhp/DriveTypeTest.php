@@ -2,7 +2,6 @@
 namespace Owncloud\OcisSdkPhp;
 require_once(__DIR__ . '/../../../src/ocis.php');
 
-use DriveType;
 use PHPUnit\Framework\TestCase;
 
 class DriveTypeTest extends TestCase

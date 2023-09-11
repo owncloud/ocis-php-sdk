@@ -3,7 +3,6 @@
 namespace Owncloud\OcisSdkPhp;
 require_once(__DIR__ . '/../../../src/ocis.php');
 
-use OrderDirection;
 use PHPUnit\Framework\TestCase;
 
 class OrderDirectionTest extends TestCase
