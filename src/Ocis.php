@@ -15,11 +15,17 @@ class Ocis {
     private \GuzzleHttp\Client $guzzle;
 
     public function __construct(
-        string $serviceUrl, string $accessToken
+        string $serviceUrl, string $accessToken, $guzzleConfig = []
     ) {
         $this->serviceUrl = $serviceUrl;
         $this->accessToken = $accessToken;
-        $this->guzzle = new \GuzzleHttp\Client(['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
+        $guzzleConfig = array_merge(
+            $guzzleConfig,
+            [
+                'headers' => ['Authorization' => 'Bearer ' . $accessToken]
+            ]
+        );
+        $this->guzzle = new \GuzzleHttp\Client($guzzleConfig);
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
     }
 
