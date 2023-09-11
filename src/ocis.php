@@ -1,84 +1,120 @@
 <?php
+require_once(__DIR__ . '/../vendor/autoload.php');
+
+use OpenAPI\Client\Api\DrivesGetDrivesApi;
+use OpenAPI\Client\Api\MeDrivesApi;
+use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\Quota;
+use OpenAPI\Client\Model\Drive as ApiDrive;
 
 abstract class OrderDirection {
     const ASC = "asc";
     const DESC = "desc";
-}
 
-abstract class DriveType {
-    const PROJECT = "project";
-    const PERSONAL = "personal";
-    const VIRTUAL = "virtual";
+    public static function isOrderDirectionValid(?string $direction): bool {
+        $reflector = new ReflectionClass('OrderDirection');
+        if (!in_array($direction, array_merge([null], $reflector->getConstants()))) {
+            return false;
+        }
+        return true;
+    }
 }
 
 abstract class DriveOrder {
     const LASTMODIFIED = "lastModifiedDateTime";
     const NAME = "name";
+
+    public static function isOrderValid(?string $order): bool {
+        $reflector = new ReflectionClass('DriveOrder');
+        if (!in_array($order, array_merge([null], $reflector->getConstants()))) {
+            return false;
+        }
+        return true;
+    }
 }
 
-class Quota {
-    private int $remaining;
-    private string $state;
-    private int $total;
-    private int $used;
+class DriveType {
+    const PROJECT = "project";
+    const PERSONAL = "personal";
+    const VIRTUAL = "virtual";
+
+    public static function isTypeValid(?string $type): bool {
+        $reflector = new ReflectionClass('DriveType');
+        if (!in_array($type, array_merge([null], $reflector->getConstants()))) {
+            return false;
+        }
+        return true;
+    }
 }
 
 class Drive {
-    private string $alias;
-    private DriveType $type;
-    private string $id;
-    private DateTime $lastModifiedDateTime;
-    private string $name;
-    private Quota $quota;
-    private stdClass $rawData; //object from the raw JSON data
+    private ApiDrive $apiDrive;
+
+    public function __construct(ApiDrive $apiDrive) {
+        $this->apiDrive = $apiDrive;
+    }
 
     /**
      * @return string
      */
     public function getAlias(): string {
-        return $this->alias;
+        return (string)$this->apiDrive->getDriveAlias();
     }
 
     /**
-     * @return DriveType
+     * @return string
      */
-    public function getType(): DriveType {
-        return $this->type;
+    public function getType(): string {
+        return (string)$this->apiDrive->getDriveType();
     }
 
     /**
      * @return string
      */
     public function getId(): string {
-        return $this->id;
+        return (string)$this->apiDrive->getId();
     }
 
     /**
      * @return DateTime
+     * @throws Exception
      */
     public function getLastModifiedDateTime(): DateTime {
-        return $this->lastModifiedDateTime;
+        $date = $this->apiDrive->getLastModifiedDateTime();
+        if ($date instanceof DateTime) {
+            return $date;
+        }
+        throw new Exception(
+            'invalid LastModifiedDateTime returned: "' . print_r($date, true) . '"'
+        );
     }
 
     /**
      * @return string
      */
     public function getName(): string {
-        return $this->name;
+        return $this->apiDrive->getName();
     }
 
     /**
      * @return Quota
+     * @throws Exception
      */
     public function getQuota(): Quota {
-        return $this->quota;
+        $quota = $this->apiDrive->getQuota();
+        if ($quota instanceof Quota) {
+            return $quota;
+        }
+        throw new Exception(
+            'invalid quota returned: "' . print_r($quota, true) . '"'
+        );
     }
 
     /**
      * @return stdClass
      */
     public function getRawData(): stdClass {
-        return $this->rawData;
+        return $this->apiDrive->jsonSerialize();
     }
 
     public function delete(): void {
@@ -170,11 +206,17 @@ class Drive {
 class Ocis {
     private string $serviceUrl;
     private string $accessToken;
+    private DrivesGetDrivesApi $apiInstance;
+    private Configuration $graphApiConfig;
+    private GuzzleHttp\Client $guzzle;
+
     public function __construct(
         string $serviceUrl, string $accessToken
     ) {
-        $this->serviceUrl=$serviceUrl;
-        $this->accessToken=$accessToken;
+        $this->serviceUrl = $serviceUrl;
+        $this->accessToken = $accessToken;
+        $this->guzzle = new GuzzleHttp\Client(['headers' => ['Authorization' => 'Bearer ' . $accessToken]]);
+        $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
     }
 
     /**
@@ -190,8 +232,23 @@ class Ocis {
      * @return array<Drive>
      * @throws Exception
      */
-    public function listAllDrives(DriveOrder $orderby, OrderDirection $order, DriveType $type): array {
-        throw new Exception("This function is not implemented yet.");
+    public function listAllDrives(
+        string $orderBy = DriveOrder::NAME,
+        string $orderDirection = OrderDirection::ASC,
+        string $type = null
+    ): array {
+        $apiInstance = new DrivesGetDrivesApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
+        $filter = $this->getListDrivesFilterString($type);
+        foreach ($apiInstance->listAllDrives($order, $filter)->getValue() as $apiDrive) {
+            $drive = new Drive($apiDrive);
+            $drives[] = $drive;
+        }
+
+        return $drives;
     }
 
     /**
@@ -200,8 +257,50 @@ class Ocis {
      * @return array<Drive>
      * @throws Exception
      */
-    public function listMyDrives(DriveOrder $orderby, OrderDirection $order, DriveType $type): array {
-        throw new Exception("This function is not implemented yet.");
+    public function listMyDrives(
+        string $orderBy = DriveOrder::NAME,
+        string $orderDirection = OrderDirection::ASC,
+        string $type = null): array {
+        $apiInstance = new MeDrivesApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        $drives = [];
+        $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
+        $filter = $this->getListDrivesFilterString($type);
+        foreach ($apiInstance->listMyDrives($order, $filter)->getValue() as $apiDrive) {
+            $drive = new Drive($apiDrive);
+            $drives[] = $drive;
+        }
+        return $drives;
+    }
+
+    private function getListDrivesOrderString(
+        string $orderBy = DriveOrder::NAME,
+        string $orderDirection = OrderDirection::ASC
+    ): string {
+        if (!DriveOrder::isOrderValid($orderBy)) {
+            throw new InvalidArgumentException('$orderBy is invalid');
+        }
+        if (!OrderDirection::isOrderDirectionValid($orderDirection)) {
+            throw new InvalidArgumentException('$orderDirection is invalid');
+        }
+        return $orderBy . ' ' . $orderDirection;
+    }
+
+    private function getListDrivesFilterString(
+        string $type = null
+    ): ?string {
+        if (!DriveType::isTypeValid($type)) {
+            throw new InvalidArgumentException('$type is invalid');
+        }
+
+        if ($type !== null) {
+            $filter = 'driveType eq \'' . $type . '\'';
+        } else {
+            $filter = null;
+        }
+        return $filter;
     }
 
     /**
