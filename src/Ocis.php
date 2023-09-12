@@ -4,6 +4,7 @@ namespace Owncloud\OcisSdkPhp;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
+use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\MeDrivesApi;
@@ -32,6 +33,10 @@ class Ocis
         $this->guzzle = new \GuzzleHttp\Client($this->createGuzzleConfig($guzzleConfig));
 
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
+    }
+
+    public function setGuzzle(\GuzzleHttp\Client $guzzle) {
+        $this->guzzle = $guzzle;
     }
 
     /**
@@ -224,4 +229,78 @@ class Ocis
         );
     }
 
+    /**
+     * @throws \Exception
+     * @return array<Notification>
+     */
+    public function getNotifications(): array
+    {
+        $response = $this->guzzle->get(
+            $this->serviceUrl . '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json'
+        );
+        $content = $response->getBody()->getContents();
+        $ocsResponse = json_decode($content, true);
+        if ($ocsResponse === null) {
+            throw new \Exception(
+                'Could not decode notification response. Content: "' .  $content . '"'
+            );
+        }
+        if (
+            !isset($ocsResponse['ocs']['data']) ||
+            !is_array($ocsResponse['ocs']['data'])
+        ) {
+            throw new \Exception(
+                'Notification response is invalid. Content: "' .  $content . '"'
+            );
+        }
+        $notifications = [];
+        foreach ($ocsResponse['ocs']['data'] as $notificationContent) {
+            if (
+                !isset($notificationContent["notification_id"]) ||
+                !is_string($notificationContent["notification_id"]) ||
+                $notificationContent["notification_id"] === "") {
+                throw new \Exception(
+                    'Id is invalid or missing in notification response is invalid. Content: "' . $content . '"'
+                );
+            }
+            foreach (
+                [
+                    "app",
+                    "user",
+                    "datetime",
+                    "object_id",
+                    "object_type",
+                    "subject",
+                    "subjectRich",
+                    "message",
+                    "messageRich",
+                    "messageRichParameters"
+                ] as $key
+            ) {
+                if (!isset($notificationContent[$key])) {
+                    if ($key === "messageRichParameters") {
+                        $notificationContent[$key] = [];
+                    } else {
+                        $notificationContent[$key] = "";
+                    }
+                }
+            }
+            $notifications[] = new Notification(
+                $this->guzzle,
+                $this->serviceUrl,
+                $notificationContent["notification_id"],
+                $notificationContent["app"],
+                $notificationContent["user"],
+                $notificationContent["datetime"],
+                $notificationContent["object_id"],
+                $notificationContent["object_type"],
+                $notificationContent["subject"],
+                $notificationContent["subjectRich"],
+                $notificationContent["message"],
+                $notificationContent["messageRich"],
+                $notificationContent["messageRichParameters"]
+            );
+        }
+        return $notifications;
+    }
 }
