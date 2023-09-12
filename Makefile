@@ -37,7 +37,7 @@ test-php-phan: vendor/bin/phan
 .PHONY: test-php-phpstan
 test-php-phpstan:          ## Run phpstan
 test-php-phpstan: vendor/bin/phpstan
-	vendor/bin/phpstan analyse --memory-limit=4G --configuration=./phpstan.neon --no-progress --level=5 appinfo lib
+	vendor/bin/phpstan analyse --memory-limit=4G --configuration=./phpstan.neon --no-progress --level=5 src tests
 
 .PHONY: clean
 clean:
