@@ -70,15 +70,19 @@ class Ocis {
         string $orderDirection = OrderDirection::ASC,
         string $type = null
     ): array {
-        $apiInstance = new DrivesGetDrivesApi(
-            $this->guzzle,
-            $this->graphApiConfig
-        );
+        if ($this->apiInstance === null) {
+            $apiInstance = new DrivesGetDrivesApi(
+                $this->guzzle,
+                $this->graphApiConfig
+            );
+        } else {
+            $apiInstance = $this->apiInstance;
+        }
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
         $filter = $this->getListDrivesFilterString($type);
         $drives = [];
         foreach ($apiInstance->listAllDrives($order, $filter)->getValue() as $apiDrive) {
-            $drive = new Drive($apiDrive);
+            $drive = new Drive($apiDrive, $this->accessToken);
             $drives[] = $drive;
         }
 
@@ -103,7 +107,7 @@ class Ocis {
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
         $filter = $this->getListDrivesFilterString($type);
         foreach ($apiInstance->listMyDrives($order, $filter)->getValue() as $apiDrive) {
-            $drive = new Drive($apiDrive);
+            $drive = new Drive($apiDrive, $this->accessToken);
             $drives[] = $drive;
         }
         return $drives;
@@ -184,7 +188,7 @@ class Ocis {
         }
 
         if ($newlyCreatedDrive instanceof ApiDrive) {
-            return new Drive($newlyCreatedDrive);
+            return new Drive($newlyCreatedDrive, $this->accessToken);
         }
         throw new \Exception(
             "Drive could not be created. '" .
