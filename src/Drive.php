@@ -8,11 +8,19 @@ use OpenAPI\Client\Model\Quota;
 
 class Drive {
     private ApiDrive $apiDrive;
+    private string $accessToken;
 
-    public function __construct(ApiDrive $apiDrive) {
+    public function __construct(ApiDrive $apiDrive, &$accessToken) {
         $this->apiDrive = $apiDrive;
+        $this->accessToken =& $accessToken;
     }
 
+    /**
+     * mainly for unit tests
+     */
+    public function getAccessToken(): string {
+        return $this->accessToken;
+    }
     /**
      * @return string
      */

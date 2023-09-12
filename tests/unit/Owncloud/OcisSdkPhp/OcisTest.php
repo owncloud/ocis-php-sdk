@@ -3,7 +3,10 @@
 namespace unit\Owncloud\OcisSdkPhp;
 
 use OpenAPI\Client\Api\DrivesApi;
+use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\ApiException;
+use OpenAPI\Client\Model\CollectionOfDrives;
+use OpenAPI\Client\Model\Drive;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\OdataErrorMain;
 use Owncloud\OcisSdkPhp\ForbiddenException;
@@ -81,5 +84,26 @@ class OcisTest extends TestCase {
             ->willThrowException(new ApiException('forbidden', 403));
         $ocis->setApiInstance($createDriveMock);
         $ocis->createDrive('drivename');
+    }
+
+    public function testSetAccessTokenPropagatesToDrives() {
+        $ocis = new Ocis('https://localhost:9200', 'tokenWhenCreated');
+        $driveMock[] = $this->createMock(Drive::class);
+        $driveMock[] = $this->createMock(Drive::class);
+        $driveCollectionMock = $this->createMock(CollectionOfDrives::class);
+        $driveCollectionMock->method('getValue')
+            ->willReturn($driveMock);
+        $drivesGetDrivesApi = $this->createMock(DrivesGetDrivesApi::class);
+        $drivesGetDrivesApi->method('listAllDrives')
+            ->willReturn($driveCollectionMock);
+        $ocis->setApiInstance($drivesGetDrivesApi);
+        $drives = $ocis->listAllDrives();
+        foreach ($drives as $drive) {
+            $this->assertEquals('tokenWhenCreated', $drive->getAccessToken());
+        }
+        $ocis->setAccessToken('changedToken');
+        foreach ($drives as $drive) {
+            $this->assertEquals('changedToken', $drive->getAccessToken());
+        }
     }
 }
