@@ -64,6 +64,7 @@ class OcisTest extends TestCase
         $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
         $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
+        assert($createDriveMock instanceof DrivesApi);
         $error = (new OdataError())
                 ->setError(new OdataErrorMain(['message' => 'something went wrong']));
         $createDriveMock->method('createDrive')
@@ -87,6 +88,7 @@ class OcisTest extends TestCase
         $this->expectException(ForbiddenException::class);
         $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
+        assert($createDriveMock instanceof DrivesApi);
         $createDriveMock->method('createDrive')
             ->willThrowException(new ApiException('forbidden', 403));
         $ocis->setApiInstance($createDriveMock);
@@ -96,12 +98,14 @@ class OcisTest extends TestCase
     public function testSetAccessTokenPropagatesToDrives()
     {
         $ocis = new Ocis('https://localhost:9200', 'tokenWhenCreated');
+        $driveMock = [];
         $driveMock[] = $this->createMock(Drive::class);
         $driveMock[] = $this->createMock(Drive::class);
         $driveCollectionMock = $this->createMock(CollectionOfDrives::class);
         $driveCollectionMock->method('getValue')
             ->willReturn($driveMock);
         $drivesGetDrivesApi = $this->createMock(DrivesGetDrivesApi::class);
+        assert($drivesGetDrivesApi instanceof DrivesGetDrivesApi);
         $drivesGetDrivesApi->method('listAllDrives')
             ->willReturn($driveCollectionMock);
         $ocis->setApiInstance($drivesGetDrivesApi);

@@ -88,6 +88,14 @@ class Ocis
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
         $filter = $this->getListDrivesFilterString($type);
         $drives = [];
+        /**
+         * The filter parameter of listAllDrives can be passed null,
+         * but the generated PHP doc for it in libre-graph-api-php does not have ?string.
+         * Filter might be null here, which is OK.
+         * Suppress the message from phan.
+         */
+
+        /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
         foreach ($apiInstance->listAllDrives($order, $filter)->getValue() as $apiDrive) {
             $drive = new Drive($apiDrive, $this->accessToken);
             $drives[] = $drive;
@@ -114,6 +122,14 @@ class Ocis
         $drives = [];
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
         $filter = $this->getListDrivesFilterString($type);
+        /**
+         * The filter parameter of listAllDrives can be passed null,
+         * but the generated PHP doc for it in libre-graph-api-php does not have ?string.
+         * Filter might be null here, which is OK.
+         * Suppress the message from phan.
+         */
+
+        /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
         foreach ($apiInstance->listMyDrives($order, $filter)->getValue() as $apiDrive) {
             $drive = new Drive($apiDrive, $this->accessToken);
             $drives[] = $drive;
