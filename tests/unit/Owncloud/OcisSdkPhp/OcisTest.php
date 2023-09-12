@@ -13,9 +13,10 @@ use Owncloud\OcisSdkPhp\ForbiddenException;
 use Owncloud\OcisSdkPhp\Ocis;
 use PHPUnit\Framework\TestCase;
 
-class OcisTest extends TestCase {
-
-    public function testCreateGuzzleConfigDefaultValues() {
+class OcisTest extends TestCase
+{
+    public function testCreateGuzzleConfigDefaultValues()
+    {
         $ocis = new Ocis('http://something', 'token');
         $this->assertEquals(
             [
@@ -25,7 +26,8 @@ class OcisTest extends TestCase {
         );
     }
 
-    public function testCreateGuzzleConfigVerifyFalse() {
+    public function testCreateGuzzleConfigVerifyFalse()
+    {
         $ocis = new Ocis('http://something', 'token');
         $this->assertEquals(
             [
@@ -36,7 +38,8 @@ class OcisTest extends TestCase {
         );
     }
 
-    public function testCreateGuzzleConfigExtraHeader() {
+    public function testCreateGuzzleConfigExtraHeader()
+    {
         $ocis = new Ocis('http://something', 'token');
         $this->assertEquals(
             [
@@ -48,13 +51,15 @@ class OcisTest extends TestCase {
             $ocis->createGuzzleConfig(['headers' => ['X-something' => 'X-Data']])
         );
     }
-    public function testCreateDriveWithInvalidQuota() {
+    public function testCreateDriveWithInvalidQuota()
+    {
         $this->expectException(\InvalidArgumentException::class);
         $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
         $ocis->createDrive('drivename', -1);
     }
 
-    public function testCreateDriveReturnsOdataError() {
+    public function testCreateDriveReturnsOdataError()
+    {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
         $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
@@ -67,7 +72,8 @@ class OcisTest extends TestCase {
         $ocis->createDrive('drivename');
     }
 
-    public function testCreateDriveUnresolvedHost() {
+    public function testCreateDriveUnresolvedHost()
+    {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
             "[0] cURL error 6: Could not resolve host: localhost-does-not-exist (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://localhost-does-not-exist:9200/graph/v1.0/drives"
@@ -76,7 +82,8 @@ class OcisTest extends TestCase {
         $ocis->createDrive('drivename');
     }
 
-    public function testCreateDriveForbidden() {
+    public function testCreateDriveForbidden()
+    {
         $this->expectException(ForbiddenException::class);
         $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
@@ -86,7 +93,8 @@ class OcisTest extends TestCase {
         $ocis->createDrive('drivename');
     }
 
-    public function testSetAccessTokenPropagatesToDrives() {
+    public function testSetAccessTokenPropagatesToDrives()
+    {
         $ocis = new Ocis('https://localhost:9200', 'tokenWhenCreated');
         $driveMock[] = $this->createMock(Drive::class);
         $driveMock[] = $this->createMock(Drive::class);

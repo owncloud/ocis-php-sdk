@@ -7,8 +7,8 @@ use PHPUnit\Framework\TestCase;
 
 class DriveOrderTest extends TestCase
 {
-
-    public function validDriveTypes(): array {
+    public function validDriveTypes(): array
+    {
         return [
             [null],
             ["name"],
@@ -21,14 +21,16 @@ class DriveOrderTest extends TestCase
      * @return void
      * @dataProvider validDriveTypes
      */
-    public function testValidDriveType(?string $type): void {
+    public function testValidDriveType(?string $type): void
+    {
         $this->assertTrue(DriveOrder::isOrderValid($type));
     }
 
     /**
      * @return void
      */
-    public function testInvalidDriveType(): void {
+    public function testInvalidDriveType(): void
+    {
         $this->assertFalse(DriveOrder::isOrderValid("some string"));
     }
 }

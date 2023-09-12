@@ -1,4 +1,5 @@
 <?php
+
 namespace Owncloud\OcisSdkPhp;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
@@ -10,7 +11,8 @@ use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 
-class Ocis {
+class Ocis
+{
     private string $serviceUrl;
     private string $accessToken;
     /**
@@ -21,7 +23,9 @@ class Ocis {
     private \GuzzleHttp\Client $guzzle;
 
     public function __construct(
-        string $serviceUrl, string $accessToken, $guzzleConfig = []
+        string $serviceUrl,
+        string $accessToken,
+        $guzzleConfig = []
     ) {
         $this->serviceUrl = $serviceUrl;
         $this->accessToken = $accessToken;
@@ -37,7 +41,8 @@ class Ocis {
      * @param $guzzleConfig
      * @return array<mixed>
      */
-    public function createGuzzleConfig($guzzleConfig = []): array {
+    public function createGuzzleConfig($guzzleConfig = []): array
+    {
         if (!isset($guzzleConfig['headers'])) {
             $guzzleConfig['headers'] = [];
         }
@@ -48,14 +53,16 @@ class Ocis {
         return $guzzleConfig;
     }
 
-    public function setApiInstance(DrivesGetDrivesApi|MeDrivesApi|DrivesApi|null $apiInstance): void {
+    public function setApiInstance(DrivesGetDrivesApi|MeDrivesApi|DrivesApi|null $apiInstance): void
+    {
         $this->apiInstance = $apiInstance;
     }
 
     /**
      * @param string $accessToken
      */
-    public function setAccessToken(string $accessToken): void {
+    public function setAccessToken(string $accessToken): void
+    {
         $this->accessToken = $accessToken;
     }
 
@@ -98,7 +105,8 @@ class Ocis {
     public function listMyDrives(
         string $orderBy = DriveOrder::NAME,
         string $orderDirection = OrderDirection::ASC,
-        string $type = null): array {
+        string $type = null
+    ): array {
         $apiInstance = new MeDrivesApi(
             $this->guzzle,
             $this->graphApiConfig
@@ -144,7 +152,8 @@ class Ocis {
     /**
      * @throws \Exception
      */
-    public function getDriveById(string $driveId): Drive {
+    public function getDriveById(string $driveId): Drive
+    {
         throw new \Exception("This function is not implemented yet.");
     }
 
@@ -157,7 +166,9 @@ class Ocis {
      * @throws \Exception
      */
     public function createDrive(
-        string $name, int $quota = 0, string $description = null
+        string $name,
+        int $quota = 0,
+        string $description = null
     ): Drive {
         if ($quota < 0) {
             throw new \InvalidArgumentException('quota cannot be less than 0');
