@@ -4,8 +4,10 @@ namespace Owncloud\OcisSdkPhp;
 
 use OpenAPI\Client\ApiException;
 
-class ForbiddenException extends ApiException {
-    public function __construct(ApiException $e) {
+class ForbiddenException extends ApiException
+{
+    public function __construct(ApiException $e)
+    {
         $responseBody = json_decode($e->getResponseBody(), true);
         $message = "";
         if (isset($responseBody['error']['code'])) {
@@ -15,7 +17,10 @@ class ForbiddenException extends ApiException {
             $message .= $responseBody['error']['message'];
         }
         parent::__construct(
-            $message, $e->getCode(), $e->getResponseHeaders(), $e->getResponseBody()
+            $message,
+            $e->getCode(),
+            $e->getResponseHeaders(),
+            $e->getResponseBody()
         );
     }
 }
