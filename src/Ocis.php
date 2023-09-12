@@ -3,14 +3,20 @@ namespace Owncloud\OcisSdkPhp;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
+use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\MeDrivesApi;
+use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\Drive as ApiDrive;
 
 class Ocis {
     private string $serviceUrl;
     private string $accessToken;
-    private DrivesGetDrivesApi $apiInstance;
+    /**
+     * @var DrivesApi|DrivesGetDrivesApi|null
+     */
+    private $apiInstance = null;
     private Configuration $graphApiConfig;
     private \GuzzleHttp\Client $guzzle;
 
@@ -40,6 +46,10 @@ class Ocis {
             ['Authorization' => 'Bearer ' . $this->accessToken]
         );
         return $guzzleConfig;
+    }
+
+    public function setApiInstance(DrivesGetDrivesApi|MeDrivesApi|DrivesApi|null $apiInstance): void {
+        $this->apiInstance = $apiInstance;
     }
 
     /**
@@ -135,10 +145,52 @@ class Ocis {
     }
 
     /**
+     * @param string $name
+     * @param int $quota in bytes
+     * @param string|null $description
+     * @return Drive
+     * @throws ApiException
      * @throws \Exception
      */
-    public function createDrive(string $name, int $quota = null, string $description = null): Drive {
-        throw new \Exception("This function is not implemented yet.");
+    public function createDrive(
+        string $name, int $quota = 0, string $description = null
+    ): Drive {
+        if ($quota < 0) {
+            throw new \InvalidArgumentException('quota cannot be less than 0');
+        }
+        if ($this->apiInstance === null) {
+            $apiInstance = new DrivesApi(
+                $this->guzzle,
+                $this->graphApiConfig
+            );
+        } else {
+            $apiInstance = $this->apiInstance;
+        }
+
+        $apiDrive = new ApiDrive(
+            [
+                'description' => $description,
+                'name' => $name,
+                'quota' => ['total' => $quota]
+            ]
+        );
+        try {
+            $newlyCreatedDrive = $apiInstance->createDrive($apiDrive);
+        } catch (ApiException $e) {
+            if ($e->getCode() === 403) {
+                throw new ForbiddenException($e);
+            }
+            throw $e;
+        }
+
+        if ($newlyCreatedDrive instanceof ApiDrive) {
+            return new Drive($newlyCreatedDrive);
+        }
+        throw new \Exception(
+            "Drive could not be created. '" .
+            $newlyCreatedDrive->getError()->getMessage() .
+            "'"
+        );
     }
 
 }

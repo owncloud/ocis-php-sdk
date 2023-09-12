@@ -2,6 +2,11 @@
 
 namespace unit\Owncloud\OcisSdkPhp;
 
+use OpenAPI\Client\Api\DrivesApi;
+use OpenAPI\Client\ApiException;
+use OpenAPI\Client\Model\OdataError;
+use OpenAPI\Client\Model\OdataErrorMain;
+use Owncloud\OcisSdkPhp\ForbiddenException;
 use Owncloud\OcisSdkPhp\Ocis;
 use PHPUnit\Framework\TestCase;
 
@@ -39,5 +44,42 @@ class OcisTest extends TestCase {
             ],
             $ocis->createGuzzleConfig(['headers' => ['X-something' => 'X-Data']])
         );
+    }
+    public function testCreateDriveWithInvalidQuota() {
+        $this->expectException(\InvalidArgumentException::class);
+        $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
+        $ocis->createDrive('drivename', -1);
+    }
+
+    public function testCreateDriveReturnsOdataError() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
+        $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
+        $createDriveMock = $this->createMock(DrivesApi::class);
+        $error = (new OdataError())
+                ->setError(new OdataErrorMain(['message' => 'something went wrong']));
+        $createDriveMock->method('createDrive')
+                        ->willReturn($error);
+        $ocis->setApiInstance($createDriveMock);
+        $ocis->createDrive('drivename');
+    }
+
+    public function testCreateDriveUnresolvedHost() {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage(
+            "[0] cURL error 6: Could not resolve host: localhost-does-not-exist (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://localhost-does-not-exist:9200/graph/v1.0/drives"
+        );
+        $ocis = new Ocis('https://localhost-does-not-exist:9200', 'doesnotmatter');
+        $ocis->createDrive('drivename');
+    }
+
+    public function testCreateDriveForbidden() {
+        $this->expectException(ForbiddenException::class);
+        $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
+        $createDriveMock = $this->createMock(DrivesApi::class);
+        $createDriveMock->method('createDrive')
+            ->willThrowException(new ApiException('forbidden', 403));
+        $ocis->setApiInstance($createDriveMock);
+        $ocis->createDrive('drivename');
     }
 }
