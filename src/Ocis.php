@@ -4,6 +4,7 @@ namespace Owncloud\OcisSdkPhp;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
@@ -22,6 +23,7 @@ class Ocis
     private $apiInstance = null;
     private Configuration $graphApiConfig;
     private \GuzzleHttp\Client $guzzle;
+    private $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
 
     public function __construct(
         string $serviceUrl,
@@ -183,8 +185,10 @@ class Ocis
      * @param int $quota in bytes
      * @param string|null $description
      * @return Drive
-     * @throws ApiException
-     * @throws \Exception
+     * @throws  \Exception
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws \InvalidArgumentException
      */
     public function createDrive(
         string $name,
@@ -213,10 +217,7 @@ class Ocis
         try {
             $newlyCreatedDrive = $apiInstance->createDrive($apiDrive);
         } catch (ApiException $e) {
-            if ($e->getCode() === 403) {
-                throw new ForbiddenException($e);
-            }
-            throw $e;
+            throw ExceptionHelper::getHttpErrorException($e);
         }
 
         if ($newlyCreatedDrive instanceof ApiDrive) {
@@ -235,9 +236,14 @@ class Ocis
      */
     public function getNotifications(): array
     {
-        $response = $this->guzzle->get(
-            $this->serviceUrl . '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json'
-        );
+        try {
+            $response = $this->guzzle->get(
+                $this->serviceUrl . $this->notificationsEndpoint
+            );
+        } catch (GuzzleException|ClientException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
         $content = $response->getBody()->getContents();
         $ocsResponse = json_decode($content, true);
         if ($ocsResponse === null) {
@@ -246,12 +252,17 @@ class Ocis
             );
         }
         if (
-            !isset($ocsResponse['ocs']['data']) ||
-            !is_array($ocsResponse['ocs']['data'])
+            !isset($ocsResponse['ocs']) ||
+            !array_key_exists('data', $ocsResponse['ocs']) ||
+            !is_array($ocsResponse['ocs']['data']) &&
+            !is_null($ocsResponse['ocs']['data'])
         ) {
             throw new \Exception(
                 'Notification response is invalid. Content: "' .  $content . '"'
             );
+        }
+        if (is_null($ocsResponse['ocs']['data'])) {
+            $ocsResponse['ocs']['data'] = [];
         }
         $notifications = [];
         foreach ($ocsResponse['ocs']['data'] as $notificationContent) {
@@ -286,8 +297,6 @@ class Ocis
                 }
             }
             $notifications[] = new Notification(
-                $this->guzzle,
-                $this->serviceUrl,
                 $notificationContent["notification_id"],
                 $notificationContent["app"],
                 $notificationContent["user"],
@@ -302,5 +311,22 @@ class Ocis
             );
         }
         return $notifications;
+    }
+
+
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     */
+    public function deleteAllNotifications(): void
+    {
+        try {
+            $this->guzzle->delete(
+                $this->serviceUrl . $this->notificationsEndpoint
+            );
+        } catch (GuzzleException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
     }
 }

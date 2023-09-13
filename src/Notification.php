@@ -2,12 +2,8 @@
 
 namespace Owncloud\OcisSdkPhp;
 
-
-use GuzzleHttp\Exception\GuzzleException;
-
 class Notification
 {
-    private \GuzzleHttp\Client $guzzle;
     private string $id;
     private string $app;
     private string $user;
@@ -19,11 +15,8 @@ class Notification
     private string $message;
     private string $messageRich;
     private array $messageRichParameters;
-    private $serviceUrl;
 
     public function __construct(
-        \GuzzleHttp\Client &$guzzle,
-        string $serviceUrl,
         string $id,
         string $app,
         string $user,
@@ -47,12 +40,6 @@ class Notification
         $this->message = $message;
         $this->messageRich = $messageRich;
         $this->messageRichParameters = $messageRichParameters;
-        $this->guzzle = $guzzle;
-        $this->serviceUrl = $serviceUrl;
-    }
-
-    public function setGuzzle(\GuzzleHttp\Client $guzzle) {
-        $this->guzzle = $guzzle;
     }
 
     public function getId(): string
@@ -108,16 +95,5 @@ class Notification
     public function getMessageRichParameters(): array
     {
         return $this->messageRichParameters;
-    }
-
-    /**
-     * @throws GuzzleException
-     */
-    public function delete(): void
-    {
-        $this->guzzle->delete(
-            $this->serviceUrl . '/ocs/v2.php/apps/notifications/api/v1/notifications/' . $this->id
-        );
-
     }
 }

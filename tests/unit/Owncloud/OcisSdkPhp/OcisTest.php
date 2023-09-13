@@ -156,6 +156,7 @@ class OcisTest extends TestCase
     public function invalidOcsNotificationResponse(): array {
         return [
             ['{"ocs":{"meta":{"message":"","status":"","statuscode":200}}}'],
+            ['{"ocs": null}'],
             ['{}'],
             ['{"ocs":{"meta":{"message":"","status":"","statuscode":200},"data":"string"}}']
         ];
@@ -220,8 +221,17 @@ class OcisTest extends TestCase
         $this->assertIsArray($notifications[0]->getMessageRichParameters());
     }
 
-    public function testGetNotificationNoNotifications() {
-        $responseContent = '{"ocs":{"data":[]}}';
+    public function noNotificationsDataProvider(): array {
+        return [
+            ['{"ocs":{"data":[]}}'],
+            ['{"ocs":{"data":null}}'],
+        ];
+    }
+
+    /**
+     * @dataProvider noNotificationsDataProvider
+     */
+    public function testGetNotificationNoNotifications(string $responseContent) {
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $notifications = $ocis->getNotifications();
         $this->assertEquals([], $notifications);
