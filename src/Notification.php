@@ -6,7 +6,7 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Notification
 {
-    private \GuzzleHttp\Client $guzzle;
+    private string $accessToken;
     private string $id;
     private string $app;
     private string $user;
@@ -18,10 +18,12 @@ class Notification
     private string $message;
     private string $messageRich;
     private array $messageRichParameters;
-    private $serviceUrl;
+    private string $serviceUrl;
+    private array $guzzleConfig;
 
     public function __construct(
-        \GuzzleHttp\Client &$guzzle,
+        string &$accessToken,
+        array $guzzleConfig,
         string $serviceUrl,
         string $id,
         string $app,
@@ -46,13 +48,18 @@ class Notification
         $this->message = $message;
         $this->messageRich = $messageRich;
         $this->messageRichParameters = $messageRichParameters;
-        $this->guzzle = $guzzle;
+        $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
+        $this->guzzleConfig = $guzzleConfig;
     }
 
-    public function setGuzzle(\GuzzleHttp\Client $guzzle)
+    /**
+     * mainly for testing purpose
+     * @return string
+     */
+    public function getAccessToken(): string
     {
-        $this->guzzle = $guzzle;
+        return $this->accessToken;
     }
 
     public function getId(): string
@@ -119,8 +126,11 @@ class Notification
      */
     public function delete(): void
     {
+        $guzzle = new \GuzzleHttp\Client(
+            Ocis::createGuzzleConfig($this->guzzleConfig, $this->accessToken)
+        );
         try {
-            $this->guzzle->delete(
+            $guzzle->delete(
                 $this->serviceUrl . '/ocs/v2.php/apps/notifications/api/v1/notifications/',
                 ['body' =>  json_encode(["ids" => [$this->id]])]
             );

@@ -24,7 +24,7 @@ class OcisTest extends TestCase
             [
                 'headers' => ['Authorization' => 'Bearer token']
             ],
-            $ocis->createGuzzleConfig()
+            Ocis::createGuzzleConfig([], 'token')
         );
     }
 
@@ -36,7 +36,7 @@ class OcisTest extends TestCase
                 'headers' => ['Authorization' => 'Bearer token'],
                 'verify' => false
             ],
-            $ocis->createGuzzleConfig(['verify' => false])
+            Ocis::createGuzzleConfig(['verify' => false], 'token')
         );
     }
 
@@ -50,7 +50,7 @@ class OcisTest extends TestCase
                     'X-something' => 'X-Data'
                 ]
             ],
-            $ocis->createGuzzleConfig(['headers' => ['X-something' => 'X-Data']])
+            Ocis::createGuzzleConfig(['headers' => ['X-something' => 'X-Data']], 'token')
         );
     }
     public function testCreateDriveWithInvalidQuota()
@@ -121,9 +121,27 @@ class OcisTest extends TestCase
         }
     }
 
-    private function setupMocksForNotificationTests(string $responseContent): Ocis
+    public function testSetAccessTokenPropagatesToNotifications()
     {
-        $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
+        $ocis = $this->setupMocksForNotificationTests(
+            '{"ocs":{"data":[{"notification_id":"123"},{"notification_id":"456"}]}}',
+            'tokenWhenCreated'
+        );
+        $notifications = $ocis->getNotifications();
+        $this->assertEquals('tokenWhenCreated', $notifications[0]->getAccessToken());
+        $this->assertEquals('123', $notifications[0]->getId());
+        $this->assertEquals('tokenWhenCreated', $notifications[1]->getAccessToken());
+        $this->assertEquals('456', $notifications[1]->getId());
+        $ocis->setAccessToken('changedToken');
+        $this->assertEquals('changedToken', $notifications[0]->getAccessToken());
+        $this->assertEquals('changedToken', $notifications[1]->getAccessToken());
+    }
+
+    private function setupMocksForNotificationTests(
+        string $responseContent,
+        string $token = 'doesNotMatter'
+    ): Ocis {
+        $ocis = new Ocis('https://localhost:9200', $token);
         $streamMock = $this->createMock(StreamInterface::class);
         $streamMock->method('getContents')->willReturn($responseContent);
         $responseMock = $this->createMock(ResponseInterface::class);

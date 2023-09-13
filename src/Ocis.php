@@ -23,6 +23,7 @@ class Ocis
     private $apiInstance = null;
     private Configuration $graphApiConfig;
     private \GuzzleHttp\Client $guzzle;
+    private array $guzzleConfig;
     private $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
 
     public function __construct(
@@ -32,7 +33,8 @@ class Ocis
     ) {
         $this->serviceUrl = $serviceUrl;
         $this->accessToken = $accessToken;
-        $this->guzzle = new \GuzzleHttp\Client($this->createGuzzleConfig($guzzleConfig));
+        $this->guzzleConfig = $guzzleConfig;
+        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($guzzleConfig, $accessToken));
 
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
     }
@@ -46,17 +48,18 @@ class Ocis
      * combines passed in config settings for guzzle with the default settings needed
      * for the class and returns the complete array
      *
-     * @param $guzzleConfig
+     * @param array $guzzleConfig
+     * @param string $accessToken
      * @return array<mixed>
      */
-    public function createGuzzleConfig($guzzleConfig = []): array
+    public static function createGuzzleConfig(array $guzzleConfig, string $accessToken): array
     {
         if (!isset($guzzleConfig['headers'])) {
             $guzzleConfig['headers'] = [];
         }
         $guzzleConfig['headers'] = array_merge(
             $guzzleConfig['headers'],
-            ['Authorization' => 'Bearer ' . $this->accessToken]
+            ['Authorization' => 'Bearer ' . $accessToken]
         );
         return $guzzleConfig;
     }
@@ -72,6 +75,7 @@ class Ocis
     public function setAccessToken(string $accessToken): void
     {
         $this->accessToken = $accessToken;
+        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($this->guzzleConfig, $accessToken));
     }
 
     /**
@@ -298,7 +302,8 @@ class Ocis
                 }
             }
             $notifications[] = new Notification(
-                $this->guzzle,
+                $this->accessToken,
+                $this->guzzleConfig,
                 $this->serviceUrl,
                 $notificationContent["notification_id"],
                 $notificationContent["app"],
