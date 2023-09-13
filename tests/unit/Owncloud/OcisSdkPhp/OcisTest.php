@@ -121,7 +121,8 @@ class OcisTest extends TestCase
         }
     }
 
-    private function setupMocksForNotificationTests(string $responseContent): Ocis {
+    private function setupMocksForNotificationTests(string $responseContent): Ocis
+    {
         $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
         $streamMock = $this->createMock(StreamInterface::class);
         $streamMock->method('getContents')->willReturn($responseContent);
@@ -129,10 +130,12 @@ class OcisTest extends TestCase
         $responseMock->method('getBody')->willReturn($streamMock);
         $guzzleMock = $this->createMock(\GuzzleHttp\Client::class);
         $guzzleMock->method('get')->willReturn($responseMock);
+        /* @phan-suppress-next-line PhanTypeMismatchArgument */
         $ocis->setGuzzle($guzzleMock);
         return $ocis;
     }
-    public function invalidJsonNotificationResponse(): array {
+    public function invalidJsonNotificationResponse(): array
+    {
         return [
             [""],
             ["data,"],
@@ -141,10 +144,10 @@ class OcisTest extends TestCase
     }
     /**
      * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @dataProvider invalidJsonNotificationResponse
      */
-    public function testGetNotificationResponseNotJson(string $responseContent) {
+    public function testGetNotificationResponseNotJson(string $responseContent)
+    {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
             'Could not decode notification response. Content: "' . $responseContent . '"'
@@ -153,7 +156,8 @@ class OcisTest extends TestCase
         $ocis->getNotifications();
     }
 
-    public function invalidOcsNotificationResponse(): array {
+    public function invalidOcsNotificationResponse(): array
+    {
         return [
             ['{"ocs":{"meta":{"message":"","status":"","statuscode":200}}}'],
             ['{"ocs": null}'],
@@ -163,7 +167,6 @@ class OcisTest extends TestCase
     }
     /**
      * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @dataProvider invalidOcsNotificationResponse
      */
     public function testGetNotificationInvalidOcsData(
@@ -177,7 +180,8 @@ class OcisTest extends TestCase
         $ocis->getNotifications();
     }
 
-    public function invalidOrMissingIdInOcsNotificationResponse(): array {
+    public function invalidOrMissingIdInOcsNotificationResponse(): array
+    {
         return [
             ['{"ocs":{"data":[{"notification_id":""}]}}'],
             ['{"ocs":{"data":[{"notification_id":123}]}}'],
@@ -186,7 +190,6 @@ class OcisTest extends TestCase
     }
     /**
      * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @dataProvider invalidOrMissingIdInOcsNotificationResponse
      */
     public function testGetNotificationMissingOrInvalidId(
@@ -202,9 +205,9 @@ class OcisTest extends TestCase
 
     /**
      * @return void
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testGetNotificationMissingDataInResponse() {
+    public function testGetNotificationMissingDataInResponse()
+    {
         $responseContent = '{"ocs":{"data":[{"notification_id":"123"}]}}';
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $notifications = $ocis->getNotifications();
@@ -221,7 +224,8 @@ class OcisTest extends TestCase
         $this->assertIsArray($notifications[0]->getMessageRichParameters());
     }
 
-    public function noNotificationsDataProvider(): array {
+    public function noNotificationsDataProvider(): array
+    {
         return [
             ['{"ocs":{"data":[]}}'],
             ['{"ocs":{"data":null}}'],
@@ -231,7 +235,8 @@ class OcisTest extends TestCase
     /**
      * @dataProvider noNotificationsDataProvider
      */
-    public function testGetNotificationNoNotifications(string $responseContent) {
+    public function testGetNotificationNoNotifications(string $responseContent)
+    {
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $notifications = $ocis->getNotifications();
         $this->assertEquals([], $notifications);

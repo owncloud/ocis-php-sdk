@@ -2,12 +2,13 @@
 
 namespace Owncloud\OcisSdkPhp;
 
+use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\ApiException;
 
 class ExceptionHelper
 {
-    public static function getHttpErrorException(\Exception $e):
-    NotFoundException|ForbiddenException|UnauthorizedException|\Exception {
+    public static function getHttpErrorException(GuzzleException|ApiException $e): NotFoundException|ForbiddenException|UnauthorizedException|\Exception
+    {
         if ($e instanceof ApiException) {
             $responseBody = json_decode($e->getResponseBody(), true);
             if ($responseBody === null) {

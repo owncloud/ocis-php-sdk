@@ -37,7 +37,8 @@ class Ocis
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
     }
 
-    public function setGuzzle(\GuzzleHttp\Client $guzzle) {
+    public function setGuzzle(\GuzzleHttp\Client $guzzle)
+    {
         $this->guzzle = $guzzle;
     }
 
