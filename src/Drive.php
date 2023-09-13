@@ -5,16 +5,23 @@ namespace Owncloud\OcisSdkPhp;
 use DateTime;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\Quota;
+use Sabre\DAV\Client;
 
 class Drive
 {
     private ApiDrive $apiDrive;
     private string $accessToken;
+    private Client $webDavClient;
 
     public function __construct(ApiDrive $apiDrive, &$accessToken)
     {
         $this->apiDrive = $apiDrive;
-        $this->accessToken = & $accessToken;
+        $this->accessToken = &$accessToken;
+        $this->webDavClient = new Client([
+            'baseUri' => (string)($this->apiDrive->getRoot())['web_dav_url'],
+        ]);
+        $this->webDavClient->addCurlSetting(CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
+        $this->webDavClient->addCurlSetting(CURLOPT_XOAUTH2_BEARER, $accessToken);
     }
 
     /**
@@ -152,9 +159,14 @@ class Drive
         throw new \Exception("This function is not implemented yet.");
     }
 
-    public function createFolder(string $path): void
+    public function createFolder(string $path): bool
     {
-        throw new \Exception("This function is not implemented yet.");
+        $id = $this->getId();
+        $req = $this->webDavClient->request('MKCOL', "$id/$path");
+        if ($req["statusCode"] === 201) {
+            return true;
+        }
+        throw new \Exception("Could not create file $path. status code $req[statusCode]");
     }
 
     public function getResourceMetadata(string $path = "/"): \stdClass
