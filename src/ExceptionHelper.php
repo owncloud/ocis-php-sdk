@@ -7,7 +7,7 @@ use OpenAPI\Client\ApiException;
 
 class ExceptionHelper
 {
-    public static function getHttpErrorException(GuzzleException|ApiException $e): NotFoundException|ForbiddenException|UnauthorizedException|\Exception
+    public static function getHttpErrorException(GuzzleException|ApiException $e): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|\Exception
     {
         if ($e instanceof ApiException) {
             $responseBody = json_decode($e->getResponseBody(), true);
@@ -27,6 +27,12 @@ class ExceptionHelper
         }
 
         switch ($e->getCode()) {
+            case 400:
+                return new BadRequestException(
+                    $message,
+                    $e->getCode(),
+                    $e
+                );
             case 401:
                 return new UnauthorizedException(
                     $message,

@@ -298,6 +298,8 @@ class Ocis
                 }
             }
             $notifications[] = new Notification(
+                $this->guzzle,
+                $this->serviceUrl,
                 $notificationContent["notification_id"],
                 $notificationContent["app"],
                 $notificationContent["user"],
