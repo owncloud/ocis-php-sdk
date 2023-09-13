@@ -320,21 +320,4 @@ class Ocis
         }
         return $notifications;
     }
-
-
-    /**
-     * @throws UnauthorizedException
-     * @throws ForbiddenException
-     * @throws NotFoundException
-     */
-    public function deleteAllNotifications(): void
-    {
-        try {
-            $this->guzzle->delete(
-                $this->serviceUrl . $this->notificationsEndpoint
-            );
-        } catch (GuzzleException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-    }
 }
