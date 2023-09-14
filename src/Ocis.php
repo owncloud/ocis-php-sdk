@@ -23,7 +23,6 @@ class Ocis
     private $apiInstance = null;
     private Configuration $graphApiConfig;
     private \GuzzleHttp\Client $guzzle;
-    private array $guzzleConfig;
     private $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
     /**
      * @var array<mixed>
