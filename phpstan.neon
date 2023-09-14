@@ -3,7 +3,3 @@ parameters:
   bootstrapFiles:
     - tests/unit/bootstrap.php
   ignoreErrors:
-    -
-      message: '#Property Owncloud\\OcisSdkPhp\\Ocis::\$serviceUrl is never read, only written.#'
-      path: src/Ocis.php
-      count: 1

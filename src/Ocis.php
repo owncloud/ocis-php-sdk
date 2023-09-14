@@ -4,6 +4,8 @@ namespace Owncloud\OcisSdkPhp;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\MeDrivesApi;
@@ -21,6 +23,8 @@ class Ocis
     private $apiInstance = null;
     private Configuration $graphApiConfig;
     private \GuzzleHttp\Client $guzzle;
+    private array $guzzleConfig;
+    private $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
 
     public function __construct(
         string $serviceUrl,
@@ -29,26 +33,33 @@ class Ocis
     ) {
         $this->serviceUrl = $serviceUrl;
         $this->accessToken = $accessToken;
-        $this->guzzle = new \GuzzleHttp\Client($this->createGuzzleConfig($guzzleConfig));
+        $this->guzzleConfig = $guzzleConfig;
+        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($guzzleConfig, $accessToken));
 
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
+    }
+
+    public function setGuzzle(\GuzzleHttp\Client $guzzle)
+    {
+        $this->guzzle = $guzzle;
     }
 
     /**
      * combines passed in config settings for guzzle with the default settings needed
      * for the class and returns the complete array
      *
-     * @param $guzzleConfig
+     * @param array $guzzleConfig
+     * @param string $accessToken
      * @return array<mixed>
      */
-    public function createGuzzleConfig($guzzleConfig = []): array
+    public static function createGuzzleConfig(array $guzzleConfig, string $accessToken): array
     {
         if (!isset($guzzleConfig['headers'])) {
             $guzzleConfig['headers'] = [];
         }
         $guzzleConfig['headers'] = array_merge(
             $guzzleConfig['headers'],
-            ['Authorization' => 'Bearer ' . $this->accessToken]
+            ['Authorization' => 'Bearer ' . $accessToken]
         );
         return $guzzleConfig;
     }
@@ -64,6 +75,7 @@ class Ocis
     public function setAccessToken(string $accessToken): void
     {
         $this->accessToken = $accessToken;
+        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($this->guzzleConfig, $accessToken));
     }
 
     /**
@@ -178,8 +190,10 @@ class Ocis
      * @param int $quota in bytes
      * @param string|null $description
      * @return Drive
-     * @throws ApiException
-     * @throws \Exception
+     * @throws  \Exception
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws \InvalidArgumentException
      */
     public function createDrive(
         string $name,
@@ -208,10 +222,7 @@ class Ocis
         try {
             $newlyCreatedDrive = $apiInstance->createDrive($apiDrive);
         } catch (ApiException $e) {
-            if ($e->getCode() === 403) {
-                throw new ForbiddenException($e);
-            }
-            throw $e;
+            throw ExceptionHelper::getHttpErrorException($e);
         }
 
         if ($newlyCreatedDrive instanceof ApiDrive) {
@@ -224,4 +235,89 @@ class Ocis
         );
     }
 
+    /**
+     * @throws \Exception
+     * @return array<Notification>
+     */
+    public function getNotifications(): array
+    {
+        try {
+            $response = $this->guzzle->get(
+                $this->serviceUrl . $this->notificationsEndpoint
+            );
+        } catch (GuzzleException|ClientException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        $content = $response->getBody()->getContents();
+        $ocsResponse = json_decode($content, true);
+        if ($ocsResponse === null) {
+            throw new \Exception(
+                'Could not decode notification response. Content: "' .  $content . '"'
+            );
+        }
+        if (
+            !isset($ocsResponse['ocs']) ||
+            !array_key_exists('data', $ocsResponse['ocs']) ||
+            !is_array($ocsResponse['ocs']['data']) &&
+            !is_null($ocsResponse['ocs']['data'])
+        ) {
+            throw new \Exception(
+                'Notification response is invalid. Content: "' .  $content . '"'
+            );
+        }
+        if (is_null($ocsResponse['ocs']['data'])) {
+            $ocsResponse['ocs']['data'] = [];
+        }
+        $notifications = [];
+        foreach ($ocsResponse['ocs']['data'] as $notificationContent) {
+            if (
+                !isset($notificationContent["notification_id"]) ||
+                !is_string($notificationContent["notification_id"]) ||
+                $notificationContent["notification_id"] === "") {
+                throw new \Exception(
+                    'Id is invalid or missing in notification response. Content: "' . $content . '"'
+                );
+            }
+            foreach (
+                [
+                    "app",
+                    "user",
+                    "datetime",
+                    "object_id",
+                    "object_type",
+                    "subject",
+                    "subjectRich",
+                    "message",
+                    "messageRich",
+                    "messageRichParameters"
+                ] as $key
+            ) {
+                if (!isset($notificationContent[$key])) {
+                    if ($key === "messageRichParameters") {
+                        $notificationContent[$key] = [];
+                    } else {
+                        $notificationContent[$key] = "";
+                    }
+                }
+            }
+            $notifications[] = new Notification(
+                $this->accessToken,
+                $this->guzzleConfig,
+                $this->serviceUrl,
+                $notificationContent["notification_id"],
+                $notificationContent["app"],
+                $notificationContent["user"],
+                $notificationContent["datetime"],
+                $notificationContent["object_id"],
+                $notificationContent["object_type"],
+                $notificationContent["subject"],
+                $notificationContent["subjectRich"],
+                $notificationContent["message"],
+                $notificationContent["messageRich"],
+                $notificationContent["messageRichParameters"]
+            );
+        }
+        return $notifications;
+    }
 }
