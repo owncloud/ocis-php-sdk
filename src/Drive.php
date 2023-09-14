@@ -260,9 +260,25 @@ class Drive
     }
 
     /**
-     * upload file with content
-     * update file content if file already exists
+     * update file content if file already exist
+     * @param string $path
+     * @param mixed $resource
      *
+     * @return bool
+     * @throws \Exception
+     */
+    private function makePutRequest(string $path, mixed $resource): bool
+    {
+        $webDavClient = $this->createWebDavClient();
+        $response = $webDavClient->request('PUT', ltrim($path, "/"), $resource);
+        if (in_array($response['statusCode'],[201,204])) {
+            return true;
+        }
+        throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");
+    }
+
+    /**
+     * upload file with content
      * @param string $path
      * @param string $content
      *
@@ -271,18 +287,23 @@ class Drive
      */
     public function uploadFile(string $path, string $content): bool
     {
-        $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request('PUT', ltrim($path, "/"), $content);
-
-        if (($response["statusCode"] !== 201) && ($response["statusCode"] !== 204)) {
-            throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");
-        }
-        return true;
+        return $this->makePutRequest($path, $content);
     }
 
-    public function uploadFileStream(string $path, $resource): void
+    /**
+     * Uploads a file using streaming
+     * @param string $path
+     * @param $resource file resource pointing to the file to be uploaded
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function uploadFileStream(string $path, mixed $resource): bool
     {
-        throw new \Exception("This function is not implemented yet.");
+        if(is_resource($resource)) {
+            return $this->makePutRequest($path, $resource);
+        }
+        throw new \Exception('Provided resource is not valid.');
     }
 
     public function deleteResource(string $path): void
