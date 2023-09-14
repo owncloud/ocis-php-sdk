@@ -208,9 +208,21 @@ class Drive
         throw new \Exception("This function is not implemented yet.");
     }
 
+    /**
+     * get file content
+     * @param string $path
+     *
+     * @return mixed
+     * @throws \Exception
+     */
     public function getFile(string $path)
     {
-        throw new \Exception("This function is not implemented yet.");
+        $response = $this->webDavClient->request("GET", ltrim($path, "/"));
+
+        if ($response["statusCode"] === 200) {
+            return $response['body'];
+        }
+        throw new \Exception("Failed to retrieve the content of the file $path. The request returned a status code of $response[statusCode]");
     }
 
     public function getFileById(string $fileId)
