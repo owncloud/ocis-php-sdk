@@ -19,11 +19,11 @@ class Notification
     private string $messageRich;
     private array $messageRichParameters;
     private string $serviceUrl;
-    private array $guzzleConfig;
+    private array $connectionConfig;
 
     public function __construct(
         string &$accessToken,
-        array $guzzleConfig,
+        array $connectionConfig,
         string $serviceUrl,
         string $id,
         string $app,
@@ -50,7 +50,7 @@ class Notification
         $this->messageRichParameters = $messageRichParameters;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
-        $this->guzzleConfig = $guzzleConfig;
+        $this->connectionConfig = $connectionConfig;
     }
 
     /**
@@ -123,11 +123,15 @@ class Notification
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
+     * @throws \Exception
      */
     public function delete(): void
     {
         $guzzle = new \GuzzleHttp\Client(
-            Ocis::createGuzzleConfig($this->guzzleConfig, $this->accessToken)
+            Ocis::createGuzzleConfig(
+                $this->connectionConfig,
+                $this->accessToken
+            )
         );
         try {
             $guzzle->delete(

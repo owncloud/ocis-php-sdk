@@ -19,7 +19,6 @@ class OcisTest extends TestCase
 {
     public function testCreateGuzzleConfigDefaultValues()
     {
-        $ocis = new Ocis('http://something', 'token');
         $this->assertEquals(
             [
                 'headers' => ['Authorization' => 'Bearer token']
@@ -30,7 +29,6 @@ class OcisTest extends TestCase
 
     public function testCreateGuzzleConfigVerifyFalse()
     {
-        $ocis = new Ocis('http://something', 'token');
         $this->assertEquals(
             [
                 'headers' => ['Authorization' => 'Bearer token'],
@@ -42,7 +40,6 @@ class OcisTest extends TestCase
 
     public function testCreateGuzzleConfigExtraHeader()
     {
-        $ocis = new Ocis('http://something', 'token');
         $this->assertEquals(
             [
                 'headers' => [
@@ -242,6 +239,79 @@ class OcisTest extends TestCase
         $this->assertIsArray($notifications[0]->getMessageRichParameters());
     }
 
+    public function connectionConfigDataProvider(): array
+    {
+        return [
+            [
+                [],
+                true
+            ],
+            [
+                ['verify' => false],
+                true
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data']],
+                true
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data', 'X-some-other' => 'X-Data']],
+                true
+            ],
+            [
+                ['headers' => 'string'],
+                false
+            ],
+            [
+                ['headers' => null],
+                false
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => false],
+                true
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => 'false'],
+                false
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => 'true'],
+                false
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => '1'],
+                false
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => '0'],
+                false
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => 1],
+                false
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => 0],
+                false
+            ],
+            [
+                ['headers' => ['X-something' => 'X-Data'], 'verify' => true],
+                true
+            ]
+        ];
+    }
+
+    /**
+     * @param $connectionConfig
+     * @param $expectedResult
+     * @return void
+     * @dataProvider connectionConfigDataProvider
+     */
+    public function testIsConnectionConfigValid($connectionConfig, $expectedResult)
+    {
+        $this->assertSame($expectedResult, Ocis::isConnectionConfigValid($connectionConfig));
+    }
+
     public function noNotificationsDataProvider(): array
     {
         return [
@@ -249,7 +319,6 @@ class OcisTest extends TestCase
             ['{"ocs":{"data":null}}'],
         ];
     }
-
     /**
      * @dataProvider noNotificationsDataProvider
      */

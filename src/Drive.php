@@ -13,17 +13,55 @@ class Drive
     private string $accessToken;
     private Client $webDavClient;
     private string $webDavUrl = '';
+    private array $connectionConfig;
 
-    public function __construct(ApiDrive $apiDrive, &$accessToken)
+    public function __construct(ApiDrive $apiDrive, array $connectionConfig, string &$accessToken)
     {
         $this->apiDrive = $apiDrive;
         $this->accessToken = &$accessToken;
 
-        $this->webDavClient = new Client([
-            'baseUri' => $this->getWebDavUrl(),
-        ]);
-        $this->webDavClient->addCurlSetting(CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
-        $this->webDavClient->addCurlSetting(CURLOPT_XOAUTH2_BEARER, $accessToken);
+        $this->connectionConfig = $connectionConfig;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function createWebDavClient(): Client
+    {
+        /**
+         * phpstan complains "Offset 'web_dav_url' does not exist on OpenAPI\Client\Model\DriveItem"
+         * but it does exist, see vendor/owncloud/libre-graph-api-php/lib/Model/DriveItem.php:83
+         */
+        /* @phpstan-ignore-next-line */
+        $webDavClient = new Client(['baseUri' => (string)($this->apiDrive->getRoot())['web_dav_url']]);
+        $curlSettings = $this->createCurlSettings();
+        foreach ($curlSettings as $setting => $value) {
+            $webDavClient->addCurlSetting($setting, $value);
+        }
+        return $webDavClient;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function createCurlSettings(): array
+    {
+        if (!Ocis::isConnectionConfigValid($this->connectionConfig)) {
+            throw new \Exception('connection configuration not valid');
+        }
+        $settings = [];
+        $settings[CURLOPT_HTTPAUTH] = CURLAUTH_BEARER;
+        $settings[CURLOPT_XOAUTH2_BEARER] = $this->accessToken;
+        if (isset($this->connectionConfig['headers'])) {
+            foreach ($this->connectionConfig['headers'] as $header => $value) {
+                $settings[CURLOPT_HTTPHEADER][] = $header . ': ' . $value;
+            }
+        }
+        if (isset($this->connectionConfig['verify'])) {
+            $settings[CURLOPT_SSL_VERIFYPEER] = $this->connectionConfig['verify'];
+            $settings[CURLOPT_SSL_VERIFYHOST] = $this->connectionConfig['verify'];
+        }
+        return $settings;
     }
 
     /**
@@ -60,7 +98,7 @@ class Drive
     /**
      * @return object
      */
-    public function getRoot():object
+    public function getRoot(): object
     {
         return $this->apiDrive->getRoot();
     }
@@ -68,7 +106,7 @@ class Drive
     /**
      * @return string
      */
-    public function getWebDavUrl():string
+    public function getWebDavUrl(): string
     {
         if (empty($this->webDavUrl)) {
             $this->webDavUrl = rtrim((string)($this->getRoot())['web_dav_url'], '/') . '/';
@@ -180,9 +218,13 @@ class Drive
         throw new \Exception("This function is not implemented yet.");
     }
 
+    /**
+     * @throws \Exception
+     */
     public function createFolder(string $path): bool
     {
-        $response = $this->webDavClient->request('MKCOL', ltrim($path,"/"));
+        $webDavClient = $this->createWebDavClient();
+        $response = $webDavClient->request('MKCOL', ltrim($path, "/"));
         if ($response["statusCode"] === 201) {
             return true;
         }
@@ -211,7 +253,7 @@ class Drive
      */
     public function uploadFile(string $path, string $content): bool
     {
-        $response = $this->webDavClient->request('PUT', ltrim($path,"/"), $content);
+        $response = $this->webDavClient->request('PUT', ltrim($path, "/"), $content);
 
         if (($response["statusCode"] !== 201) && ($response["statusCode"] !== 204)) {
             throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");

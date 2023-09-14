@@ -25,18 +25,34 @@ class Ocis
     private \GuzzleHttp\Client $guzzle;
     private array $guzzleConfig;
     private $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
+    /**
+     * @var array<mixed>
+     */
+    private array $connectionConfig;
 
+    /**
+     * @throws \Exception
+     * @parameter $connectionConfig array<string, mixed>
+     *                              valid config keys are: headers, verify
+     *                              headers has to be an array in the form like
+     *                                  [
+     *                                      'User-Agent' => 'testing/1.0',
+     *                                      'Accept'     => 'application/json',
+     *                                      'X-Foo'      => ['Bar', 'Baz']
+     *                                  ]
+     *                              verify is a boolean to disable SSL checking
+     */
     public function __construct(
         string $serviceUrl,
         string $accessToken,
-        $guzzleConfig = []
+        $connectionConfig = []
     ) {
         $this->serviceUrl = $serviceUrl;
         $this->accessToken = $accessToken;
-        $this->guzzleConfig = $guzzleConfig;
-        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($guzzleConfig, $accessToken));
-
+        $this->guzzle = new \GuzzleHttp\Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
+        $this->connectionConfig = $connectionConfig;
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
+
     }
 
     public function setGuzzle(\GuzzleHttp\Client $guzzle)
@@ -44,25 +60,51 @@ class Ocis
         $this->guzzle = $guzzle;
     }
 
+    public static function isConnectionConfigValid($connectionConfig): bool
+    {
+        $validConnectionConfigKeys = ['headers', 'verify'];
+        foreach ($connectionConfig as $key => $value) {
+            if (key_exists($key, $validConnectionConfigKeys)) {
+                return false;
+            }
+        }
+        if (array_key_exists('verify', $connectionConfig) && !is_bool($connectionConfig['verify'])) {
+            return false;
+        }
+        if (array_key_exists('headers', $connectionConfig)) {
+            if (!is_array($connectionConfig['headers'])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     /**
      * combines passed in config settings for guzzle with the default settings needed
      * for the class and returns the complete array
      *
-     * @param array $guzzleConfig
+     * @param array $connectionConfig
      * @param string $accessToken
-     * @return array<mixed>
+     * @return array
+     * @throws \Exception
      */
-    public static function createGuzzleConfig(array $guzzleConfig, string $accessToken): array
+    public static function createGuzzleConfig(array $connectionConfig, string $accessToken): array
     {
-        if (!isset($guzzleConfig['headers'])) {
-            $guzzleConfig['headers'] = [];
+        if (!self::isConnectionConfigValid($connectionConfig)) {
+            throw new \Exception('connection configuration not valid');
         }
-        $guzzleConfig['headers'] = array_merge(
-            $guzzleConfig['headers'],
+        if (!isset($connectionConfig['headers'])) {
+            $connectionConfig['headers'] = [];
+        }
+        $connectionConfig['headers'] = array_merge(
+            $connectionConfig['headers'],
             ['Authorization' => 'Bearer ' . $accessToken]
         );
-        return $guzzleConfig;
+        return $connectionConfig;
     }
+
+
 
     public function setApiInstance(DrivesGetDrivesApi|MeDrivesApi|DrivesApi|null $apiInstance): void
     {
@@ -75,7 +117,7 @@ class Ocis
     public function setAccessToken(string $accessToken): void
     {
         $this->accessToken = $accessToken;
-        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($this->guzzleConfig, $accessToken));
+        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($this->connectionConfig, $accessToken));
     }
 
     /**
@@ -109,7 +151,7 @@ class Ocis
 
         /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
         foreach ($apiInstance->listAllDrives($order, $filter)->getValue() as $apiDrive) {
-            $drive = new Drive($apiDrive, $this->accessToken);
+            $drive = new Drive($apiDrive, $this->connectionConfig, $this->accessToken);
             $drives[] = $drive;
         }
 
@@ -143,7 +185,7 @@ class Ocis
 
         /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
         foreach ($apiInstance->listMyDrives($order, $filter)->getValue() as $apiDrive) {
-            $drive = new Drive($apiDrive, $this->accessToken);
+            $drive = new Drive($apiDrive, $this->connectionConfig, $this->accessToken);
             $drives[] = $drive;
         }
         return $drives;
@@ -226,7 +268,7 @@ class Ocis
         }
 
         if ($newlyCreatedDrive instanceof ApiDrive) {
-            return new Drive($newlyCreatedDrive, $this->accessToken);
+            return new Drive($newlyCreatedDrive, $this->connectionConfig, $this->accessToken);
         }
         throw new \Exception(
             "Drive could not be created. '" .
@@ -303,7 +345,7 @@ class Ocis
             }
             $notifications[] = new Notification(
                 $this->accessToken,
-                $this->guzzleConfig,
+                $this->connectionConfig,
                 $this->serviceUrl,
                 $notificationContent["notification_id"],
                 $notificationContent["app"],
