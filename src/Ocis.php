@@ -61,9 +61,9 @@ class Ocis
 
     public static function isConnectionConfigValid($connectionConfig): bool
     {
-        $validConnectionConfigKeys = ['headers', 'verify'];
+        $validConnectionConfigKeys = ['headers' => [], 'verify' => true];
         foreach ($connectionConfig as $key => $value) {
-            if (key_exists($key, $validConnectionConfigKeys)) {
+            if (!array_key_exists($key, $validConnectionConfigKeys)) {
                 return false;
             }
         }
