@@ -4,6 +4,7 @@ namespace Owncloud\OcisSdkPhp;
 
 use DateTime;
 use OpenAPI\Client\Model\Drive as ApiDrive;
+use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Quota;
 use Sabre\DAV\Client;
 
@@ -11,7 +12,6 @@ class Drive
 {
     private ApiDrive $apiDrive;
     private string $accessToken;
-    private Client $webDavClient;
     private string $webDavUrl = '';
     private array $connectionConfig;
 
@@ -96,9 +96,9 @@ class Drive
     }
 
     /**
-     * @return object
+     * @return ?DriveItem
      */
-    public function getRoot(): object
+    public function getRoot(): ?DriveItem
     {
         return $this->apiDrive->getRoot();
     }
@@ -109,6 +109,11 @@ class Drive
     public function getWebDavUrl(): string
     {
         if (empty($this->webDavUrl)) {
+            /**
+             * phpstan complains "Offset 'web_dav_url' does not exist on OpenAPI\Client\Model\DriveItem"
+             * but it does exist, see vendor/owncloud/libre-graph-api-php/lib/Model/DriveItem.php:83
+             */
+            /* @phpstan-ignore-next-line */
             $this->webDavUrl = rtrim((string)($this->getRoot())['web_dav_url'], '/') . '/';
         }
         return $this->webDavUrl;
@@ -217,7 +222,8 @@ class Drive
      */
     public function getFile(string $path)
     {
-        $response = $this->webDavClient->request("GET", ltrim($path, "/"));
+        $webDavClient = $this->createWebDavClient();
+        $response = $webDavClient->request("GET", ltrim($path, "/"));
 
         if ($response["statusCode"] === 200) {
             return $response['body'];
@@ -255,17 +261,18 @@ class Drive
 
     /**
      * upload file with content
-     * update file content if file already exist
+     * update file content if file already exists
      *
      * @param string $path
      * @param string $content
      *
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     public function uploadFile(string $path, string $content): bool
     {
-        $response = $this->webDavClient->request('PUT', ltrim($path, "/"), $content);
+        $webDavClient = $this->createWebDavClient();
+        $response = $webDavClient->request('PUT', ltrim($path, "/"), $content);
 
         if (($response["statusCode"] !== 201) && ($response["statusCode"] !== 204)) {
             throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");
