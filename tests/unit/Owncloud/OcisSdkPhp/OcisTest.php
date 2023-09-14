@@ -297,7 +297,15 @@ class OcisTest extends TestCase
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => true],
                 true
-            ]
+            ],
+            [
+                ['crud' => 'some value'],
+                false
+            ],
+            [
+                ['crud' => 'some value', 'verify' => false],
+                false
+            ],
         ];
     }
 
