@@ -215,7 +215,7 @@ class OcisTest extends TestCase
     ) {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
-            'Id is invalid or missing in notification response is invalid. Content: "' . $responseContent . '"'
+            'Id is invalid or missing in notification response. Content: "' . $responseContent . '"'
         );
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $ocis->getNotifications();

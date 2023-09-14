@@ -276,7 +276,7 @@ class Ocis
                 !is_string($notificationContent["notification_id"]) ||
                 $notificationContent["notification_id"] === "") {
                 throw new \Exception(
-                    'Id is invalid or missing in notification response is invalid. Content: "' . $content . '"'
+                    'Id is invalid or missing in notification response. Content: "' . $content . '"'
                 );
             }
             foreach (
