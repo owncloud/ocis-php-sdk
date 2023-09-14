@@ -28,12 +28,7 @@ class Drive
      */
     private function createWebDavClient(): Client
     {
-        /**
-         * phpstan complains "Offset 'web_dav_url' does not exist on OpenAPI\Client\Model\DriveItem"
-         * but it does exist, see vendor/owncloud/libre-graph-api-php/lib/Model/DriveItem.php:83
-         */
-        /* @phpstan-ignore-next-line */
-        $webDavClient = new Client(['baseUri' => (string)($this->apiDrive->getRoot())['web_dav_url']]);
+        $webDavClient = new Client(['baseUri' => $this->getWebDavUrl()]);
         $curlSettings = $this->createCurlSettings();
         foreach ($curlSettings as $setting => $value) {
             $webDavClient->addCurlSetting($setting, $value);
