@@ -285,9 +285,21 @@ class Drive
         throw new \Exception("This function is not implemented yet.");
     }
 
-    public function deleteResource(string $path): void
+    /**
+     * delete resource
+     * @param string $path
+     *
+     * @return bool
+     * @throws \Exception
+     */
+    public function deleteResource(string $path): bool
     {
-        throw new \Exception("This function is not implemented yet.");
+        $webDavClient = $this->createWebDavClient();
+        $response = $webDavClient->request("DELETE", ltrim($path, "/"));
+        if ($response["statusCode"] === 204){
+            return true;
+        }
+        throw new \Exception("Failed to delete resource $path with status code $response[statusCode]");
     }
 
     public function moveResource(string $srcPath, string $destPath, Drive $destDrive = null): void
