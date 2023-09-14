@@ -12,13 +12,15 @@ class Drive
     private ApiDrive $apiDrive;
     private string $accessToken;
     private Client $webDavClient;
+    private string $webDavUrl = '';
 
     public function __construct(ApiDrive $apiDrive, &$accessToken)
     {
         $this->apiDrive = $apiDrive;
         $this->accessToken = &$accessToken;
+
         $this->webDavClient = new Client([
-            'baseUri' => (string)($this->apiDrive->getRoot())['web_dav_url'],
+            'baseUri' => $this->getWebDavUrl(),
         ]);
         $this->webDavClient->addCurlSetting(CURLOPT_HTTPAUTH, CURLAUTH_BEARER);
         $this->webDavClient->addCurlSetting(CURLOPT_XOAUTH2_BEARER, $accessToken);
@@ -53,6 +55,25 @@ class Drive
     public function getId(): string
     {
         return (string)$this->apiDrive->getId();
+    }
+
+    /**
+     * @return object
+     */
+    public function getRoot():object
+    {
+        return $this->apiDrive->getRoot();
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebDavUrl():string
+    {
+        if (empty($this->webDavUrl)) {
+            $this->webDavUrl = rtrim((string)($this->getRoot())['web_dav_url'], '/') . '/';
+        }
+        return $this->webDavUrl;
     }
 
     /**
@@ -161,12 +182,11 @@ class Drive
 
     public function createFolder(string $path): bool
     {
-        $id = $this->getId();
-        $req = $this->webDavClient->request('MKCOL', "$id/$path");
-        if ($req["statusCode"] === 201) {
+        $response = $this->webDavClient->request('MKCOL', ltrim($path,"/"));
+        if ($response["statusCode"] === 201) {
             return true;
         }
-        throw new \Exception("Could not create file $path. status code $req[statusCode]");
+        throw new \Exception("Could not create folder $path. status code $response[statusCode]");
     }
 
     public function getResourceMetadata(string $path = "/"): \stdClass
@@ -179,9 +199,24 @@ class Drive
         throw new \Exception("This function is not implemented yet.");
     }
 
-    public function uploadFile(string $path, string $content): void
+    /**
+     * upload file with content
+     * update file content if file already exist
+     *
+     * @param string $path
+     * @param string $content
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function uploadFile(string $path, string $content): bool
     {
-        throw new \Exception("This function is not implemented yet.");
+        $response = $this->webDavClient->request('PUT', ltrim($path,"/"), $content);
+
+        if (($response["statusCode"] !== 201) && ($response["statusCode"] !== 204)) {
+            throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");
+        }
+        return true;
     }
 
     public function uploadFileStream(string $path, $resource): void
