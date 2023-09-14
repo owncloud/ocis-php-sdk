@@ -271,7 +271,7 @@ class Drive
     {
         $webDavClient = $this->createWebDavClient();
         $response = $webDavClient->request('PUT', ltrim($path, "/"), $resource);
-        if (in_array($response['statusCode'],[201,204])) {
+        if (in_array($response['statusCode'], [201,204])) {
             return true;
         }
         throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");
@@ -317,7 +317,7 @@ class Drive
     {
         $webDavClient = $this->createWebDavClient();
         $response = $webDavClient->request("DELETE", ltrim($path, "/"));
-        if ($response["statusCode"] === 204){
+        if ($response["statusCode"] === 204) {
             return true;
         }
         throw new \Exception("Failed to delete resource $path with status code $response[statusCode]");
