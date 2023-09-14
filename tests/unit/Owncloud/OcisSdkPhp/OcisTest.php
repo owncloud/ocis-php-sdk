@@ -17,6 +17,9 @@ use Psr\Http\Message\StreamInterface;
 
 class OcisTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testCreateGuzzleConfigDefaultValues()
     {
         $this->assertEquals(
@@ -27,6 +30,9 @@ class OcisTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testCreateGuzzleConfigVerifyFalse()
     {
         $this->assertEquals(
@@ -38,6 +44,9 @@ class OcisTest extends TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testCreateGuzzleConfigExtraHeader()
     {
         $this->assertEquals(
@@ -50,50 +59,66 @@ class OcisTest extends TestCase
             Ocis::createGuzzleConfig(['headers' => ['X-something' => 'X-Data']], 'token')
         );
     }
+
+    /**
+     * @return void
+     */
     public function testCreateDriveWithInvalidQuota()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
-        $ocis->createDrive('drivename', -1);
+        $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
+        $ocis->createDrive('driveName', -1);
     }
 
+    /**
+     * @return void
+     */
     public function testCreateDriveReturnsOdataError()
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
-        $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
+        $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
         assert($createDriveMock instanceof DrivesApi);
         $error = (new OdataError())
                 ->setError(new OdataErrorMain(['message' => 'something went wrong']));
         $createDriveMock->method('createDrive')
                         ->willReturn($error);
-        $ocis->setApiInstance($createDriveMock);
-        $ocis->createDrive('drivename');
+        $ocis->setDrivesApiInstance($createDriveMock);
+        $ocis->createDrive('driveName');
     }
 
+    /**
+     * @return void
+     */
     public function testCreateDriveUnresolvedHost()
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
             "[0] cURL error 6: Could not resolve host: localhost-does-not-exist (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://localhost-does-not-exist:9200/graph/v1.0/drives"
         );
-        $ocis = new Ocis('https://localhost-does-not-exist:9200', 'doesnotmatter');
-        $ocis->createDrive('drivename');
+        $ocis = new Ocis('https://localhost-does-not-exist:9200', 'doesNotMatter');
+        $ocis->createDrive('driveName');
     }
 
+    /**
+     * @return void
+     */
     public function testCreateDriveForbidden()
     {
         $this->expectException(ForbiddenException::class);
-        $ocis = new Ocis('https://localhost:9200', 'doesnotmatter');
+        $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
         assert($createDriveMock instanceof DrivesApi);
         $createDriveMock->method('createDrive')
             ->willThrowException(new ApiException('forbidden', 403));
-        $ocis->setApiInstance($createDriveMock);
-        $ocis->createDrive('drivename');
+        $ocis->setDrivesApiInstance($createDriveMock);
+        $ocis->createDrive('driveName');
     }
 
+    /**
+     * @return void
+     */
     public function testSetAccessTokenPropagatesToDrives()
     {
         $ocis = new Ocis('https://localhost:9200', 'tokenWhenCreated');
@@ -107,7 +132,7 @@ class OcisTest extends TestCase
         assert($drivesGetDrivesApi instanceof DrivesGetDrivesApi);
         $drivesGetDrivesApi->method('listAllDrives')
             ->willReturn($driveCollectionMock);
-        $ocis->setApiInstance($drivesGetDrivesApi);
+        $ocis->setDrivesGetDrivesApiInstance($drivesGetDrivesApi);
         $drives = $ocis->listAllDrives();
         foreach ($drives as $drive) {
             $this->assertEquals('tokenWhenCreated', $drive->getAccessToken());
@@ -118,6 +143,9 @@ class OcisTest extends TestCase
         }
     }
 
+    /**
+     * @return void
+     */
     public function testSetAccessTokenPropagatesToNotifications()
     {
         $ocis = $this->setupMocksForNotificationTests(
@@ -149,6 +177,10 @@ class OcisTest extends TestCase
         $ocis->setGuzzle($guzzleMock);
         return $ocis;
     }
+
+    /**
+     * @return array<int, mixed>
+     */
     public function invalidJsonNotificationResponse(): array
     {
         return [
@@ -157,6 +189,7 @@ class OcisTest extends TestCase
             ["{data:}"]
         ];
     }
+
     /**
      * @return void
      * @dataProvider invalidJsonNotificationResponse
@@ -171,6 +204,9 @@ class OcisTest extends TestCase
         $ocis->getNotifications();
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function invalidOcsNotificationResponse(): array
     {
         return [
@@ -180,6 +216,7 @@ class OcisTest extends TestCase
             ['{"ocs":{"meta":{"message":"","status":"","statuscode":200},"data":"string"}}']
         ];
     }
+
     /**
      * @return void
      * @dataProvider invalidOcsNotificationResponse
@@ -195,6 +232,9 @@ class OcisTest extends TestCase
         $ocis->getNotifications();
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function invalidOrMissingIdInOcsNotificationResponse(): array
     {
         return [
@@ -203,6 +243,7 @@ class OcisTest extends TestCase
             ['{"ocs":{"data":[{"notificationId":"123"}]}}']
         ];
     }
+
     /**
      * @return void
      * @dataProvider invalidOrMissingIdInOcsNotificationResponse
@@ -239,6 +280,9 @@ class OcisTest extends TestCase
         $this->assertIsArray($notifications[0]->getMessageRichParameters());
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function connectionConfigDataProvider(): array
     {
         return [
@@ -310,16 +354,18 @@ class OcisTest extends TestCase
     }
 
     /**
-     * @param $connectionConfig
-     * @param $expectedResult
+     * @param array<mixed> $connectionConfig
      * @return void
      * @dataProvider connectionConfigDataProvider
      */
-    public function testIsConnectionConfigValid($connectionConfig, $expectedResult)
+    public function testIsConnectionConfigValid(array $connectionConfig, bool $expectedResult)
     {
         $this->assertSame($expectedResult, Ocis::isConnectionConfigValid($connectionConfig));
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function noNotificationsDataProvider(): array
     {
         return [
@@ -327,8 +373,10 @@ class OcisTest extends TestCase
             ['{"ocs":{"data":null}}'],
         ];
     }
+
     /**
      * @dataProvider noNotificationsDataProvider
+     * @return void
      */
     public function testGetNotificationNoNotifications(string $responseContent)
     {

@@ -17,10 +17,23 @@ class Notification
     private string $subjectRich;
     private string $message;
     private string $messageRich;
+
+    /**
+     * @var array<mixed>
+     */
     private array $messageRichParameters;
     private string $serviceUrl;
+
+    /**
+     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
+     */
     private array $connectionConfig;
 
+    /**
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     * @param array<mixed> $messageRichParameters
+     * @throws \Exception
+     */
     public function __construct(
         string &$accessToken,
         array $connectionConfig,
@@ -50,6 +63,9 @@ class Notification
         $this->messageRichParameters = $messageRichParameters;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
+        if (!Ocis::isConnectionConfigValid($connectionConfig)) {
+            throw new \Exception('connection configuration not valid');
+        }
         $this->connectionConfig = $connectionConfig;
     }
 
@@ -112,11 +128,13 @@ class Notification
         return $this->messageRich;
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getMessageRichParameters(): array
     {
         return $this->messageRichParameters;
     }
-
 
     /**
      * @throws BadRequestException
@@ -136,7 +154,7 @@ class Notification
         try {
             $guzzle->delete(
                 $this->serviceUrl . '/ocs/v2.php/apps/notifications/api/v1/notifications/',
-                ['body' =>  json_encode(["ids" => [$this->id]])]
+                ['body' => json_encode(["ids" => [$this->id]])]
             );
         } catch (GuzzleException $e) {
             throw ExceptionHelper::getHttpErrorException($e);

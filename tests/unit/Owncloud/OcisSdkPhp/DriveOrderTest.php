@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class DriveOrderTest extends TestCase
 {
+    /**
+     * @return array<int,array<int, string|null>>
+     */
     public function validDriveTypes(): array
     {
         return [

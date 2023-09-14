@@ -8,6 +8,9 @@ use OpenAPI\Client\Model\Drive as ApiDrive;
 
 class DriveTest extends TestCase
 {
+    /**
+     * @return array<int, array<int, array<mixed>>>
+     */
     public function connectionConfigProvider(): array
     {
         return [
@@ -32,7 +35,7 @@ class DriveTest extends TestCase
     }
 
     /**
-     * @param array<mixed> $connectionConfig
+     * @phpstan-param array{'headers':array<string, mixed>, 'verify':bool} $connectionConfig
      * @param array<mixed> $expectedCurlSettingsArray
      * @return void
      * @throws \Exception

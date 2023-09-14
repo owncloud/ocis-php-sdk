@@ -13,13 +13,24 @@ class Drive
     private ApiDrive $apiDrive;
     private string $accessToken;
     private string $webDavUrl = '';
+
+    /**
+     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
+     */
     private array $connectionConfig;
 
+    /**
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     * @throws \Exception
+     */
     public function __construct(ApiDrive $apiDrive, array $connectionConfig, string &$accessToken)
     {
         $this->apiDrive = $apiDrive;
         $this->accessToken = &$accessToken;
 
+        if (!Ocis::isConnectionConfigValid($connectionConfig)) {
+            throw new \Exception('connection configuration not valid');
+        }
         $this->connectionConfig = $connectionConfig;
     }
 
@@ -37,6 +48,7 @@ class Drive
     }
 
     /**
+     * @return array<int, mixed>
      * @throws \Exception
      */
     public function createCurlSettings(): array
@@ -66,6 +78,7 @@ class Drive
     {
         return $this->accessToken;
     }
+
     /**
      * @return string
      */
@@ -152,10 +165,7 @@ class Drive
         );
     }
 
-    /**
-     * @return \stdClass
-     */
-    public function getRawData(): \stdClass
+    public function getRawData(): mixed
     {
         return $this->apiDrive->jsonSerialize();
     }
@@ -192,6 +202,7 @@ class Drive
         // PATCH space
         throw new \Exception("This function is not implemented yet.");
     }
+
     public function setReadme(string $readme): Drive
     {
         // upload content of $readme to dav/spaces/<space-id>/.space/readme.md
@@ -226,7 +237,7 @@ class Drive
         throw new \Exception("Failed to retrieve the content of the file $path. The request returned a status code of $response[statusCode]");
     }
 
-    public function getFileById(string $fileId)
+    public function getFileById(string $fileId): \stdClass
     {
         throw new \Exception("This function is not implemented yet.");
     }
@@ -255,9 +266,9 @@ class Drive
     }
 
     /**
-     * update file content if file already exist
+     * update file content if the file already exists
      * @param string $path
-     * @param mixed $resource
+     * @param resource|string|null $resource
      *
      * @return bool
      * @throws \Exception
@@ -323,11 +334,19 @@ class Drive
         throw new \Exception("This function is not implemented yet.");
     }
 
+    /**
+     * @param array<mixed> $tags
+     * @throws \Exception
+     */
     public function tagResource(string $path, array $tags): void
     {
         throw new \Exception("This function is not implemented yet.");
     }
 
+    /**
+     * @param array<mixed> $tags
+     * @throws \Exception
+     */
     public function untagResource(string $path, array $tags): void
     {
         throw new \Exception("This function is not implemented yet.");
