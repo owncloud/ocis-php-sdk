@@ -318,9 +318,23 @@ class Drive
         throw new \Exception("Failed to delete resource $path with status code $response[statusCode]");
     }
 
-    public function moveResource(string $srcPath, string $destPath, Drive $destDrive = null): void
+    /**
+     *  move or rename resource
+     *
+     * @param string $sourcePath
+     * @param string $destinationPath
+     *
+     * @return bool
+     */
+    public function moveResource(string $sourcePath, string $destinationPath): bool
     {
-        throw new \Exception("This function is not implemented yet.");
+        $webDavClient = $this->createWebDavClient();
+        $destinationUrl = $this->webDavUrl . rawurlencode(ltrim($destinationPath, "/"));
+        $response = $webDavClient->request('MOVE', "$sourcePath", null, ['Destination' => "$destinationUrl"]);
+        if (in_array($response['statusCode'], [201, 204])) {
+            return true;
+        }
+        throw new \Exception("Could not move/rename resource $sourcePath to $destinationPath. status code $response[statusCode]");
     }
 
     public function tagResource(string $path, array $tags): void
