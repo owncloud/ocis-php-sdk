@@ -79,41 +79,26 @@ class Drive
         return $this->accessToken;
     }
 
-    /**
-     * @return string
-     */
     public function getAlias(): string
     {
         return (string)$this->apiDrive->getDriveAlias();
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return (string)$this->apiDrive->getDriveType();
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return (string)$this->apiDrive->getId();
     }
 
-    /**
-     * @return ?DriveItem
-     */
     public function getRoot(): ?DriveItem
     {
         return $this->apiDrive->getRoot();
     }
 
-    /**
-     * @return string
-     */
     public function getWebDavUrl(): string
     {
         if (empty($this->webDavUrl)) {
@@ -128,7 +113,6 @@ class Drive
     }
 
     /**
-     * @return DateTime
      * @throws \Exception
      */
     public function getLastModifiedDateTime(): DateTime
@@ -142,16 +126,12 @@ class Drive
         );
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->apiDrive->getName();
     }
 
     /**
-     * @return Quota
      * @throws \Exception
      */
     public function getQuota(): Quota
@@ -270,7 +250,6 @@ class Drive
      * @param string $path
      * @param resource|string|null $resource
      *
-     * @return bool
      * @throws \Exception
      */
     private function makePutRequest(string $path, mixed $resource): bool
@@ -285,10 +264,7 @@ class Drive
 
     /**
      * upload file with content
-     * @param string $path
-     * @param string $content
      *
-     * @return bool
      * @throws \Exception
      */
     public function uploadFile(string $path, string $content): bool
@@ -298,7 +274,6 @@ class Drive
 
     /**
      * Uploads a file using streaming
-     * @param string $path
      * @param $resource file resource pointing to the file to be uploaded
      *
      * @return bool
@@ -314,9 +289,7 @@ class Drive
 
     /**
      * delete resource
-     * @param string $path
      *
-     * @return bool
      * @throws \Exception
      */
     public function deleteResource(string $path): bool

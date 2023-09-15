@@ -17,10 +17,7 @@ use Psr\Http\Message\StreamInterface;
 
 class OcisTest extends TestCase
 {
-    /**
-     * @return void
-     */
-    public function testCreateGuzzleConfigDefaultValues()
+    public function testCreateGuzzleConfigDefaultValues(): void
     {
         $this->assertEquals(
             [
@@ -30,10 +27,7 @@ class OcisTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateGuzzleConfigVerifyFalse()
+    public function testCreateGuzzleConfigVerifyFalse(): void
     {
         $this->assertEquals(
             [
@@ -44,10 +38,7 @@ class OcisTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateGuzzleConfigExtraHeader()
+    public function testCreateGuzzleConfigExtraHeader(): void
     {
         $this->assertEquals(
             [
@@ -60,20 +51,14 @@ class OcisTest extends TestCase
         );
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateDriveWithInvalidQuota()
+    public function testCreateDriveWithInvalidQuota(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
         $ocis->createDrive('driveName', -1);
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateDriveReturnsOdataError()
+    public function testCreateDriveReturnsOdataError(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
@@ -88,10 +73,7 @@ class OcisTest extends TestCase
         $ocis->createDrive('driveName');
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateDriveUnresolvedHost()
+    public function testCreateDriveUnresolvedHost(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
@@ -101,10 +83,7 @@ class OcisTest extends TestCase
         $ocis->createDrive('driveName');
     }
 
-    /**
-     * @return void
-     */
-    public function testCreateDriveForbidden()
+    public function testCreateDriveForbidden(): void
     {
         $this->expectException(ForbiddenException::class);
         $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
@@ -116,10 +95,7 @@ class OcisTest extends TestCase
         $ocis->createDrive('driveName');
     }
 
-    /**
-     * @return void
-     */
-    public function testSetAccessTokenPropagatesToDrives()
+    public function testSetAccessTokenPropagatesToDrives(): void
     {
         $ocis = new Ocis('https://localhost:9200', 'tokenWhenCreated');
         $driveMock = [];
@@ -143,10 +119,7 @@ class OcisTest extends TestCase
         }
     }
 
-    /**
-     * @return void
-     */
-    public function testSetAccessTokenPropagatesToNotifications()
+    public function testSetAccessTokenPropagatesToNotifications(): void
     {
         $ocis = $this->setupMocksForNotificationTests(
             '{"ocs":{"data":[{"notification_id":"123"},{"notification_id":"456"}]}}',
@@ -191,10 +164,9 @@ class OcisTest extends TestCase
     }
 
     /**
-     * @return void
      * @dataProvider invalidJsonNotificationResponse
      */
-    public function testGetNotificationResponseNotJson(string $responseContent)
+    public function testGetNotificationResponseNotJson(string $responseContent): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
@@ -218,12 +190,11 @@ class OcisTest extends TestCase
     }
 
     /**
-     * @return void
      * @dataProvider invalidOcsNotificationResponse
      */
     public function testGetNotificationInvalidOcsData(
         string $responseContent
-    ) {
+    ): void {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
             'Notification response is invalid. Content: "' . $responseContent . '"'
@@ -245,12 +216,11 @@ class OcisTest extends TestCase
     }
 
     /**
-     * @return void
      * @dataProvider invalidOrMissingIdInOcsNotificationResponse
      */
     public function testGetNotificationMissingOrInvalidId(
         string $responseContent
-    ) {
+    ): void {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(
             'Id is invalid or missing in notification response. Content: "' . $responseContent . '"'
@@ -259,10 +229,7 @@ class OcisTest extends TestCase
         $ocis->getNotifications();
     }
 
-    /**
-     * @return void
-     */
-    public function testGetNotificationMissingDataInResponse()
+    public function testGetNotificationMissingDataInResponse(): void
     {
         $responseContent = '{"ocs":{"data":[{"notification_id":"123"}]}}';
         $ocis = $this->setupMocksForNotificationTests($responseContent);
@@ -355,11 +322,12 @@ class OcisTest extends TestCase
 
     /**
      * @param array<mixed> $connectionConfig
-     * @return void
      * @dataProvider connectionConfigDataProvider
      */
-    public function testIsConnectionConfigValid(array $connectionConfig, bool $expectedResult)
-    {
+    public function testIsConnectionConfigValid(
+        array $connectionConfig,
+        bool $expectedResult
+    ): void {
         $this->assertSame($expectedResult, Ocis::isConnectionConfigValid($connectionConfig));
     }
 
@@ -376,9 +344,8 @@ class OcisTest extends TestCase
 
     /**
      * @dataProvider noNotificationsDataProvider
-     * @return void
      */
-    public function testGetNotificationNoNotifications(string $responseContent)
+    public function testGetNotificationNoNotifications(string $responseContent): void
     {
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $notifications = $ocis->getNotifications();

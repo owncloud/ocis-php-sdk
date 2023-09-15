@@ -37,11 +37,10 @@ class DriveTest extends TestCase
     /**
      * @phpstan-param array{'headers':array<string, mixed>, 'verify':bool} $connectionConfig
      * @param array<mixed> $expectedCurlSettingsArray
-     * @return void
      * @throws \Exception
      * @dataProvider connectionConfigProvider
      */
-    public function testCreateCurlSettings(array $connectionConfig, array $expectedCurlSettingsArray)
+    public function testCreateCurlSettings(array $connectionConfig, array $expectedCurlSettingsArray): void
     {
         $accessToken = 'token';
         $drive = new Drive(

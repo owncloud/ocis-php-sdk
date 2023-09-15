@@ -116,7 +116,6 @@ class Ocis
     }
 
     /**
-     * @param string $accessToken
      * @throws \Exception
      */
     public function setAccessToken(string $accessToken): void
@@ -249,9 +248,7 @@ class Ocis
     }
 
     /**
-     * @param string $name
      * @param int $quota in bytes
-     * @param string|null $description
      * @return Drive
      * @throws \Exception
      * @throws ForbiddenException

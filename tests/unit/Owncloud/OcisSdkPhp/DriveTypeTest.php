@@ -21,8 +21,6 @@ class DriveTypeTest extends TestCase
     }
 
     /**
-     * @param string|null $type
-     * @return void
      * @dataProvider validDriveTypes
      */
     public function testValidDriveType(?string $type): void
@@ -30,9 +28,6 @@ class DriveTypeTest extends TestCase
         $this->assertTrue(DriveType::isTypeValid($type));
     }
 
-    /**
-     * @return void
-     */
     public function testInvalidDriveType(): void
     {
         $this->assertFalse(DriveType::isTypeValid("some string"));

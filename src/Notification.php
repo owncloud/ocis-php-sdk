@@ -71,7 +71,6 @@ class Notification
 
     /**
      * mainly for testing purpose
-     * @return string
      */
     public function getAccessToken(): string
     {
