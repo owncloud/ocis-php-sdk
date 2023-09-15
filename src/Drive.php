@@ -218,7 +218,7 @@ class Drive
     public function getFile(string $path)
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request("GET", ltrim($path, "/"));
+        $response = $webDavClient->request("GET", rawurlencode(ltrim($path, "/")));
 
         if ($response["statusCode"] === 200) {
             return $response['body'];
@@ -237,7 +237,7 @@ class Drive
     public function createFolder(string $path): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request('MKCOL', ltrim($path, "/"));
+        $response = $webDavClient->request('MKCOL', rawurlencode(ltrim($path, "/")));
         if ($response["statusCode"] === 201) {
             return true;
         }
@@ -265,7 +265,7 @@ class Drive
     private function makePutRequest(string $path, mixed $resource): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request('PUT', ltrim($path, "/"), $resource);
+        $response = $webDavClient->request('PUT', rawurlencode(ltrim($path, "/")), $resource);
         if (in_array($response['statusCode'], [201,204])) {
             return true;
         }
@@ -311,7 +311,7 @@ class Drive
     public function deleteResource(string $path): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request("DELETE", ltrim($path, "/"));
+        $response = $webDavClient->request("DELETE", rawurlencode(ltrim($path, "/")));
         if ($response["statusCode"] === 204) {
             return true;
         }
