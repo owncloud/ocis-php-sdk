@@ -4,10 +4,11 @@ This SDK allows you to interact with ocis storage using PHP.
 ## Acquiring an Access Token
 For an easier experience in acquiring an access token, several PHP OIDC client libraries are available. The following code snippet showcases how to retrieve an access token with the `facile-it/php-openid-client` library.
 
-### Install library 
+### Install PHP dependendies
 You can install the [facile-it/php-openid-client](https://github.com/facile-it/php-openid-client) library using composer:
 ```
 composer require facile-it/php-openid-client
+composer require nyholm/psr7
 ```
 
 ### Required PHP Libraries
