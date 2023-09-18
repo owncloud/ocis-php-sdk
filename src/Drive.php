@@ -7,6 +7,7 @@ use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Quota;
 use Sabre\DAV\Client;
+use Sabre\HTTP\Request;
 
 class Drive
 {
@@ -220,6 +221,24 @@ class Drive
     public function getFileById(string $fileId): \stdClass
     {
         throw new \Exception("This function is not implemented yet.");
+    }
+
+    /**
+     * get file as a file resource
+     * @param string $path
+     *
+     * @return mixed ocisFile
+     * @throws \Exception
+     */
+    public function getFileStream(string $path): mixed
+    {
+        $webDavClient = $this->createWebDavClient();
+        $request = new Request("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")));
+        $response = $webDavClient->send($request);
+        if ($response->getStatus() === 200) {
+            return $response->getBodyAsStream();
+        }
+        throw new \Exception("Failed to get resource stream for file $path");
     }
 
     /**
