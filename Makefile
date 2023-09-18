@@ -1,3 +1,7 @@
+# docker compose command, defaults to v3
+# for v2: set this as docker-compose using the environment variable
+DCO:=docker compose
+
 #
 # Catch-all rules
 #
@@ -38,6 +42,14 @@ test-php-phan: vendor/bin/phan
 test-php-phpstan:          ## Run phpstan
 test-php-phpstan: vendor/bin/phpstan
 	vendor/bin/phpstan analyse --memory-limit=4G --configuration=./phpstan.neon --no-progress src tests
+
+.PHONY: run-ocis-with-keycloak
+run-ocis-with-keycloak:
+	cd tests/integration && $(DCO) up
+
+.PHONY: docker-clean
+docker-clean:
+	cd tests/integration && $(DCO) down -v --remove-orphans --rmi all
 
 .PHONY: clean
 clean:
