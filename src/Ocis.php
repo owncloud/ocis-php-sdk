@@ -4,6 +4,7 @@ namespace Owncloud\OcisSdkPhp;
 
 require_once(__DIR__ . '/../vendor/autoload.php');
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
@@ -12,54 +13,57 @@ use OpenAPI\Client\Api\MeDrivesApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
+use OpenAPI\Client\Model\OdataError;
 
 class Ocis
 {
     private string $serviceUrl;
     private string $accessToken;
-    /**
-     * @var DrivesApi|DrivesGetDrivesApi|null
-     */
-    private $apiInstance = null;
+    private ?DrivesApi $drivesApiInstance = null;
+    private ?DrivesGetDrivesApi $drivesGetDrivesApiInstance = null;
     private Configuration $graphApiConfig;
-    private \GuzzleHttp\Client $guzzle;
-    private $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
+    private Client $guzzle;
+    private string $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
+
     /**
-     * @var array<mixed>
+     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
      */
     private array $connectionConfig;
 
     /**
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     *        valid config keys are: headers, verify
+     *        headers has to be an array in the form like
+     *        [
+     *            'User-Agent' => 'testing/1.0',
+     *            'Accept'     => 'application/json',
+     *            'X-Foo'      => ['Bar', 'Baz']
+     *        ]
+     *        verify is a boolean to disable SSL checking
      * @throws \Exception
-     * @parameter $connectionConfig array<string, mixed>
-     *                              valid config keys are: headers, verify
-     *                              headers has to be an array in the form like
-     *                                  [
-     *                                      'User-Agent' => 'testing/1.0',
-     *                                      'Accept'     => 'application/json',
-     *                                      'X-Foo'      => ['Bar', 'Baz']
-     *                                  ]
-     *                              verify is a boolean to disable SSL checking
      */
     public function __construct(
         string $serviceUrl,
         string $accessToken,
-        $connectionConfig = []
+        array $connectionConfig = []
     ) {
         $this->serviceUrl = $serviceUrl;
         $this->accessToken = $accessToken;
-        $this->guzzle = new \GuzzleHttp\Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
+        $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
         $this->connectionConfig = $connectionConfig;
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
 
     }
 
-    public function setGuzzle(\GuzzleHttp\Client $guzzle)
+    public function setGuzzle(Client $guzzle): void
     {
         $this->guzzle = $guzzle;
     }
 
-    public static function isConnectionConfigValid($connectionConfig): bool
+    /**
+     * @param array<mixed> $connectionConfig
+     */
+    public static function isConnectionConfigValid(array $connectionConfig): bool
     {
         $validConnectionConfigKeys = ['headers' => [], 'verify' => true];
         foreach ($connectionConfig as $key => $value) {
@@ -78,14 +82,12 @@ class Ocis
         return true;
     }
 
-
     /**
      * combines passed in config settings for guzzle with the default settings needed
      * for the class and returns the complete array
      *
-     * @param array $connectionConfig
-     * @param string $accessToken
-     * @return array
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     * @return array<string, mixed>
      * @throws \Exception
      */
     public static function createGuzzleConfig(array $connectionConfig, string $accessToken): array
@@ -103,20 +105,25 @@ class Ocis
         return $connectionConfig;
     }
 
-
-
-    public function setApiInstance(DrivesGetDrivesApi|MeDrivesApi|DrivesApi|null $apiInstance): void
+    public function setDrivesApiInstance(DrivesApi|null $apiInstance): void
     {
-        $this->apiInstance = $apiInstance;
+        $this->drivesApiInstance = $apiInstance;
+    }
+
+    public function setDrivesGetDrivesApiInstance(DrivesGetDrivesApi|null $apiInstance): void
+    {
+        $this->drivesGetDrivesApiInstance = $apiInstance;
     }
 
     /**
-     * @param string $accessToken
+     * @throws \Exception
      */
     public function setAccessToken(string $accessToken): void
     {
         $this->accessToken = $accessToken;
-        $this->guzzle = new \GuzzleHttp\Client(Ocis::createGuzzleConfig($this->connectionConfig, $accessToken));
+        $this->guzzle = new Client(Ocis::createGuzzleConfig($this->connectionConfig, $accessToken));
+        $this->drivesApiInstance = null;
+        $this->drivesGetDrivesApiInstance = null;
     }
 
     /**
@@ -130,13 +137,13 @@ class Ocis
         string $orderDirection = OrderDirection::ASC,
         string $type = null
     ): array {
-        if ($this->apiInstance === null) {
+        if ($this->drivesGetDrivesApiInstance === null) {
             $apiInstance = new DrivesGetDrivesApi(
                 $this->guzzle,
                 $this->graphApiConfig
             );
         } else {
-            $apiInstance = $this->apiInstance;
+            $apiInstance = $this->drivesGetDrivesApiInstance;
         }
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
         $filter = $this->getListDrivesFilterString($type);
@@ -149,7 +156,14 @@ class Ocis
          */
 
         /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
-        foreach ($apiInstance->listAllDrives($order, $filter)->getValue() as $apiDrive) {
+        $allDrivesList = $apiInstance->listAllDrives($order, $filter);
+        if ($allDrivesList instanceof OdataError) {
+            // ToDo: understand how this can happen, and what to do about it.
+            throw new \Exception("listAllDrives returned an OdataError");
+        }
+        $apiDrives = $allDrivesList->getValue();
+        $apiDrives = $apiDrives ?? [];
+        foreach ($apiDrives as $apiDrive) {
             $drive = new Drive($apiDrive, $this->connectionConfig, $this->accessToken);
             $drives[] = $drive;
         }
@@ -183,7 +197,14 @@ class Ocis
          */
 
         /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
-        foreach ($apiInstance->listMyDrives($order, $filter)->getValue() as $apiDrive) {
+        $allDrivesList = $apiInstance->listMyDrives($order, $filter);
+        if ($allDrivesList instanceof OdataError) {
+            // ToDo: understand how this can happen, and what to do about it.
+            throw new \Exception("listMyDrives returned an OdataError");
+        }
+        $apiDrives = $allDrivesList->getValue();
+        $apiDrives = $apiDrives ?? [];
+        foreach ($apiDrives as $apiDrive) {
             $drive = new Drive($apiDrive, $this->connectionConfig, $this->accessToken);
             $drives[] = $drive;
         }
@@ -227,11 +248,9 @@ class Ocis
     }
 
     /**
-     * @param string $name
      * @param int $quota in bytes
-     * @param string|null $description
      * @return Drive
-     * @throws  \Exception
+     * @throws \Exception
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws \InvalidArgumentException
@@ -244,13 +263,13 @@ class Ocis
         if ($quota < 0) {
             throw new \InvalidArgumentException('quota cannot be less than 0');
         }
-        if ($this->apiInstance === null) {
+        if ($this->drivesApiInstance === null) {
             $apiInstance = new DrivesApi(
                 $this->guzzle,
                 $this->graphApiConfig
             );
         } else {
-            $apiInstance = $this->apiInstance;
+            $apiInstance = $this->drivesApiInstance;
         }
 
         $apiDrive = new ApiDrive(
@@ -292,7 +311,7 @@ class Ocis
 
         $content = $response->getBody()->getContents();
         $ocsResponse = json_decode($content, true);
-        if ($ocsResponse === null) {
+        if (!is_array($ocsResponse)) {
             throw new \Exception(
                 'Could not decode notification response. Content: "' .  $content . '"'
             );

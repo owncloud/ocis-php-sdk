@@ -13,13 +13,24 @@ class Drive
     private ApiDrive $apiDrive;
     private string $accessToken;
     private string $webDavUrl = '';
+
+    /**
+     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
+     */
     private array $connectionConfig;
 
+    /**
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     * @throws \Exception
+     */
     public function __construct(ApiDrive $apiDrive, array $connectionConfig, string &$accessToken)
     {
         $this->apiDrive = $apiDrive;
         $this->accessToken = &$accessToken;
 
+        if (!Ocis::isConnectionConfigValid($connectionConfig)) {
+            throw new \Exception('connection configuration not valid');
+        }
         $this->connectionConfig = $connectionConfig;
     }
 
@@ -37,6 +48,7 @@ class Drive
     }
 
     /**
+     * @return array<int, mixed>
      * @throws \Exception
      */
     public function createCurlSettings(): array
@@ -66,41 +78,27 @@ class Drive
     {
         return $this->accessToken;
     }
-    /**
-     * @return string
-     */
+
     public function getAlias(): string
     {
         return (string)$this->apiDrive->getDriveAlias();
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return (string)$this->apiDrive->getDriveType();
     }
 
-    /**
-     * @return string
-     */
     public function getId(): string
     {
         return (string)$this->apiDrive->getId();
     }
 
-    /**
-     * @return ?DriveItem
-     */
     public function getRoot(): ?DriveItem
     {
         return $this->apiDrive->getRoot();
     }
 
-    /**
-     * @return string
-     */
     public function getWebDavUrl(): string
     {
         if (empty($this->webDavUrl)) {
@@ -115,7 +113,6 @@ class Drive
     }
 
     /**
-     * @return DateTime
      * @throws \Exception
      */
     public function getLastModifiedDateTime(): DateTime
@@ -129,16 +126,12 @@ class Drive
         );
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->apiDrive->getName();
     }
 
     /**
-     * @return Quota
      * @throws \Exception
      */
     public function getQuota(): Quota
@@ -152,10 +145,7 @@ class Drive
         );
     }
 
-    /**
-     * @return \stdClass
-     */
-    public function getRawData(): \stdClass
+    public function getRawData(): mixed
     {
         return $this->apiDrive->jsonSerialize();
     }
@@ -192,6 +182,7 @@ class Drive
         // PATCH space
         throw new \Exception("This function is not implemented yet.");
     }
+
     public function setReadme(string $readme): Drive
     {
         // upload content of $readme to dav/spaces/<space-id>/.space/readme.md
@@ -226,7 +217,7 @@ class Drive
         throw new \Exception("Failed to retrieve the content of the file $path. The request returned a status code of $response[statusCode]");
     }
 
-    public function getFileById(string $fileId)
+    public function getFileById(string $fileId): \stdClass
     {
         throw new \Exception("This function is not implemented yet.");
     }
@@ -255,11 +246,10 @@ class Drive
     }
 
     /**
-     * update file content if file already exist
+     * update file content if the file already exists
      * @param string $path
-     * @param mixed $resource
+     * @param resource|string|null $resource
      *
-     * @return bool
      * @throws \Exception
      */
     private function makePutRequest(string $path, mixed $resource): bool
@@ -274,10 +264,7 @@ class Drive
 
     /**
      * upload file with content
-     * @param string $path
-     * @param string $content
      *
-     * @return bool
      * @throws \Exception
      */
     public function uploadFile(string $path, string $content): bool
@@ -287,7 +274,6 @@ class Drive
 
     /**
      * Uploads a file using streaming
-     * @param string $path
      * @param $resource file resource pointing to the file to be uploaded
      *
      * @return bool
@@ -303,9 +289,7 @@ class Drive
 
     /**
      * delete resource
-     * @param string $path
      *
-     * @return bool
      * @throws \Exception
      */
     public function deleteResource(string $path): bool
@@ -337,11 +321,19 @@ class Drive
         throw new \Exception("Could not move/rename resource $sourcePath to $destinationPath. status code $response[statusCode]");
     }
 
+    /**
+     * @param array<mixed> $tags
+     * @throws \Exception
+     */
     public function tagResource(string $path, array $tags): void
     {
         throw new \Exception("This function is not implemented yet.");
     }
 
+    /**
+     * @param array<mixed> $tags
+     * @throws \Exception
+     */
     public function untagResource(string $path, array $tags): void
     {
         throw new \Exception("This function is not implemented yet.");
