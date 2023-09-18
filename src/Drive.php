@@ -99,6 +99,11 @@ class Drive
         return $this->apiDrive->getRoot();
     }
 
+    public function getWebUrl(): string
+    {
+        return (string)$this->apiDrive->getWebUrl();
+    }
+
     public function getWebDavUrl(): string
     {
         if (empty($this->webDavUrl)) {
