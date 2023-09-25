@@ -1,5 +1,65 @@
 # ocis-sdk-php
-This SDK allows you to interact with ocis storage using PHP.
+This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](github.com/owncloud/ocis/) storage using PHP.
+
+:exclamation: This SDK is still under heavy development and is not yet ready for production use, the API might change!
+
+## Getting started
+Create an Ocis object using the service Url and an access token:
+```php
+$ocis = new Ocis('https://ocis.in-nepal.de', $accessToken);
+```
+
+Acquiring an access token is out of scope of this SDK, but you can find [examples for that below](#acquiring-an-access-token).
+
+Also refreshing tokens is not part of the SDK, but after you got a new token, you can update the Ocis object:
+```php
+$ocis->setAccessToken($newAccessToken);
+```
+
+## Drives (spaces)
+
+Drives can be listed using the `listAllDrives` or the `listMyDrives` method.
+
+The Drive class is responsible for most file/folder related actions, like listing files, creating folders, uploading files, etc.
+
+```php
+// get the personal drive of the authorized user
+// `listMyDrives` returns all drives that the user is a member of
+// but in this example the result is filtered to only return
+// the personal drive (parameter 3 = DriveType::PERSONAL)
+$drives = $ocis->listMyDrives(
+    DriveOrder::NAME,
+    OrderDirection::ASC,
+    DriveType::PERSONAL
+);
+
+// get the drive id
+$id = $drives[0]->getId();
+
+// get the name of the drive
+$name = $drives[0]->getName();
+
+// get a link to the drive that can be opened in a browser and will lead the user to the web interface 
+$webUrl = $drives[0]->getWebUrl();
+
+// create a folder inside the drive
+$drives[0]->createFolder("/documents");
+
+// upload a file to the drive
+$drives[0]->uploadFile("/documents/myfile.txt", "Hello World!");
+
+// get an array of all resources of the "/documents" folder inside the drive
+$resources = $drives[0]->listResources("/documents");
+```
+
+### Notifications
+Notifications can be listed using the `listNotifications` method, which will return an array of `Notification` objects representing all active notifications.
+
+The `Notification` object can retrieve details of the corresponding notification and mark it as read (delete).
+
+## Requirements
+- PHP 8.1 or higher
+- oCIS 4.0.0 or higher
 
 ## Acquiring an Access Token
 For an easier experience in acquiring an access token, several PHP OIDC client libraries are available. The following code snippet showcases how to retrieve an access token with the `facile-it/php-openid-client` library.
