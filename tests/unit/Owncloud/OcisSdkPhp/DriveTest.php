@@ -2,9 +2,8 @@
 
 namespace unit\Owncloud\OcisSdkPhp;
 
-use Owncloud\OcisSdkPhp\Drive;
+use Owncloud\OcisSdkPhp\WebDavHelper;
 use PHPUnit\Framework\TestCase;
-use OpenAPI\Client\Model\Drive as ApiDrive;
 
 class DriveTest extends TestCase
 {
@@ -35,7 +34,7 @@ class DriveTest extends TestCase
     }
 
     /**
-     * @phpstan-param array{'headers':array<string, mixed>, 'verify':bool} $connectionConfig
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @param array<mixed> $expectedCurlSettingsArray
      * @throws \Exception
      * @dataProvider connectionConfigProvider
@@ -43,13 +42,10 @@ class DriveTest extends TestCase
     public function testCreateCurlSettings(array $connectionConfig, array $expectedCurlSettingsArray): void
     {
         $accessToken = 'token';
-        $drive = new Drive(
-            /* @phan-suppress-next-line PhanTypeMismatchArgument */
-            $this->createMock(ApiDrive::class),
+        $curlSettings = WebDavHelper::createCurlSettings(
             $connectionConfig,
             $accessToken
         );
-        $curlSettings = $drive->createCurlSettings();
         $this->assertSame($expectedCurlSettingsArray, $curlSettings);
     }
 }

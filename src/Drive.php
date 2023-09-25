@@ -40,36 +40,11 @@ class Drive
      */
     private function createWebDavClient(): Client
     {
-        $webDavClient = new Client(['baseUri' => $this->getWebDavUrl()]);
-        $curlSettings = $this->createCurlSettings();
-        foreach ($curlSettings as $setting => $value) {
-            $webDavClient->addCurlSetting($setting, $value);
-        }
-        return $webDavClient;
-    }
-
-    /**
-     * @return array<int, mixed>
-     * @throws \Exception
-     */
-    public function createCurlSettings(): array
-    {
-        if (!Ocis::isConnectionConfigValid($this->connectionConfig)) {
-            throw new \Exception('connection configuration not valid');
-        }
-        $settings = [];
-        $settings[CURLOPT_HTTPAUTH] = CURLAUTH_BEARER;
-        $settings[CURLOPT_XOAUTH2_BEARER] = $this->accessToken;
-        if (isset($this->connectionConfig['headers'])) {
-            foreach ($this->connectionConfig['headers'] as $header => $value) {
-                $settings[CURLOPT_HTTPHEADER][] = $header . ': ' . $value;
-            }
-        }
-        if (isset($this->connectionConfig['verify'])) {
-            $settings[CURLOPT_SSL_VERIFYPEER] = $this->connectionConfig['verify'];
-            $settings[CURLOPT_SSL_VERIFYHOST] = $this->connectionConfig['verify'];
-        }
-        return $settings;
+        return WebDavHelper::createWebDavClient(
+            $this->getWebDavUrl(),
+            $this->connectionConfig,
+            $this->accessToken
+        );
     }
 
     /**
@@ -221,11 +196,6 @@ class Drive
             return $response['body'];
         }
         throw new \Exception("Failed to retrieve the content of the file $path. The request returned a status code of $response[statusCode]");
-    }
-
-    public function getFileById(string $fileId): \stdClass
-    {
-        throw new \Exception("This function is not implemented yet.");
     }
 
     /**

@@ -4,11 +4,14 @@ namespace Owncloud\OcisSdkPhp;
 
 use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\ApiException;
+use Sabre\HTTP\ClientException as SabreClientException;
+use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 
 class ExceptionHelper
 {
-    public static function getHttpErrorException(GuzzleException|ApiException $e): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|\Exception
-    {
+    public static function getHttpErrorException(
+        GuzzleException|ApiException|SabreClientHttpException|SabreClientException $e
+    ): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|\Exception {
         if ($e instanceof ApiException) {
             $rawResponseBody = $e->getResponseBody();
             if ($rawResponseBody instanceof \stdClass) {

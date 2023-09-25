@@ -3,7 +3,7 @@
 namespace Owncloud\OcisSdkPhp;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ClientException as GuzzleClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
@@ -12,6 +12,10 @@ use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\OdataError;
+use Sabre\HTTP\ClientException as SabreClientException;
+use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
+use Sabre\HTTP\Request;
+use Sabre\HTTP\ResponseInterface;
 
 class Ocis
 {
@@ -294,6 +298,59 @@ class Ocis
     }
 
     /**
+     * get file as a file resource
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \Exception
+     */
+    public function getFileById(string $fileId): string
+    {
+        $response = $this->getFileResponseInterface($fileId);
+        return $response->getBodyAsString();
+    }
+
+    /**
+     * get file as a file resource
+     * @return resource
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \Exception
+     */
+    public function getFileStreamById(string $fileId)
+    {
+        $response = $this->getFileResponseInterface($fileId);
+        return $response->getBodyAsStream();
+    }
+
+    /**
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \Exception
+     */
+    private function getFileResponseInterface(string $fileId): ResponseInterface
+    {
+        $webDavClient = WebDavHelper::createWebDavClient(
+            $this->serviceUrl . WebDavHelper::SPACES_WEBDAV_PATH,
+            $this->connectionConfig,
+            $this->accessToken
+        );
+        $absoluteUrl = $webDavClient->getAbsoluteUrl($fileId);
+        $request = new Request("GET", $absoluteUrl);
+        try {
+            $response = $webDavClient->send($request);
+        } catch (SabreClientHttpException|SabreClientException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        return $response;
+    }
+
+    /**
      * @throws \Exception
      * @return array<Notification>
      */
@@ -303,7 +360,7 @@ class Ocis
             $response = $this->guzzle->get(
                 $this->serviceUrl . $this->notificationsEndpoint
             );
-        } catch (GuzzleException|ClientException $e) {
+        } catch (GuzzleException|GuzzleClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
