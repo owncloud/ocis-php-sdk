@@ -174,7 +174,7 @@ class Ocis
     }
 
     /**
-     * Get all drives where the current user is a regular member of
+     * Get all drives that the current user is a regular member of
      *
      * @return array<Drive>
      * @throws \Exception
@@ -298,7 +298,7 @@ class Ocis
     }
 
     /**
-     * get file as a file resource
+     * get file content by file id
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws NotFoundException
