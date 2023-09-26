@@ -173,11 +173,22 @@ class Drive
     /**
      * list the content of that path
      * @param string $path
-     * @return array<string>
+     * @return array<OcisResource>
      */
     public function listResources(string $path = "/"): array
     {
-        throw new \Exception("This function is not implemented yet.");
+        $resources = [];
+        $webDavClient = $this->createWebDavClient();
+        try {
+            $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), [], 1);
+            foreach ($responses as $response) {
+                $resources[] = new OcisResource($response);
+            }
+        } catch (\Exception) {
+            echo "Received an invalid path:" . $path;
+        }
+
+        return $resources;
     }
 
     /**
@@ -246,11 +257,11 @@ class Drive
      *
      * @throws \Exception
      */
-    private function makePutRequest(string $path, mixed $resource): bool
+    private function makePutRequest(string $path, $resource): bool
     {
         $webDavClient = $this->createWebDavClient();
         $response = $webDavClient->request('PUT', rawurlencode(ltrim($path, "/")), $resource);
-        if (in_array($response['statusCode'], [201,204])) {
+        if (in_array($response['statusCode'], [201, 204])) {
             return true;
         }
         throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");
@@ -268,14 +279,14 @@ class Drive
 
     /**
      * Uploads a file using streaming
-     * @param $resource file resource pointing to the file to be uploaded
+     * @param resource|string|null $resource file resource pointing to the file to be uploaded
      *
      * @return bool
      * @throws \Exception
      */
-    public function uploadFileStream(string $path, mixed $resource): bool
+    public function uploadFileStream(string $path, $resource): bool
     {
-        if(is_resource($resource)) {
+        if (is_resource($resource)) {
             return $this->makePutRequest($path, $resource);
         }
         throw new \Exception('Provided resource is not valid.');
