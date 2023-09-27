@@ -184,6 +184,7 @@ class Drive
             foreach ($responses as $response) {
                 $resources[] = new OcisResource($response);
             }
+            unset($resources[0]);
         } catch (\Exception) {
             echo "Received an invalid path:" . $path;
         }
