@@ -342,7 +342,7 @@ class Ocis
     {
         $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
-        return $webDavClient->webDavRequest("GET", $fileId);
+        return $webDavClient->sendRequest("GET", $fileId);
     }
 
     /**
