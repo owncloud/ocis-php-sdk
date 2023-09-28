@@ -1,6 +1,6 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 class DriveType
 {
@@ -10,7 +10,7 @@ class DriveType
 
     public static function isTypeValid(?string $type): bool
     {
-        $reflector = new \ReflectionClass('Owncloud\OcisSdkPhp\DriveType');
+        $reflector = new \ReflectionClass('Owncloud\OcisPhpSdk\DriveType');
         if (!in_array($type, array_merge([null], $reflector->getConstants()))) {
             return false;
         }

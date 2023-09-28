@@ -1,6 +1,6 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp\Exception;
+namespace Owncloud\OcisPhpSdk\Exception;
 
 class BadRequestException extends \Exception
 {

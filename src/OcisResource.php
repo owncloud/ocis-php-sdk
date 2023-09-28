@@ -1,9 +1,9 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 use Sabre\DAV\Xml\Property\ResourceType;
-use Owncloud\OcisSdkPhp\ResourceMetadata;
+use Owncloud\OcisPhpSdk\ResourceMetadata;
 
 class OcisResource
 {

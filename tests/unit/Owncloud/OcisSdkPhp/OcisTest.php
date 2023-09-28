@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Owncloud\OcisSdkPhp;
+namespace unit\Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
@@ -9,8 +9,8 @@ use OpenAPI\Client\Model\CollectionOfDrives;
 use OpenAPI\Client\Model\Drive;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\OdataErrorMain;
-use Owncloud\OcisSdkPhp\Exception\ForbiddenException;
-use Owncloud\OcisSdkPhp\Ocis;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Ocis;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;

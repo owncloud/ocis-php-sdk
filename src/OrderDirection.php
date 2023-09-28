@@ -1,6 +1,6 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 abstract class OrderDirection
 {
@@ -9,7 +9,7 @@ abstract class OrderDirection
 
     public static function isOrderDirectionValid(?string $direction): bool
     {
-        $reflector = new \ReflectionClass('Owncloud\OcisSdkPhp\OrderDirection');
+        $reflector = new \ReflectionClass('Owncloud\OcisPhpSdk\OrderDirection');
         if (!in_array($direction, array_merge([null], $reflector->getConstants()))) {
             return false;
         }

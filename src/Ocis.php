@@ -1,6 +1,6 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException as GuzzleClientException;
@@ -12,11 +12,11 @@ use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\OdataError;
-use Owncloud\OcisSdkPhp\Exception\BadRequestException;
-use Owncloud\OcisSdkPhp\Exception\ExceptionHelper;
-use Owncloud\OcisSdkPhp\Exception\ForbiddenException;
-use Owncloud\OcisSdkPhp\Exception\NotFoundException;
-use Owncloud\OcisSdkPhp\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\HTTP\ResponseInterface;
 
 class Ocis
