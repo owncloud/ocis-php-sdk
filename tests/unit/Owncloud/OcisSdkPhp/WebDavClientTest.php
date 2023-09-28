@@ -34,7 +34,7 @@ class WebDavClientTest extends TestCase
     }
 
     /**
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client} $connectionConfig
      * @param array<mixed> $expectedCurlSettingsArray
      * @dataProvider connectionConfigProvider
      */
