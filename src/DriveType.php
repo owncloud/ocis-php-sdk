@@ -2,18 +2,9 @@
 
 namespace Owncloud\OcisPhpSdk;
 
-class DriveType
+enum DriveType: string
 {
-    public const PROJECT = "project";
-    public const PERSONAL = "personal";
-    public const VIRTUAL = "virtual";
-
-    public static function isTypeValid(?string $type): bool
-    {
-        $reflector = new \ReflectionClass('Owncloud\OcisPhpSdk\DriveType');
-        if (!in_array($type, array_merge([null], $reflector->getConstants()))) {
-            return false;
-        }
-        return true;
-    }
+    case PERSONAL = "personal";
+    case PROJECT = "project";
+    case VIRTUAL = "virtual";
 }
