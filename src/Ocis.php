@@ -140,9 +140,9 @@ class Ocis
      * @throws \Exception
      */
     public function listAllDrives(
-        string $orderBy = DriveOrder::NAME,
-        string $orderDirection = OrderDirection::ASC,
-        string $type = null
+        DriveOrder     $orderBy = DriveOrder::NAME,
+        OrderDirection $orderDirection = OrderDirection::ASC,
+        DriveType      $type = null
     ): array {
         if ($this->drivesGetDrivesApiInstance === null) {
             $apiInstance = new DrivesGetDrivesApi(
@@ -185,9 +185,9 @@ class Ocis
      * @throws \Exception
      */
     public function listMyDrives(
-        string $orderBy = DriveOrder::NAME,
-        string $orderDirection = OrderDirection::ASC,
-        string $type = null
+        DriveOrder     $orderBy = DriveOrder::NAME,
+        OrderDirection $orderDirection = OrderDirection::ASC,
+        DriveType      $type = null
     ): array {
         $apiInstance = new MeDrivesApi(
             $this->guzzle,
@@ -219,27 +219,17 @@ class Ocis
     }
 
     private function getListDrivesOrderString(
-        string $orderBy = DriveOrder::NAME,
-        string $orderDirection = OrderDirection::ASC
+        DriveOrder     $orderBy = DriveOrder::NAME,
+        OrderDirection $orderDirection = OrderDirection::ASC
     ): string {
-        if (!DriveOrder::isOrderValid($orderBy)) {
-            throw new \InvalidArgumentException('$orderBy is invalid');
-        }
-        if (!OrderDirection::isOrderDirectionValid($orderDirection)) {
-            throw new \InvalidArgumentException('$orderDirection is invalid');
-        }
-        return $orderBy . ' ' . $orderDirection;
+        return $orderBy->value . ' ' . $orderDirection->value;
     }
 
     private function getListDrivesFilterString(
-        string $type = null
+        DriveType $type = null
     ): ?string {
-        if (!DriveType::isTypeValid($type)) {
-            throw new \InvalidArgumentException('$type is invalid');
-        }
-
         if ($type !== null) {
-            $filter = 'driveType eq \'' . $type . '\'';
+            $filter = 'driveType eq \'' . $type->value . '\'';
         } else {
             $filter = null;
         }

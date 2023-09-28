@@ -8,27 +8,21 @@ use PHPUnit\Framework\TestCase;
 class OrderDirectionTest extends TestCase
 {
     /**
-     * @return array<int,array<int, string|null>>
+     * @return array<int,array{0:OrderDirection,1:string}>
      */
-    public function validDriveTypes(): array
+    public function validOrderDirections(): array
     {
         return [
-            [null],
-            ["asc"],
-            ["desc"]
+            [OrderDirection::ASC, "asc"],
+            [OrderDirection::DESC, "desc"],
         ];
     }
 
     /**
-     * @dataProvider validDriveTypes
+     * @dataProvider validOrderDirections
      */
-    public function testValidDriveType(?string $type): void
+    public function testOrderDirectionString(OrderDirection $direction, string $directionString): void
     {
-        $this->assertTrue(OrderDirection::isOrderDirectionValid($type));
-    }
-
-    public function testInvalidDriveType(): void
-    {
-        $this->assertFalse(OrderDirection::isOrderDirectionValid("some string"));
+        $this->assertEquals($directionString, $direction->value);
     }
 }

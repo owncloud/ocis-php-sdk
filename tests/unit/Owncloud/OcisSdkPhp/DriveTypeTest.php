@@ -8,28 +8,21 @@ use PHPUnit\Framework\TestCase;
 class DriveTypeTest extends TestCase
 {
     /**
-     * @return array<int,array<int, string|null>>
-     */
+     * @return array<int,array{0:DriveType,1:string}>     */
     public function validDriveTypes(): array
     {
         return [
-            [null],
-            ["project"],
-            ["personal"],
-            ["virtual"],
+            [DriveType::PERSONAL, "personal"],
+            [DriveType::PROJECT, "project"],
+            [DriveType::VIRTUAL, "virtual"],
         ];
     }
 
     /**
      * @dataProvider validDriveTypes
      */
-    public function testValidDriveType(?string $type): void
+    public function testDriveTypeString(DriveType $type, string $driveTypeString): void
     {
-        $this->assertTrue(DriveType::isTypeValid($type));
-    }
-
-    public function testInvalidDriveType(): void
-    {
-        $this->assertFalse(DriveType::isTypeValid("some string"));
+        $this->assertEquals($driveTypeString, $type->value);
     }
 }
