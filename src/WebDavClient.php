@@ -20,7 +20,7 @@ class WebDavClient extends Client
      * @return ResponseInterface
      *
      */
-    public function webDavRequest(string $method, string $url = '', $body = null, array $headers = []): ResponseInterface
+    public function sendRequest(string $method, string $url = '', $body = null, array $headers = []): ResponseInterface
     {
         $url = $this->getAbsoluteUrl($url);
         try {

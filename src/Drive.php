@@ -202,7 +202,7 @@ class Drive
     public function getFile(string $path)
     {
         $webDavClient = $this->createWebDavClient();
-        return $webDavClient->webDavRequest("GET", rawurlencode(ltrim($path, "/")))->getBody();
+        return $webDavClient->sendRequest("GET", rawurlencode(ltrim($path, "/")))->getBody();
     }
 
     /**
@@ -215,7 +215,7 @@ class Drive
     public function getFileStream(string $path): mixed
     {
         $webDavClient = $this->createWebDavClient();
-        return $webDavClient->webDavRequest("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")))->getBodyAsStream();
+        return $webDavClient->sendRequest("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")))->getBodyAsStream();
     }
 
     /**
@@ -224,7 +224,7 @@ class Drive
     public function createFolder(string $path): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $webDavClient->webDavRequest('MKCOL', rawurlencode(ltrim($path, "/")));
+        $webDavClient->sendRequest('MKCOL', rawurlencode(ltrim($path, "/")));
         return true;
     }
 
@@ -248,7 +248,7 @@ class Drive
     private function makePutRequest(string $path, $resource): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $webDavClient->webDavRequest('PUT', rawurlencode(ltrim($path, "/")), $resource);
+        $webDavClient->sendRequest('PUT', rawurlencode(ltrim($path, "/")), $resource);
         return true;
     }
 
@@ -285,7 +285,7 @@ class Drive
     public function deleteResource(string $path): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $webDavClient->webDavRequest("DELETE", rawurlencode(ltrim($path, "/")));
+        $webDavClient->sendRequest("DELETE", rawurlencode(ltrim($path, "/")));
         return true;
     }
 
@@ -301,7 +301,7 @@ class Drive
     {
         $webDavClient = $this->createWebDavClient();
         $destinationUrl = $this->webDavUrl . rawurlencode(ltrim($destinationPath, "/"));
-        $webDavClient->request('MOVE', "$sourcePath", null, ['Destination' => "$destinationUrl"]);
+        $webDavClient->sendRequest('MOVE', "$sourcePath", null, ['Destination' => "$destinationUrl"]);
         return true;
     }
 
