@@ -6,7 +6,7 @@ This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](github.com
 ## Getting started
 Create an Ocis object using the service Url and an access token:
 ```php
-$ocis = new Ocis('https://ocis.in-nepal.de', $accessToken);
+$ocis = new Ocis('https://example.ocis.com', $accessToken);
 ```
 
 Acquiring an access token is out of scope of this SDK, but you can find [examples for that below](#acquiring-an-access-token).
