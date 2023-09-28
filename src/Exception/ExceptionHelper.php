@@ -1,6 +1,6 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisSdkPhp\Exception;
 
 use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\ApiException;

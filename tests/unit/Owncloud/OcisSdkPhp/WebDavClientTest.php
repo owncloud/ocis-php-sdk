@@ -2,10 +2,10 @@
 
 namespace unit\Owncloud\OcisSdkPhp;
 
-use Owncloud\OcisSdkPhp\WebDavHelper;
+use Owncloud\OcisSdkPhp\WebDavClient;
 use PHPUnit\Framework\TestCase;
 
-class DriveTest extends TestCase
+class WebDavClientTest extends TestCase
 {
     /**
      * @return array<int, array<int, array<mixed>>>
@@ -42,7 +42,8 @@ class DriveTest extends TestCase
     public function testCreateCurlSettings(array $connectionConfig, array $expectedCurlSettingsArray): void
     {
         $accessToken = 'token';
-        $curlSettings = WebDavHelper::createCurlSettings(
+        $webDavClient = new WebDavClient(['baseUri' => 'https://ocis.sdk.tests:9009']);
+        $curlSettings = $webDavClient->createCurlSettings(
             $connectionConfig,
             $accessToken
         );

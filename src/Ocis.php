@@ -12,9 +12,11 @@ use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\OdataError;
-use Sabre\HTTP\ClientException as SabreClientException;
-use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
-use Sabre\HTTP\Request;
+use Owncloud\OcisSdkPhp\Exception\BadRequestException;
+use Owncloud\OcisSdkPhp\Exception\ExceptionHelper;
+use Owncloud\OcisSdkPhp\Exception\ForbiddenException;
+use Owncloud\OcisSdkPhp\Exception\NotFoundException;
+use Owncloud\OcisSdkPhp\Exception\UnauthorizedException;
 use Sabre\HTTP\ResponseInterface;
 
 class Ocis
@@ -52,6 +54,9 @@ class Ocis
         $this->serviceUrl = $serviceUrl;
         $this->accessToken = $accessToken;
         $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
+        if (!self::isConnectionConfigValid($connectionConfig)) {
+            throw new \Exception('connection configuration not valid');
+        }
         $this->connectionConfig = $connectionConfig;
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
 
@@ -335,19 +340,9 @@ class Ocis
      */
     private function getFileResponseInterface(string $fileId): ResponseInterface
     {
-        $webDavClient = WebDavHelper::createWebDavClient(
-            $this->serviceUrl . WebDavHelper::SPACES_WEBDAV_PATH,
-            $this->connectionConfig,
-            $this->accessToken
-        );
-        $absoluteUrl = $webDavClient->getAbsoluteUrl($fileId);
-        $request = new Request("GET", $absoluteUrl);
-        try {
-            $response = $webDavClient->send($request);
-        } catch (SabreClientHttpException|SabreClientException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-        return $response;
+        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        return $webDavClient->webDavRequest("GET", $fileId);
     }
 
     /**

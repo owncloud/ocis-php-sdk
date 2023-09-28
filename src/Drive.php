@@ -6,8 +6,9 @@ use DateTime;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Quota;
-use Sabre\DAV\Client;
-use Sabre\HTTP\Request;
+use Owncloud\OcisSdkPhp\Exception\ExceptionHelper;
+use Sabre\HTTP\ClientException as SabreClientException;
+use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 
 class Drive
 {
@@ -38,13 +39,11 @@ class Drive
     /**
      * @throws \Exception
      */
-    private function createWebDavClient(): Client
+    private function createWebDavClient(): WebDavClient
     {
-        return WebDavHelper::createWebDavClient(
-            $this->getWebDavUrl(),
-            $this->connectionConfig,
-            $this->accessToken
-        );
+        $webDavClient = new WebDavClient(['baseUri' => $this->getWebDavUrl()]);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        return $webDavClient;
     }
 
     /**
@@ -173,6 +172,7 @@ class Drive
     /**
      * list the content of that path
      * @param string $path
+     *
      * @return array<OcisResource>
      */
     public function listResources(string $path = "/"): array
@@ -185,8 +185,8 @@ class Drive
                 $resources[] = new OcisResource($response);
             }
             unset($resources[0]);
-        } catch (\Exception) {
-            echo "Received an invalid path:" . $path;
+        } catch (SabreClientHttpException|SabreClientException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
         }
 
         return $resources;
@@ -202,12 +202,7 @@ class Drive
     public function getFile(string $path)
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request("GET", rawurlencode(ltrim($path, "/")));
-
-        if ($response["statusCode"] === 200) {
-            return $response['body'];
-        }
-        throw new \Exception("Failed to retrieve the content of the file $path. The request returned a status code of $response[statusCode]");
+        return $webDavClient->webDavRequest("GET", rawurlencode(ltrim($path, "/")))->getBody();
     }
 
     /**
@@ -220,12 +215,7 @@ class Drive
     public function getFileStream(string $path): mixed
     {
         $webDavClient = $this->createWebDavClient();
-        $request = new Request("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")));
-        $response = $webDavClient->send($request);
-        if ($response->getStatus() === 200) {
-            return $response->getBodyAsStream();
-        }
-        throw new \Exception("Failed to get resource stream for file $path");
+        return $webDavClient->webDavRequest("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")))->getBodyAsStream();
     }
 
     /**
@@ -234,11 +224,8 @@ class Drive
     public function createFolder(string $path): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request('MKCOL', rawurlencode(ltrim($path, "/")));
-        if ($response["statusCode"] === 201) {
-            return true;
-        }
-        throw new \Exception("Could not create folder $path. status code $response[statusCode]");
+        $webDavClient->webDavRequest('MKCOL', rawurlencode(ltrim($path, "/")));
+        return true;
     }
 
     public function getResourceMetadata(string $path = "/"): \stdClass
@@ -261,11 +248,8 @@ class Drive
     private function makePutRequest(string $path, $resource): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request('PUT', rawurlencode(ltrim($path, "/")), $resource);
-        if (in_array($response['statusCode'], [201, 204])) {
-            return true;
-        }
-        throw new \Exception("Failed to upload file $path. The request returned a status code of $response[statusCode]");
+        $webDavClient->webDavRequest('PUT', rawurlencode(ltrim($path, "/")), $resource);
+        return true;
     }
 
     /**
@@ -301,11 +285,8 @@ class Drive
     public function deleteResource(string $path): bool
     {
         $webDavClient = $this->createWebDavClient();
-        $response = $webDavClient->request("DELETE", rawurlencode(ltrim($path, "/")));
-        if ($response["statusCode"] === 204) {
-            return true;
-        }
-        throw new \Exception("Failed to delete resource $path with status code $response[statusCode]");
+        $webDavClient->webDavRequest("DELETE", rawurlencode(ltrim($path, "/")));
+        return true;
     }
 
     /**
@@ -320,11 +301,8 @@ class Drive
     {
         $webDavClient = $this->createWebDavClient();
         $destinationUrl = $this->webDavUrl . rawurlencode(ltrim($destinationPath, "/"));
-        $response = $webDavClient->request('MOVE', "$sourcePath", null, ['Destination' => "$destinationUrl"]);
-        if (in_array($response['statusCode'], [201, 204])) {
-            return true;
-        }
-        throw new \Exception("Could not move/rename resource $sourcePath to $destinationPath. status code $response[statusCode]");
+        $webDavClient->request('MOVE', "$sourcePath", null, ['Destination' => "$destinationUrl"]);
+        return true;
     }
 
     /**

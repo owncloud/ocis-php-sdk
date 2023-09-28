@@ -3,6 +3,11 @@
 namespace Owncloud\OcisSdkPhp;
 
 use GuzzleHttp\Exception\GuzzleException;
+use Owncloud\OcisSdkPhp\Exception\BadRequestException;
+use Owncloud\OcisSdkPhp\Exception\ExceptionHelper;
+use Owncloud\OcisSdkPhp\Exception\ForbiddenException;
+use Owncloud\OcisSdkPhp\Exception\NotFoundException;
+use Owncloud\OcisSdkPhp\Exception\UnauthorizedException;
 
 class Notification
 {

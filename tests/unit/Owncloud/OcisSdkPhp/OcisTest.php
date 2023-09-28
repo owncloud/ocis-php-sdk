@@ -9,7 +9,7 @@ use OpenAPI\Client\Model\CollectionOfDrives;
 use OpenAPI\Client\Model\Drive;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\OdataErrorMain;
-use Owncloud\OcisSdkPhp\ForbiddenException;
+use Owncloud\OcisSdkPhp\Exception\ForbiddenException;
 use Owncloud\OcisSdkPhp\Ocis;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
