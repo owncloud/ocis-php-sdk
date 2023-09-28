@@ -1,8 +1,8 @@
 <?php
 
-namespace unit\Owncloud\OcisSdkPhp;
+namespace unit\Owncloud\OcisPhpSdk;
 
-use Owncloud\OcisSdkPhp\WebDavClient;
+use Owncloud\OcisPhpSdk\WebDavClient;
 use PHPUnit\Framework\TestCase;
 
 class WebDavClientTest extends TestCase

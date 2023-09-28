@@ -1,13 +1,13 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 use Sabre\DAV\Client;
 use Sabre\HTTP\Request;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
-use Owncloud\OcisSdkPhp\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 
 class WebDavClient extends Client
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 enum ResourceMetadata: string
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace unit\Owncloud\OcisSdkPhp;
+namespace unit\Owncloud\OcisPhpSdk;
 
-use Owncloud\OcisSdkPhp\DriveType;
+use Owncloud\OcisPhpSdk\DriveType;
 use PHPUnit\Framework\TestCase;
 
 class DriveTypeTest extends TestCase

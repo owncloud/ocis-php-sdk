@@ -1,8 +1,8 @@
 <?php
 
-namespace unit\Owncloud\OcisSdkPhp;
+namespace unit\Owncloud\OcisPhpSdk;
 
-use Owncloud\OcisSdkPhp\OcisResource;
+use Owncloud\OcisPhpSdk\OcisResource;
 use PHPUnit\Framework\TestCase;
 use Sabre\DAV\Xml\Property\ResourceType;
 

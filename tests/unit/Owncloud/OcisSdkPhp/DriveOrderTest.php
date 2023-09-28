@@ -1,8 +1,8 @@
 <?php
 
-namespace unit\Owncloud\OcisSdkPhp;
+namespace unit\Owncloud\OcisPhpSdk;
 
-use Owncloud\OcisSdkPhp\DriveOrder;
+use Owncloud\OcisPhpSdk\DriveOrder;
 use PHPUnit\Framework\TestCase;
 
 class DriveOrderTest extends TestCase

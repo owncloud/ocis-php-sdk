@@ -1,8 +1,8 @@
 <?php
 
-namespace unit\Owncloud\OcisSdkPhp;
+namespace unit\Owncloud\OcisPhpSdk;
 
-use Owncloud\OcisSdkPhp\OrderDirection;
+use Owncloud\OcisPhpSdk\OrderDirection;
 use PHPUnit\Framework\TestCase;
 
 class OrderDirectionTest extends TestCase

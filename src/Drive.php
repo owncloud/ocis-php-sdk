@@ -1,12 +1,12 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 use DateTime;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Quota;
-use Owncloud\OcisSdkPhp\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 

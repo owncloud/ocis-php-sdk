@@ -1,13 +1,13 @@
 <?php
 
-namespace Owncloud\OcisSdkPhp;
+namespace Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Owncloud\OcisSdkPhp\Exception\BadRequestException;
-use Owncloud\OcisSdkPhp\Exception\ExceptionHelper;
-use Owncloud\OcisSdkPhp\Exception\ForbiddenException;
-use Owncloud\OcisSdkPhp\Exception\NotFoundException;
-use Owncloud\OcisSdkPhp\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 class Notification
 {
