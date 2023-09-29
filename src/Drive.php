@@ -59,9 +59,19 @@ class Drive
         return (string)$this->apiDrive->getDriveAlias();
     }
 
-    public function getType(): string
+    /**
+     * @throws \Exception
+     */
+    public function getType(): DriveType
     {
-        return (string)$this->apiDrive->getDriveType();
+        $driveTypeString = (string)$this->apiDrive->getDriveType();
+        $driveType = DriveType::tryFrom($driveTypeString);
+        if ($driveType instanceof DriveType) {
+            return $driveType;
+        }
+        throw new \Exception(
+            'invalid DriveType returned by apiDrive: "' . print_r($driveTypeString, true) . '"'
+        );
     }
 
     public function getId(): string
