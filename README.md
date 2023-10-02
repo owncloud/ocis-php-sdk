@@ -1,5 +1,5 @@
 # ocis-php-sdk
-This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](github.com/owncloud/ocis/) storage using PHP.
+This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](https://github.com/owncloud/ocis/) storage using PHP.
 
 :exclamation: This SDK is still under heavy development and is not yet ready for production use, the API might change!
 
