@@ -316,6 +316,18 @@ class Drive
     }
 
     /**
+     * empty trash-bin
+     *
+     * @return bool
+     */
+    public function emptyTrashbin(): bool
+    {
+        $webDavClient = $this->createWebDavClient();
+        $webDavClient->sendRequest('DELETE', "/dav/spaces/trash-bin/" . $this->getId());
+        return true;
+    }
+
+    /**
      * @param array<mixed> $tags
      * @throws \Exception
      */
