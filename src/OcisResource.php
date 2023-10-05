@@ -2,6 +2,7 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\DAV\Xml\Property\ResourceType;
 use Owncloud\OcisPhpSdk\ResourceMetadata;
 
@@ -26,6 +27,7 @@ class OcisResource
      * @param ResourceMetadata $property
      * @phpstan-ignore-next-line because this method returns diffrent array depending on the property
      * @return array|string
+     * @throws InvalidResponseException
      */
     private function getMetadata(ResourceMetadata $property): array|string
     {
@@ -34,10 +36,10 @@ class OcisResource
             $metadata[$property->getKey()] = $this->metadata[$property->value];
         }
         if ($metadata === []) {
-            throw new \Exception('could not find property "' . $property->getKey() . '" in response');
+            throw new InvalidResponseException('could not find property "' . $property->getKey() . '" in response');
         }
         if ($metadata[$property->getKey()] === null && $property->getKey() !== "tags") {
-            throw new \Exception('Invalid response from server');
+            throw new InvalidResponseException('Invalid response from server');
         }
         if ($metadata[$property->getKey()] instanceof ResourceType) {
             return $metadata[$property->getKey()]->getValue();
@@ -60,6 +62,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getSpaceId(): string
     {
@@ -73,6 +76,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getParent(): string
     {
@@ -85,6 +89,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getName(): string
     {
@@ -97,6 +102,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getEtag(): string
     {
@@ -109,6 +115,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getPermission(): string
     {
@@ -121,6 +128,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getType(): string
     {
@@ -130,11 +138,12 @@ class OcisResource
         } elseif ($resourceType === []) {
             return "file";
         }
-        throw new \Exception("Received invalid data for the key \"resourcetype\" in the response array");
+        throw new InvalidResponseException("Received invalid data for the key \"resourcetype\" in the response array");
     }
 
     /**
      * @return int
+     * @throws InvalidResponseException
      */
     public function getSize(): int
     {
@@ -143,17 +152,18 @@ class OcisResource
             if (is_numeric($size)) {
                 return (int)$size;
             }
-            throw new \Exception("Received an invalid value for size in the response");
+            throw new InvalidResponseException("Received an invalid value for size in the response");
         }
         $size = $this->getMetadata(ResourceMetadata::FILESIZE);
         if (is_numeric($size)) {
             return (int)$size;
         }
-        throw new \Exception("Received an invalid value for size in the response");
+        throw new InvalidResponseException("Received an invalid value for size in the response");
     }
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getLastModifiedTime(): string
     {
@@ -166,6 +176,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getContentType(): string
     {
@@ -181,6 +192,7 @@ class OcisResource
 
     /**
      * @return array<int,string>
+     * @throws InvalidResponseException
      */
     public function getTags(): array
     {
@@ -195,6 +207,7 @@ class OcisResource
 
     /**
      * @return bool
+     * @throws InvalidResponseException
      */
     public function isFavorited(): bool
     {
@@ -202,11 +215,12 @@ class OcisResource
         if (in_array($result, [1, 0, '1', '0'])) {
             return (bool)$result;
         }
-        throw new \Exception("value of property \"favorite\" invalid in the server response");
+        throw new InvalidResponseException("value of property \"favorite\" invalid in the server response");
     }
 
     /**
      * @return array<int,array<string,string>>
+     * @throws InvalidResponseException
      */
     public function getCheckSums(): array
     {

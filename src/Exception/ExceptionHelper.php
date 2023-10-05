@@ -11,7 +11,7 @@ class ExceptionHelper
 {
     public static function getHttpErrorException(
         GuzzleException|ApiException|SabreClientHttpException|SabreClientException $e
-    ): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|\Exception {
+    ): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|HttpException {
         if ($e instanceof ApiException) {
             $rawResponseBody = $e->getResponseBody();
             if ($rawResponseBody instanceof \stdClass) {
@@ -68,7 +68,7 @@ class ExceptionHelper
                     $e
                 );
             default:
-                return new \Exception(
+                return new HttpException(
                     $message,
                     $e->getCode(),
                     $e

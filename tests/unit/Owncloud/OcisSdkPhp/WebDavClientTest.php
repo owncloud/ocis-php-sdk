@@ -36,7 +36,6 @@ class WebDavClientTest extends TestCase
     /**
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @param array<mixed> $expectedCurlSettingsArray
-     * @throws \Exception
      * @dataProvider connectionConfigProvider
      */
     public function testCreateCurlSettings(array $connectionConfig, array $expectedCurlSettingsArray): void

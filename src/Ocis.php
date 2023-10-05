@@ -15,8 +15,10 @@ use OpenAPI\Client\Model\OdataError;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
 
 class Ocis
@@ -44,7 +46,7 @@ class Ocis
      *            'X-Foo'      => ['Bar', 'Baz']
      *        ]
      *        verify is a boolean to disable SSL checking
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         string $serviceUrl,
@@ -55,7 +57,7 @@ class Ocis
         $this->accessToken = $accessToken;
         $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
         if (!self::isConnectionConfigValid($connectionConfig)) {
-            throw new \Exception('connection configuration not valid');
+            throw new \InvalidArgumentException('connection configuration not valid');
         }
         $this->connectionConfig = $connectionConfig;
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
@@ -95,12 +97,12 @@ class Ocis
      *
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @return array<string, mixed>
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public static function createGuzzleConfig(array $connectionConfig, string $accessToken): array
     {
         if (!self::isConnectionConfigValid($connectionConfig)) {
-            throw new \Exception('connection configuration not valid');
+            throw new \InvalidArgumentException('connection configuration not valid');
         }
         if (!isset($connectionConfig['headers'])) {
             $connectionConfig['headers'] = [];
@@ -123,7 +125,7 @@ class Ocis
     }
 
     /**
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function setAccessToken(string $accessToken): void
     {
@@ -142,7 +144,8 @@ class Ocis
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws InvalidResponseException
+     * @throws HttpException
      */
     public function listAllDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
@@ -175,7 +178,9 @@ class Ocis
         }
         if ($allDrivesList instanceof OdataError) {
             // ToDo: understand how this can happen, and what to do about it.
-            throw new \Exception("listAllDrives returned an OdataError");
+            throw new InvalidResponseException(
+                "listAllDrives returned an OdataError - " . $allDrivesList->getError()
+            );
         }
         $apiDrives = $allDrivesList->getValue();
         $apiDrives = $apiDrives ?? [];
@@ -196,7 +201,8 @@ class Ocis
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws InvalidResponseException
+     * @throws HttpException
      */
     public function listMyDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
@@ -226,7 +232,9 @@ class Ocis
 
         if ($allDrivesList instanceof OdataError) {
             // ToDo: understand how this can happen, and what to do about it.
-            throw new \Exception("listMyDrives returned an OdataError");
+            throw new InvalidResponseException(
+                "listMyDrives returned an OdataError - " . $allDrivesList->getError()
+            );
         }
         $apiDrives = $allDrivesList->getValue();
         $apiDrives = $apiDrives ?? [];
@@ -266,12 +274,13 @@ class Ocis
     /**
      * @param int $quota in bytes
      * @return Drive
-     * @throws \Exception
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws \InvalidArgumentException
+     * @throws InvalidResponseException
+     * @throws HttpException
      */
     public function createDrive(
         string $name,
@@ -306,7 +315,7 @@ class Ocis
         if ($newlyCreatedDrive instanceof ApiDrive) {
             return new Drive($newlyCreatedDrive, $this->connectionConfig, $this->accessToken);
         }
-        throw new \Exception(
+        throw new InvalidResponseException(
             "Drive could not be created. '" .
             $newlyCreatedDrive->getError()->getMessage() .
             "'"
@@ -319,7 +328,7 @@ class Ocis
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws HttpException
      */
     public function getFileById(string $fileId): string
     {
@@ -334,7 +343,7 @@ class Ocis
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws HttpException
      */
     public function getFileStreamById(string $fileId)
     {
@@ -347,7 +356,7 @@ class Ocis
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws HttpException
      */
     private function getFileResponseInterface(string $fileId): ResponseInterface
     {
@@ -363,7 +372,8 @@ class Ocis
      * @throws UnauthorizedException
      * @throws ForbiddenException
      * @throws \InvalidArgumentException
-     * @throws \Exception
+     * @throws InvalidResponseException
+     * @throws HttpException
      */
     public function getNotifications(): array
     {
@@ -378,7 +388,7 @@ class Ocis
         $content = $response->getBody()->getContents();
         $ocsResponse = json_decode($content, true);
         if (!is_array($ocsResponse)) {
-            throw new \Exception(
+            throw new InvalidResponseException(
                 'Could not decode notification response. Content: "' .  $content . '"'
             );
         }
@@ -388,7 +398,7 @@ class Ocis
             !is_array($ocsResponse['ocs']['data']) &&
             !is_null($ocsResponse['ocs']['data'])
         ) {
-            throw new \Exception(
+            throw new InvalidResponseException(
                 'Notification response is invalid. Content: "' .  $content . '"'
             );
         }
@@ -401,7 +411,7 @@ class Ocis
                 !isset($notificationContent["notification_id"]) ||
                 !is_string($notificationContent["notification_id"]) ||
                 $notificationContent["notification_id"] === "") {
-                throw new \Exception(
+                throw new InvalidResponseException(
                     'Id is invalid or missing in notification response. Content: "' . $content . '"'
                 );
             }

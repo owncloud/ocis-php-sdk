@@ -6,6 +6,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
@@ -145,7 +146,8 @@ class Notification
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
-     * @throws \Exception
+     * @throws HttpException
+     * @throws \InvalidArgumentException
      */
     public function delete(): void
     {
