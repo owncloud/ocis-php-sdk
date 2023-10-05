@@ -4,55 +4,79 @@ PLUGINS_GITHUB_RELEASE = "plugins/github-release"
 
 DEFAULT_PHP_VERSION = "8.1"
 
-dir = {
-    "base": "/var/www/owncloud",
-}
-
 config = {
     "branches": [
         "main",
     ],
     "codestyle": True,
-    "validateDailyTarball": True,
     "phpstan": True,
-    "phan": {
-        "multipleVersions": {
-            "phpVersions": [
-                DEFAULT_PHP_VERSION,
-                "8.1",
-            ],
-        },
-    },
+    "phan": True,
     "phpunit": True,
+}
+
+trigger = {
+    "ref": [
+        "refs/head/main",
+        "refs/pull/**",
+        "refs/tags/**",
+    ],
 }
 
 
 def main(ctx):
-    return codestyle(ctx)
+    return tests(
+        ctx,
+        [
+            ["codestyle", "make test-php-style"],
+            ["phpstan", "make test-php-phpstan"],
+            ["phan", "make test-php-phan"],
+        ],
+    ) + phpunit(ctx, [8.1, 8.2])
 
 
-def codestyle(ctx):
-    if "codestyle" not in config:
-        return []
-    return [
-        {
-            "kind": "pipeline",
-            "name": "coding-standard",
-            "steps": [
+def tests(ctx, tests):
+    pipelines = []
+    for test in tests:
+        if test[0] in config and config[test[0]]:
+            pipelines += [
                 {
-                    "name": "coding-standard",
-                    "image": OC_CI_PHP % phpVersion,
-                    "commands": [
-                        "composer install",
-                        "make test-php-style",
+                    "kind": "pipeline",
+                    "name": test[0],
+                    "steps": [
+                        {
+                            "name": test[0],
+                            "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+                            "commands": [
+                                "composer install",
+                                test[1],
+                            ],
+                        },
                     ],
-                    "trigger": {
-                        "ref": [
-                            "refs/pull/**",
-                            "refs/tags/**",
-                        ],
-                    },
-                },
-            ],
-        }
-    ]
+                    "trigger": trigger,
+                }
+            ]
+    return pipelines
+
+
+def phpunit(ctx, phpVersions):
+    pipelines = []
+    if "phpunit" in config and config["phpunit"]:
+        for php in phpVersions:
+            pipelines += [
+                {
+                    "kind": "pipeline",
+                    "name": "php-unit-test-%s" % php,
+                    "steps": [
+                        {
+                            "name": "php-unit-test",
+                            "image": OC_CI_PHP % php,
+                            "commands": [
+                                "composer install",
+                                "make test-php-unit",
+                            ],
+                        },
+                    ],
+                    "trigger": trigger,
+                }
+            ]
+    return pipelines
