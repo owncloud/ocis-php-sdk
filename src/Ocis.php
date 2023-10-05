@@ -137,6 +137,11 @@ class Ocis
      * Get all available drives
      *
      * @return array<Drive>
+     *
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      * @throws \Exception
      */
     public function listAllDrives(
@@ -162,8 +167,12 @@ class Ocis
          * Suppress the message from phan.
          */
 
-        /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
-        $allDrivesList = $apiInstance->listAllDrives($order, $filter);
+        try {
+            /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
+            $allDrivesList = $apiInstance->listAllDrives($order, $filter);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
         if ($allDrivesList instanceof OdataError) {
             // ToDo: understand how this can happen, and what to do about it.
             throw new \Exception("listAllDrives returned an OdataError");
@@ -182,6 +191,11 @@ class Ocis
      * Get all drives that the current user is a regular member of
      *
      * @return array<Drive>
+     *
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      * @throws \Exception
      */
     public function listMyDrives(
@@ -203,8 +217,13 @@ class Ocis
          * Suppress the message from phan.
          */
 
-        /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
-        $allDrivesList = $apiInstance->listMyDrives($order, $filter);
+        try {
+            /** @phan-suppress-next-line PhanTypeMismatchArgumentNullable */
+            $allDrivesList = $apiInstance->listMyDrives($order, $filter);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
         if ($allDrivesList instanceof OdataError) {
             // ToDo: understand how this can happen, and what to do about it.
             throw new \Exception("listMyDrives returned an OdataError");
@@ -248,8 +267,10 @@ class Ocis
      * @param int $quota in bytes
      * @return Drive
      * @throws \Exception
+     * @throws BadRequestException
      * @throws ForbiddenException
      * @throws NotFoundException
+     * @throws UnauthorizedException
      * @throws \InvalidArgumentException
      */
     public function createDrive(
@@ -336,8 +357,13 @@ class Ocis
     }
 
     /**
-     * @throws \Exception
      * @return array<Notification>
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws \InvalidArgumentException
+     * @throws \Exception
      */
     public function getNotifications(): array
     {

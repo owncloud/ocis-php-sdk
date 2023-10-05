@@ -2,6 +2,10 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Client;
 use Sabre\HTTP\Request;
 use Sabre\HTTP\ResponseInterface;
@@ -18,7 +22,10 @@ class WebDavClient extends Client
      * @param array<string, mixed> $headers
      *
      * @return ResponseInterface
-     *
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function sendRequest(string $method, string $url = '', $body = null, array $headers = []): ResponseInterface
     {
@@ -34,7 +41,6 @@ class WebDavClient extends Client
     /**
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @return array<int, mixed>
-     * @throws \Exception
      */
     public function createCurlSettings(array $connectionConfig, string $accessToken): array
     {
@@ -58,7 +64,6 @@ class WebDavClient extends Client
      * enable exceptions for send method
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      *
-     * @return void
      */
     public function setCustomSetting(array $connectionConfig, string $accessToken): void
     {

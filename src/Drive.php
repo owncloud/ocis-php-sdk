@@ -6,7 +6,11 @@ use DateTime;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Quota;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 
@@ -36,9 +40,6 @@ class Drive
         $this->connectionConfig = $connectionConfig;
     }
 
-    /**
-     * @throws \Exception
-     */
     private function createWebDavClient(): WebDavClient
     {
         $webDavClient = new WebDavClient(['baseUri' => $this->getWebDavUrl()]);
@@ -184,6 +185,10 @@ class Drive
      * @param string $path
      *
      * @return array<OcisResource>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function listResources(string $path = "/"): array
     {
@@ -204,10 +209,12 @@ class Drive
 
     /**
      * get file content
-     * @param string $path
      *
-     * @return mixed
-     * @throws \Exception
+     * @return callable|resource|string
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function getFile(string $path)
     {
@@ -228,8 +235,12 @@ class Drive
         return $webDavClient->sendRequest("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")))->getBodyAsStream();
     }
 
+
     /**
-     * @throws \Exception
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws NotFoundException
      */
     public function createFolder(string $path): bool
     {
@@ -253,7 +264,10 @@ class Drive
      * @param string $path
      * @param resource|string|null $resource
      *
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     private function makePutRequest(string $path, $resource): bool
     {
@@ -265,7 +279,10 @@ class Drive
     /**
      * upload file with content
      *
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function uploadFile(string $path, string $content): bool
     {
@@ -277,6 +294,10 @@ class Drive
      * @param resource|string|null $resource file resource pointing to the file to be uploaded
      *
      * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      * @throws \Exception
      */
     public function uploadFileStream(string $path, $resource): bool
@@ -290,7 +311,10 @@ class Drive
     /**
      * delete resource
      *
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function deleteResource(string $path): bool
     {
@@ -305,7 +329,10 @@ class Drive
      * @param string $sourcePath
      * @param string $destinationPath
      *
-     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function moveResource(string $sourcePath, string $destinationPath): bool
     {
@@ -318,7 +345,10 @@ class Drive
     /**
      * empty trash-bin
      *
-     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function emptyTrashbin(): bool
     {

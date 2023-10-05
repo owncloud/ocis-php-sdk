@@ -37,7 +37,7 @@ class Notification
     /**
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @param array<mixed> $messageRichParameters
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function __construct(
         string &$accessToken,
@@ -69,7 +69,7 @@ class Notification
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
-            throw new \Exception('connection configuration not valid');
+            throw new \InvalidArgumentException('connection configuration not valid');
         }
         $this->connectionConfig = $connectionConfig;
     }
