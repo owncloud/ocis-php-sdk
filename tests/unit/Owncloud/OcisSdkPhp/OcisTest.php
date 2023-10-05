@@ -10,6 +10,8 @@ use OpenAPI\Client\Model\Drive;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\OdataErrorMain;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Ocis;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -60,7 +62,7 @@ class OcisTest extends TestCase
 
     public function testCreateDriveReturnsOdataError(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
         $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
@@ -75,7 +77,7 @@ class OcisTest extends TestCase
 
     public function testCreateDriveUnresolvedHost(): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(HttpException::class);
         $this->expectExceptionMessage(
             "[0] cURL error 6: Could not resolve host: localhost-does-not-exist (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://localhost-does-not-exist:9200/graph/v1.0/drives"
         );
@@ -168,7 +170,7 @@ class OcisTest extends TestCase
      */
     public function testGetNotificationResponseNotJson(string $responseContent): void
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
             'Could not decode notification response. Content: "' . $responseContent . '"'
         );
@@ -195,7 +197,7 @@ class OcisTest extends TestCase
     public function testGetNotificationInvalidOcsData(
         string $responseContent
     ): void {
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
             'Notification response is invalid. Content: "' . $responseContent . '"'
         );
@@ -221,7 +223,7 @@ class OcisTest extends TestCase
     public function testGetNotificationMissingOrInvalidId(
         string $responseContent
     ): void {
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
             'Id is invalid or missing in notification response. Content: "' . $responseContent . '"'
         );

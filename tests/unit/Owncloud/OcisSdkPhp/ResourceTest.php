@@ -2,6 +2,7 @@
 
 namespace unit\Owncloud\OcisPhpSdk;
 
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\OcisResource;
 use PHPUnit\Framework\TestCase;
 use Sabre\DAV\Xml\Property\ResourceType;
@@ -34,7 +35,6 @@ class ResourceTest extends TestCase
 
     /**
      * @return void
-     * @throws \Exception
      * @dataProvider dataProviderValidFileType
      */
     public function testGetFileTypeValid(string|null $resourceType, string $expectedResult): void
@@ -68,7 +68,7 @@ class ResourceTest extends TestCase
     public function testGetFileTypeInvalidResource($resourceType): void
     {
         $metadata = [];
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Received invalid data for the key \"resourcetype\" in the response array");
         $metadata['{DAV:}resourcetype'] = new ResourceType($resourceType);
         $resource = new OcisResource($metadata);
@@ -130,7 +130,7 @@ class ResourceTest extends TestCase
     public function testGetSizeInvalid(string $actualSize, string|null $data, string $sizeKey): void
     {
         $metadata = [];
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Received an invalid value for size in the response");
         $metadata['{DAV:}resourcetype'] = new ResourceType($data);
         $metadata[$sizeKey] = $actualSize;
@@ -228,7 +228,7 @@ class ResourceTest extends TestCase
     public function testGetFavoriteInvalid(string $value): void
     {
         $metadata = [];
-        $this->expectException(\Exception::class);
+        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("value of property \"favorite\" invalid in the server response");
         $metadata['{http://owncloud.org/ns}favorite'] = $value;
         $resource = new OcisResource($metadata);
@@ -295,7 +295,7 @@ class ResourceTest extends TestCase
             $result = null;
             try {
                 $result = $resource->$properytFunc();
-            } catch (\Exception $e) {
+            } catch (InvalidResponseException $e) {
                 $this->assertSame('could not find property "' . $property . '" in response', $e->getMessage());
             }
             $this->assertNull($result);
@@ -318,7 +318,7 @@ class ResourceTest extends TestCase
             $result = null;
             try {
                 $result = $resource->$properytFunc();
-            } catch (\Exception $e) {
+            } catch (InvalidResponseException $e) {
                 $this->assertSame('Invalid response from server', $e->getMessage());
             }
             $this->assertNull($result);

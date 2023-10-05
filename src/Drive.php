@@ -6,7 +6,13 @@ use DateTime;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Quota;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 
@@ -23,7 +29,7 @@ class Drive
 
     /**
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      */
     public function __construct(ApiDrive $apiDrive, array $connectionConfig, string &$accessToken)
     {
@@ -31,14 +37,11 @@ class Drive
         $this->accessToken = &$accessToken;
 
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
-            throw new \Exception('connection configuration not valid');
+            throw new \InvalidArgumentException('connection configuration not valid');
         }
         $this->connectionConfig = $connectionConfig;
     }
 
-    /**
-     * @throws \Exception
-     */
     private function createWebDavClient(): WebDavClient
     {
         $webDavClient = new WebDavClient(['baseUri' => $this->getWebDavUrl()]);
@@ -60,7 +63,7 @@ class Drive
     }
 
     /**
-     * @throws \Exception
+     * @throws InvalidResponseException
      */
     public function getType(): DriveType
     {
@@ -69,7 +72,7 @@ class Drive
         if ($driveType instanceof DriveType) {
             return $driveType;
         }
-        throw new \Exception(
+        throw new InvalidResponseException(
             'invalid DriveType returned by apiDrive: "' . print_r($driveTypeString, true) . '"'
         );
     }
@@ -103,7 +106,7 @@ class Drive
     }
 
     /**
-     * @throws \Exception
+     * @throws InvalidResponseException
      */
     public function getLastModifiedDateTime(): DateTime
     {
@@ -111,7 +114,7 @@ class Drive
         if ($date instanceof DateTime) {
             return $date;
         }
-        throw new \Exception(
+        throw new InvalidResponseException(
             'invalid LastModifiedDateTime returned: "' . print_r($date, true) . '"'
         );
     }
@@ -122,7 +125,7 @@ class Drive
     }
 
     /**
-     * @throws \Exception
+     * @throws InvalidResponseException
      */
     public function getQuota(): Quota
     {
@@ -130,7 +133,7 @@ class Drive
         if ($quota instanceof Quota) {
             return $quota;
         }
-        throw new \Exception(
+        throw new InvalidResponseException(
             'invalid quota returned: "' . print_r($quota, true) . '"'
         );
     }
@@ -184,6 +187,11 @@ class Drive
      * @param string $path
      *
      * @return array<OcisResource>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function listResources(string $path = "/"): array
     {
@@ -204,10 +212,13 @@ class Drive
 
     /**
      * get file content
-     * @param string $path
      *
-     * @return mixed
-     * @throws \Exception
+     * @return callable|resource|string
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function getFile(string $path)
     {
@@ -220,7 +231,11 @@ class Drive
      * @param string $path
      *
      * @return mixed ocisFile
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function getFileStream(string $path): mixed
     {
@@ -228,8 +243,13 @@ class Drive
         return $webDavClient->sendRequest("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")))->getBodyAsStream();
     }
 
+
     /**
-     * @throws \Exception
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws HttpException
      */
     public function createFolder(string $path): bool
     {
@@ -253,7 +273,11 @@ class Drive
      * @param string $path
      * @param resource|string|null $resource
      *
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     private function makePutRequest(string $path, $resource): bool
     {
@@ -265,7 +289,11 @@ class Drive
     /**
      * upload file with content
      *
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function uploadFile(string $path, string $content): bool
     {
@@ -277,20 +305,28 @@ class Drive
      * @param resource|string|null $resource file resource pointing to the file to be uploaded
      *
      * @return bool
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function uploadFileStream(string $path, $resource): bool
     {
         if (is_resource($resource)) {
             return $this->makePutRequest($path, $resource);
         }
-        throw new \Exception('Provided resource is not valid.');
+        throw new \InvalidArgumentException('Provided resource is not valid.');
     }
 
     /**
      * delete resource
      *
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function deleteResource(string $path): bool
     {
@@ -305,7 +341,11 @@ class Drive
      * @param string $sourcePath
      * @param string $destinationPath
      *
-     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function moveResource(string $sourcePath, string $destinationPath): bool
     {
@@ -318,7 +358,11 @@ class Drive
     /**
      * empty trash-bin
      *
-     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
      */
     public function emptyTrashbin(): bool
     {
