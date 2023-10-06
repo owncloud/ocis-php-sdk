@@ -1,6 +1,9 @@
 # ocis-php-sdk
 This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](https://github.com/owncloud/ocis/) storage using PHP.
 
+## Documentation
+You can find a rendered version of the [API documentation](https://owncloud.dev/ocis-php-sdk/) in our dev docs.
+
 :exclamation: This SDK is still under heavy development and is not yet ready for production use, the API might change!
 
 ## Getting started
@@ -52,7 +55,7 @@ $drives[0]->uploadFile("/documents/myfile.txt", "Hello World!");
 $resources = $drives[0]->listResources("/documents");
 ```
 
-### Notifications
+## Notifications
 Notifications can be listed using the `listNotifications` method, which will return an array of `Notification` objects representing all active notifications.
 
 The `Notification` object can retrieve details of the corresponding notification and mark it as read (delete).

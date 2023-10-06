@@ -1,6 +1,8 @@
 OC_CI_PHP = "owncloudci/php:%s"
 OC_UBUNTU = "owncloud/ubuntu:20.04"
+PHPDOC_PHPDOC = "phpdoc/phpdoc:3"
 PLUGINS_GITHUB_RELEASE = "plugins/github-release"
+PLUGINS_GH_PAGES = "plugins/gh-pages:1"
 
 DEFAULT_PHP_VERSION = "8.1"
 
@@ -31,7 +33,7 @@ def main(ctx):
             ["phpstan", "make test-php-phpstan"],
             ["phan", "make test-php-phan"],
         ],
-    ) + phpunit(ctx, [8.1, 8.2])
+    ) + phpunit(ctx, [8.1, 8.2]) + docs()
 
 
 def tests(ctx, tests):
@@ -80,3 +82,56 @@ def phpunit(ctx, phpVersions):
                 }
             ]
     return pipelines
+
+def docs():
+    return [{
+        "kind": "pipeline",
+        "type": "docker",
+        "name": "docs",
+        "platform": {
+            "os": "linux",
+            "arch": "amd64",
+        },
+        "steps": [
+            {
+                "name": "dependencies",
+                "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+                "commands": [
+                    "composer install",
+                ],
+            },
+            {
+                "name": "docs-generate",
+                "image": PHPDOC_PHPDOC,
+            },
+            {
+                "name": "publish",
+                "image": PLUGINS_GH_PAGES,
+                "settings": {
+                    "username": {
+                        "from_secret": "github_username",
+                    },
+                    "password": {
+                        "from_secret": "github_token",
+                    },
+                    "pages_directory": "docs",
+                    "copy_contents": "true",
+                    "target_branch": "docs",
+                    "delete": "true",
+                },
+                "when": {
+                    "ref": {
+                        "exclude": [
+                            "refs/pull/**",
+                        ],
+                    },
+                },
+            },
+        ],
+        "trigger": {
+            "ref": [
+                "refs/heads/master",
+                "refs/pull/**",
+            ],
+        },
+    }]
