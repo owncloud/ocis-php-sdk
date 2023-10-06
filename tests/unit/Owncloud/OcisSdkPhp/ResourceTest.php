@@ -229,7 +229,7 @@ class ResourceTest extends TestCase
     {
         $metadata = [];
         $this->expectException(InvalidResponseException::class);
-        $this->expectExceptionMessage("value of property \"favorite\" invalid in the server response");
+        $this->expectExceptionMessage("Value of property \"favorite\" invalid in the server response");
         $metadata['{http://owncloud.org/ns}favorite'] = $value;
         $resource = new OcisResource($metadata);
         $resource->isFavorited();
@@ -296,7 +296,7 @@ class ResourceTest extends TestCase
             try {
                 $result = $resource->$properytFunc();
             } catch (InvalidResponseException $e) {
-                $this->assertSame('could not find property "' . $property . '" in response', $e->getMessage());
+                $this->assertSame('Could not find property "' . $property . '" in response', $e->getMessage());
             }
             $this->assertNull($result);
         }

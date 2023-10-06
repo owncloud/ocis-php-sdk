@@ -4,8 +4,10 @@ namespace Owncloud\OcisPhpSdk;
 
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\DAV\Xml\Property\ResourceType;
-use Owncloud\OcisPhpSdk\ResourceMetadata;
 
+/**
+ * Class representing a file or folder inside a Drive in ownCloud Infinite Scale
+ */
 class OcisResource
 {
     /**
@@ -25,7 +27,7 @@ class OcisResource
 
     /**
      * @param ResourceMetadata $property
-     * @phpstan-ignore-next-line because this method returns diffrent array depending on the property
+     * @phpstan-ignore-next-line Because this method returns different array depending on the property
      * @return array|string
      * @throws InvalidResponseException
      */
@@ -36,7 +38,7 @@ class OcisResource
             $metadata[$property->getKey()] = $this->metadata[$property->value];
         }
         if ($metadata === []) {
-            throw new InvalidResponseException('could not find property "' . $property->getKey() . '" in response');
+            throw new InvalidResponseException('Could not find property "' . $property->getKey() . '" in response');
         }
         if ($metadata[$property->getKey()] === null && $property->getKey() !== "tags") {
             throw new InvalidResponseException('Invalid response from server');
@@ -215,7 +217,7 @@ class OcisResource
         if (in_array($result, [1, 0, '1', '0'])) {
             return (bool)$result;
         }
-        throw new InvalidResponseException("value of property \"favorite\" invalid in the server response");
+        throw new InvalidResponseException("Value of property \"favorite\" invalid in the server response");
     }
 
     /**

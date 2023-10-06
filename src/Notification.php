@@ -10,6 +10,9 @@ use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
+/**
+ * Class representing a single notification emitted in ownCloud Infinite Scale
+ */
 class Notification
 {
     private string $accessToken;
@@ -39,6 +42,8 @@ class Notification
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @param array<mixed> $messageRichParameters
      * @throws \InvalidArgumentException
+     * @ignore The developer using the SDK does not need to create notifications manually, but should use the Ocis class
+     *         to retrieve them, so this constructor should not be listed in the documentation.
      */
     public function __construct(
         string &$accessToken,
@@ -76,7 +81,7 @@ class Notification
     }
 
     /**
-     * mainly for testing purpose
+     * @ignore This function is mainly for unit tests and should not be shown in the documentation
      */
     public function getAccessToken(): string
     {
@@ -142,6 +147,8 @@ class Notification
     }
 
     /**
+     * Delete (mark as read) the notification
+     *
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws NotFoundException

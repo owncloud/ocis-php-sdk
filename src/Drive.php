@@ -20,6 +20,9 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 
+/**
+ * Class representing a single drive/space in ownCloud Infinite Scale
+ */
 class Drive
 {
     private ApiDrive $apiDrive;
@@ -34,6 +37,8 @@ class Drive
     private string $serviceUrl;
 
     /**
+     * @ignore The developer using the SDK does not need to create drives manually, but should use the Ocis class
+     *         to get or create drives, so this constructor should not be listed in the documentation.
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @throws \InvalidArgumentException
      */
@@ -62,7 +67,7 @@ class Drive
     }
 
     /**
-     * mainly for unit tests
+     * @ignore This function is mainly for unit tests and should not be shown in the documentation
      */
     public function getAccessToken(): string
     {
@@ -85,7 +90,7 @@ class Drive
             return $driveType;
         }
         throw new InvalidResponseException(
-            'invalid DriveType returned by apiDrive: "' . print_r($driveTypeString, true) . '"'
+            'Invalid DriveType returned by apiDrive: "' . print_r($driveTypeString, true) . '"'
         );
     }
 
@@ -127,7 +132,7 @@ class Drive
             return $date;
         }
         throw new InvalidResponseException(
-            'invalid LastModifiedDateTime returned: "' . print_r($date, true) . '"'
+            'Invalid LastModifiedDateTime returned: "' . print_r($date, true) . '"'
         );
     }
 
@@ -146,7 +151,7 @@ class Drive
             return $quota;
         }
         throw new InvalidResponseException(
-            'invalid quota returned: "' . print_r($quota, true) . '"'
+            'Invalid quota returned: "' . print_r($quota, true) . '"'
         );
     }
 
@@ -214,36 +219,51 @@ class Drive
         }
     }
 
+    /**
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
     public function setName(string $name): Drive
     {
-        throw new \Exception("This function is not implemented yet.");
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
     }
 
+    /**
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
     public function setQuota(int $quota): Drive
     {
-        throw new \Exception("This function is not implemented yet.");
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
     }
 
+    /**
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
     public function setDescription(string $description): Drive
     {
-        throw new \Exception("This function is not implemented yet.");
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
     }
 
+    /**
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
     public function setImage(\GdImage $image): Drive
     {
         // upload image to dav/spaces/<space-id>/.space/<image-name>
         // PATCH space
-        throw new \Exception("This function is not implemented yet.");
-    }
-
-    public function setReadme(string $readme): Drive
-    {
-        // upload content of $readme to dav/spaces/<space-id>/.space/readme.md
-        throw new \Exception("This function is not implemented yet.");
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
     }
 
     /**
-     * list the content of that path
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
+    public function setReadme(string $readme): Drive
+    {
+        // upload content of $readme to dav/spaces/<space-id>/.space/readme.md
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+    }
+
+    /**
+     * List the content of a specific path in the current drive
      * @param string $path
      *
      * @return array<OcisResource>
@@ -271,7 +291,7 @@ class Drive
     }
 
     /**
-     * get file content
+     * Download and return the content of the file at the given path in the current drive
      *
      * @return callable|resource|string
      * @throws BadRequestException
@@ -287,17 +307,18 @@ class Drive
     }
 
     /**
-     * get file as a file resource
+     * Download the file at the given path in the current drive and return the stream
+     *
      * @param string $path
      *
-     * @return mixed ocisFile
+     * @return resource
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws HttpException
      */
-    public function getFileStream(string $path): mixed
+    public function getFileStream(string $path)
     {
         $webDavClient = $this->createWebDavClient();
         return $webDavClient->sendRequest("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")))->getBodyAsStream();
@@ -318,18 +339,25 @@ class Drive
         return true;
     }
 
+    /**
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
     public function getResourceMetadata(string $path = "/"): \stdClass
     {
-        throw new \Exception("This function is not implemented yet.");
-    }
-
-    public function getResourceMetadataById(string $id): \stdClass
-    {
-        throw new \Exception("This function is not implemented yet.");
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
     }
 
     /**
-     * update file content if the file already exists
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
+    public function getResourceMetadataById(string $id): \stdClass
+    {
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+    }
+
+    /**
+     * Update the file content
+     *
      * @param string $path
      * @param resource|string|null $resource
      *
@@ -347,7 +375,7 @@ class Drive
     }
 
     /**
-     * upload file with content
+     * Upload the given content to a specific path in the current drive
      *
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -361,8 +389,9 @@ class Drive
     }
 
     /**
-     * Uploads a file using streaming
-     * @param resource|string|null $resource file resource pointing to the file to be uploaded
+     * Stream the given resource to a specific path in the current drive
+     *
+     * @param resource|string|null $resource File resource pointing to the file to be uploaded
      *
      * @return bool
      * @throws BadRequestException
@@ -380,7 +409,7 @@ class Drive
     }
 
     /**
-     * delete resource
+     * Delete (move to trash-bin) the Ocis resource (file or folder) at the given path in the current drive
      *
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -396,7 +425,7 @@ class Drive
     }
 
     /**
-     *  move or rename resource
+     * Move or rename an Ocis resource in the current drive
      *
      * @param string $sourcePath
      * @param string $destinationPath
@@ -416,7 +445,8 @@ class Drive
     }
 
     /**
-     * empty trash-bin
+     * Empty the trash-bin of the current drive. ALL FILES AND FOLDERS IN THE TRASH-BIN WILL BE DELETED!
+     * THIS ACTION CANNOT BE REVERTED!
      *
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -432,20 +462,20 @@ class Drive
     }
 
     /**
-     * @param array<mixed> $tags
-     * @throws \Exception
+     * @param array<string> $tags
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
      */
     public function tagResource(string $path, array $tags): void
     {
-        throw new \Exception("This function is not implemented yet.");
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
     }
 
     /**
-     * @param array<mixed> $tags
-     * @throws \Exception
+     * @param array<string> $tags
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
      */
     public function untagResource(string $path, array $tags): void
     {
-        throw new \Exception("This function is not implemented yet.");
+        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
     }
 }
