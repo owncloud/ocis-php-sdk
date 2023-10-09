@@ -4,6 +4,13 @@ This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](https://gi
 ## Documentation
 You can find a rendered version of the [API documentation](https://owncloud.dev/ocis-php-sdk/) in our dev docs.
 
+To render the documentation locally, use the [phpDocumentor](https://www.phpdoc.org/) to run it in the local repo. E.g.:
+```
+docker run --rm -v ${PWD}:/data phpdoc/phpdoc:3
+```
+
+After that you will find the documentation inside the `docs` folder.
+
 :exclamation: This SDK is still under heavy development and is not yet ready for production use, the API might change!
 
 ## Getting started
