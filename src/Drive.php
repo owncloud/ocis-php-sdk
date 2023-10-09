@@ -356,7 +356,7 @@ class Drive
     }
 
     /**
-     * Update the file content
+     * Create a new file, if it doesn't exist and update the content of the file if the file exists
      *
      * @param string $path
      * @param resource|string|null $resource
