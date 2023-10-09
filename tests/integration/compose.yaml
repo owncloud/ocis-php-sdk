@@ -23,7 +23,12 @@ services:
       OCIS_ADMIN_USER_ID: ''
       OCIS_EXCLUDE_RUN_SERVICES: idp
       GRAPH_ASSIGN_DEFAULT_USER_ROLE: false
+      GRAPH_USERNAME_MATCH: "none"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "https://ocis.sdk.test:9009/.well-known/openid-configuration", "-k", "-f"]
+      interval: 10s
+      timeout: 300s
 
   postgres:
     image: postgres:alpine

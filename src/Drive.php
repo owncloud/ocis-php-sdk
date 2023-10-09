@@ -3,6 +3,10 @@
 namespace Owncloud\OcisPhpSdk;
 
 use DateTime;
+use GuzzleHttp\Client;
+use OpenAPI\Client\Api\DrivesApi;
+use OpenAPI\Client\ApiException;
+use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Quota;
@@ -26,19 +30,27 @@ class Drive
      * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
      */
     private array $connectionConfig;
+    private Configuration $graphApiConfig;
+    private string $serviceUrl;
 
     /**
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @throws \InvalidArgumentException
      */
-    public function __construct(ApiDrive $apiDrive, array $connectionConfig, string &$accessToken)
-    {
+    public function __construct(
+        ApiDrive $apiDrive,
+        array $connectionConfig,
+        string $serviceUrl,
+        string &$accessToken
+    ) {
         $this->apiDrive = $apiDrive;
         $this->accessToken = &$accessToken;
-
+        $this->serviceUrl = $serviceUrl;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
             throw new \InvalidArgumentException('connection configuration not valid');
         }
+        $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($this->serviceUrl . '/graph/v1.0');
+
         $this->connectionConfig = $connectionConfig;
     }
 
@@ -143,15 +155,61 @@ class Drive
         return $this->apiDrive->jsonSerialize();
     }
 
+    /**
+     * Deletes the current drive irreversibly.
+     * A drive can only be deleted if its has been disabled before.
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     */
     public function delete(): void
     {
-        // alias to disable(), but can only happen if the space is already disabled
-        throw new \Exception("This function is not implemented yet.");
+        $connectionConfig = array_merge(
+            $this->connectionConfig,
+            ['headers' => ['Purge' => 'T']]
+        );
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken)
+        );
+
+        $apiInstance = new DrivesApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiInstance->deleteDrive($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
     }
 
+    /**
+     * Disables the current drive without deleting it.
+     * Disabling a drive is the prerequisite for deleting it.
+     * Calling this function on a drive that is not disabled will have no effect.
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
     public function disable(): void
     {
-        throw new \Exception("This function is not implemented yet.");
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+        $apiInstance = new DrivesApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiInstance->deleteDrive($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
     }
 
     public function setName(string $name): Drive
