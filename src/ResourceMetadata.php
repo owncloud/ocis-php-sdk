@@ -2,6 +2,9 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+/**
+ * @ignore This is only used for internal purposes and should not show up in the documentation
+ */
 enum ResourceMetadata: string
 {
     case ID = "{http://owncloud.org/ns}id";

@@ -14,6 +14,9 @@ use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 
+/**
+ * @ignore This is only used for internal purposes and should not show up in the documentation
+ */
 class WebDavClient extends Client
 {
     /**

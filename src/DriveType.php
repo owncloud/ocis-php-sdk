@@ -2,6 +2,9 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+/**
+ * Accepted drive types
+ */
 enum DriveType: string
 {
     case PERSONAL = "personal";

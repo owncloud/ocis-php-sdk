@@ -7,8 +7,16 @@ use OpenAPI\Client\ApiException;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 
+/**
+ * @ignore This is only used for internal purposes and should not show up in the documentation
+ * Helper class to help with handling different exceptions thrown by dependencies
+ */
 class ExceptionHelper
 {
+    /**
+     * Takes an exception thrown by a dependency and returns a custom exception
+     * that is more specific to the HTTP error
+     */
     public static function getHttpErrorException(
         GuzzleException|ApiException|SabreClientHttpException|SabreClientException $e
     ): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|HttpException {

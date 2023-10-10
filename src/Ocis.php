@@ -21,6 +21,9 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
 
+/**
+ * Basic class to establish the connection to an ownCloud Infinite Scale instance
+ */
 class Ocis
 {
     private string $serviceUrl;
@@ -57,13 +60,16 @@ class Ocis
         $this->accessToken = $accessToken;
         $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
         if (!self::isConnectionConfigValid($connectionConfig)) {
-            throw new \InvalidArgumentException('connection configuration not valid');
+            throw new \InvalidArgumentException('Connection configuration is not valid');
         }
         $this->connectionConfig = $connectionConfig;
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
 
     }
 
+    /**
+     * @ignore This function is mainly for unit tests and should not be shown in the documentation
+     */
     public function setGuzzle(Client $guzzle): void
     {
         $this->guzzle = $guzzle;
@@ -71,6 +77,7 @@ class Ocis
 
     /**
      * @param array<mixed> $connectionConfig
+     * @ignore This function is used for internal purposes only and should not be shown in the documentation. The function is public to make it testable and because its also used from other classes.
      */
     public static function isConnectionConfigValid(array $connectionConfig): bool
     {
@@ -92,9 +99,10 @@ class Ocis
     }
 
     /**
-     * combines passed in config settings for guzzle with the default settings needed
+     * Combines passed-in config settings for guzzle with the default settings needed
      * for the class and returns the complete array
      *
+     * @ignore This function is used for internal purposes only and should not be shown in the documentation. The function is public to make it testable.
      * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
      * @return array<string, mixed>
      * @throws \InvalidArgumentException
@@ -102,7 +110,7 @@ class Ocis
     public static function createGuzzleConfig(array $connectionConfig, string $accessToken): array
     {
         if (!self::isConnectionConfigValid($connectionConfig)) {
-            throw new \InvalidArgumentException('connection configuration not valid');
+            throw new \InvalidArgumentException('Connection configuration is not valid');
         }
         if (!isset($connectionConfig['headers'])) {
             $connectionConfig['headers'] = [];
@@ -114,17 +122,25 @@ class Ocis
         return $connectionConfig;
     }
 
+    /**
+     * @ignore This function is mainly for unit tests and should not be shown in the documentation
+     */
     public function setDrivesApiInstance(DrivesApi|null $apiInstance): void
     {
         $this->drivesApiInstance = $apiInstance;
     }
 
+    /**
+     * @ignore This function is mainly for unit tests and should not be shown in the documentation
+     */
     public function setDrivesGetDrivesApiInstance(DrivesGetDrivesApi|null $apiInstance): void
     {
         $this->drivesGetDrivesApiInstance = $apiInstance;
     }
 
     /**
+     * Update the access token. Call this function after refreshing the access token.
+     *
      * @throws \InvalidArgumentException
      */
     public function setAccessToken(string $accessToken): void
@@ -274,6 +290,8 @@ class Ocis
     }
 
     /**
+     * Retrieve a drive by its unique id
+     *
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws NotFoundException
@@ -307,6 +325,8 @@ class Ocis
     }
 
     /**
+     * Create a new drive (if the user has the permission to do so)
+     *
      * @param int $quota in bytes
      * @return Drive
      * @throws BadRequestException
@@ -323,7 +343,7 @@ class Ocis
         string $description = null
     ): Drive {
         if ($quota < 0) {
-            throw new \InvalidArgumentException('quota cannot be less than 0');
+            throw new \InvalidArgumentException('Quota cannot be less than 0');
         }
         if ($this->drivesApiInstance === null) {
             $apiInstance = new DrivesApi(
@@ -363,7 +383,8 @@ class Ocis
     }
 
     /**
-     * get file content by file id
+     * Get the content of the file referenced by the unique id
+     *
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws NotFoundException
@@ -377,7 +398,8 @@ class Ocis
     }
 
     /**
-     * get file as a file resource
+     * Get the file referenced by the unique id and return the stream
+     *
      * @return resource
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -406,6 +428,8 @@ class Ocis
     }
 
     /**
+     * Retrieve all unread notifications of the current user
+     *
      * @return array<Notification>
      * @throws BadRequestException
      * @throws NotFoundException
