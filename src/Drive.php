@@ -307,7 +307,7 @@ class Drive
     }
 
     /**
-     * Download the file at the given path in the current drive and return the stream
+     * Return a stream resource for the file at the given path in the current drive. The content of the file can be read from the stream.
      *
      * @param string $path
      *

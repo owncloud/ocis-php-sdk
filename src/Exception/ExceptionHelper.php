@@ -14,7 +14,7 @@ use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 class ExceptionHelper
 {
     /**
-     * Takes an exception thrown by a dependency and returns an custom exception
+     * Takes an exception thrown by a dependency and returns a custom exception
      * that is more specific to the HTTP error
      */
     public static function getHttpErrorException(

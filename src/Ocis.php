@@ -77,7 +77,7 @@ class Ocis
 
     /**
      * @param array<mixed> $connectionConfig
-     * @ignore This function is used for internal purposes only and should not be shown in the documentation. The function is public to make it testable and because its used also from other classes.
+     * @ignore This function is used for internal purposes only and should not be shown in the documentation. The function is public to make it testable and because its also used from other classes.
      */
     public static function isConnectionConfigValid(array $connectionConfig): bool
     {
