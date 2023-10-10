@@ -35,13 +35,13 @@ class Ocis
     private string $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
 
     /**
-     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
+     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:Client}
      */
     private array $connectionConfig;
 
     /**
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
-     *        valid config keys are: headers, verify
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:Client} $connectionConfig
+     *        valid config keys are: headers, verify, webfinger, guzzle
      *        headers has to be an array in the form like
      *        [
      *            'User-Agent' => 'testing/1.0',
@@ -49,30 +49,46 @@ class Ocis
      *            'X-Foo'      => ['Bar', 'Baz']
      *        ]
      *        verify is a boolean to disable SSL checking
+     *        webfinger is a boolean to enable webfinger discovery, in that case $serviceUrl is the webfinger url
+     *        guzzle is a guzzle client instance that can be injected e.g. to be used for unit tests
      * @throws \InvalidArgumentException
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws InvalidResponseException
      */
     public function __construct(
         string $serviceUrl,
         string $accessToken,
         array $connectionConfig = []
     ) {
-        $this->serviceUrl = $serviceUrl;
-        $this->accessToken = $accessToken;
-        $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
         if (!self::isConnectionConfigValid($connectionConfig)) {
             throw new \InvalidArgumentException('Connection configuration is not valid');
         }
+        $this->accessToken = $accessToken;
+        if (array_key_exists('guzzle', $connectionConfig)) {
+            $this->guzzle = $connectionConfig['guzzle'];
+        } else {
+            $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
+        }
+        if (array_key_exists('webfinger', $connectionConfig) && $connectionConfig['webfinger'] === true) {
+            $this->serviceUrl = $this->getServiceUrlFromWebfinger($serviceUrl);
+        } else {
+            $this->serviceUrl = $serviceUrl;
+        }
+
         $this->connectionConfig = $connectionConfig;
-        $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($serviceUrl . '/graph/v1.0');
+        $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
+            $this->serviceUrl . '/graph/v1.0'
+        );
 
     }
 
-    /**
-     * @ignore This function is mainly for unit tests and should not be shown in the documentation
-     */
-    public function setGuzzle(Client $guzzle): void
+    public function getServiceUrl(): string
     {
-        $this->guzzle = $guzzle;
+        return $this->serviceUrl;
     }
 
     /**
@@ -81,13 +97,27 @@ class Ocis
      */
     public static function isConnectionConfigValid(array $connectionConfig): bool
     {
-        $validConnectionConfigKeys = ['headers' => [], 'verify' => true];
+        $validConnectionConfigKeys = [
+            'headers' => [],
+            'verify' => true,
+            'webfinger' => true,
+            'guzzle' => Client::class
+        ];
         foreach ($connectionConfig as $key => $value) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
                 return false;
             }
         }
         if (array_key_exists('verify', $connectionConfig) && !is_bool($connectionConfig['verify'])) {
+            return false;
+        }
+        if (array_key_exists('webfinger', $connectionConfig) && !is_bool($connectionConfig['webfinger'])) {
+            return false;
+        }
+        if (
+            array_key_exists('guzzle', $connectionConfig) &&
+            !($connectionConfig['guzzle'] instanceof $validConnectionConfigKeys['guzzle'])
+        ) {
             return false;
         }
         if (array_key_exists('headers', $connectionConfig)) {
@@ -103,7 +133,7 @@ class Ocis
      * for the class and returns the complete array
      *
      * @ignore This function is used for internal purposes only and should not be shown in the documentation. The function is public to make it testable.
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:Client} $connectionConfig
      * @return array<string, mixed>
      * @throws \InvalidArgumentException
      */
@@ -151,6 +181,59 @@ class Ocis
         $this->drivesGetDrivesApiInstance = null;
     }
 
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws \InvalidArgumentException
+     */
+    private function getServiceUrlFromWebfinger(string $webfingerUrl): string
+    {
+        $tokenDataArray = explode(".", $this->accessToken);
+        if (!array_key_exists(1, $tokenDataArray)) {
+            throw new \InvalidArgumentException('could not decode token');
+        }
+        $plainPayload = base64_decode($tokenDataArray[1], true);
+        if (!$plainPayload) {
+            throw new \InvalidArgumentException('could not decode token');
+        }
+        $tokenPayload = json_decode($plainPayload, true);
+        if (!is_array($tokenPayload) || !array_key_exists('iss', $tokenPayload)) {
+            throw new \InvalidArgumentException('could not decode token');
+        }
+        $iss = parse_url($tokenPayload['iss']);
+        if (!is_array($iss) || !array_key_exists('host', $iss)) {
+            throw new \InvalidArgumentException('could not decode token');
+        }
+        try {
+            $webfingerResponse = $this->guzzle->get($webfingerUrl . '?resource=acct:me@' . $iss['host']);
+        } catch (GuzzleException|GuzzleClientException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        $webfingerDecodedResponse = json_decode($webfingerResponse->getBody()->getContents(), true);
+        if (
+            !is_array($webfingerDecodedResponse) ||
+            !array_key_exists('links', $webfingerDecodedResponse) ||
+            !is_array($webfingerDecodedResponse['links'])
+        ) {
+            throw new InvalidResponseException('invalid webfinger response');
+        }
+        foreach ($webfingerDecodedResponse['links'] as $link) {
+            if (
+                is_array($link) &&
+                array_key_exists('rel', $link) &&
+                $link['rel'] === 'http://webfinger.owncloud/rel/server-instance' &&
+                array_key_exists('href', $link)
+            ) {
+                return $link['href'];
+            }
+        }
+        throw new InvalidResponseException('invalid webfinger response');
+    }
     /**
      * Get all available drives
      *

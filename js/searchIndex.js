@@ -296,6 +296,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method___construct"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetServiceUrl\u0028\u0029",
+            "name": "getServiceUrl",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getServiceUrl"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AsetAccessToken\u0028\u0029",
             "name": "setAccessToken",
             "summary": "Update\u0020the\u0020access\u0020token.\u0020Call\u0020this\u0020function\u0020after\u0020refreshing\u0020the\u0020access\u0020token.",
