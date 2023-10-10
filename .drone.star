@@ -130,7 +130,7 @@ def docs():
         ],
         "trigger": {
             "ref": [
-                "refs/heads/master",
+                "refs/heads/main",
                 "refs/pull/**",
             ],
         },
