@@ -157,7 +157,9 @@ class Drive
 
     /**
      * Deletes the current drive irreversibly.
-     * A drive can only be deleted if its has been disabled before.
+     * A drive can only be deleted if it has already been disabled.
+     * Calling this function on a drive that is not disabled will have no effect.
+     *
      * @throws UnauthorizedException
      * @throws ForbiddenException
      * @throws BadRequestException
@@ -188,7 +190,7 @@ class Drive
     /**
      * Disables the current drive without deleting it.
      * Disabling a drive is the prerequisite for deleting it.
-     * Calling this function on a drive that is not disabled will have no effect.
+     * Calling this function on a drive that is already disabled will have no effect.
      *
      * @throws UnauthorizedException
      * @throws ForbiddenException
