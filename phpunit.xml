@@ -17,11 +17,8 @@
   </testsuites>
   <coverage>
     <include>
-      <directory suffix=".php">.</directory>
+      <directory suffix=".php">./src</directory>
     </include>
-    <exclude>
-      <directory suffix=".php">./tests</directory>
-    </exclude>
     <report>
       <clover outputFile="./tests/output/clover.xml"/>
     </report>

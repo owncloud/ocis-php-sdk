@@ -1,6 +1,7 @@
 # docker compose command, defaults to v3
 # for v2: set this as docker-compose using the environment variable
 DCO:=docker compose
+PHPUNIT=phpdbg -qrr -d memory_limit=4096M -d zend.enable_gc=0 "vendor/bin/phpunit"
 
 #
 # Catch-all rules
@@ -21,12 +22,12 @@ composer:
 .PHONY: test-php-unit
 test-php-unit:             ## Run php unit tests
 test-php-unit: vendor/bin/phpunit
-	vendor/bin/phpunit --configuration ./phpunit.xml --testsuite unit
+	$(PHPUNIT) --configuration ./phpunit.xml --testsuite unit
 
 .PHONY: test-php-integration
 test-php-integration:             ## Run php integration tests
 test-php-integration: run-ocis-with-keycloak
-	vendor/bin/phpunit --configuration ./phpunit.xml --testsuite integration
+	$(PHPUNIT) --configuration ./phpunit.xml --testsuite integration
 	$(MAKE) docker-clean
 
 .PHONY: test-php-style
