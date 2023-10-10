@@ -185,7 +185,12 @@ class Ocis
         $apiDrives = $allDrivesList->getValue();
         $apiDrives = $apiDrives ?? [];
         foreach ($apiDrives as $apiDrive) {
-            $drive = new Drive($apiDrive, $this->connectionConfig, $this->accessToken);
+            $drive = new Drive(
+                $apiDrive,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken
+            );
             $drives[] = $drive;
         }
 
@@ -239,7 +244,12 @@ class Ocis
         $apiDrives = $allDrivesList->getValue();
         $apiDrives = $apiDrives ?? [];
         foreach ($apiDrives as $apiDrive) {
-            $drive = new Drive($apiDrive, $this->connectionConfig, $this->accessToken);
+            $drive = new Drive(
+                $apiDrive,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken
+            );
             $drives[] = $drive;
         }
         return $drives;
@@ -264,11 +274,36 @@ class Ocis
     }
 
     /**
-     * @throws \Exception
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws InvalidResponseException
      */
     public function getDriveById(string $driveId): Drive
     {
-        throw new \Exception("This function is not implemented yet.");
+        $apiInstance = new DrivesApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiDrive = $apiInstance->getDrive($driveId);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiDrive instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getDrive returned an OdataError - " . $apiDrive->getError()
+            );
+        }
+        return new Drive(
+            $apiDrive,
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
+        );
     }
 
     /**
@@ -313,7 +348,12 @@ class Ocis
         }
 
         if ($newlyCreatedDrive instanceof ApiDrive) {
-            return new Drive($newlyCreatedDrive, $this->connectionConfig, $this->accessToken);
+            return new Drive(
+                $newlyCreatedDrive,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken
+            );
         }
         throw new InvalidResponseException(
             "Drive could not be created. '" .

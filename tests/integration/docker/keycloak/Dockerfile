@@ -9,7 +9,7 @@ RUN apt update && apt install -y openssl && \
     mv keycloak.key keycloak.pem && \
     cat keycloak.crt >> keycloak.pem
 
-FROM quay.io/keycloak/keycloak:22.0.1
+FROM quay.io/keycloak/keycloak:22.0.4
 
 USER root
 COPY --from=gen-certs /certs /opt/keycloak/certs

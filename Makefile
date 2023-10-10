@@ -23,6 +23,12 @@ test-php-unit:             ## Run php unit tests
 test-php-unit: vendor/bin/phpunit
 	vendor/bin/phpunit --configuration ./phpunit.xml --testsuite unit
 
+.PHONY: test-php-integration
+test-php-integration:             ## Run php integration tests
+test-php-integration: run-ocis-with-keycloak
+	vendor/bin/phpunit --configuration ./phpunit.xml --testsuite integration
+	$(MAKE) docker-clean
+
 .PHONY: test-php-style
 test-php-style:            ## Run php-cs-fixer and check code-style
 test-php-style: vendor/bin/php-cs-fixer
@@ -45,11 +51,11 @@ test-php-phpstan: vendor/bin/phpstan
 
 .PHONY: run-ocis-with-keycloak
 run-ocis-with-keycloak:
-	cd tests/integration && $(DCO) up
+	cd tests/integration && $(DCO) up -d --wait
 
 .PHONY: docker-clean
 docker-clean:
-	cd tests/integration && $(DCO) down -v --remove-orphans --rmi all
+	cd tests/integration && $(DCO) down -v --remove-orphans
 
 .PHONY: clean
 clean:
