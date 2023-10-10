@@ -30,7 +30,7 @@ class Drive
     private string $webDavUrl = '';
 
     /**
-     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
+     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client}
      */
     private array $connectionConfig;
     private Configuration $graphApiConfig;
@@ -39,7 +39,7 @@ class Drive
     /**
      * @ignore The developer using the SDK does not need to create drives manually, but should use the Ocis class
      *         to get or create drives, so this constructor should not be listed in the documentation.
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool} $connectionConfig
+     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client} $connectionConfig
      * @throws \InvalidArgumentException
      */
     public function __construct(

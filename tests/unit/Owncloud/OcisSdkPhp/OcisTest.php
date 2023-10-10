@@ -2,6 +2,7 @@
 
 namespace unit\Owncloud\OcisPhpSdk;
 
+use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\ApiException;
@@ -141,16 +142,13 @@ class OcisTest extends TestCase
         string $responseContent,
         string $token = 'doesNotMatter'
     ): Ocis {
-        $ocis = new Ocis('https://localhost:9200', $token);
         $streamMock = $this->createMock(StreamInterface::class);
         $streamMock->method('getContents')->willReturn($responseContent);
         $responseMock = $this->createMock(ResponseInterface::class);
         $responseMock->method('getBody')->willReturn($streamMock);
         $guzzleMock = $this->createMock(\GuzzleHttp\Client::class);
         $guzzleMock->method('get')->willReturn($responseMock);
-        /* @phan-suppress-next-line PhanTypeMismatchArgument */
-        $ocis->setGuzzle($guzzleMock);
-        return $ocis;
+        return new Ocis('https://localhost:9200', $token, ['guzzle' => $guzzleMock]);
     }
 
     /**
@@ -319,6 +317,35 @@ class OcisTest extends TestCase
                 ['crud' => 'some value', 'verify' => false],
                 false
             ],
+            [
+                ['webfinger' => true],
+                true
+            ]
+            ,
+            [
+                ['webfinger' => false],
+                true
+            ],
+            [
+                ['webfinger' => 'true'],
+                false
+            ],
+            [
+                ['webfinger' => null],
+                false
+            ],
+            [
+                ['guzzle' => new Client()],
+                true
+            ],
+            [
+                ['guzzle' => null],
+                false
+            ],
+            [
+                ['guzzle' => 'Guzzle'],
+                false
+            ]
         ];
     }
 
