@@ -38,12 +38,11 @@ config = {
 
 trigger = {
     "ref": [
-        "refs/head/main",
+        "refs/heads/main",
         "refs/pull/**",
         "refs/tags/**",
     ],
 }
-
 
 def main(ctx):
     return (
@@ -184,12 +183,7 @@ def docs():
                 },
             },
         ],
-        "trigger": {
-            "ref": [
-                "refs/heads/main",
-                "refs/pull/**",
-            ],
-        },
+        "trigger": trigger,
     }]
 
 def sonarAnalysis(ctx, phpVersion = DEFAULT_PHP_VERSION):
@@ -268,12 +262,6 @@ def sonarAnalysis(ctx, phpVersion = DEFAULT_PHP_VERSION):
         "depends_on": [
             "php-unit-test-%s" % DEFAULT_PHP_VERSION,
         ],
-        "trigger": {
-            "ref": [
-                "refs/heads/master",
-                "refs/pull/**",
-                "refs/tags/**",
-            ],
-        },
+        "trigger": trigger,
     }]
     return result
