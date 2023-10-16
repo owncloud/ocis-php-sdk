@@ -1,3 +1,10 @@
+[![Build Status](https://drone.owncloud.com/api/badges/owncloud/ocis-php-sdk/status.svg?ref=refs/heads/main)](https://drone.owncloud.com/owncloud/ocis-php-sdk)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=coverage)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+
+
 # ocis-php-sdk
 This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](https://github.com/owncloud/ocis/) storage using PHP.
 
