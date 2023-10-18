@@ -8,4 +8,4 @@ geekdocFilePath: README.md
 geekdocCollapseSection: true
 ---
 
-{{< include file="README.md" >}}
+{{< include file="/_includes/README.md" type="page" >}}
