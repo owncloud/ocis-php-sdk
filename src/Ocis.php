@@ -76,7 +76,7 @@ class Ocis
         if (array_key_exists('webfinger', $connectionConfig) && $connectionConfig['webfinger'] === true) {
             $this->serviceUrl = $this->getServiceUrlFromWebfinger($serviceUrl);
         } else {
-            $this->serviceUrl = $serviceUrl;
+            $this->serviceUrl = rtrim($serviceUrl, '/');
         }
 
         $this->connectionConfig = $connectionConfig;
