@@ -190,7 +190,7 @@ To test, simply open a browser and head to http://url-of-this-file.
 ### Integration tests
 The integration tests start a full oCIS server with keycloak and other services using docker.
 To run the tests locally
-1. Install and setup `docker` and `docker compose`.
+1. Install and setup `docker` (min version 24) and `docker compose` (min version 2.21).
 2. add these lines to your `/etc/hosts` file:
    ```
    127.0.0.1	ocis.owncloud.test
