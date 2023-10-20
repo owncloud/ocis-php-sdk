@@ -1,57 +1,116 @@
 version: '3.8'
 
 services:
+  traefik:
+    image: traefik:v2.9.1
+    networks:
+      ocis-net:
+        aliases:
+          - ${OCIS_DOMAIN:-ocis.owncloud.test}
+          - ${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}
+    command:
+      - "--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}"
+      # letsencrypt configuration
+      - "--certificatesResolvers.http.acme.email=${TRAEFIK_ACME_MAIL:-example@example.org}"
+      - "--certificatesResolvers.http.acme.storage=/certs/acme.json"
+      - "--certificatesResolvers.http.acme.httpChallenge.entryPoint=http"
+      # enable dashboard
+      - "--api.dashboard=true"
+      # define entrypoints
+      - "--entryPoints.http.address=:80"
+      - "--entryPoints.http.http.redirections.entryPoint.to=https"
+      - "--entryPoints.http.http.redirections.entryPoint.scheme=https"
+      - "--entryPoints.https.address=:443"
+      # docker provider (get configuration from container labels)
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedByDefault=false"
+      # access log
+      - "--accessLog=true"
+      - "--accessLog.format=json"
+      - "--accessLog.fields.headers.names.X-Request-Id=keep"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "${DOCKER_SOCKET_PATH:-/var/run/docker.sock}:/var/run/docker.sock:ro"
+      - "certs:/certs"
+    labels:
+      - "traefik.enable=${TRAEFIK_DASHBOARD:-false}"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=${TRAEFIK_BASIC_AUTH_USERS:-admin:$$apr1$$4vqie50r$$YQAmQdtmz5n9rEALhxJ4l.}" # defaults to admin:admin
+      - "traefik.http.routers.traefik.entrypoints=https"
+      - "traefik.http.routers.traefik.rule=Host(`${TRAEFIK_DOMAIN:-traefik.owncloud.test}`)"
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik.tls.certresolver=http"
+      - "traefik.http.routers.traefik.service=api@internal"
+    logging:
+      driver: ${LOG_DRIVER:-local}
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "wget https://ocis.owncloud.test/.well-known/openid-configuration --no-check-certificate --quiet --tries=1 --spider"]
+      interval: 1s
+      retries: 120
+
+
   ocis:
     image: owncloud/ocis:${OCIS_VERSION:-latest}
-    extra_hosts:
-      - ocis.sdk.test:host-gateway
+    networks:
+      ocis-net:
     entrypoint: /bin/sh
     command: [ "-c", "ocis init || true; ocis server" ]
-    ports:
-      - 9009:9200
     environment:
-      OCIS_URL: https://ocis.sdk.test:9009
+      OCIS_URL: https://${OCIS_DOMAIN:-ocis.owncloud.test}
       OCIS_INSECURE: true
       IDM_ADMIN_PASSWORD: admin
       PROXY_AUTOPROVISION_ACCOUNTS: true
       PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
-      OCIS_OIDC_ISSUER: https://ocis.sdk.test:8443/realms/oCIS
+      OCIS_OIDC_ISSUER: https://${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}/realms/${KEYCLOAK_REALM:-oCIS}
       PROXY_OIDC_REWRITE_WELLKNOWN: true
       WEB_OIDC_CLIENT_ID: web
+      PROXY_TLS: "false" # do not use SSL between Traefik and oCIS
       PROXY_USER_OIDC_CLAIM: preferred_username
       PROXY_USER_CS3_CLAIM: username
       OCIS_ADMIN_USER_ID: ''
       OCIS_EXCLUDE_RUN_SERVICES: idp
       GRAPH_ASSIGN_DEFAULT_USER_ROLE: false
       GRAPH_USERNAME_MATCH: "none"
+      OCIS_LOG_LEVEL: "debug"
     restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ocis.entrypoints=https"
+      - "traefik.http.routers.ocis.rule=Host(`${OCIS_DOMAIN:-ocis.owncloud.test}`)"
+      - "traefik.http.routers.ocis.tls.certresolver=http"
+      - "traefik.http.routers.ocis.service=ocis"
+      - "traefik.http.services.ocis.loadbalancer.server.port=9200"
     healthcheck:
-      test: ["CMD", "curl", "https://ocis.sdk.test:9009/.well-known/openid-configuration", "-k", "-f"]
-      interval: 10s
-      timeout: 300s
+      test: ["CMD-SHELL", "curl http://localhost:9200/.well-known/openid-configuration | grep authorization_endpoint"]
+      interval: 1s
+      retries: 120
+      start_period: 20s
 
   postgres:
     image: postgres:alpine
-    extra_hosts:
-      - ocis.sdk.test:host-gateway
+    networks:
+      ocis-net:
     environment:
       POSTGRES_DB: keycloak
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: keycloak
     volumes:
       - keycloak_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-U", "keycloak", "-d", "keycloak" ]
+      interval: 1s
+      retries: 120
 
   keycloak:
     build:
       context: docker/keycloak
-    extra_hosts:
-      - ocis.sdk.test:host-gateway
-    ports:
-      - 8443:8443
-      - 8080:8080
+    networks:
+      ocis-net:
     environment:
-      OCIS_DOMAIN: ocis.sdk.test:9009
-      KC_HOSTNAME: ocis.sdk.test:8443
+      OCIS_DOMAIN: ${OCIS_DOMAIN:-ocis.owncloud.test}
+      KC_HOSTNAME: ${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}
       KC_DB: postgres
       KC_DB_URL: 'jdbc:postgresql://postgres:5432/keycloak'
       KC_DB_USERNAME: keycloak
@@ -62,8 +121,23 @@ services:
     volumes:
       - ./docker/keycloak/ocis-realm.dist.json:/opt/keycloak/data/import/ocis-realm.json
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.entrypoints=https"
+      - "traefik.http.routers.keycloak.rule=Host(`${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}`)"
+      - "traefik.http.routers.keycloak.tls.certresolver=http"
+      - "traefik.http.routers.keycloak.service=keycloak"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+    healthcheck:
+      test: ["CMD", "/opt/curl", "--head", "-k", "-f", "s", "S", "https://localhost:8443/health/ready"]
+      interval: 1s
+      retries: 120
 
 volumes:
   keycloak_data:
+  certs:
 
+networks:
+  ocis-net:

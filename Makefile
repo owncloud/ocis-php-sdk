@@ -27,6 +27,7 @@ test-php-unit: vendor/bin/phpunit
 .PHONY: test-php-integration
 test-php-integration:             ## Run php integration tests
 test-php-integration: run-ocis-with-keycloak
+	composer install
 	$(PHPUNIT) --configuration ./phpunit.xml --testsuite integration
 	$(MAKE) docker-clean
 
@@ -62,6 +63,7 @@ docker-clean:
 clean:
 	rm -f composer.lock .php-cs-fixer.cache .phpunit.result.cache
 	rm -Rf vendor
+	cd tests/integration && $(DCO) down -v --remove-orphans --rmi local
 
 #
 # Dependency management

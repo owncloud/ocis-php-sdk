@@ -190,3 +190,20 @@ If you're working in a development environment where you might need to bypass SS
 ```
 
 To test, simply open a browser and head to http://url-of-this-file.
+
+
+## Development
+
+### Integration tests
+The integration tests start a full oCIS server with keycloak and other services using docker.
+To run the tests locally
+1. Install and setup `docker` (min version 24) and `docker compose` (min version 2.21).
+2. add these lines to your `/etc/hosts` file:
+   ```
+   127.0.0.1	ocis.owncloud.test
+   127.0.0.1	keycloak.owncloud.test
+   ```
+3. run `make test-php-integration`
+
+If something goes wrong, use `make clean` to clean the created containers and volumes. 
+

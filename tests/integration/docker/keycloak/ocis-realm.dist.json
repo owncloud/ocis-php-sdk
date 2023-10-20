@@ -1115,18 +1115,18 @@
       "clientId": "web",
       "name": "",
       "description": "",
-      "rootUrl": "https://ocis.sdk.test:9009",
-      "adminUrl": "https://ocis.sdk.test:9009",
+      "rootUrl": "https://ocis.owncloud.test",
+      "adminUrl": "https://ocis.owncloud.test",
       "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "https://ocis.sdk.test:9009/*"
+        "https://ocis.owncloud.test/*"
       ],
       "webOrigins": [
-        "https://ocis.sdk.test:9009"
+        "https://ocis.owncloud.test"
       ],
       "notBefore": 0,
       "bearerOnly": false,
