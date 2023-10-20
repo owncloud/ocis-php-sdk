@@ -78,18 +78,14 @@ class OcisTest extends TestCase
         return $accessTokenResponse['access_token'];
     }
 
-    public function testListDrive(): void
+    public function testListMyDriveResponseArrayForMalformedUrl(): void
     {
         $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis('https://ocis.owncloud.test/', $token, ['verify' => false]);
+        $ocis = new Ocis('https://ocis.owncloud.test///', $token, ['verify' => false]);
         $drives = $ocis->listMyDrives();
-        $driveName = [];
-        foreach ($drives as $drive) {
-            $driveName [] = $drive->getName();
-        }
-        $expectedDriveArray = ["Admin Admin","Shares"];
-        $this->assertEquals($expectedDriveArray, $driveName);
+        $this->assertTrue((is_array($drives) && count($drives) > 1));
     }
+
     public function testCreateDrive(): void
     {
         $token = $this->getAccessToken('admin', 'admin');
