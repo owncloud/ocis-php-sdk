@@ -526,6 +526,23 @@ class Ocis
     }
 
     /**
+     * @param array<mixed> $ocsResponse
+     * @return bool
+     */
+    private function isNotificationResponseValid(array $ocsResponse): bool
+    {
+        return (
+            is_array($ocsResponse) &&
+            isset($ocsResponse['ocs']) &&
+            array_key_exists('data', $ocsResponse['ocs']) &&
+            (
+                is_array($ocsResponse['ocs']['data']) ||
+                is_null($ocsResponse['ocs']['data'])
+            )
+        );
+    }
+
+    /**
      * Retrieve all unread notifications of the current user
      *
      * @return array<Notification>
@@ -548,22 +565,17 @@ class Ocis
         }
 
         $content = $response->getBody()->getContents();
-        $ocsResponse = json_decode($content, true);
-        if (!is_array($ocsResponse)) {
-            throw new InvalidResponseException(
-                'Could not decode notification response. Content: "' .  $content . '"'
-            );
-        }
-        if (
-            !isset($ocsResponse['ocs']) ||
-            !array_key_exists('data', $ocsResponse['ocs']) ||
-            !is_array($ocsResponse['ocs']['data']) &&
-            !is_null($ocsResponse['ocs']['data'])
-        ) {
+        /**
+         * @phpstan-var array{'ocs':array{'data': ?array{int, array{'notification_id': ?mixed}}}} $ocsResponse
+         */
+        $ocsResponse = (array)json_decode($content, true);
+
+        if (!$this->isNotificationResponseValid($ocsResponse)) {
             throw new InvalidResponseException(
                 'Notification response is invalid. Content: "' .  $content . '"'
             );
         }
+
         if (is_null($ocsResponse['ocs']['data'])) {
             $ocsResponse['ocs']['data'] = [];
         }
@@ -603,17 +615,27 @@ class Ocis
                 $this->accessToken,
                 $this->connectionConfig,
                 $this->serviceUrl,
+                //@phpstan-var string $notificationContent["notification_id"]
                 $notificationContent["notification_id"],
+                //@phpstan-var string $notificationContent["app"]
                 $notificationContent["app"],
+                //@phpstan-var string $notificationContent["user"]
                 $notificationContent["user"],
+                //@phpstan-var string $notificationContent["datetime"]
                 $notificationContent["datetime"],
+                //@phpstan-var string $notificationContent["object_id"]
                 $notificationContent["object_id"],
+                //@phpstan-var string $notificationContent["object_type"]
                 $notificationContent["object_type"],
+                //@phpstan-var string $notificationContent["subject"]
                 $notificationContent["subject"],
+                //@phpstan-var string $notificationContent["subjectRich"]
                 $notificationContent["subjectRich"],
+                //@phpstan-var string $notificationContent["message"]
                 $notificationContent["message"],
+                //@phpstan-var array $notificationContent["messageRich"]
                 $notificationContent["messageRich"],
-                $notificationContent["messageRichParameters"]
+                (array)$notificationContent["messageRichParameters"]
             );
         }
         return $notifications;
