@@ -26,6 +26,9 @@ use Sabre\HTTP\ResponseInterface;
  */
 class Ocis
 {
+    private const DECODE_TOKEN_ERROR_MESSAGE = 'could not decode token';
+    public const FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE =
+        'This function is not implemented yet! Place, name and signature of the function might change!';
     private string $serviceUrl;
     private string $accessToken;
     private ?DrivesApi $drivesApiInstance = null;
@@ -194,19 +197,19 @@ class Ocis
     {
         $tokenDataArray = explode(".", $this->accessToken);
         if (!array_key_exists(1, $tokenDataArray)) {
-            throw new \InvalidArgumentException('could not decode token');
+            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
         }
         $plainPayload = base64_decode($tokenDataArray[1], true);
         if (!$plainPayload) {
-            throw new \InvalidArgumentException('could not decode token');
+            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
         }
         $tokenPayload = json_decode($plainPayload, true);
         if (!is_array($tokenPayload) || !array_key_exists('iss', $tokenPayload)) {
-            throw new \InvalidArgumentException('could not decode token');
+            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
         }
         $iss = parse_url($tokenPayload['iss']);
         if (!is_array($iss) || !array_key_exists('host', $iss)) {
-            throw new \InvalidArgumentException('could not decode token');
+            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
         }
         try {
             $webfingerResponse = $this->guzzle->get($webfingerUrl . '?resource=acct:me@' . $iss['host']);
