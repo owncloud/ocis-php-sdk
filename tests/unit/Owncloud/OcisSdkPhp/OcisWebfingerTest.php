@@ -81,13 +81,27 @@ class OcisWebfingerTest extends TestCase
         return [
             ["onlyHeaderNoPayload"],
             ["header.butPäylöädNötBäs€64"],
-            ["header.cGF5bG9hZElzTm90SlNPTgo="], // payload is not JSON
-            ["header.InBheWxvYWRJc05vdEFuT2JqZWN0Igo="], // payload is not an JSON object
-            ["header.eyJrZXkiOiAidmFsdWUifQo="], // payload is a JSON object, but does not contain 'iss' key
-            ["header.eyJpc3MiOiBudWxsfQo="], // payload contains 'iss' key but the value is null
-            ["header.eyJpc3MiOiAiaHR0cHM6Ly8ifQo="], // payload contains 'iss' key but the value is 'https://'
-            ["header.eyJpc3MiOiAiaG9zdCJ9Cg=="], // payload contains 'iss' key but the value is 'host'
-            ["header.eyJpc3MiOiAiaHR0cHM6Ly86OTAwMCJ9Cg=="], // payload contains 'iss' key but the value is 'https://:9000'
+
+            // payload is not JSON
+            ["header.cGF5bG9hZElzTm90SlNPTgo="],
+
+            // payload is not an JSON object
+            ["header.InBheWxvYWRJc05vdEFuT2JqZWN0Igo="],
+
+            // payload is a JSON object, but does not contain 'iss' key
+            ["header.eyJrZXkiOiAidmFsdWUifQo="],
+
+            // payload contains 'iss' key but the value is null
+            ["header.eyJpc3MiOiBudWxsfQo="],
+
+            // payload contains 'iss' key but the value is 'https://'
+            ["header.eyJpc3MiOiAiaHR0cHM6Ly8ifQo="],
+
+            // payload contains 'iss' key but the value is 'host'
+            ["header.eyJpc3MiOiAiaG9zdCJ9Cg=="],
+
+            // payload contains 'iss' key but the value is 'https://:9000'
+            ["header.eyJpc3MiOiAiaHR0cHM6Ly86OTAwMCJ9Cg=="],
         ];
     }
     /**
@@ -115,11 +129,21 @@ class OcisWebfingerTest extends TestCase
     {
         return [
             ["notJson"],
-            ['{"subject": "acct:einstein@drive.ocis.test"}'], // no links
-            ['{"links": "string"}'], // links is not array
-            ['{"links": []}'], // links is an empty array
-            ['{"links": [{"rel": "http://openid.net/specs/connect/1.0/issuer"},{"rel": "http://something-unrelated"}]}'], //links don't have the correct rel
-            ['{"links": [{"rel": "http://webfinger.owncloud/rel/server-instance"}]}'], //correct rel, but no href
+
+            // no links
+            ['{"subject": "acct:einstein@drive.ocis.test"}'],
+
+            // links is not array
+            ['{"links": "string"}'],
+
+            // links is an empty array
+            ['{"links": []}'],
+
+            //links don't have the correct rel
+            ['{"links": [{"rel": "http://openid.net/specs/connect/1.0/issuer"},{"rel": "http://unrelated"}]}'],
+
+            //correct rel, but no href
+            ['{"links": [{"rel": "http://webfinger.owncloud/rel/server-instance"}]}'],
         ];
     }
 

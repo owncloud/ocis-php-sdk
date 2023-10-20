@@ -80,7 +80,9 @@ class OcisTest extends TestCase
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage(
-            "[0] cURL error 6: Could not resolve host: localhost-does-not-exist (see https://curl.haxx.se/libcurl/c/libcurl-errors.html) for https://localhost-does-not-exist:9200/graph/v1.0/drives"
+            "[0] cURL error 6: Could not resolve host: localhost-does-not-exist ".
+            "(see https://curl.haxx.se/libcurl/c/libcurl-errors.html) ".
+            "for https://localhost-does-not-exist:9200/graph/v1.0/drives"
         );
         $ocis = new Ocis('https://localhost-does-not-exist:9200', 'doesNotMatter');
         $ocis->createDrive('driveName');

@@ -103,8 +103,12 @@ class ResourceTest extends TestCase
      *
      * @return void
      */
-    public function testGetSize(int|string $actualSize, int|string $expectedSize, null|string $data, string $sizeKey): void
-    {
+    public function testGetSize(
+        int|string $actualSize,
+        int|string $expectedSize,
+        null|string $data,
+        string $sizeKey
+    ): void {
         $metadata = [];
         $metadata['{DAV:}resourcetype'] = new ResourceType($data);
         $metadata[$sizeKey] = $actualSize;

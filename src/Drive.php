@@ -30,7 +30,12 @@ class Drive
     private string $webDavUrl = '';
 
     /**
-     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client}
+     * @phpstan-var array{
+     *                      'headers'?:array<string, mixed>,
+     *                      'verify'?:bool,
+     *                      'webfinger'?:bool,
+     *                      'guzzle'?:\GuzzleHttp\Client
+     *                    }
      */
     private array $connectionConfig;
     private Configuration $graphApiConfig;
@@ -39,7 +44,12 @@ class Drive
     /**
      * @ignore The developer using the SDK does not need to create drives manually, but should use the Ocis class
      *         to get or create drives, so this constructor should not be listed in the documentation.
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client} $connectionConfig
+     * @phpstan-param array{
+     *                      'headers'?:array<string, mixed>,
+     *                      'verify'?:bool,
+     *                      'webfinger'?:bool,
+     *                      'guzzle'?:\GuzzleHttp\Client
+     *                      } $connectionConfig
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -54,7 +64,8 @@ class Drive
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
             throw new \InvalidArgumentException('connection configuration not valid');
         }
-        $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost($this->serviceUrl . '/graph/v1.0');
+        $this->graphApiConfig = Configuration::getDefaultConfiguration()
+            ->setHost($this->serviceUrl . '/graph/v1.0');
 
         $this->connectionConfig = $connectionConfig;
     }

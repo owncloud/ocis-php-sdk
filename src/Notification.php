@@ -39,7 +39,12 @@ class Notification
     private array $connectionConfig;
 
     /**
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client} $connectionConfig
+     * @phpstan-param array{
+     *                        'headers'?:array<string, mixed>,
+     *                        'verify'?:bool,
+     *                        'webfinger'?:bool,
+     *                        'guzzle'?:\GuzzleHttp\Client
+     *                        } $connectionConfig
      * @param array<mixed> $messageRichParameters
      * @throws \InvalidArgumentException
      * @ignore The developer using the SDK does not need to create notifications manually, but should use the Ocis class
