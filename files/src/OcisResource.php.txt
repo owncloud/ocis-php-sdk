@@ -38,7 +38,9 @@ class OcisResource
             $metadata[$property->getKey()] = $this->metadata[$property->value];
         }
         if ($metadata === []) {
-            throw new InvalidResponseException('Could not find property "' . $property->getKey() . '" in response');
+            throw new InvalidResponseException(
+                'Could not find property "' . $property->getKey() . '" in response'
+            );
         }
         if ($metadata[$property->getKey()] === null && $property->getKey() !== "tags") {
             throw new InvalidResponseException('Invalid response from server');
@@ -46,8 +48,11 @@ class OcisResource
         if ($metadata[$property->getKey()] instanceof ResourceType) {
             return $metadata[$property->getKey()]->getValue();
         }
+        if ($metadata[$property->getKey()] === null) {
+            return (string)$metadata[$property->getKey()];
+        }
         /** @phpstan-ignore-next-line because next line might return mixed data*/
-        return  $metadata[$property->getKey()] === null ? (string)$metadata[$property->getKey()] : $metadata[$property->getKey()];
+        return $metadata[$property->getKey()];
     }
 
     /**
@@ -140,7 +145,9 @@ class OcisResource
         } elseif ($resourceType === []) {
             return "file";
         }
-        throw new InvalidResponseException("Received invalid data for the key \"resourcetype\" in the response array");
+        throw new InvalidResponseException(
+            "Received invalid data for the key \"resourcetype\" in the response array"
+        );
     }
 
     /**
