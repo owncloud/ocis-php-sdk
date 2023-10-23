@@ -341,6 +341,11 @@ Search.appendIndex(
             "summary": "Retrieve\u0020all\u0020unread\u0020notifications\u0020of\u0020the\u0020current\u0020user",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getNotifications"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AFUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
+            "name": "FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#constant_FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource",
             "name": "OcisResource",
             "summary": "Class\u0020representing\u0020a\u0020file\u0020or\u0020folder\u0020inside\u0020a\u0020Drive\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",

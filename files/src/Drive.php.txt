@@ -235,7 +235,7 @@ class Drive
      */
     public function setName(string $name): Drive
     {
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -243,7 +243,7 @@ class Drive
      */
     public function setQuota(int $quota): Drive
     {
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -251,7 +251,7 @@ class Drive
      */
     public function setDescription(string $description): Drive
     {
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -261,7 +261,7 @@ class Drive
     {
         // upload image to dav/spaces/<space-id>/.space/<image-name>
         // PATCH space
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -270,7 +270,7 @@ class Drive
     public function setReadme(string $readme): Drive
     {
         // upload content of $readme to dav/spaces/<space-id>/.space/readme.md
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -355,7 +355,7 @@ class Drive
      */
     public function getResourceMetadata(string $path = "/"): \stdClass
     {
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -363,7 +363,7 @@ class Drive
      */
     public function getResourceMetadataById(string $id): \stdClass
     {
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -478,7 +478,7 @@ class Drive
      */
     public function tagResource(string $path, array $tags): void
     {
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -487,6 +487,6 @@ class Drive
      */
     public function untagResource(string $path, array $tags): void
     {
-        throw new \Exception("This function is not implemented yet! Place, name and signature of the function might change!");
+        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 }
