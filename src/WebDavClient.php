@@ -44,7 +44,12 @@ class WebDavClient extends Client
     }
 
     /**
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client} $connectionConfig
+     * @phpstan-param array{
+     *                      'headers'?:array<string, mixed>,
+     *                      'verify'?:bool,
+     *                      'webfinger'?:bool,
+     *                      'guzzle'?:\GuzzleHttp\Client
+     *                     } $connectionConfig
      * @return array<int, mixed>
      */
     public function createCurlSettings(array $connectionConfig, string $accessToken): array
@@ -67,8 +72,12 @@ class WebDavClient extends Client
     /**
      * set curl settings
      * enable exceptions for send method
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:\GuzzleHttp\Client} $connectionConfig
-     *
+     * @phpstan-param array{
+     *                       'headers'?:array<string, mixed>,
+     *                       'verify'?:bool,
+     *                       'webfinger'?:bool,
+     *                       'guzzle'?:\GuzzleHttp\Client
+     *                      } $connectionConfig     *
      */
     public function setCustomSetting(array $connectionConfig, string $accessToken): void
     {

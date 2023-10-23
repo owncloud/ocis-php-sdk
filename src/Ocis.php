@@ -40,7 +40,12 @@ class Ocis
     private array $connectionConfig;
 
     /**
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:Client} $connectionConfig
+     * @phpstan-param array{
+     *                        'headers'?:array<string, mixed>,
+     *                        'verify'?:bool,
+     *                        'webfinger'?:bool,
+     *                        'guzzle'?:Client
+     *                        } $connectionConfig
      *        valid config keys are: headers, verify, webfinger, guzzle
      *        headers has to be an array in the form like
      *        [
@@ -93,7 +98,8 @@ class Ocis
 
     /**
      * @param array<mixed> $connectionConfig
-     * @ignore This function is used for internal purposes only and should not be shown in the documentation. The function is public to make it testable and because its also used from other classes.
+     * @ignore This function is used for internal purposes only and should not be shown in the documentation.
+     *         The function is public to make it testable and because its also used from other classes.
      */
     public static function isConnectionConfigValid(array $connectionConfig): bool
     {
@@ -132,10 +138,16 @@ class Ocis
      * Combines passed-in config settings for guzzle with the default settings needed
      * for the class and returns the complete array
      *
-     * @ignore This function is used for internal purposes only and should not be shown in the documentation. The function is public to make it testable.
-     * @phpstan-param array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:Client} $connectionConfig
      * @return array<string, mixed>
      * @throws \InvalidArgumentException
+     * @ignore This function is used for internal purposes only and should not be shown in the documentation.
+     *         The function is public to make it testable.
+     * @phpstan-param array{
+     *                       'headers'?:array<string, mixed>,
+     *                       'verify'?:bool,
+     *                       'webfinger'?:bool,
+     *                       'guzzle'?:Client
+     *                       } $connectionConfig
      */
     public static function createGuzzleConfig(array $connectionConfig, string $accessToken): array
     {
