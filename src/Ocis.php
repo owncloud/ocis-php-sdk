@@ -531,15 +531,13 @@ class Ocis
      */
     private function isNotificationResponseValid(array $ocsResponse): bool
     {
-        return (
-            is_array($ocsResponse) &&
+        return
             isset($ocsResponse['ocs']) &&
             array_key_exists('data', $ocsResponse['ocs']) &&
             (
                 is_array($ocsResponse['ocs']['data']) ||
                 is_null($ocsResponse['ocs']['data'])
-            )
-        );
+            );
     }
 
     /**
