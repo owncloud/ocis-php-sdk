@@ -103,7 +103,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetFileStream\u0028\u0029",
             "name": "getFileStream",
-            "summary": "Return\u0020a\u0020stream\u0020resource\u0020for\u0020the\u0020file\u0020at\u0020the\u0020given\u0020path\u0020in\u0020the\u0020current\u0020drive.\u0020The\u0020content\u0020of\u0020the\u0020file\u0020can\u0020be\u0020read\u0020from\u0020the\u0020stream.",
+            "summary": "Return\u0020a\u0020stream\u0020resource\u0020for\u0020the\u0020file\u0020at\u0020the\u0020given\u0020path\u0020in\u0020the\u0020current\u0020drive.",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_getFileStream"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AcreateFolder\u0028\u0029",
