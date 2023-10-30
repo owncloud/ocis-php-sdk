@@ -103,7 +103,7 @@ class Ocis
      * Helper function to check if the variable is a guzzle client
      * we need this because we want to call the check with call_user_func
      *
-     * @phpstan-ignore-next-line phpstan does not understand that this mdethod was called via call_user_func
+     * @phpstan-ignore-next-line phpstan does not understand that this method was called via call_user_func
      */
     private static function isGuzzleClient(mixed $guzzle): bool
     {
