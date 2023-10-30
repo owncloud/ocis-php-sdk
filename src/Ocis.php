@@ -526,6 +526,22 @@ class Ocis
     }
 
     /**
+     * @param array<mixed> $ocsResponse
+     * @return bool
+     */
+    private function isNotificationResponseValid(array $ocsResponse): bool
+    {
+        return
+            isset($ocsResponse['ocs']) &&
+            is_array($ocsResponse['ocs']) &&
+            array_key_exists('data', $ocsResponse['ocs']) &&
+            (
+                is_array($ocsResponse['ocs']['data']) ||
+                is_null($ocsResponse['ocs']['data'])
+            );
+    }
+
+    /**
      * Retrieve all unread notifications of the current user
      *
      * @return array<Notification>
@@ -548,72 +564,75 @@ class Ocis
         }
 
         $content = $response->getBody()->getContents();
-        $ocsResponse = json_decode($content, true);
-        if (!is_array($ocsResponse)) {
-            throw new InvalidResponseException(
-                'Could not decode notification response. Content: "' .  $content . '"'
-            );
-        }
-        if (
-            !isset($ocsResponse['ocs']) ||
-            !array_key_exists('data', $ocsResponse['ocs']) ||
-            !is_array($ocsResponse['ocs']['data']) &&
-            !is_null($ocsResponse['ocs']['data'])
-        ) {
+        /**
+         * @phpstan-var array{
+         *  'ocs':array{
+         *      'data': ?array{
+         *          int, array{
+         *              notification_id: ?mixed,
+         *              app?: ?string,
+         *              user?: ?string,
+         *              datetime?: ?string,
+         *              object_id?: ?string,
+         *              object_type?: ?string,
+         *              subject?: ?string,
+         *              subjectRich?: ?string,
+         *              message?: ?string,
+         *              messageRich?: ?string,
+         *              messageRichParameters?:array{int, mixed}
+         *          }
+         *      }
+         *  }
+         *} $ocsResponse
+         */
+        $ocsResponse = (array)json_decode($content, true);
+
+        if (!$this->isNotificationResponseValid($ocsResponse)) {
             throw new InvalidResponseException(
                 'Notification response is invalid. Content: "' .  $content . '"'
             );
         }
+
         if (is_null($ocsResponse['ocs']['data'])) {
             $ocsResponse['ocs']['data'] = [];
         }
         $notifications = [];
-        foreach ($ocsResponse['ocs']['data'] as $notificationContent) {
+        foreach ($ocsResponse['ocs']['data'] as $ocsData) {
             if (
-                !isset($notificationContent["notification_id"]) ||
-                !is_string($notificationContent["notification_id"]) ||
-                $notificationContent["notification_id"] === "") {
+                !isset($ocsData["notification_id"]) ||
+                !is_string($ocsData["notification_id"]) ||
+                $ocsData["notification_id"] === "") {
                 throw new InvalidResponseException(
                     'Id is invalid or missing in notification response. Content: "' . $content . '"'
                 );
             }
-            foreach (
-                [
-                    "app",
-                    "user",
-                    "datetime",
-                    "object_id",
-                    "object_type",
-                    "subject",
-                    "subjectRich",
-                    "message",
-                    "messageRich",
-                    "messageRichParameters"
-                ] as $key
-            ) {
-                if (!isset($notificationContent[$key])) {
-                    if ($key === "messageRichParameters") {
-                        $notificationContent[$key] = [];
-                    } else {
-                        $notificationContent[$key] = "";
-                    }
-                }
-            }
+            $id = $ocsData["notification_id"];
+            $app = (isset($ocsData["app"])) ? $ocsData["app"] : "";
+            $user = (isset($ocsData["user"])) ? $ocsData["user"] : "";
+            $datetime = (isset($ocsData["datetime"])) ? $ocsData["datetime"] : "";
+            $objectId = (isset($ocsData["object_id"])) ? $ocsData["object_id"] : "";
+            $objectType = (isset($ocsData["object_type"])) ? $ocsData["object_type"] : "";
+            $subject = (isset($ocsData["subject"])) ? $ocsData["subject"] : "";
+            $subjectRich = (isset($ocsData["subjectRich"])) ? $ocsData["subjectRich"] : "";
+            $message = (isset($ocsData["message"])) ? $ocsData["message"] : "";
+            $messageRich = (isset($ocsData["messageRich"])) ? $ocsData["messageRich"] : "";
+            $messageRichParams = (isset($ocsData["messageRichParameters"])) ? $ocsData["messageRichParameters"] : [];
+
             $notifications[] = new Notification(
                 $this->accessToken,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $notificationContent["notification_id"],
-                $notificationContent["app"],
-                $notificationContent["user"],
-                $notificationContent["datetime"],
-                $notificationContent["object_id"],
-                $notificationContent["object_type"],
-                $notificationContent["subject"],
-                $notificationContent["subjectRich"],
-                $notificationContent["message"],
-                $notificationContent["messageRich"],
-                $notificationContent["messageRichParameters"]
+                $id,
+                $app,
+                $user,
+                $datetime,
+                $objectId,
+                $objectType,
+                $subject,
+                $subjectRich,
+                $message,
+                $messageRich,
+                $messageRichParams
             );
         }
         return $notifications;

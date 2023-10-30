@@ -172,7 +172,7 @@ class OcisTest extends TestCase
     {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
-            'Could not decode notification response. Content: "' . $responseContent . '"'
+            'Notification response is invalid. Content: "' . $responseContent . '"'
         );
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $ocis->getNotifications();
