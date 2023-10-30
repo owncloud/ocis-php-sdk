@@ -566,7 +566,25 @@ class Ocis
 
         $content = $response->getBody()->getContents();
         /**
-         * @phpstan-var array{'ocs':array{'data': ?array{int, array{'notification_id': ?mixed}}}} $ocsResponse
+         * @phpstan-var array{
+         *  'ocs':array{
+         *      'data': ?array{
+         *          int, array{
+         *              notification_id: ?mixed,
+         *              app?: ?string,
+         *              user?: ?string,
+         *              datetime?: ?string,
+         *              object_id?: ?string,
+         *              object_type?: ?string,
+         *              subject?: ?string,
+         *              subjectRich?: ?string,
+         *              message?: ?string,
+         *              messageRich?: ?string,
+         *              messageRichParameters?:array{int, mixed}
+         *          }
+         *      }
+         *  }
+         *} $ocsResponse
          */
         $ocsResponse = (array)json_decode($content, true);
 
@@ -580,62 +598,42 @@ class Ocis
             $ocsResponse['ocs']['data'] = [];
         }
         $notifications = [];
-        foreach ($ocsResponse['ocs']['data'] as $notificationContent) {
+        foreach ($ocsResponse['ocs']['data'] as $ocsData) {
             if (
-                !isset($notificationContent["notification_id"]) ||
-                !is_string($notificationContent["notification_id"]) ||
-                $notificationContent["notification_id"] === "") {
+                !isset($ocsData["notification_id"]) ||
+                !is_string($ocsData["notification_id"]) ||
+                $ocsData["notification_id"] === "") {
                 throw new InvalidResponseException(
                     'Id is invalid or missing in notification response. Content: "' . $content . '"'
                 );
             }
-            foreach (
-                [
-                    "app",
-                    "user",
-                    "datetime",
-                    "object_id",
-                    "object_type",
-                    "subject",
-                    "subjectRich",
-                    "message",
-                    "messageRich",
-                    "messageRichParameters"
-                ] as $key
-            ) {
-                if (!isset($notificationContent[$key])) {
-                    if ($key === "messageRichParameters") {
-                        $notificationContent[$key] = [];
-                    } else {
-                        $notificationContent[$key] = "";
-                    }
-                }
-            }
+            $id = $ocsData["notification_id"];
+            $app = (isset($ocsData["app"])) ? $ocsData["app"] : "";
+            $user = (isset($ocsData["user"])) ? $ocsData["user"] : "";
+            $datetime = (isset($ocsData["datetime"])) ? $ocsData["datetime"] : "";
+            $objectId = (isset($ocsData["object_id"])) ? $ocsData["object_id"] : "";
+            $objectType = (isset($ocsData["object_type"])) ? $ocsData["object_type"] : "";
+            $subject = (isset($ocsData["subject"])) ? $ocsData["subject"] : "";
+            $subjectRich = (isset($ocsData["subjectRich"])) ? $ocsData["subjectRich"] : "";
+            $message = (isset($ocsData["message"])) ? $ocsData["message"] : "";
+            $messageRich = (isset($ocsData["messageRich"])) ? $ocsData["messageRich"] : "";
+            $messageRichParams = (isset($ocsData["messageRichParameters"])) ? $ocsData["messageRichParameters"] : [];
+
             $notifications[] = new Notification(
                 $this->accessToken,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                //@phpstan-var string $notificationContent["notification_id"]
-                $notificationContent["notification_id"],
-                //@phpstan-var string $notificationContent["app"]
-                $notificationContent["app"],
-                //@phpstan-var string $notificationContent["user"]
-                $notificationContent["user"],
-                //@phpstan-var string $notificationContent["datetime"]
-                $notificationContent["datetime"],
-                //@phpstan-var string $notificationContent["object_id"]
-                $notificationContent["object_id"],
-                //@phpstan-var string $notificationContent["object_type"]
-                $notificationContent["object_type"],
-                //@phpstan-var string $notificationContent["subject"]
-                $notificationContent["subject"],
-                //@phpstan-var string $notificationContent["subjectRich"]
-                $notificationContent["subjectRich"],
-                //@phpstan-var string $notificationContent["message"]
-                $notificationContent["message"],
-                //@phpstan-var array $notificationContent["messageRich"]
-                $notificationContent["messageRich"],
-                (array)$notificationContent["messageRichParameters"]
+                $id,
+                $app,
+                $user,
+                $datetime,
+                $objectId,
+                $objectType,
+                $subject,
+                $subjectRich,
+                $message,
+                $messageRich,
+                $messageRichParams
             );
         }
         return $notifications;
