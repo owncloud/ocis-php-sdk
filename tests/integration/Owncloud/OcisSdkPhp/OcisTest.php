@@ -78,10 +78,10 @@ class OcisTest extends TestCase
         return $accessTokenResponse['access_token'];
     }
 
-    public function testListMyDriveResponseArrayForMalformedUrl(): void
+    public function testServiceUrlTrailingSlash(): void
     {
         $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis('https://ocis.owncloud.test///', $token, ['verify' => false]);
+        $ocis = new Ocis($this->ocisUrl . '///', $token, ['verify' => false]);
         $drives = $ocis->listMyDrives();
         $this->assertTrue((is_array($drives) && count($drives) > 1));
     }
