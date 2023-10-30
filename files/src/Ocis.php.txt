@@ -606,15 +606,24 @@ class Ocis
                 );
             }
             $id = $ocsData["notification_id"];
-            $app = (isset($ocsData["app"])) ? $ocsData["app"] : "";
-            $user = (isset($ocsData["user"])) ? $ocsData["user"] : "";
-            $datetime = (isset($ocsData["datetime"])) ? $ocsData["datetime"] : "";
-            $objectId = (isset($ocsData["object_id"])) ? $ocsData["object_id"] : "";
-            $objectType = (isset($ocsData["object_type"])) ? $ocsData["object_type"] : "";
-            $subject = (isset($ocsData["subject"])) ? $ocsData["subject"] : "";
-            $subjectRich = (isset($ocsData["subjectRich"])) ? $ocsData["subjectRich"] : "";
-            $message = (isset($ocsData["message"])) ? $ocsData["message"] : "";
-            $messageRich = (isset($ocsData["messageRich"])) ? $ocsData["messageRich"] : "";
+            $notificationContent = [];
+            foreach (
+                [
+                    "app",
+                    "user",
+                    "datetime",
+                    "object_id",
+                    "object_type",
+                    "subject",
+                    "subjectRich",
+                    "message",
+                    "messageRich",
+                ] as $key
+            ) {
+                if (!isset($ocsData[$key])) {
+                    $notificationContent[$key] = "";
+                }
+            }
             $messageRichParams = (isset($ocsData["messageRichParameters"])) ? $ocsData["messageRichParameters"] : [];
 
             $notifications[] = new Notification(
@@ -622,15 +631,15 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $id,
-                $app,
-                $user,
-                $datetime,
-                $objectId,
-                $objectType,
-                $subject,
-                $subjectRich,
-                $message,
-                $messageRich,
+                $notificationContent["app"],
+                $notificationContent["user"],
+                $notificationContent["datetime"],
+                $notificationContent["object_id"],
+                $notificationContent["object_type"],
+                $notificationContent["subject"],
+                $notificationContent["subjectRich"],
+                $notificationContent["message"],
+                $notificationContent["messageRich"],
                 $messageRichParams
             );
         }
