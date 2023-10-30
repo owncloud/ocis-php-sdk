@@ -2,6 +2,7 @@
 # for v2: set this as docker-compose using the environment variable
 DCO:=docker compose
 PHPUNIT=phpdbg -qrr -d memory_limit=4096M -d zend.enable_gc=0 "vendor/bin/phpunit"
+run-with-cleanup = $(1) && $(2) || (ret=$$?; $(2) && exit $$ret)
 
 #
 # Catch-all rules
@@ -28,8 +29,7 @@ test-php-unit: vendor/bin/phpunit
 test-php-integration:             ## Run php integration tests
 test-php-integration: run-ocis-with-keycloak
 	composer install
-	$(PHPUNIT) --configuration ./phpunit.xml --testsuite integration
-	$(MAKE) docker-clean
+	$(call run-with-cleanup, $(PHPUNIT) --configuration ./phpunit.xml --testsuite integration, $(MAKE) docker-clean)
 
 .PHONY: test-php-style
 test-php-style:            ## Run php-cs-fixer and check code-style
