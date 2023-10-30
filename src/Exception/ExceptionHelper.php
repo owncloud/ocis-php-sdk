@@ -41,37 +41,32 @@ class ExceptionHelper
             $message = $e->getMessage();
         }
 
-        switch ($e->getCode()) {
-            case 400:
-                return new BadRequestException(
-                    $message,
-                    $e->getCode(),
-                    $e
-                );
-            case 401:
-                return new UnauthorizedException(
-                    $message,
-                    $e->getCode(),
-                    $e
-                );
-            case 403:
-                return new ForbiddenException(
-                    $message,
-                    $e->getCode(),
-                    $e
-                );
-            case 404:
-                return new NotFoundException(
-                    $message,
-                    $e->getCode(),
-                    $e
-                );
-            default:
-                return new HttpException(
-                    $message,
-                    $e->getCode(),
-                    $e
-                );
-        }
+        return match ($e->getCode()) {
+            400 => new BadRequestException(
+                $message,
+                $e->getCode(),
+                $e
+            ),
+            401 => new UnauthorizedException(
+                $message,
+                $e->getCode(),
+                $e
+            ),
+            403 => new ForbiddenException(
+                $message,
+                $e->getCode(),
+                $e
+            ),
+            404 => new NotFoundException(
+                $message,
+                $e->getCode(),
+                $e
+            ),
+            default => new HttpException(
+                $message,
+                $e->getCode(),
+                $e
+            ),
+        };
     }
 }
