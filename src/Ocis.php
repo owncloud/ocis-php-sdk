@@ -533,6 +533,7 @@ class Ocis
     {
         return
             isset($ocsResponse['ocs']) &&
+            is_array($ocsResponse['ocs']) &&
             array_key_exists('data', $ocsResponse['ocs']) &&
             (
                 is_array($ocsResponse['ocs']['data']) ||
