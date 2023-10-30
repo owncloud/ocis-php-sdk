@@ -100,6 +100,17 @@ class Ocis
     }
 
     /**
+     * Helper function to check if the variable is a guzzle client
+     * we need this because we want to call the check with call_user_func
+     *
+     * @phpstan-ignore-next-line phpstan does not understand that this method was called via call_user_func
+     */
+    private static function isGuzzleClient(mixed $guzzle): bool
+    {
+        return $guzzle instanceof Client;
+    }
+
+    /**
      * @param array<mixed> $connectionConfig
      * @ignore This function is used for internal purposes only and should not be shown in the documentation.
      *         The function is public to make it testable and because its also used from other classes.
@@ -107,30 +118,18 @@ class Ocis
     public static function isConnectionConfigValid(array $connectionConfig): bool
     {
         $validConnectionConfigKeys = [
-            'headers' => [],
-            'verify' => true,
-            'webfinger' => true,
-            'guzzle' => Client::class
+            'headers' => 'is_array',
+            'verify' => 'is_bool',
+            'webfinger' => 'is_bool',
+            'guzzle' => 'self::isGuzzleClient'
         ];
-        foreach ($connectionConfig as $key => $value) {
+        foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
                 return false;
             }
-        }
-        if (array_key_exists('verify', $connectionConfig) && !is_bool($connectionConfig['verify'])) {
-            return false;
-        }
-        if (array_key_exists('webfinger', $connectionConfig) && !is_bool($connectionConfig['webfinger'])) {
-            return false;
-        }
-        if (
-            array_key_exists('guzzle', $connectionConfig) &&
-            !($connectionConfig['guzzle'] instanceof $validConnectionConfigKeys['guzzle'])
-        ) {
-            return false;
-        }
-        if (array_key_exists('headers', $connectionConfig)) {
-            if (!is_array($connectionConfig['headers'])) {
+
+            // @phpstan-ignore-next-line phpstan does not understand that the `$validConnectionConfigKeys` array has values that are callable
+            if (!\call_user_func($validConnectionConfigKeys[$key], $check)) {
                 return false;
             }
         }
