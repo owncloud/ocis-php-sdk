@@ -16,6 +16,7 @@ use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\NotImplementedException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
@@ -235,7 +236,7 @@ class Drive
      */
     public function setName(string $name): Drive
     {
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -243,7 +244,7 @@ class Drive
      */
     public function setQuota(int $quota): Drive
     {
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -251,7 +252,7 @@ class Drive
      */
     public function setDescription(string $description): Drive
     {
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -261,7 +262,7 @@ class Drive
     {
         // upload image to dav/spaces/<space-id>/.space/<image-name>
         // PATCH space
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -270,7 +271,7 @@ class Drive
     public function setReadme(string $readme): Drive
     {
         // upload content of $readme to dav/spaces/<space-id>/.space/readme.md
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -333,7 +334,10 @@ class Drive
     public function getFileStream(string $path)
     {
         $webDavClient = $this->createWebDavClient();
-        return $webDavClient->sendRequest("GET", $this->webDavUrl . rawurlencode(ltrim($path, "/")))->getBodyAsStream();
+        return $webDavClient->sendRequest(
+            "GET",
+            $this->webDavUrl . rawurlencode(ltrim($path, "/"))
+        )->getBodyAsStream();
     }
 
 
@@ -356,7 +360,7 @@ class Drive
      */
     public function getResourceMetadata(string $path = "/"): \stdClass
     {
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -364,7 +368,7 @@ class Drive
      */
     public function getResourceMetadataById(string $id): \stdClass
     {
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -479,7 +483,7 @@ class Drive
      */
     public function tagResource(string $path, array $tags): void
     {
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 
     /**
@@ -488,6 +492,6 @@ class Drive
      */
     public function untagResource(string $path, array $tags): void
     {
-        throw new \Exception(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 }
