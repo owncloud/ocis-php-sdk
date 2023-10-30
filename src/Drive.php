@@ -318,7 +318,8 @@ class Drive
     }
 
     /**
-     * Return a stream resource for the file at the given path in the current drive. The content of the file can be read from the stream.
+     * Return a stream resource for the file at the given path in the current drive.
+     * The content of the file can be read from the stream.
      *
      * @param string $path
      *
