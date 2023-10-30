@@ -78,6 +78,14 @@ class OcisTest extends TestCase
         return $accessTokenResponse['access_token'];
     }
 
+    public function testServiceUrlTrailingSlash(): void
+    {
+        $token = $this->getAccessToken('admin', 'admin');
+        $ocis = new Ocis($this->ocisUrl . '///', $token, ['verify' => false]);
+        $drives = $ocis->listMyDrives();
+        $this->assertTrue((is_array($drives) && count($drives) > 1));
+    }
+
     public function testCreateDrive(): void
     {
         $token = $this->getAccessToken('admin', 'admin');
