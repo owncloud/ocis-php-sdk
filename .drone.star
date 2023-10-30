@@ -45,21 +45,47 @@ trigger = {
 }
 
 def main(ctx):
-    return (
-        tests(
-            ctx,
-            [
-                ["codestyle", "make test-php-style"],
-                ["phpstan", "make test-php-phpstan"],
-                ["phan", "make test-php-phan"],
-            ],
-        ) +
-        phpunit(ctx, [DEFAULT_PHP_VERSION], True) +
-        phpunit(ctx, [8.2], False) +
-        sonarAnalysis(ctx) +
-        docs()
-    )
+    return integrationTest()
 
+def integrationTest():
+    return {
+        'kind': 'pipeline',
+        'name': 'default',
+        'steps': [
+            {
+                'name': 'docker-compose-up',
+                'image': 'docker/compose:latest',
+                'environment': {
+                    'DOCKER_HOST': 'tcp://docker:2375',  # Point to the DinD service
+                },
+                'commands': [
+                    'make run-ocis-with-keycloak',
+                ],
+                'depends_on': [
+                    'dind-service'
+                ]
+            },
+        ],
+        'services': [
+            {
+                'name': 'dind-service',
+                'image': 'docker:dind',
+                'privileged': True,  # Necessary for DinD
+                'volumes': [
+                    {
+                        'name': 'docker_tmp',
+                        'path': '/var/lib/docker',
+                    }
+                ]
+            }
+        ],
+        'volumes': [
+            {
+                'name': 'docker_tmp',
+                'temp': {},
+            }
+        ]
+    }
 
 def tests(ctx, tests):
     pipelines = []

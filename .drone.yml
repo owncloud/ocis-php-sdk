@@ -1,0 +1,2 @@
+---
+{"kind": "pipeline", "name": "default", "steps": [{"name": "run-ocis-with-keycloak", "image": "docker:dind", "volumes": [{"name": "docker_sock", "path": "/var/run/docker.sock"}], "commands": ["make run-ocis-with-keycloak"]}], "volumes": [{"name": "docker_sock", "host": {"path": "/var/run/docker.sock"}}]}
