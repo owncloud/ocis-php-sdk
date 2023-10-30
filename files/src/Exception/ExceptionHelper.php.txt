@@ -20,33 +20,24 @@ class ExceptionHelper
     public static function getHttpErrorException(
         GuzzleException|ApiException|SabreClientHttpException|SabreClientException $e
     ): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|HttpException {
+        $message = "";
         if ($e instanceof ApiException) {
             $rawResponseBody = $e->getResponseBody();
-            if ($rawResponseBody instanceof \stdClass) {
-                $message = $e->getMessage();
-            } else {
-                $responseBody = json_decode((string)$rawResponseBody, true);
-                if ($responseBody === null) {
-                    $message = $e->getMessage();
-                } else {
-                    $message = "";
-                    if (is_array($responseBody)) {
-                        if (isset($responseBody['error']['code'])) {
-                            $message = $responseBody['error']['code'] . " - ";
-                        }
-                        if (isset($responseBody['error']['message'])) {
-                            $message .= $responseBody['error']['message'];
-                        }
-                    } else {
-                        // The response body contained valid JSON that decoded to just a string,
-                        // or just an int or boolean value. There should not be any responses
-                        // that are encoded like that.
-                        // Report the message that is already in the exception.
-                        $message = $e->getMessage();
+            if (is_string($rawResponseBody)) {
+                $responseBody = json_decode($rawResponseBody, true);
+                if (is_array($responseBody)) {
+                    if (isset($responseBody['error']['code'])) {
+                        $message = $responseBody['error']['code'] . " - ";
+                    }
+                    if (isset($responseBody['error']['message'])) {
+                        $message .= $responseBody['error']['message'];
                     }
                 }
             }
-        } else {
+        }
+
+        // still no message set, so use the message of the original exception
+        if ($message === "") {
             $message = $e->getMessage();
         }
 
