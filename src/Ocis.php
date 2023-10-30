@@ -128,7 +128,8 @@ class Ocis
                 return false;
             }
 
-            // @phpstan-ignore-next-line phpstan does not understand that the `$validConnectionConfigKeys` array has values that are callable
+            // phpstan does not understand that the `$validConnectionConfigKeys` array has values that are callable
+            // @phpstan-ignore-next-line
             if (!\call_user_func($validConnectionConfigKeys[$key], $check)) {
                 return false;
             }
