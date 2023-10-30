@@ -216,6 +216,11 @@ Search.appendIndex(
             "summary": "Exception\u0020for\u0020HTTP\u0020404\u0020errors",
             "url": "classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\NotImplementedException",
+            "name": "NotImplementedException",
+            "summary": "Exception\u0020for\u0020functionalities\u0020that\u0020are\u0020planned\u0020but\u0020are\u0020not\u0020implemented\u0020yet",
+            "url": "classes/Owncloud-OcisPhpSdk-Exception-NotImplementedException.html"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\UnauthorizedException",
             "name": "UnauthorizedException",
             "summary": "Exception\u0020for\u0020HTTP\u0020401\u0020errors",
