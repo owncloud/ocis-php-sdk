@@ -10,23 +10,10 @@ OC_CI_ALPINE = "owncloudci/alpine:latest"
 OC_CI_WAIT_FOR = "owncloudci/wait-for:latest"
 OC_CI_NODEJS = "owncloudci/nodejs:18"
 SONARSOURCE_SONAR_SCANNER_CLI = "sonarsource/sonar-scanner-cli"
+POSTGRES_ALPINE = "postgres:alpine3.18"
+KEYCLOAK = "quay.io/keycloak/keycloak:22.0.4"
 
 DEFAULT_PHP_VERSION = "8.1"
-
-dir = {
-    "base": "/var/www/owncloud",
-    "federated": "/var/www/owncloud/federated",
-    "server": "/var/www/owncloud/server",
-    "web": "/var/www/owncloud/web",
-    "ocis": "/var/www/owncloud/ocis-build",
-    "commentsFile": "/var/www/owncloud/web/comments.file",
-    "app": "/srv/app",
-    "config": "/srv/config",
-    "ocisConfig": "/srv/config/drone/config-ocis.json",
-    "ocisIdentifierRegistrationConfig": "/srv/config/drone/identifier-registration.yml",
-    "ocisRevaDataRoot": "/srv/app/tmp/ocis/owncloud/data/",
-    "testingDataDir": "/srv/app/testing/data/",
-}
 
 # minio mc environment variables
 MINIO_MC_ENV = {
@@ -73,7 +60,7 @@ def integrationTest():
         "IDM_ADMIN_PASSWORD": "admin",  # override the random admin password from `ocis init`
         "PROXY_AUTOPROVISION_ACCOUNTS": True,
         "PROXY_ROLE_ASSIGNMENT_DRIVER": "oidc",
-        "OCIS_OIDC_ISSUER": "https://${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}/realms/${KEYCLOAK_REALM:-oCIS}",
+        "OCIS_OIDC_ISSUER": "http://${KEYCLOAK_DOMAIN:-keycloak}/realms/${KEYCLOAK_REALM:-oCIS}",
         "PROXY_OIDC_REWRITE_WELLKNOWN": True,
         "WEB_OIDC_CLIENT_ID": "web",
         "PROXY_USER_OIDC_CLAIM": "preferred_username",
@@ -88,7 +75,7 @@ def integrationTest():
         "kind": "pipeline",
         "type": "docker",
         "name": "ocis",
-        "steps": buildOcis() +
+        "steps": buildOcis() + keycloakService() +
                  [
                      {
                          "name": "ocis",
@@ -97,7 +84,7 @@ def integrationTest():
                          "environment": environment,
                          "commands": [
                              "%s init --insecure true" % ocis_bin,
-                             "%s server" % ocis_bin
+                             "%s server" % ocis_bin,
                          ],
                      },
                      {
@@ -107,7 +94,17 @@ def integrationTest():
                              "wait-for -it ocis:9200 -t 300",
                          ],
                      },
+                     {
+                         "name": "integration-tests",
+                         "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+                         "commands": [
+                             "curl -v -X GET 'https://ocis:9200/.well-known/openid-configuration' -k",
+                             "make test-php-integration-ci",
+                         ],
+                     },
                  ],
+        "services": postgresService(),
+        "trigger": trigger,
     }
     return result
 
@@ -138,6 +135,66 @@ def buildOcis():
             "commands": [
                 "cd ocis/ocis",
                 "retry -t 3 'make build'",
+            ],
+            "environment": {
+                "HTTP_PROXY": {
+                    "from_secret": "drone_http_proxy",
+                },
+                "HTTPS_PROXY": {
+                    "from_secret": "drone_http_proxy",
+                },
+            },
+        },
+    ]
+
+def postgresService():
+    return [
+        {
+            "name": "postgres",
+            "image": POSTGRES_ALPINE,
+            "environment": {
+                "POSTGRES_DB": "keycloak",
+                "POSTGRES_USER": "keycloak",  # needed for checking config later
+                "POSTGRES_PASSWORD": "keycloak",
+            },
+        },
+    ]
+
+def keycloakService():
+    return [
+        {
+            "name": "wait-for-postgres",
+            "image": OC_CI_WAIT_FOR,
+            "commands": [
+                "wait-for -it postgres:5432 -t 300",
+            ],
+        },
+        {
+            "name": "keycloak",
+            "image": KEYCLOAK,
+            "detach": True,
+            "environment": {
+                "OCIS_DOMAIN": "https://ocis:9200",
+                "KC_HOSTNAME": "http://keycloak",
+                "KC_DB": "postgres",
+                "KC_DB_URL": "jdbc:postgresql://postgres:5432/keycloak",
+                "KC_DB_USERNAME": "keycloak",
+                "KC_DB_PASSWORD": "keycloak",
+                "KC_FEATURES": "impersonation",
+                "KEYCLOAK_ADMIN": "admin",
+                "KEYCLOAK_ADMIN_PASSWORD": "admin",
+            },
+            "commands": [
+                "mkdir -p /opt/keycloak/data/import",
+                "cp tests/integration/docker/keycloak/ocis-realm.dist.json /opt/keycloak/data/import/ocis-realm.json",
+                "/opt/keycloak/bin/kc.sh start --proxy edge --spi-connections-http-client-default-disable-trust-manager=true --import-realm --health-enabled=true",
+            ],
+        },
+        {
+            "name": "wait-for-keycloak",
+            "image": OC_CI_WAIT_FOR,
+            "commands": [
+                "wait-for -it keycloak:8080 -t 300",
             ],
         },
     ]
