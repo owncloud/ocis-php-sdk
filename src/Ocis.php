@@ -5,10 +5,11 @@ namespace Owncloud\OcisPhpSdk;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException as GuzzleClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
+use OpenAPI\Client\Api\GroupsApi;
 use OpenAPI\Client\Api\MeDrivesApi;
-use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\OdataError;
@@ -16,9 +17,9 @@ use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
-use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
 use stdClass;
 
@@ -122,7 +123,7 @@ class Ocis
             'headers' => 'is_array',
             'verify' => 'is_bool',
             'webfinger' => 'is_bool',
-            'guzzle' => 'self::isGuzzleClient'
+            'guzzle' => 'self::isGuzzleClient',
         ];
         foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
@@ -171,7 +172,7 @@ class Ocis
     /**
      * @ignore This function is mainly for unit tests and should not be shown in the documentation
      */
-    public function setDrivesApiInstance(DrivesApi|null $apiInstance): void
+    public function setDrivesApiInstance(DrivesApi | null $apiInstance): void
     {
         $this->drivesApiInstance = $apiInstance;
     }
@@ -179,7 +180,7 @@ class Ocis
     /**
      * @ignore This function is mainly for unit tests and should not be shown in the documentation
      */
-    public function setDrivesGetDrivesApiInstance(DrivesGetDrivesApi|null $apiInstance): void
+    public function setDrivesGetDrivesApiInstance(DrivesGetDrivesApi | null $apiInstance): void
     {
         $this->drivesGetDrivesApiInstance = $apiInstance;
     }
@@ -226,7 +227,7 @@ class Ocis
         }
         try {
             $webfingerResponse = $this->guzzle->get($webfingerUrl . '?resource=acct:me@' . $iss['host']);
-        } catch (GuzzleException|GuzzleClientException $e) {
+        } catch (GuzzleException | GuzzleClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
@@ -263,9 +264,9 @@ class Ocis
      * @throws HttpException
      */
     public function listAllDrives(
-        DriveOrder     $orderBy = DriveOrder::NAME,
+        DriveOrder $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        DriveType      $type = null
+        DriveType $type = null
     ): array {
         if ($this->drivesGetDrivesApiInstance === null) {
             $apiInstance = new DrivesGetDrivesApi(
@@ -325,9 +326,9 @@ class Ocis
      * @throws HttpException
      */
     public function listMyDrives(
-        DriveOrder     $orderBy = DriveOrder::NAME,
+        DriveOrder $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        DriveType      $type = null
+        DriveType $type = null
     ): array {
         $apiInstance = new MeDrivesApi(
             $this->guzzle,
@@ -371,7 +372,7 @@ class Ocis
     }
 
     private function getListDrivesOrderString(
-        DriveOrder     $orderBy = DriveOrder::NAME,
+        DriveOrder $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC
     ): string {
         return $orderBy->value . ' ' . $orderDirection->value;
@@ -457,7 +458,7 @@ class Ocis
             [
                 'description' => $description,
                 'name' => $name,
-                'quota' => ['total' => $quota]
+                'quota' => ['total' => $quota],
             ]
         );
         try {
@@ -479,6 +480,46 @@ class Ocis
             $newlyCreatedDrive->getError()->getMessage() .
             "'"
         );
+    }
+
+    /**
+     * Method listAllGroups
+     *
+     * @param string|null $search [explicite description]
+     * @param GroupOrder[]|null $orderBy [explicite description]
+     * @param GroupProperties|null $select=null $select [explicite description]
+     * @param GroupExpandEntities|null $expand=null $expand [explicite description]
+     *
+     * @return Group[]
+     */
+    public function listAllGroups(string $search = null, $orderBy = null, GroupProperties | null $select = null, GroupExpandEntities|null $expand = null)
+    {
+        $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
+        try {
+            $groups = $apiInstance->listGroups($search, $orderBy, $select, $expand)->getValue();
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($groups instanceof OdataError) {
+            // ToDo: understand how this can happen, and what to do about it.
+            throw new InvalidResponseException(
+                "listGroups returned an OdataError - " . $groups->getError()
+            );
+        }
+        $groupList = [];
+        foreach ($groups as $group) {
+            $newGroup = new Group(
+                $group->getId(), 
+                $group->getDescription() ?? "",
+                $group->getDisplayName(),
+                $group->getGroupTypes() ?? [],
+                $group->getMembers() ?? [],
+                $group->getMembersodataBind() ?? [],
+            );
+            $groupList[] = $newGroup;
+        }
+        return $groupList;
     }
 
     /**
@@ -533,12 +574,12 @@ class Ocis
     private function isNotificationResponseValid(array $ocsResponse): bool
     {
         return
-            isset($ocsResponse['ocs']) &&
-            is_array($ocsResponse['ocs']) &&
-            array_key_exists('data', $ocsResponse['ocs']) &&
+        isset($ocsResponse['ocs']) &&
+        is_array($ocsResponse['ocs']) &&
+        array_key_exists('data', $ocsResponse['ocs']) &&
             (
                 is_array($ocsResponse['ocs']['data']) ||
-                is_null($ocsResponse['ocs']['data'])
+            is_null($ocsResponse['ocs']['data'])
             );
     }
 
@@ -560,7 +601,7 @@ class Ocis
             $response = $this->guzzle->get(
                 $this->serviceUrl . $this->notificationsEndpoint
             );
-        } catch (GuzzleException|GuzzleClientException $e) {
+        } catch (GuzzleException | GuzzleClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
@@ -586,11 +627,11 @@ class Ocis
          *  }
          *} $ocsResponse
          */
-        $ocsResponse = (array)json_decode($content, true);
+        $ocsResponse = (array) json_decode($content, true);
 
         if (!$this->isNotificationResponseValid($ocsResponse)) {
             throw new InvalidResponseException(
-                'Notification response is invalid. Content: "' .  $content . '"'
+                'Notification response is invalid. Content: "' . $content . '"'
             );
         }
 
