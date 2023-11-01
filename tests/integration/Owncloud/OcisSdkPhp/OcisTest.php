@@ -21,14 +21,9 @@ class OcisTest extends TestCase
      */
     private $createdDrives = [];
 
-    private function setOcisUrl()
-    {
-        $this->ocisUrl = getenv('OCIS_URL') ?? 'https://ocis.owncloud.test';
-    }
-
     public function setUp(): void
     {
-        $this->setOcisUrl();
+        $this->ocisUrl = (getenv('OCIS_URL') !== false) ? getenv('OCIS_URL') : 'https://ocis.owncloud.test';
         $guzzleClient = $this->getGuzzleClient();
         $response = $guzzleClient->get('.well-known/openid-configuration');
         $openIdConfigurationRaw = $response->getBody()->getContents();
