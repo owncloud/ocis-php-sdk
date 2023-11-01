@@ -55,13 +55,11 @@ def main(ctx):
 def integrationTest():
     environment = {
         "OCIS_URL": "https://ocis:9200",
-        "OCIS_CONFIG_DIR": "/root/.ocis/config",  # needed for checking config later
         "OCIS_LOG_LEVEL": "error",
-        "OCIS_INSECURE": "true",
         "IDM_ADMIN_PASSWORD": "admin",  # override the random admin password from `ocis init`
         "PROXY_AUTOPROVISION_ACCOUNTS": "true",
         "PROXY_ROLE_ASSIGNMENT_DRIVER": "oidc",
-        "OCIS_OIDC_ISSUER": "http://${KEYCLOAK_DOMAIN:-keycloak}/realms/${KEYCLOAK_REALM:-oCIS}",
+        "OCIS_OIDC_ISSUER": "http://keycloak:8080/realms/oCIS",
         "PROXY_OIDC_REWRITE_WELLKNOWN": "true",
         "WEB_OIDC_CLIENT_ID": "web",
         "PROXY_USER_OIDC_CLAIM": "preferred_username",
@@ -175,8 +173,8 @@ def keycloakService():
             "image": KEYCLOAK,
             "detach": True,
             "environment": {
-                "OCIS_DOMAIN": "https://ocis:9200",
-                "KC_HOSTNAME": "http://keycloak",
+                "OCIS_DOMAIN": "ocis:9200",
+                "KC_HOSTNAME": "keycloak:8080",
                 "KC_DB": "postgres",
                 "KC_DB_URL": "jdbc:postgresql://postgres:5432/keycloak",
                 "KC_DB_USERNAME": "keycloak",
@@ -188,7 +186,7 @@ def keycloakService():
             "commands": [
                 "mkdir -p /opt/keycloak/data/import",
                 "cp tests/integration/docker/keycloak/ocis-realm.dist.json /opt/keycloak/data/import/ocis-realm.json",
-                "/opt/keycloak/bin/kc.sh start --proxy edge --spi-connections-http-client-default-disable-trust-manager=true --import-realm --health-enabled=true",
+                "/opt/keycloak/bin/kc.sh start-dev --proxy edge --spi-connections-http-client-default-disable-trust-manager=true --import-realm --health-enabled=true",
             ],
         },
         {
