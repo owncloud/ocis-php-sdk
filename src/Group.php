@@ -2,19 +2,50 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+use OpenAPI\Client\Model\Group as OpenApiGroup;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+
 class Group
 {
-    public function __construct(
-        private string $id,
-        private string $description = '',
-        private string $displayName,
-        private array $groupTypes = [],
-        private array $members = [],
-        private array $membersodatabind = [],
-    ) {}
+    private string $id;
+    private string $description;
+    private string $displayName;
+    /**
+     * @var array<int,string>
+     */
+    private array $groupTypes;
+    /**
+     * @var array<int,User>
+     */
+    private array $members;
+    /**
+     * @param OpenApiGroup $openApiGroup
+     */
+    public function __construct(OpenApiGroup $openApiGroup)
+    {
+        $this->id = empty($openApiGroup->getId()) ?
+        throw new InvalidResponseException(
+            "Invalid id returned for group '" . print_r($openApiGroup->getId(), true) . "'"
+        )
+        : $openApiGroup->getId();
+        $this->displayName = empty($openApiGroup->getDisplayName()) ?
+        throw new InvalidResponseException(
+            "Invalid displayName returned for group '" . print_r($openApiGroup->getDisplayName(), true) . "'"
+        )
+        : $openApiGroup->getDisplayName();
+        $this->description = $openApiGroup->getDescription() ?? "";
+        $this->groupTypes = $openApiGroup->getGroupTypes() ?? [];
+
+        $openApiUser = $openApiGroup->getMembers() ?? [];
+        $this->members = [];
+        foreach ($openApiUser as $user) {
+            $this->members[] = new User($user);
+        }
+    }
 
     /**
-     * Get the value of id
+     *
+     * @return string
      */
     public function getId(): string
     {
@@ -22,7 +53,7 @@ class Group
     }
 
     /**
-     * Get the value of description
+     * @return string
      */
     public function getDescription(): string
     {
@@ -30,7 +61,7 @@ class Group
     }
 
     /**
-     * Get the value of displayName
+     * @return string
      */
     public function getDisplayName(): string
     {
@@ -38,7 +69,7 @@ class Group
     }
 
     /**
-     * Get the value of groupTypes
+     * @return array<int,string>
      */
     public function getGroupTypes(): array
     {
@@ -46,18 +77,11 @@ class Group
     }
 
     /**
-     * Get the value of members
+     * @return array<int,User>
      */
     public function getMembers(): array
     {
         return $this->members;
     }
 
-    /**
-     * Get the value of membersodatabind
-     */
-    public function getMembersodatabind(): array
-    {
-        return $this->membersodatabind;
-    }
 }

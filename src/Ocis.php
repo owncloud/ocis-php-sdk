@@ -5,11 +5,10 @@ namespace Owncloud\OcisPhpSdk;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException as GuzzleClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
-use OpenAPI\Client\Api\GroupsApi;
 use OpenAPI\Client\Api\MeDrivesApi;
+use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\OdataError;
@@ -17,11 +16,12 @@ use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
-use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
 use stdClass;
+use OpenAPI\Client\Api\GroupsApi;
 
 /**
  * Basic class to establish the connection to an ownCloud Infinite Scale instance
@@ -123,7 +123,7 @@ class Ocis
             'headers' => 'is_array',
             'verify' => 'is_bool',
             'webfinger' => 'is_bool',
-            'guzzle' => 'self::isGuzzleClient',
+            'guzzle' => 'self::isGuzzleClient'
         ];
         foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
@@ -172,7 +172,7 @@ class Ocis
     /**
      * @ignore This function is mainly for unit tests and should not be shown in the documentation
      */
-    public function setDrivesApiInstance(DrivesApi | null $apiInstance): void
+    public function setDrivesApiInstance(DrivesApi|null $apiInstance): void
     {
         $this->drivesApiInstance = $apiInstance;
     }
@@ -180,7 +180,7 @@ class Ocis
     /**
      * @ignore This function is mainly for unit tests and should not be shown in the documentation
      */
-    public function setDrivesGetDrivesApiInstance(DrivesGetDrivesApi | null $apiInstance): void
+    public function setDrivesGetDrivesApiInstance(DrivesGetDrivesApi|null $apiInstance): void
     {
         $this->drivesGetDrivesApiInstance = $apiInstance;
     }
@@ -227,7 +227,7 @@ class Ocis
         }
         try {
             $webfingerResponse = $this->guzzle->get($webfingerUrl . '?resource=acct:me@' . $iss['host']);
-        } catch (GuzzleException | GuzzleClientException $e) {
+        } catch (GuzzleException|GuzzleClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
@@ -264,9 +264,9 @@ class Ocis
      * @throws HttpException
      */
     public function listAllDrives(
-        DriveOrder $orderBy = DriveOrder::NAME,
+        DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        DriveType $type = null
+        DriveType      $type = null
     ): array {
         if ($this->drivesGetDrivesApiInstance === null) {
             $apiInstance = new DrivesGetDrivesApi(
@@ -326,9 +326,9 @@ class Ocis
      * @throws HttpException
      */
     public function listMyDrives(
-        DriveOrder $orderBy = DriveOrder::NAME,
+        DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        DriveType $type = null
+        DriveType      $type = null
     ): array {
         $apiInstance = new MeDrivesApi(
             $this->guzzle,
@@ -372,7 +372,7 @@ class Ocis
     }
 
     private function getListDrivesOrderString(
-        DriveOrder $orderBy = DriveOrder::NAME,
+        DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC
     ): string {
         return $orderBy->value . ' ' . $orderDirection->value;
@@ -458,7 +458,7 @@ class Ocis
             [
                 'description' => $description,
                 'name' => $name,
-                'quota' => ['total' => $quota],
+                'quota' => ['total' => $quota]
             ]
         );
         try {
@@ -483,40 +483,47 @@ class Ocis
     }
 
     /**
-     * Method listAllGroups
+     * Get list of groups (if the user has the permission to do so)
      *
-     * @param string|null $search [explicite description]
-     * @param GroupOrder[]|null $orderBy [explicite description]
-     * @param GroupProperties|null $select=null $select [explicite description]
-     * @param GroupExpandEntities|null $expand=null $expand [explicite description]
-     *
-     * @return Group[]
+     * @param string $search
+     * @param OrderDirection $orderBy
+     * @param boolean $expandMembers
+     * @return array<int,Group>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
+     * @throws InvalidResponseException
+     * @throws HttpException
      */
-    public function listAllGroups(string $search = null, $orderBy = null, GroupProperties | null $select = null, GroupExpandEntities|null $expand = null)
-    {
+    public function getGroups(
+        string $search = "",
+        OrderDirection $orderBy = OrderDirection::ASC,
+        bool $expandMembers = false
+    ) {
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
+        $orderByString = $orderBy->value === OrderDirection::ASC->value ? "displayName" : "displayName desc";
         try {
-            $groups = $apiInstance->listGroups($search, $orderBy, $select, $expand)->getValue();
+            $allGroupsList = $apiInstance->listGroups(
+                $search,
+                [$orderByString],
+                [],
+                $expandMembers ? ["members"] : null
+            );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
-        if ($groups instanceof OdataError) {
-            // ToDo: understand how this can happen, and what to do about it.
+        if ($allGroupsList instanceof OdataError) {
             throw new InvalidResponseException(
-                "listGroups returned an OdataError - " . $groups->getError()
+                "listGroups returned an OdataError - " . $allGroupsList->getError()
             );
         }
+        $apiGroups = $allGroupsList->getValue() ?? [];
         $groupList = [];
-        foreach ($groups as $group) {
-            $newGroup = new Group(
-                $group->getId(), 
-                $group->getDescription() ?? "",
-                $group->getDisplayName(),
-                $group->getGroupTypes() ?? [],
-                $group->getMembers() ?? [],
-                $group->getMembersodataBind() ?? [],
-            );
+        foreach ($apiGroups as $group) {
+            $newGroup = new Group($group);
             $groupList[] = $newGroup;
         }
         return $groupList;
@@ -574,12 +581,12 @@ class Ocis
     private function isNotificationResponseValid(array $ocsResponse): bool
     {
         return
-        isset($ocsResponse['ocs']) &&
-        is_array($ocsResponse['ocs']) &&
-        array_key_exists('data', $ocsResponse['ocs']) &&
+            isset($ocsResponse['ocs']) &&
+            is_array($ocsResponse['ocs']) &&
+            array_key_exists('data', $ocsResponse['ocs']) &&
             (
                 is_array($ocsResponse['ocs']['data']) ||
-            is_null($ocsResponse['ocs']['data'])
+                is_null($ocsResponse['ocs']['data'])
             );
     }
 
@@ -601,7 +608,7 @@ class Ocis
             $response = $this->guzzle->get(
                 $this->serviceUrl . $this->notificationsEndpoint
             );
-        } catch (GuzzleException | GuzzleClientException $e) {
+        } catch (GuzzleException|GuzzleClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
@@ -627,11 +634,11 @@ class Ocis
          *  }
          *} $ocsResponse
          */
-        $ocsResponse = (array) json_decode($content, true);
+        $ocsResponse = (array)json_decode($content, true);
 
         if (!$this->isNotificationResponseValid($ocsResponse)) {
             throw new InvalidResponseException(
-                'Notification response is invalid. Content: "' . $content . '"'
+                'Notification response is invalid. Content: "' .  $content . '"'
             );
         }
 
