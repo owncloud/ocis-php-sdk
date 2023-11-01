@@ -1115,18 +1115,18 @@
       "clientId": "web",
       "name": "",
       "description": "",
-      "rootUrl": "https://ocis.owncloud.test",
-      "adminUrl": "https://ocis.owncloud.test",
+      "rootUrl": "https://ocis:9200",
+      "adminUrl": "https://ocis:9200",
       "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "https://ocis.owncloud.test/*"
+        "https://ocis:9200/*"
       ],
       "webOrigins": [
-        "https://ocis.owncloud.test"
+        "https://ocis:9200"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -1150,7 +1150,7 @@
         "saml.server.signature.keyinfo.ext": "false",
         "exclude.session.state.from.auth.response": "false",
         "oidc.ciba.grant.enabled": "false",
-        "backchannel.logout.url": "https://ocis.owncloud.test/backchannel_logout",
+        "backchannel.logout.url": "https://ocis:9200/backchannel_logout",
         "backchannel.logout.session.required": "true",
         "client_credentials.use_refresh_token": "false",
         "saml_force_name_id_format": "false",
