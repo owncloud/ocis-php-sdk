@@ -13,7 +13,7 @@ class OcisTest extends TestCase
     private const CLIENT_SECRET = 'UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh';
     private const UUID_REGEX_PATTERN = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\$[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
 //     Todo make configurable env
-    private string $ocisUrl = 'https://ocis:9200';
+    private string $ocisUrl;
     private ?string $tokenUrl = null;
     private ?Client $guzzleClient = null;
     /**
@@ -21,8 +21,14 @@ class OcisTest extends TestCase
      */
     private $createdDrives = [];
 
+    private function setOcisUrl()
+    {
+        $this->ocisUrl = getenv('OCIS_URL') ?? 'https://ocis.owncloud.test';
+    }
+
     public function setUp(): void
     {
+        $this->setOcisUrl();
         $guzzleClient = $this->getGuzzleClient();
         $response = $guzzleClient->get('.well-known/openid-configuration');
         $openIdConfigurationRaw = $response->getBody()->getContents();

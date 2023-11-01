@@ -115,8 +115,10 @@ def buildOcis():
             "name": "clone-ocis",
             "image": OC_CI_GOLANG,
             "commands": [
-                "git clone -b master --single-branch %s" % ocis_repo_url,
-                "pwd",
+                "source .drone.env",
+                "git clone -b $OCIS_BRANCH --single-branch %s" % ocis_repo_url,
+                "cd ocis",
+                "git checkout $OCIS_COMMITID",
             ],
         },
         {
