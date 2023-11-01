@@ -57,11 +57,12 @@ def integrationTest():
         "OCIS_URL": "https://ocis:9200",
         "OCIS_CONFIG_DIR": "/root/.ocis/config",  # needed for checking config later
         "OCIS_LOG_LEVEL": "error",
+        "OCIS_INSECURE": "true",
         "IDM_ADMIN_PASSWORD": "admin",  # override the random admin password from `ocis init`
-        "PROXY_AUTOPROVISION_ACCOUNTS": True,
+        "PROXY_AUTOPROVISION_ACCOUNTS": "true",
         "PROXY_ROLE_ASSIGNMENT_DRIVER": "oidc",
         "OCIS_OIDC_ISSUER": "http://${KEYCLOAK_DOMAIN:-keycloak}/realms/${KEYCLOAK_REALM:-oCIS}",
-        "PROXY_OIDC_REWRITE_WELLKNOWN": True,
+        "PROXY_OIDC_REWRITE_WELLKNOWN": "true",
         "WEB_OIDC_CLIENT_ID": "web",
         "PROXY_USER_OIDC_CLAIM": "preferred_username",
         "PROXY_USER_CS3_CLAIM": "username",
