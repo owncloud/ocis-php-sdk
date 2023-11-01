@@ -80,6 +80,7 @@ def phpIntegrationTest():
                              "OCIS_URL": "https://ocis:9200",
                          },
                          "commands": [
+                             "curl -v -X GET 'https://ocis:9200/.well-known/openid-configuration' -k",
                              "make test-php-integration-ci",
                          ],
                      },
