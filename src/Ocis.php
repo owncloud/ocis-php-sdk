@@ -540,7 +540,12 @@ class Ocis
         $apiGroups = $allGroupsList->getValue() ?? [];
         $groupList = [];
         foreach ($apiGroups as $group) {
-            $newGroup = new Group($group);
+            $newGroup = new Group(
+                $group,
+                $this->serviceUrl,
+                $this->connectionConfig,
+                $this->accessToken
+            );
             $groupList[] = $newGroup;
         }
         return $groupList;

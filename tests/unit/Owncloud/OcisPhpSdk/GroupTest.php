@@ -40,7 +40,8 @@ class GroupTest extends TestCase
     public function testListGroup(array $data)
     {
         $libGroup = new Group($data);
-        $group = new SdkGroup($libGroup);
+        $accessTocken = "acstok";
+        $group = new SdkGroup($libGroup, "url", [], $accessTocken);
         $this->assertInstanceOf(SdkGroup::class, $group);
         $this->assertEquals($data["id"], $group->getId());
         $this->assertEquals($data["description"], $group->getDescription());
@@ -110,6 +111,7 @@ class GroupTest extends TestCase
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Invalid $errorMsg returned for group '" . print_r($data[$key], true));
         $libGroup = new Group($data);
-        $group = new SdkGroup($libGroup);
+        $accessTocken = "acstok";
+        $group = new SdkGroup($libGroup, "url", [], $accessTocken);
     }
 }
