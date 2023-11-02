@@ -22,7 +22,7 @@ class OcisTest extends TestCase
 
     public function setUp(): void
     {
-        $this->ocisUrl = (getenv('OCIS_URL') !== false) ? getenv('OCIS_URL') : 'https://ocis.owncloud.test';
+        $this->ocisUrl = getenv('OCIS_URL') ?: 'https://ocis.owncloud.test';
         $guzzleClient = $this->getGuzzleClient();
         $response = $guzzleClient->get('.well-known/openid-configuration');
         $openIdConfigurationRaw = $response->getBody()->getContents();

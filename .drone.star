@@ -80,7 +80,6 @@ def phpIntegrationTest():
                              "OCIS_URL": "https://ocis:9200",
                          },
                          "commands": [
-                             "curl -v -X GET 'https://ocis:9200/.well-known/openid-configuration' -k",
                              "make test-php-integration-ci",
                          ],
                      },
@@ -175,7 +174,7 @@ def postgresService():
             "image": POSTGRES_ALPINE,
             "environment": {
                 "POSTGRES_DB": "keycloak",
-                "POSTGRES_USER": "keycloak",  # needed for checking config later
+                "POSTGRES_USER": "keycloak",
                 "POSTGRES_PASSWORD": "keycloak",
             },
         },
@@ -207,7 +206,7 @@ def keycloakService():
             },
             "commands": [
                 "mkdir -p /opt/keycloak/data/import",
-                "cp tests/integration/docker/keycloak/ocis-realm.dist.json /opt/keycloak/data/import/ocis-realm.json",
+                "cp tests/integration/docker/keycloak/ocis-ci-realm.dist.json /opt/keycloak/data/import/ocis-realm.json",
                 "/opt/keycloak/bin/kc.sh start-dev --proxy edge --spi-connections-http-client-default-disable-trust-manager=true --import-realm --health-enabled=true",
             ],
         },
