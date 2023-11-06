@@ -12,7 +12,7 @@ class OcisTest extends TestCase
     private const CLIENT_ID = 'xdXOt13JKxym1B1QcEncf2XDkLAexMBFwiT9j6EfhhHFJhs2KM9jbjTmf8JBXE69';
     private const CLIENT_SECRET = 'UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh';
     private const UUID_REGEX_PATTERN = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\$[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
-    private string $ocisUrl = 'https://ocis.owncloud.test';
+    private string $ocisUrl;
     private ?string $tokenUrl = null;
     private ?Client $guzzleClient = null;
     /**
@@ -22,6 +22,7 @@ class OcisTest extends TestCase
 
     public function setUp(): void
     {
+        $this->ocisUrl = getenv('OCIS_URL') ?: 'https://ocis.owncloud.test';
         $guzzleClient = $this->getGuzzleClient();
         $response = $guzzleClient->get('.well-known/openid-configuration');
         $openIdConfigurationRaw = $response->getBody()->getContents();

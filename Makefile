@@ -31,6 +31,11 @@ test-php-integration: run-ocis-with-keycloak
 	composer install
 	$(call run-with-cleanup, $(PHPUNIT) --configuration ./phpunit.xml --testsuite integration, $(MAKE) docker-clean)
 
+.PHONY: test-php-integration-ci
+test-php-integration-ci:            ## Run php integration tests in CI
+test-php-integration-ci: vendor/bin/phpunit
+	$(PHPUNIT) --configuration ./phpunit.xml --testsuite integration
+
 .PHONY: test-php-style
 test-php-style:            ## Run php-cs-fixer and check code-style
 test-php-style: vendor/bin/php-cs-fixer
