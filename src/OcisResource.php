@@ -3,6 +3,7 @@
 namespace Owncloud\OcisPhpSdk;
 
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use phpDocumentor\Descriptor\Interfaces\FunctionInterface;
 use Sabre\DAV\Xml\Property\ResourceType;
 
 /**
@@ -73,6 +74,24 @@ class OcisResource
         return $metadata[$property->getKey()];
     }
 
+    /**
+     * gets all possible permissions for the resource
+     * @return array<SharingRole>
+     */
+    public function getRoles(): array
+    {
+
+    }
+
+    /**
+     * @param $recipients array<User|Group>
+     * @param $role SharingRole
+     * @return void
+     */
+    public function invite($recipients, $role, ?\DateTime $expiration = null)
+    {
+
+    }
     /**
      * @return string
      * @throws InvalidResponseException
