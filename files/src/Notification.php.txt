@@ -45,7 +45,18 @@ class Notification
      *                        'webfinger'?:bool,
      *                        'guzzle'?:\GuzzleHttp\Client
      *                        } $connectionConfig
-     * @param array<mixed> $messageRichParameters
+     * @phpstan-param object{
+     *    app: string,
+     *    user: string,
+     *    datetime: string,
+     *    object_id: string,
+     *    object_type: string,
+     *    subject: string,
+     *    subjectRich: string,
+     *    message: string,
+     *    messageRich: string,
+     *    messageRichParameters:array{int, mixed}
+     * } $notificationContent
      * @throws \InvalidArgumentException
      * @ignore The developer using the SDK does not need to create notifications manually, but should use the Ocis class
      *         to retrieve them, so this constructor should not be listed in the documentation.
@@ -55,28 +66,19 @@ class Notification
         array $connectionConfig,
         string $serviceUrl,
         string $id,
-        string $app,
-        string $user,
-        string $datetime,
-        string $objectId,
-        string $objectType,
-        string $subject,
-        string $subjectRich,
-        string $message,
-        string $messageRich,
-        array $messageRichParameters
+        $notificationContent
     ) {
         $this->id = $id;
-        $this->app = $app;
-        $this->user = $user;
-        $this->datetime = $datetime;
-        $this->objectId = $objectId;
-        $this->objectType = $objectType;
-        $this->subject = $subject;
-        $this->subjectRich = $subjectRich;
-        $this->message = $message;
-        $this->messageRich = $messageRich;
-        $this->messageRichParameters = $messageRichParameters;
+        $this->app = $notificationContent->app;
+        $this->user = $notificationContent->user;
+        $this->datetime = $notificationContent->datetime;
+        $this->objectId = $notificationContent->object_id;
+        $this->objectType = $notificationContent->object_type;
+        $this->subject = $notificationContent->subject;
+        $this->subjectRich = $notificationContent->subjectRich;
+        $this->message = $notificationContent->message;
+        $this->messageRich = $notificationContent->messageRich;
+        $this->messageRichParameters = $notificationContent->messageRichParameters;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
