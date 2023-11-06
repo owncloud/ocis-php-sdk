@@ -20,6 +20,7 @@ use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
+use stdClass;
 
 /**
  * Basic class to establish the connection to an ownCloud Infinite Scale instance
@@ -607,7 +608,21 @@ class Ocis
                 );
             }
             $id = $ocsData["notification_id"];
-            $notificationContent = [];
+            /**
+             * @phpstan-var object{
+             *    app: string,
+             *    user: string,
+             *    datetime: string,
+             *    object_id: string,
+             *    object_type: string,
+             *    subject: string,
+             *    subjectRich: string,
+             *    message: string,
+             *    messageRich: string,
+             *    messageRichParameters: array{int, mixed}
+             *  } $notificationContent
+             */
+            $notificationContent = new stdClass();
             foreach (
                 [
                     "app",
@@ -622,26 +637,18 @@ class Ocis
                 ] as $key
             ) {
                 if (!isset($ocsData[$key])) {
-                    $notificationContent[$key] = "";
+                    $notificationContent->$key = "";
                 }
             }
-            $messageRichParams = (isset($ocsData["messageRichParameters"])) ? $ocsData["messageRichParameters"] : [];
+            $notificationContent->{'messageRichParameters'} =
+                (isset($ocsData["messageRichParameters"])) ? $ocsData["messageRichParameters"] : [];
 
             $notifications[] = new Notification(
                 $this->accessToken,
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $id,
-                $notificationContent["app"],
-                $notificationContent["user"],
-                $notificationContent["datetime"],
-                $notificationContent["object_id"],
-                $notificationContent["object_type"],
-                $notificationContent["subject"],
-                $notificationContent["subjectRich"],
-                $notificationContent["message"],
-                $notificationContent["messageRich"],
-                $messageRichParams
+                $notificationContent
             );
         }
         return $notifications;
