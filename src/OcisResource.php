@@ -17,12 +17,30 @@ class OcisResource
 
     /**
      * @param array<mixed> $metadata of the resource
+     *        the format of the array is directly taken from the PROPFIND response
+     *        returned by Sabre\DAV\Client
+     *        e.g:
+     *        array (
+     *          '{http://owncloud.org/ns}id' => <string>,
+     *          '{http://owncloud.org/ns}fileid' => <string>,
+     *          '{http://owncloud.org/ns}spaceid' => <string>,
+     *          '{http://owncloud.org/ns}file-parent' => <string>,
+     *          '{http://owncloud.org/ns}name' => <string>,
+     *          '{DAV:}getetag' => <string>,
+     *          '{http://owncloud.org/ns}permissions' => <string>,
+     *          '{DAV:}resourcetype' => <ResourceType>,
+     *          '{http://owncloud.org/ns}size' => <string>,
+     *          '{DAV:}getlastmodified' => <string>,
+     *          '{http://owncloud.org/ns}tags' => <null|string>,
+     *          '{http://owncloud.org/ns}favorite' => <string>,
+     *        )
      *
      * @return void
      */
     public function __construct(array $metadata)
     {
         $this->metadata = $metadata;
+
     }
 
     /**
@@ -57,6 +75,7 @@ class OcisResource
 
     /**
      * @return string
+     * @throws InvalidResponseException
      */
     public function getId(): string
     {
