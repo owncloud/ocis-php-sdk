@@ -226,6 +226,41 @@ Search.appendIndex(
             "summary": "Exception\u0020for\u0020HTTP\u0020401\u0020errors",
             "url": "classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group",
+            "name": "Group",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method___construct"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AgetId\u0028\u0029",
+            "name": "getId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_getId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AgetDescription\u0028\u0029",
+            "name": "getDescription",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_getDescription"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AgetDisplayName\u0028\u0029",
+            "name": "getDisplayName",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_getDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AgetGroupTypes\u0028\u0029",
+            "name": "getGroupTypes",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_getGroupTypes"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AgetMembers\u0028\u0029",
+            "name": "getMembers",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_getMembers"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Notification",
             "name": "Notification",
             "summary": "Class\u0020representing\u0020a\u0020single\u0020notification\u0020emitted\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
@@ -330,6 +365,11 @@ Search.appendIndex(
             "name": "createDrive",
             "summary": "Create\u0020a\u0020new\u0020drive\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_createDrive"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetGroups\u0028\u0029",
+            "name": "getGroups",
+            "summary": "Get\u0020list\u0020of\u0020groups\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getGroups"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetFileById\u0028\u0029",
             "name": "getFileById",
@@ -440,6 +480,36 @@ Search.appendIndex(
             "name": "DESC",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OrderDirection.html#enumcase_DESC"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\User",
+            "name": "User",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-User.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\User\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-User.html#method___construct"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\User\u003A\u003AgetDisplayName\u0028\u0029",
+            "name": "getDisplayName",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020displayName",
+            "url": "classes/Owncloud-OcisPhpSdk-User.html#method_getDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\User\u003A\u003AgetId\u0028\u0029",
+            "name": "getId",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020id",
+            "url": "classes/Owncloud-OcisPhpSdk-User.html#method_getId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\User\u003A\u003AgetMail\u0028\u0029",
+            "name": "getMail",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020email",
+            "url": "classes/Owncloud-OcisPhpSdk-User.html#method_getMail"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\User\u003A\u003AgetOnPremisesSamAccountName\u0028\u0029",
+            "name": "getOnPremisesSamAccountName",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020onPremisesSamAccountName",
+            "url": "classes/Owncloud-OcisPhpSdk-User.html#method_getOnPremisesSamAccountName"
         },                {
             "fqsen": "\\OpenAPI\\Client\\Model\\Quota",
             "name": "Quota",
