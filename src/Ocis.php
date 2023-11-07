@@ -21,6 +21,7 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
 use stdClass;
+use OpenAPI\Client\Api\GroupsApi;
 
 /**
  * Basic class to establish the connection to an ownCloud Infinite Scale instance
@@ -479,6 +480,53 @@ class Ocis
             $newlyCreatedDrive->getError()->getMessage() .
             "'"
         );
+    }
+
+    /**
+     * Get list of groups (if the user has the permission to do so)
+     *
+     * @param string $search
+     * @param OrderDirection $orderBy
+     * @param boolean $expandMembers
+     * @return array<int,Group>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     */
+    public function getGroups(
+        string $search = "",
+        OrderDirection $orderBy = OrderDirection::ASC,
+        bool $expandMembers = false
+    ) {
+        $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
+        $orderByString = $orderBy->value === OrderDirection::ASC->value ? "displayName" : "displayName desc";
+        try {
+            $allGroupsList = $apiInstance->listGroups(
+                $search,
+                [$orderByString],
+                [],
+                $expandMembers ? ["members"] : null
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($allGroupsList instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listGroups returned an OdataError - " . $allGroupsList->getError()
+            );
+        }
+        $apiGroups = $allGroupsList->getValue() ?? [];
+        $groupList = [];
+        foreach ($apiGroups as $group) {
+            $newGroup = new Group($group);
+            $groupList[] = $newGroup;
+        }
+        return $groupList;
     }
 
     /**
