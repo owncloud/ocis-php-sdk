@@ -93,7 +93,7 @@ for ($roles as $role) {
 }
 
 // find all users with a specific surname
-$users = $ocis->listUsers("gurung");
+$users = $ocis->getUsers("gurung");
 
 // share the resource with the users
 $resources[0]->invite($users, $editorRole);
