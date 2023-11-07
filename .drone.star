@@ -50,6 +50,12 @@ trigger = {
 }
 
 def main(ctx):
+    testsPipelinesWithCoverage = phpunit(ctx, [DEFAULT_PHP_VERSION], True)
+    testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
+    testsPipelinesWithoutCoverage = phpunit(ctx, [8.2], False)
+    testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2], False)
+    sonarPipeline = sonarAnalysis(ctx)
+    dependsOn(testsPipelinesWithCoverage, sonarPipeline)
     return (
         tests(
             ctx,
@@ -59,34 +65,42 @@ def main(ctx):
                 ["phan", "make test-php-phan"],
             ],
         ) +
-        phpunit(ctx, [DEFAULT_PHP_VERSION], True) +
-        phpunit(ctx, [8.2], False) +
-        phpIntegrationTest() +
-        sonarAnalysis(ctx) +
+        testsPipelinesWithCoverage +
+        testsPipelinesWithoutCoverage +
+        sonarPipeline +
         docs()
     )
 
-def phpIntegrationTest():
-    return [{
-        "kind": "pipeline",
-        "type": "docker",
-        "name": "integration-test",
-        "steps": buildOcis() + keycloakService() + ocisService() +
-                 [
-                     {
-                         "name": "integration-tests",
-                         "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
-                         "environment": {
-                             "OCIS_URL": "https://ocis:9200",
-                         },
-                         "commands": [
-                             "make test-php-integration-ci",
-                         ],
-                     },
-                 ],
-        "services": postgresService(),
-        "trigger": trigger,
-    }]
+def phpIntegrationTest(ctx, phpversions, coverage):
+    pipelines = []
+    steps = buildOcis() + keycloakService() + ocisService()
+    for php in phpversions:
+        name = "php-integration-test-%s" % php
+        steps.append(
+            {
+                "name": "php-integration-test",
+                "image": OC_CI_PHP % php,
+                "environment": {
+                    "OCIS_URL": "https://ocis:9200",
+                },
+                "commands": [
+                    "make test-php-integration-ci",
+                ],
+            },
+        )
+        if coverage:
+            steps += coverageSteps(ctx, name)
+        pipelines += [
+            {
+                "kind": "pipeline",
+                "name": name,
+                "steps": steps,
+                "services": postgresService(),
+                "trigger": trigger,
+            },
+        ]
+
+    return pipelines
 
 def ocisService():
     ocis_bin = "ocis/ocis/bin/ocis"
@@ -258,33 +272,7 @@ def phpunit(ctx, phpversions, coverage):
                 },
             ]
             if coverage:
-                steps.append({
-                    "name": "coverage-rename",
-                    "image": OC_CI_PHP % php,
-                    "commands": [
-                        "mv tests/output/clover.xml tests/output/clover-%s.xml" % name,
-                    ],
-                })
-                steps.append({
-                    "name": "coverage-cache-1",
-                    "image": PLUGINS_S3,
-                    "settings": {
-                        "endpoint": {
-                            "from_secret": "cache_s3_server",
-                        },
-                        "bucket": "cache",
-                        "source": "tests/output/clover-%s.xml" % name,
-                        "target": "%s/%s" % (ctx.repo.slug, ctx.build.commit + "-${DRONE_BUILD_NUMBER}"),
-                        "path_style": True,
-                        "strip_prefix": "tests/output",
-                        "access_key": {
-                            "from_secret": "cache_s3_access_key",
-                        },
-                        "secret_key": {
-                            "from_secret": "cache_s3_secret_key",
-                        },
-                    },
-                })
+                steps += coverageSteps(ctx, name)
             pipelines += [
                 {
                     "kind": "pipeline",
@@ -294,6 +282,35 @@ def phpunit(ctx, phpversions, coverage):
                 },
             ]
     return pipelines
+
+def coverageSteps (ctx, name):
+    return [{
+        "name": "coverage-rename",
+        "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+        "commands": [
+            "mv tests/output/clover.xml tests/output/clover-%s.xml" % name,
+        ],
+    }, {
+        "name": "coverage-cache-1",
+        "image": PLUGINS_S3,
+        "settings": {
+            "endpoint": {
+                "from_secret": "cache_s3_server",
+            },
+            "bucket": "cache",
+            "source": "tests/output/clover-%s.xml" % name,
+            "target": "%s/%s" % (ctx.repo.slug, ctx.build.commit + "-${DRONE_BUILD_NUMBER}"),
+            "path_style": True,
+            "strip_prefix": "tests/output",
+            "access_key": {
+                "from_secret": "cache_s3_access_key",
+            },
+            "secret_key": {
+                "from_secret": "cache_s3_secret_key",
+            },
+        },
+    }]
+
 
 def docs():
     return [{
@@ -416,9 +433,12 @@ def sonarAnalysis(ctx, phpVersion = DEFAULT_PHP_VERSION):
                          ],
                      },
                  ],
-        "depends_on": [
-            "php-unit-test-%s" % DEFAULT_PHP_VERSION,
-        ],
+        "depends_on": [],
         "trigger": trigger,
     }]
     return result
+
+def dependsOn(earlierStages, nextStages):
+    for earlierStage in earlierStages:
+        for nextStage in nextStages:
+            nextStage["depends_on"].append(earlierStage["name"])
