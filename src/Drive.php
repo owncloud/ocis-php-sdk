@@ -292,7 +292,12 @@ class Drive
         try {
             $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), [], 1);
             foreach ($responses as $response) {
-                $resources[] = new OcisResource($response);
+                $resources[] = new OcisResource(
+                    $response,
+                    $this->connectionConfig,
+                    $this->serviceUrl,
+                    $this->accessToken
+                );
             }
             unset($resources[0]);
         } catch (SabreClientHttpException|SabreClientException $e) {

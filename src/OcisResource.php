@@ -2,8 +2,17 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+use GuzzleHttp\Client;
+use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\ApiException;
+use OpenAPI\Client\Configuration;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
-use phpDocumentor\Descriptor\Interfaces\FunctionInterface;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Xml\Property\ResourceType;
 
 /**
@@ -15,6 +24,10 @@ class OcisResource
      * @var array<mixed>
      */
     private array $metadata;
+    private string $accessToken;
+    private string $serviceUrl;
+    private array $connectionConfig;
+    private Configuration $graphApiConfig;
 
     /**
      * @param array<mixed> $metadata of the resource
@@ -38,10 +51,22 @@ class OcisResource
      *
      * @return void
      */
-    public function __construct(array $metadata)
-    {
+    public function __construct(
+        array $metadata,
+        array $connectionConfig,
+        string $serviceUrl,
+        string &$accessToken
+    ) {
         $this->metadata = $metadata;
+        $this->accessToken = &$accessToken;
+        $this->serviceUrl = $serviceUrl;
+        if (!Ocis::isConnectionConfigValid($connectionConfig)) {
+            throw new \InvalidArgumentException('connection configuration not valid');
+        }
+        $this->graphApiConfig = Configuration::getDefaultConfiguration()
+            ->setHost($this->serviceUrl . '/graph/v1.0');
 
+        $this->connectionConfig = $connectionConfig;
     }
 
     /**
@@ -77,10 +102,34 @@ class OcisResource
     /**
      * gets all possible permissions for the resource
      * @return array<SharingRole>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws InvalidResponseException
      */
     public function getRoles(): array
     {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
 
+        $apiInstance = new DrivesPermissionsApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $collectionOfPermissions = $apiInstance->listPermissions($this->getSpaceId(), $this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        $apiRoles = $collectionOfPermissions->getAtLibreGraphPermissionsRolesAllowedValues() ?? [];
+        $roles = [];
+        foreach ($apiRoles as $role) {
+            $roles[] = new SharingRole($role);
+        }
+        return $roles;
     }
 
     /**
@@ -88,10 +137,11 @@ class OcisResource
      * @param $role SharingRole
      * @return void
      */
-    public function invite($recipients, $role, ?\DateTime $expiration = null)
+    public function invite(array $recipients, SharingRole $role, ?\DateTime $expiration = null)
     {
 
     }
+
     /**
      * @return string
      * @throws InvalidResponseException
