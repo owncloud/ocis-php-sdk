@@ -91,7 +91,7 @@ class Ocis
 
         $this->connectionConfig = $connectionConfig;
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
-            $this->serviceUrl . '/graph/v1.0'
+            $this->serviceUrl . '/graph'
         );
 
     }
