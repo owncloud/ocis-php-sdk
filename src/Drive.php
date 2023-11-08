@@ -66,7 +66,7 @@ class Drive
             throw new \InvalidArgumentException('connection configuration not valid');
         }
         $this->graphApiConfig = Configuration::getDefaultConfiguration()
-            ->setHost($this->serviceUrl . '/graph/v1.0');
+            ->setHost($this->serviceUrl . '/graph');
 
         $this->connectionConfig = $connectionConfig;
     }
