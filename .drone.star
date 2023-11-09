@@ -79,7 +79,7 @@ def main(ctx):
 
 def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
-    steps = buildOcis() + ocisService() + keycloakService() + cacheRestore()
+    steps = keycloakService() + buildOcis() + ocisService() + cacheRestore()
     for php in phpversions:
         name = "php-integration-test-%s" % php
         steps.append(
