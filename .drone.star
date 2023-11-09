@@ -79,7 +79,7 @@ def main(ctx):
 
 def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
-    steps =  buildOcis() + ocisService() + keycloakService() + cacheRestore()
+    steps = buildOcis() + ocisService() + keycloakService() + cacheRestore()
     for php in phpversions:
         name = "php-integration-test-%s" % php
         steps.append(
@@ -507,9 +507,6 @@ def cacheFlushOnEventPush():
             },
         },
         "when": {
-            "event": [
-                "push",
-            ],
             "instance": [
                 "drone.owncloud.services",
                 "drone.owncloud.com",
@@ -549,9 +546,6 @@ def cacheClearOnEventPush():
             "rm -Rf %s/.cache/composer" % dir["base"],
         ],
         "when": {
-            "event": [
-                "push",
-            ],
             "instance": [
                 "drone.owncloud.services",
                 "drone.owncloud.com",
@@ -579,9 +573,6 @@ def cacheRebuildOnEventPush():
             },
         },
         "when": {
-            "event": [
-                "push",
-            ],
             "instance": [
                 "drone.owncloud.services",
                 "drone.owncloud.com",
