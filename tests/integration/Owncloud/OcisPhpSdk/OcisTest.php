@@ -9,7 +9,7 @@ use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OrderDirection;
 
-class OcisTest extends OcisPhpStdTestCase
+class OcisTest extends OcisPhpSdkTestCase
 {
     private const GROUP_COUNT = 0;
 

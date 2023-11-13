@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use Owncloud\OcisPhpSdk\Ocis;
 use PHPUnit\Framework\TestCase;
 
-class OcisPhpStdTestCase extends TestCase
+class OcisPhpSdkTestCase extends TestCase
 {
     private const CLIENT_ID = 'xdXOt13JKxym1B1QcEncf2XDkLAexMBFwiT9j6EfhhHFJhs2KM9jbjTmf8JBXE69';
     private const CLIENT_SECRET = 'UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh';
