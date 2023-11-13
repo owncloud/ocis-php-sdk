@@ -115,10 +115,14 @@ class OcisResource
             Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
         );
 
-        $apiInstance = new DrivesPermissionsApi(
-            $guzzle,
-            $this->graphApiConfig
-        );
+        if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
+        } else {
+            $apiInstance = new DrivesPermissionsApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
         try {
             $collectionOfPermissions = $apiInstance->listPermissions($this->getSpaceId(), $this->getId());
         } catch (ApiException $e) {
@@ -135,11 +139,40 @@ class OcisResource
     /**
      * @param $recipients array<User|Group>
      * @param $role SharingRole
-     * @return void
+     * @param \DateTime|null $expiration
+     * @return bool
+     * @throws ApiException
+     * @throws InvalidResponseException
      */
-    public function invite(array $recipients, SharingRole $role, ?\DateTime $expiration = null)
+    public function invite(array $recipients, SharingRole $role, ?\DateTime $expiration = null): bool
     {
+        $requestObject = new \StdClass();
+        $requestObject->recipients = [];
+        foreach ($recipients as $recipient) {
+            $recipientRequestObject = new \StdClass();
+            $recipientRequestObject->objectId = $recipient->getId();
+            $requestObject->recipients[] = $recipientRequestObject;
+        }
+        $requestObject->roles = [$role->getId()];
+        if ($expiration !== null) {
+            $requestObject->expirationDateTime = $expiration->format('Y-m-d\TH:i:s:up');
+        }
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
 
+        if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
+        } else {
+            $apiInstance = new DrivesPermissionsApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+
+        $requestJson = json_encode($requestObject);
+        $apiInstance->invite($this->getSpaceId(), $this->getId(), $requestJson);
+        return true;
     }
 
     /**
