@@ -1,19 +1,24 @@
-OC_CI_PHP = "owncloudci/php:%s"
-OC_UBUNTU = "owncloud/ubuntu:20.04"
-PHPDOC_PHPDOC = "phpdoc/phpdoc:3"
-PLUGINS_GITHUB_RELEASE = "plugins/github-release"
-PLUGINS_GH_PAGES = "plugins/gh-pages:1"
-PLUGINS_S3 = "plugins/s3"
+KEYCLOAK = "quay.io/keycloak/keycloak:22.0.4"
 MINIO_MC = "minio/mc:RELEASE.2020-12-18T10-53-53Z"
 OC_CI_ALPINE = "owncloudci/alpine:latest"
-SONARSOURCE_SONAR_SCANNER_CLI = "sonarsource/sonar-scanner-cli"
+OC_CI_DRONE_SKIP_PIPELINE = "owncloudci/drone-skip-pipeline"
 OC_CI_GOLANG = "owncloudci/golang:1.20"
-OC_CI_WAIT_FOR = "owncloudci/wait-for:latest"
 OC_CI_NODEJS = "owncloudci/nodejs:18"
+OC_CI_PHP = "owncloudci/php:%s"
+OC_CI_WAIT_FOR = "owncloudci/wait-for:latest"
+OC_UBUNTU = "owncloud/ubuntu:20.04"
+PHPDOC_PHPDOC = "phpdoc/phpdoc:3"
+PLUGINS_GH_PAGES = "plugins/gh-pages:1"
+PLUGINS_GITHUB_RELEASE = "plugins/github-release"
+PLUGINS_S3 = "plugins/s3"
+PLUGINS_S3_CACHE = "plugins/s3-cache:1"
 POSTGRES_ALPINE = "postgres:alpine3.18"
-KEYCLOAK = "quay.io/keycloak/keycloak:22.0.4"
+SONARSOURCE_SONAR_SCANNER_CLI = "sonarsource/sonar-scanner-cli"
 
 DEFAULT_PHP_VERSION = "8.1"
+dir = {
+    "base": "/drone/src",
+}
 
 # minio mc environment variables
 MINIO_MC_ENV = {
@@ -57,6 +62,7 @@ def main(ctx):
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
     return (
+        cacheDependencies() +
         tests(
             ctx,
             [
@@ -73,7 +79,7 @@ def main(ctx):
 
 def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
-    steps = buildOcis() + keycloakService() + ocisService()
+    steps = keycloakService() + buildOcis() + ocisService() + cacheRestore()
     for php in phpversions:
         name = "php-integration-test-%s" % php
         steps.append(
@@ -82,6 +88,7 @@ def phpIntegrationTest(ctx, phpversions, coverage):
                 "image": OC_CI_PHP % php,
                 "environment": {
                     "OCIS_URL": "https://ocis:9200",
+                    "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
                 },
                 "commands": [
                     "make test-php-integration-ci",
@@ -241,10 +248,13 @@ def tests(ctx, tests):
                 {
                     "kind": "pipeline",
                     "name": test[0],
-                    "steps": [
+                    "steps": cacheRestore() + [
                         {
                             "name": test[0],
                             "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+                            "environment": {
+                                "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
+                            },
                             "commands": [
                                 "composer install",
                                 test[1],
@@ -252,6 +262,7 @@ def tests(ctx, tests):
                         },
                     ],
                     "trigger": trigger,
+                    "depends_on": ["cache-dependencies"],
                 },
             ]
     return pipelines
@@ -261,10 +272,13 @@ def phpunit(ctx, phpversions, coverage):
     if "phpunit" in config and config["phpunit"]:
         for php in phpversions:
             name = "php-unit-test-%s" % php
-            steps = [
+            steps = cacheRestore() + [
                 {
                     "name": "php-unit-test",
                     "image": OC_CI_PHP % php,
+                    "environment": {
+                        "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
+                    },
                     "commands": [
                         "composer install",
                         "make test-php-unit",
@@ -283,7 +297,7 @@ def phpunit(ctx, phpversions, coverage):
             ]
     return pipelines
 
-def coverageSteps (ctx, name):
+def coverageSteps(ctx, name):
     return [{
         "name": "coverage-rename",
         "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
@@ -311,7 +325,6 @@ def coverageSteps (ctx, name):
         },
     }]
 
-
 def docs():
     return [{
         "kind": "pipeline",
@@ -321,10 +334,13 @@ def docs():
             "os": "linux",
             "arch": "amd64",
         },
-        "steps": [
+        "steps": cacheRestore() + [
             {
                 "name": "dependencies",
                 "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+                "environment": {
+                    "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
+                },
                 "commands": [
                     "composer install",
                 ],
@@ -442,3 +458,124 @@ def dependsOn(earlierStages, nextStages):
     for earlierStage in earlierStages:
         for nextStage in nextStages:
             nextStage["depends_on"].append(earlierStage["name"])
+
+def cacheDependencies():
+    return [
+        {
+            "kind": "pipeline",
+            "type": "docker",
+            "name": "cache-dependencies",
+            "steps": cacheClearOnEventPush() +
+                     composerInstall() +
+                     cacheRebuildOnEventPush() +
+                     cacheFlushOnEventPush(),
+            "trigger": {
+                "ref": [
+                    "refs/heads/main",
+                ],
+            },
+        },
+    ]
+
+def composerInstall():
+    return [{
+        "name": "composer-install",
+        "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+        "environment": {
+            "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
+        },
+        "commands": [
+            "composer install",
+        ],
+    }]
+
+def cacheFlushOnEventPush():
+    return [{
+        "name": "cache-flush",
+        "image": PLUGINS_S3_CACHE,
+        "settings": {
+            "access_key": {
+                "from_secret": "cache_s3_access_key",
+            },
+            "endpoint": {
+                "from_secret": "cache_s3_server",
+            },
+            "flush": True,
+            "flush_age": "14",
+            "secret_key": {
+                "from_secret": "cache_s3_secret_key",
+            },
+        },
+        "when": {
+            "instance": [
+                "drone.owncloud.services",
+                "drone.owncloud.com",
+            ],
+        },
+    }]
+
+def cacheRestore():
+    return [{
+        "name": "cache-restore",
+        "image": PLUGINS_S3_CACHE,
+        "settings": {
+            "access_key": {
+                "from_secret": "cache_s3_access_key",
+            },
+            "endpoint": {
+                "from_secret": "cache_s3_server",
+            },
+            "restore": True,
+            "secret_key": {
+                "from_secret": "cache_s3_secret_key",
+            },
+        },
+        "when": {
+            "instance": [
+                "drone.owncloud.services",
+                "drone.owncloud.com",
+            ],
+        },
+    }]
+
+def cacheClearOnEventPush():
+    return [{
+        "name": "cache-clear",
+        "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+        "commands": [
+            "rm -Rf %s/.cache/composer" % dir["base"],
+        ],
+        "when": {
+            "instance": [
+                "drone.owncloud.services",
+                "drone.owncloud.com",
+            ],
+        },
+    }]
+
+def cacheRebuildOnEventPush():
+    return [{
+        "name": "cache-rebuild",
+        "image": PLUGINS_S3_CACHE,
+        "settings": {
+            "access_key": {
+                "from_secret": "cache_s3_access_key",
+            },
+            "endpoint": {
+                "from_secret": "cache_s3_server",
+            },
+            "mount": [
+                ".cache",
+            ],
+            "rebuild": True,
+            "secret_key": {
+                "from_secret": "cache_s3_secret_key",
+            },
+        },
+        "when": {
+            "instance": [
+                "drone.owncloud.services",
+                "drone.owncloud.com",
+            ],
+        },
+    }]
