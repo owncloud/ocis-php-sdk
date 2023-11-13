@@ -7,7 +7,7 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Ocis;
 
-class UsersTest extends OcisPhpStdTestCase
+class UsersTest extends OcisPhpSdkTestCase
 {
     /**
      * init a user
