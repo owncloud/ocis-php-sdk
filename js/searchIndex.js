@@ -381,6 +381,11 @@ Search.appendIndex(
             "summary": "Get\u0020the\u0020file\u0020referenced\u0020by\u0020the\u0020unique\u0020id\u0020and\u0020return\u0020the\u0020stream",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getFileStreamById"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetUsers\u0028\u0029",
+            "name": "getUsers",
+            "summary": "retrieve\u0020users\u0020known\u0020by\u0020the\u0020system",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getUsers"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetNotifications\u0028\u0029",
             "name": "getNotifications",
             "summary": "Retrieve\u0020all\u0020unread\u0020notifications\u0020of\u0020the\u0020current\u0020user",

@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\MeDrivesApi;
+use OpenAPI\Client\Api\UsersApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
@@ -572,6 +573,43 @@ class Ocis
         $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
         return $webDavClient->sendRequest("GET", $fileId);
+    }
+
+    /**
+     * retrieve users known by the system
+     *
+     * @param string|null $search
+     * @return array<User>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function getUsers(?string $search = null): array
+    {
+        $users = [];
+        $apiInstance = new UsersApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $collectionOfApiUsers = $apiInstance->listUsers($search);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($collectionOfApiUsers instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listUsers returned an OdataError - " . $collectionOfApiUsers->getError()
+            );
+        }
+        $apiUsers = $collectionOfApiUsers->getValue() ?? [];
+        foreach ($apiUsers as $apiUser) {
+            $users[] = new User($apiUser);
+        }
+        return $users;
     }
 
     /**
