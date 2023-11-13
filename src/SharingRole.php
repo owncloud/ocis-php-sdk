@@ -23,12 +23,14 @@ class SharingRole
     {
         $this->id = !is_string($apiRole->getId()) ?
             throw new InvalidResponseException(
-                "Invalid id returned for role '" . print_r($apiRole->getId(), true) . "'"
+                "Invalid id returned for sharing role '" . print_r($apiRole->getId(), true) . "'"
             )
             : $apiRole->getId();
         $this->displayName = !is_string($apiRole->getDisplayName()) ?
             throw new InvalidResponseException(
-                "Invalid display name returned for role '" . print_r($apiRole->getId(), true) . "'"
+                "Invalid display name returned for sharing role '" .
+                print_r($apiRole->getId(), true) .
+                "'"
             )
             : $apiRole->getDisplayName();
         $this->description = !is_string($apiRole->getDescription()) ? "" : $apiRole->getDescription();
