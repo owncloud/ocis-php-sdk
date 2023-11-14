@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\OdataError;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
@@ -141,8 +142,12 @@ class OcisResource
      * @param $role SharingRole
      * @param \DateTime|null $expiration
      * @return bool
-     * @throws ApiException
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
      * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     public function invite(array $recipients, SharingRole $role, ?\DateTime $expiration = null): bool
     {
@@ -151,19 +156,23 @@ class OcisResource
         foreach ($recipients as $recipient) {
             $recipientRequestObject = new \StdClass();
             $recipientRequestObject->objectId = $recipient->getId();
+            if ($recipient instanceof Group) {
+                $recipientRequestObject->{'@libre.graph.recipient.type'} = "group";
+            }
             $requestObject->recipients[] = $recipientRequestObject;
         }
         $requestObject->roles = [$role->getId()];
         if ($expiration !== null) {
+            $expiration->setTimezone(new \DateTimeZone('Z'));
             $requestObject->expirationDateTime = $expiration->format('Y-m-d\TH:i:s:up');
         }
-        $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-        );
 
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
         } else {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
             $apiInstance = new DrivesPermissionsApi(
                 $guzzle,
                 $this->graphApiConfig
@@ -171,7 +180,16 @@ class OcisResource
         }
 
         $requestJson = json_encode($requestObject);
-        $apiInstance->invite($this->getSpaceId(), $this->getId(), $requestJson);
+        try {
+            $permission = $apiInstance->invite($this->getSpaceId(), $this->getId(), $requestJson);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "invite returned an OdataError - " . $permission->getError()
+            );
+        }
         return true;
     }
 
