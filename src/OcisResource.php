@@ -6,6 +6,8 @@ use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\DriveItemInvite;
+use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
@@ -27,6 +29,15 @@ class OcisResource
     private array $metadata;
     private string $accessToken;
     private string $serviceUrl;
+    /**
+     * @phpstan-var array{
+     *                      'headers'?:array<string, mixed>,
+     *                      'verify'?:bool,
+     *                      'webfinger'?:bool,
+     *                      'guzzle'?:\GuzzleHttp\Client,
+     *                      'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
+     *                    }
+     */
     private array $connectionConfig;
     private Configuration $graphApiConfig;
 
@@ -49,7 +60,13 @@ class OcisResource
      *          '{http://owncloud.org/ns}tags' => <null|string>,
      *          '{http://owncloud.org/ns}favorite' => <string>,
      *        )
-     *
+     * @phpstan-param array{
+     *              'headers'?:array<string, mixed>,
+     *              'verify'?:bool,
+     *              'webfinger'?:bool,
+     *              'guzzle'?:Client,
+     *              'drivesPermissionsApi'?:DrivesPermissionsApi
+     *             } $connectionConfig
      * @return void
      */
     public function __construct(
@@ -129,6 +146,11 @@ class OcisResource
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
+        if ($collectionOfPermissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+            );
+        }
         $apiRoles = $collectionOfPermissions->getAtLibreGraphPermissionsRolesAllowedValues() ?? [];
         $roles = [];
         foreach ($apiRoles as $role) {
@@ -138,8 +160,8 @@ class OcisResource
     }
 
     /**
-     * @param $recipients array<User|Group>
-     * @param $role SharingRole
+     * @param array<int, User|Group> $recipients
+     * @param SharingRole $role
      * @param \DateTime|null $expiration
      * @return bool
      * @throws BadRequestException
@@ -149,22 +171,22 @@ class OcisResource
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    public function invite(array $recipients, SharingRole $role, ?\DateTime $expiration = null): bool
+    public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): bool
     {
-        $requestObject = new \StdClass();
-        $requestObject->recipients = [];
+        $requestObject = [];
+        $requestObject['recipients'] = [];
         foreach ($recipients as $recipient) {
-            $recipientRequestObject = new \StdClass();
-            $recipientRequestObject->objectId = $recipient->getId();
+            $recipientRequestObject = [];
+            $recipientRequestObject['object_id'] = $recipient->getId();
             if ($recipient instanceof Group) {
-                $recipientRequestObject->{'@libre.graph.recipient.type'} = "group";
+                $recipientRequestObject['@libre.graph.recipient.type'] = "group";
             }
-            $requestObject->recipients[] = $recipientRequestObject;
+            $requestObject['recipients'][] = new DriveRecipient($recipientRequestObject);
         }
-        $requestObject->roles = [$role->getId()];
+        $requestObject['roles'] = [$role->getId()];
         if ($expiration !== null) {
             $expiration->setTimezone(new \DateTimeZone('Z'));
-            $requestObject->expirationDateTime = $expiration->format('Y-m-d\TH:i:s:up');
+            $requestObject['expiration_date_time'] = $expiration->format('Y-m-d\TH:i:s:up');
         }
 
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
@@ -179,9 +201,9 @@ class OcisResource
             );
         }
 
-        $requestJson = json_encode($requestObject);
+        $inviteData = new DriveItemInvite($requestObject);
         try {
-            $permission = $apiInstance->invite($this->getSpaceId(), $this->getId(), $requestJson);
+            $permission = $apiInstance->invite($this->getSpaceId(), $this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }

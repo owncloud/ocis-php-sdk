@@ -2,7 +2,6 @@
 
 namespace Owncloud\OcisPhpSdk;
 
-use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\UnifiedRoleDefinition;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
