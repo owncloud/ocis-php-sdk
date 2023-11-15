@@ -17,6 +17,9 @@ use PHPUnit\Framework\TestCase;
 
 class ResourceInviteTest extends TestCase
 {
+    /**
+     * @return array<mixed>
+     */
     public function inviteDataProvider(): array
     {
         $openAPIUser = new OpenAPIUser(
@@ -120,11 +123,13 @@ class ResourceInviteTest extends TestCase
 
     /**
      * @dataProvider inviteDataProvider
+     * @param array<int, User|Group> $recipients
      */
-    public function testInvite($recipients, $expiration, $expectedInviteData)
+    public function testInvite($recipients, \DateTime $expiration, DriveItemInvite $expectedInviteData): void
     {
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('invite')
+            /** @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
             ->with('uuid-of-the-space', 'uuid-of-the-resource', $expectedInviteData)
             ->willReturn($this->createMock(Permission::class));
         $accessToken = 'an-access-token';
