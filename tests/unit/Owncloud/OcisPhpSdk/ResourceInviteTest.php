@@ -3,6 +3,8 @@
 namespace unit\Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\Model\DriveItemInvite;
+use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\Group as OpenAPIGroup;
 use OpenAPI\Client\Model\User as OpenAPIUser;
 use OpenAPI\Client\Model\Permission;
@@ -37,28 +39,81 @@ class ResourceInviteTest extends TestCase
 
         return [
             // invite for a single recipient
-            [[$einstein], null, '{"recipients":[{"objectId":"uuid-of-einstein"}],"roles":["uuid-of-the-role"]}'],
+            [
+                [$einstein],
+                null,
+                new DriveItemInvite(
+                    [
+                        'recipients' => [
+                            new DriveRecipient(
+                                [
+                                    'object_id' => 'uuid-of-einstein',
+                                ]
+                            ),
+                        ],
+                        'roles' => ['uuid-of-the-role'],
+                    ]
+                )
+            ],
             // invite a user and a group
             [
                 [$einstein, $smartPeopleGroup],
                 null,
-                '{'.
-                    '"recipients":' .
-                        '[' .
-                            '{"objectId":"uuid-of-einstein"},' .
-                            '{"objectId":"uuid-of-smart-people-group","@libre.graph.recipient.type":"group"}],' .
-                    '"roles":["uuid-of-the-role"]' .
-                '}'
+                new DriveItemInvite(
+                    [
+                        'recipients' => [
+                            new DriveRecipient(
+                                [
+                                    'object_id' => 'uuid-of-einstein',
+                                ]
+                            ),
+                            new DriveRecipient(
+                                [
+                                    'object_id' => 'uuid-of-smart-people-group',
+                                    'at_libre_graph_recipient_type' => 'group',
+                                ]
+                            ),
+                        ],
+                        'roles' => ['uuid-of-the-role'],
+                    ]
+                )
             ],
-            // invite a user and set expiry time
+            // set expiry time
+            [
+                [$smartPeopleGroup],
+                new \DateTime('2022-12-31 01:02:03.456789'),
+                new DriveItemInvite(
+                    [
+                        'recipients' => [
+                            new DriveRecipient(
+                                [
+                                    'object_id' => 'uuid-of-smart-people-group',
+                                    'at_libre_graph_recipient_type' => 'group',
+                                ]
+                            ),
+                        ],
+                        'roles' => ['uuid-of-the-role'],
+                        'expiration_date_time' => '2022-12-31T01:02:03:456789Z'
+                    ]
+                )
+            ],
+            // set expiry time, with conversion to UTC/Z timezone
             [
                 [$einstein],
                 new \DateTime('2021-01-01 17:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
-                '{' .
-                    '"recipients":[{"objectId":"uuid-of-einstein"}],' .
-                    '"roles":["uuid-of-the-role"],' .
-                    '"expirationDateTime":"2021-01-01T12:00:43:123456Z"' .
-                '}'
+                new DriveItemInvite(
+                    [
+                        'recipients' => [
+                            new DriveRecipient(
+                                [
+                                    'object_id' => 'uuid-of-einstein',
+                                ]
+                            ),
+                        ],
+                        'roles' => ['uuid-of-the-role'],
+                        'expiration_date_time' => '2021-01-01T12:00:43:123456Z'
+                    ]
+                )
             ],
         ];
     }
@@ -66,11 +121,11 @@ class ResourceInviteTest extends TestCase
     /**
      * @dataProvider inviteDataProvider
      */
-    public function testInvite($recipients, $expiration, $expectedBody)
+    public function testInvite($recipients, $expiration, $expectedInviteData)
     {
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('invite')
-            ->with('uuid-of-the-space', 'uuid-of-the-resource', $expectedBody)
+            ->with('uuid-of-the-space', 'uuid-of-the-resource', $expectedInviteData)
             ->willReturn($this->createMock(Permission::class));
         $accessToken = 'an-access-token';
         $connectionConfig = [

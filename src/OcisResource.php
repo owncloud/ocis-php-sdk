@@ -179,7 +179,7 @@ class OcisResource
             $recipientRequestObject = [];
             $recipientRequestObject['object_id'] = $recipient->getId();
             if ($recipient instanceof Group) {
-                $recipientRequestObject['@libre.graph.recipient.type'] = "group";
+                $recipientRequestObject['at_libre_graph_recipient_type'] = "group";
             }
             $requestObject['recipients'][] = new DriveRecipient($recipientRequestObject);
         }
