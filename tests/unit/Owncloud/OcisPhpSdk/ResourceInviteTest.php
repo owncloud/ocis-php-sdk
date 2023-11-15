@@ -125,7 +125,7 @@ class ResourceInviteTest extends TestCase
      * @dataProvider inviteDataProvider
      * @param array<int, User|Group> $recipients
      */
-    public function testInvite($recipients, \DateTime $expiration, DriveItemInvite $expectedInviteData): void
+    public function testInvite($recipients, ?\DateTime $expiration, DriveItemInvite $expectedInviteData): void
     {
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('invite')
