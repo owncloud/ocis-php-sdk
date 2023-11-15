@@ -173,20 +173,20 @@ class OcisResource
      */
     public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): bool
     {
-        $requestObject = [];
-        $requestObject['recipients'] = [];
+        $driveItemInviteData = [];
+        $driveItemInviteData['recipients'] = [];
         foreach ($recipients as $recipient) {
-            $recipientRequestObject = [];
-            $recipientRequestObject['object_id'] = $recipient->getId();
+            $recipientData = [];
+            $recipientData['object_id'] = $recipient->getId();
             if ($recipient instanceof Group) {
-                $recipientRequestObject['at_libre_graph_recipient_type'] = "group";
+                $recipientData['at_libre_graph_recipient_type'] = "group";
             }
-            $requestObject['recipients'][] = new DriveRecipient($recipientRequestObject);
+            $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
         }
-        $requestObject['roles'] = [$role->getId()];
+        $driveItemInviteData['roles'] = [$role->getId()];
         if ($expiration !== null) {
             $expiration->setTimezone(new \DateTimeZone('Z'));
-            $requestObject['expiration_date_time'] = $expiration->format('Y-m-d\TH:i:s:up');
+            $driveItemInviteData['expiration_date_time'] = $expiration->format('Y-m-d\TH:i:s:up');
         }
 
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
@@ -201,7 +201,7 @@ class OcisResource
             );
         }
 
-        $inviteData = new DriveItemInvite($requestObject);
+        $inviteData = new DriveItemInvite($driveItemInviteData);
         try {
             $permission = $apiInstance->invite($this->getSpaceId(), $this->getId(), $inviteData);
         } catch (ApiException $e) {
