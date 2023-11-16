@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\DriveItemCreateLink;
 use OpenAPI\Client\Model\DriveItemInvite;
 use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
@@ -215,6 +216,58 @@ class OcisResource
         return true;
     }
 
+    /**
+     * create a new (public) link
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
+    public function createLink(
+        LinkType $type = LinkType::VIEW,
+        ?\DateTime $expiration = null,
+        ?string $password = null,
+        ?string $displayName = null
+    ): bool {
+        if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
+        } else {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+            $apiInstance = new DrivesPermissionsApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+        if ($expiration !== null) {
+            $expiration->setTimezone(new \DateTimeZone('Z'));
+            $expirationString = $expiration->format('Y-m-d\TH:i:s:up');
+        } else {
+            $expirationString = null;
+        }
+
+        $createLinkData = new DriveItemCreateLink([
+            'type' => $type->value,
+            'password' => $password,
+            'expiration_date_time' => $expirationString,
+            'display_name' => $displayName
+        ]);
+        try {
+            $permission = $apiInstance->createLink($this->getId(), $this->getId(), $createLinkData);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "createLink returned an OdataError - " . $permission->getError()
+            );
+        }
+        return true;
+    }
     /**
      * @return string
      * @throws InvalidResponseException
