@@ -264,7 +264,7 @@ class Ocis
      * @throws InvalidResponseException
      * @throws HttpException
      */
-    public function listAllDrives(
+    public function getAllDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
         DriveType      $type = null
@@ -326,7 +326,7 @@ class Ocis
      * @throws InvalidResponseException
      * @throws HttpException
      */
-    public function listMyDrives(
+    public function getMyDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
         DriveType      $type = null

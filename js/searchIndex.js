@@ -91,10 +91,10 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_setReadme"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AlistResources\u0028\u0029",
-            "name": "listResources",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetResources\u0028\u0029",
+            "name": "getResources",
             "summary": "List\u0020the\u0020content\u0020of\u0020a\u0020specific\u0020path\u0020in\u0020the\u0020current\u0020drive",
-            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_listResources"
+            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_getResources"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetFile\u0028\u0029",
             "name": "getFile",
@@ -346,15 +346,15 @@ Search.appendIndex(
             "summary": "Update\u0020the\u0020access\u0020token.\u0020Call\u0020this\u0020function\u0020after\u0020refreshing\u0020the\u0020access\u0020token.",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_setAccessToken"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AlistAllDrives\u0028\u0029",
-            "name": "listAllDrives",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetAllDrives\u0028\u0029",
+            "name": "getAllDrives",
             "summary": "Get\u0020all\u0020available\u0020drives",
-            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_listAllDrives"
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getAllDrives"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AlistMyDrives\u0028\u0029",
-            "name": "listMyDrives",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetMyDrives\u0028\u0029",
+            "name": "getMyDrives",
             "summary": "Get\u0020all\u0020drives\u0020that\u0020the\u0020current\u0020user\u0020is\u0020a\u0020regular\u0020member\u0020of",
-            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_listMyDrives"
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getMyDrives"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetDriveById\u0028\u0029",
             "name": "getDriveById",

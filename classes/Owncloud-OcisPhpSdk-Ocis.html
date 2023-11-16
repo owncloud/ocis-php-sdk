@@ -198,6 +198,13 @@
 <dd>Create a new drive (if the user has the permission to do so)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getAllDrives">getAllDrives()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;    </span>
+</dt>
+<dd>Get all available drives</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getDriveById">getDriveById()</a>
     <span>
                                 &nbsp;: <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>    </span>
@@ -226,6 +233,13 @@
 <dd>Get list of groups (if the user has the permission to do so)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getMyDrives">getMyDrives()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;    </span>
+</dt>
+<dd>Get all drives that the current user is a regular member of</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getNotifications">getNotifications()</a>
     <span>
                                 &nbsp;: array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Notification.html"><abbr title="\Owncloud\OcisPhpSdk\Notification">Notification</abbr></a>&gt;    </span>
@@ -244,20 +258,6 @@
                                 &nbsp;: array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-User.html"><abbr title="\Owncloud\OcisPhpSdk\User">User</abbr></a>&gt;    </span>
 </dt>
 <dd>retrieve users known by the system</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listAllDrives">listAllDrives()</a>
-    <span>
-                                &nbsp;: array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;    </span>
-</dt>
-<dd>Get all available drives</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listMyDrives">listMyDrives()</a>
-    <span>
-                                &nbsp;: array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;    </span>
-</dt>
-<dd>Get all drives that the current user is a regular member of</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_setAccessToken">setAccessToken()</a>
@@ -583,6 +583,122 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type"><a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getAllDrives">
+        getAllDrives()
+        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getAllDrives" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">267</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.267" class="phpdocumentor-element-found-in__source" data-line="267" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Get all available drives</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getAllDrives</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderBy</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderDirection</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$orderBy</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$orderDirection</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$type</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getAllDrives#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span>
             </section>
 
 </article>
@@ -1006,6 +1122,122 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_getMyDrives">
+        getMyDrives()
+        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getMyDrives" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">329</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.329" class="phpdocumentor-element-found-in__source" data-line="329" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Get all drives that the current user is a regular member of</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getMyDrives</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderBy</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderDirection</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$orderBy</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$orderDirection</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$type</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a></span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getMyDrives#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getNotifications">
         getNotifications()
         <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getNotifications" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1244,238 +1476,6 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_listAllDrives">
-        listAllDrives()
-        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listAllDrives" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">267</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.267" class="phpdocumentor-element-found-in__source" data-line="267" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
-    </aside>
-
-        <p class="phpdocumentor-summary">Get all available drives</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">listAllDrives</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderBy</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderDirection</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$orderBy</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a></span>
-                 = <span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$orderDirection</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a></span>
-                 = <span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$type</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a></span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listAllDrives#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                                            </dl>
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_listMyDrives">
-        listMyDrives()
-        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listMyDrives" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">329</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.329" class="phpdocumentor-element-found-in__source" data-line="329" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
-    </aside>
-
-        <p class="phpdocumentor-summary">Get all drives that the current user is a regular member of</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">listMyDrives</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderBy</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$orderDirection</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$orderBy</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveOrder.html"><abbr title="\Owncloud\OcisPhpSdk\DriveOrder">DriveOrder</abbr></a></span>
-                 = <span class="phpdocumentor-signature__argument__default-value">DriveOrder::NAME</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$orderDirection</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-OrderDirection.html"><abbr title="\Owncloud\OcisPhpSdk\OrderDirection">OrderDirection</abbr></a></span>
-                 = <span class="phpdocumentor-signature__argument__default-value">OrderDirection::ASC</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$type</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a></span>
-                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listMyDrives#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                                            </dl>
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-Drive.html"><abbr title="\Owncloud\OcisPhpSdk\Drive">Drive</abbr></a>&gt;</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="method_setAccessToken">
         setAccessToken()
         <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_setAccessToken" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1650,15 +1650,15 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
                 <ul class="phpdocumentor-list -clean">
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method___construct">__construct()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_createDrive">createDrive()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getAllDrives">getAllDrives()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getDriveById">getDriveById()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getFileById">getFileById()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getFileStreamById">getFileStreamById()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getGroups">getGroups()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getMyDrives">getMyDrives()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getNotifications">getNotifications()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getServiceUrl">getServiceUrl()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getUsers">getUsers()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listAllDrives">listAllDrives()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_listMyDrives">listMyDrives()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_setAccessToken">setAccessToken()</a></li>
                                     </ul>
             </li>
