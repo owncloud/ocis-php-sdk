@@ -64,6 +64,8 @@ def main(ctx):
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2], False)
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
+    afterPipelines = codeStylePipeline + phpStanPipeline + phanPipeline + testsPipelinesWithCoverage + testsPipelinesWithoutCoverage
+    dependsOn(cacheDependencies(), afterPipelines)
     return (
         cacheDependencies() +
         codeStylePipeline +
@@ -101,6 +103,7 @@ def phpIntegrationTest(ctx, phpversions, coverage):
                 "name": name,
                 "steps": steps,
                 "services": postgresService(),
+                "depends_on": [],
                 "trigger": trigger,
             },
         ]
@@ -263,6 +266,7 @@ def tests(ctx, name, command, phpversions, coverage):
                     "kind": "pipeline",
                     "name": name,
                     "steps": steps,
+                    "depends_on": [],
                     "trigger": trigger,
                 },
             ]
@@ -471,9 +475,11 @@ def cacheDependencies():
                      composerInstall() +
                      cacheRebuildOnEventPush() +
                      cacheFlushOnEventPush(),
+            "depends_on": [],
             "trigger": {
                 "ref": [
                     "refs/heads/main",
+                    "refs/pull/**",
                 ],
             },
         },
@@ -568,6 +574,7 @@ def cacheRebuildOnEventPush():
             },
             "mount": [
                 ".cache",
+                "composer.lock",
             ],
             "rebuild": True,
             "secret_key": {
