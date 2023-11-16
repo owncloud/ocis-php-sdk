@@ -55,22 +55,20 @@ trigger = {
 }
 
 def main(ctx):
-    testsPipelinesWithCoverage = phpunit(ctx, [DEFAULT_PHP_VERSION], True)
+    codeStylePipeline = tests(ctx, "codestyle", "make test-php-style",[DEFAULT_PHP_VERSION], False)
+    phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan",[DEFAULT_PHP_VERSION], False)
+    phanPipeline = tests(ctx, "phan", "make test-php-phan",[DEFAULT_PHP_VERSION], False)
+    testsPipelinesWithCoverage = tests(ctx, "phpunit", "make test-php-unit",[DEFAULT_PHP_VERSION], True)
     testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
-    testsPipelinesWithoutCoverage = phpunit(ctx, [8.2], False)
+    testsPipelinesWithoutCoverage = tests(ctx, "phpunit", "make test-php-unit",[8.2], False)
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2], False)
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
     return (
         cacheDependencies() +
-        tests(
-            ctx,
-            [
-                ["codestyle", "make test-php-style"],
-                ["phpstan", "make test-php-phpstan"],
-                ["phan", "make test-php-phan"],
-            ],
-        ) +
+        codeStylePipeline +
+        phpStanPipeline +
+        phanPipeline +
         testsPipelinesWithCoverage +
         testsPipelinesWithoutCoverage +
         sonarPipeline +
@@ -240,48 +238,21 @@ def keycloakService():
         },
     ]
 
-def tests(ctx, tests):
+def tests(ctx, name, command, phpversions, coverage):
     pipelines = []
-    for test in tests:
-        if test[0] in config and config[test[0]]:
-            pipelines += [
-                {
-                    "kind": "pipeline",
-                    "name": test[0],
-                    "steps": cacheRestore() + [
-                        {
-                            "name": test[0],
-                            "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
-                            "environment": {
-                                "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
-                            },
-                            "commands": [
-                                "composer install",
-                                test[1],
-                            ],
-                        },
-                    ],
-                    "trigger": trigger,
-                    "depends_on": ["cache-dependencies"],
-                },
-            ]
-    return pipelines
-
-def phpunit(ctx, phpversions, coverage):
-    pipelines = []
-    if "phpunit" in config and config["phpunit"]:
+    if name in config and config[name]:
         for php in phpversions:
-            name = "php-unit-test-%s" % php
+            name = "%s-%s" %(name, php)
             steps = cacheRestore() + [
                 {
-                    "name": "php-unit-test",
+                    "name": name,
                     "image": OC_CI_PHP % php,
                     "environment": {
                         "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
                     },
                     "commands": [
                         "composer install",
-                        "make test-php-unit",
+                        command,
                     ],
                 },
             ]
