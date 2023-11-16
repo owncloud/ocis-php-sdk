@@ -142,7 +142,7 @@ class OcisResource
             );
         }
         try {
-            $collectionOfPermissions = $apiInstance->listPermissions($this->getSpaceId(), $this->getId());
+            $collectionOfPermissions = $apiInstance->listPermissions($this->getId(), $this->getId());
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -203,7 +203,7 @@ class OcisResource
 
         $inviteData = new DriveItemInvite($driveItemInviteData);
         try {
-            $permission = $apiInstance->invite($this->getSpaceId(), $this->getId(), $inviteData);
+            $permission = $apiInstance->invite($this->getId(), $this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
