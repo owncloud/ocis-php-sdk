@@ -321,7 +321,7 @@ def docs():
                 "image": PHPDOC_PHPDOC,
             },
             {
-                "name": "publish",
+                "name": "publish-api-docs",
                 "image": PLUGINS_GH_PAGES,
                 "settings": {
                     "username": {
@@ -333,6 +333,37 @@ def docs():
                     "pages_directory": "docs",
                     "copy_contents": "true",
                     "target_branch": "docs",
+                    "delete": "true",
+                },
+                "when": {
+                    "ref": {
+                        "exclude": [
+                            "refs/pull/**",
+                        ],
+                    },
+                },
+            },
+            {
+                "name": "compile-docs-hugo",
+                "image": OC_CI_PHP % DEFAULT_PHP_VERSION,
+                "commands": [
+                    "mkdir docs-hugo",
+                    "cat docs-hugo-header.md README.md > docs-hugo/_index.md",
+                ],
+            },
+            {
+                "name": "publish-docs-hugo",
+                "image": PLUGINS_GH_PAGES,
+                "settings": {
+                    "username": {
+                        "from_secret": "github_username",
+                    },
+                    "password": {
+                        "from_secret": "github_token",
+                    },
+                    "pages_directory": "docs-hugo",
+                    "copy_contents": "true",
+                    "target_branch": "docs-hugo",
                     "delete": "true",
                 },
                 "when": {
