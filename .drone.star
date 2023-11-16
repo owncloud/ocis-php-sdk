@@ -18,6 +18,7 @@ SONARSOURCE_SONAR_SCANNER_CLI = "sonarsource/sonar-scanner-cli"
 DEFAULT_PHP_VERSION = "8.1"
 dir = {
     "base": "/drone/src",
+    "ocis_bin": "/drone/src/ocis_bin",
 }
 
 # minio mc environment variables
@@ -55,12 +56,12 @@ trigger = {
 }
 
 def main(ctx):
-    codeStylePipeline = tests(ctx, "codestyle", "make test-php-style",[DEFAULT_PHP_VERSION], False)
-    phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan",[DEFAULT_PHP_VERSION], False)
-    phanPipeline = tests(ctx, "phan", "make test-php-phan",[DEFAULT_PHP_VERSION], False)
-    testsPipelinesWithCoverage = tests(ctx, "phpunit", "make test-php-unit",[DEFAULT_PHP_VERSION], True)
+    codeStylePipeline = tests(ctx, "codestyle", "make test-php-style", [DEFAULT_PHP_VERSION], False)
+    phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan", [DEFAULT_PHP_VERSION], False)
+    phanPipeline = tests(ctx, "phan", "make test-php-phan", [DEFAULT_PHP_VERSION], False)
+    testsPipelinesWithCoverage = tests(ctx, "phpunit", "make test-php-unit", [DEFAULT_PHP_VERSION], True)
     testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
-    testsPipelinesWithoutCoverage = tests(ctx, "phpunit", "make test-php-unit",[8.2], False)
+    testsPipelinesWithoutCoverage = tests(ctx, "phpunit", "make test-php-unit", [8.2], False)
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2], False)
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
@@ -68,6 +69,7 @@ def main(ctx):
     dependsOn(cacheDependencies(), afterPipelines)
     return (
         cacheDependencies() +
+        cacheOcisPipeline(ctx) +
         codeStylePipeline +
         phpStanPipeline +
         phanPipeline +
@@ -79,7 +81,7 @@ def main(ctx):
 
 def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
-    steps = keycloakService() + buildOcis() + ocisService() + cacheRestore()
+    steps = keycloakService() + restoreOcisCache() + ocisService() + cacheRestore()
     for php in phpversions:
         name = "php-integration-test-%s" % php
         steps.append(
@@ -103,7 +105,7 @@ def phpIntegrationTest(ctx, phpversions, coverage):
                 "name": name,
                 "steps": steps,
                 "services": postgresService(),
-                "depends_on": [],
+                "depends_on": ["cache-ocis"],
                 "trigger": trigger,
             },
         ]
@@ -136,8 +138,8 @@ def ocisService():
             "detach": True,
             "environment": environment,
             "commands": [
-                "%s init --insecure true" % ocis_bin,
-                "%s server" % ocis_bin,
+                "%s/ocis init --insecure true" % dir["ocis_bin"],
+                "%s/ocis server" % dir["ocis_bin"],
             ],
         },
         {
@@ -175,8 +177,11 @@ def buildOcis():
             "name": "build-ocis",
             "image": OC_CI_GOLANG,
             "commands": [
+                ". ./.drone.env",
                 "cd ocis/ocis",
                 "retry -t 3 'make build'",
+                "mkdir -p %s/$OCIS_COMMITID" % dir["base"],
+                "cp bin/ocis %s/$OCIS_COMMITID/" % dir["base"],
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -188,6 +193,74 @@ def buildOcis():
             },
         },
     ]
+
+def cacheOcisPipeline(ctx):
+    return [{
+        "kind": "pipeline",
+        "type": "docker",
+        "name": "cache-ocis",
+        "clone": {
+            "disable": True,
+        },
+        "steps": checkForExistingOcisCache(ctx) +
+                 buildOcis() +
+                 cacheOcis(),
+        "volumes": [{
+            "name": "gopath",
+            "temp": {},
+        }],
+        "trigger": {
+            "ref": [
+                "refs/heads/master",
+                "refs/tags/**",
+                "refs/pull/**",
+            ],
+        },
+    }]
+
+def checkForExistingOcisCache(ctx):
+    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
+    return [
+        {
+            "name": "check-for-existing-cache",
+            "image": MINIO_MC,
+            "environment": MINIO_MC_ENV,
+            "commands": [
+                "curl -o .drone.env %s/.drone.env" % repo_path,
+                "curl -o check-oCIS-cache.sh %s/tests/check-oCIS-cache.sh" % repo_path,
+                ". ./.drone.env",
+                "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
+                "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
+                "bash check-oCIS-cache.sh",
+            ],
+        },
+    ]
+
+def cacheOcis():
+    return [{
+        "name": "upload-ocis-cache",
+        "image": MINIO_MC,
+        "environment": MINIO_MC_ENV,
+        "commands": [
+            ". ./.drone.env",
+            "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
+            "mc cp -r -a %s/$OCIS_COMMITID/ocis s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID" % dir["base"],
+            "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
+        ],
+    }]
+
+def restoreOcisCache():
+    return [{
+        "name": "restore-ocis-cache",
+        "image": MINIO_MC,
+        "environment": MINIO_MC_ENV,
+        "commands": [
+            "mkdir -p %s" % dir["ocis_bin"],
+            ". ./.drone.env",
+            "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
+            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID/ocis %s" % dir["ocis_bin"],
+        ],
+    }]
 
 def postgresService():
     return [
@@ -245,7 +318,7 @@ def tests(ctx, name, command, phpversions, coverage):
     pipelines = []
     if name in config and config[name]:
         for php in phpversions:
-            name = "%s-%s" %(name, php)
+            name = "%s-%s" % (name, php)
             steps = cacheRestore() + [
                 {
                     "name": name,
