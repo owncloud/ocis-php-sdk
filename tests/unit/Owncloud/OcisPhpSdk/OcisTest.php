@@ -114,7 +114,7 @@ class OcisTest extends TestCase
         $drivesGetDrivesApi->method('listAllDrives')
             ->willReturn($driveCollectionMock);
         $ocis->setDrivesGetDrivesApiInstance($drivesGetDrivesApi);
-        $drives = $ocis->listAllDrives();
+        $drives = $ocis->getAllDrives();
         foreach ($drives as $drive) {
             $this->assertEquals('tokenWhenCreated', $drive->getAccessToken());
         }
