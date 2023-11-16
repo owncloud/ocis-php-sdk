@@ -17,7 +17,7 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl . '///', $token, ['verify' => false]);
-        $drives = $ocis->listMyDrives();
+        $drives = $ocis->getMyDrives();
         $this->assertTrue((is_array($drives) && count($drives) > 1));
     }
 
@@ -26,13 +26,13 @@ class OcisTest extends OcisPhpSdkTestCase
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $countDrivesAtStart = count(
-            $ocis->listMyDrives()
+            $ocis->getMyDrives()
         );
         $drive = $ocis->createDrive('first test drive');
         $this->createdDrives[] = $drive->getId();
         $this->assertMatchesRegularExpression(self::UUID_REGEX_PATTERN, $drive->getId());
         // there should be one more drive
-        $this->assertCount($countDrivesAtStart + 1, $ocis->listMyDrives());
+        $this->assertCount($countDrivesAtStart + 1, $ocis->getMyDrives());
     }
 
     public function testCreateDriveNoPermissions(): void
@@ -40,10 +40,10 @@ class OcisTest extends OcisPhpSdkTestCase
         $token = $this->getAccessToken('einstein', 'relativity');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $this->expectException(ForbiddenException::class);
-        $countDrivesAtStart = count($ocis->listMyDrives());
+        $countDrivesAtStart = count($ocis->getMyDrives());
         $ocis->createDrive('first test drive');
         // no new drive should have been created
-        $this->assertCount($countDrivesAtStart, $ocis->listMyDrives());
+        $this->assertCount($countDrivesAtStart, $ocis->getMyDrives());
     }
 
     /**
@@ -64,10 +64,10 @@ class OcisTest extends OcisPhpSdkTestCase
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $this->expectException(\InvalidArgumentException::class);
-        $countDrivesAtStart = count($ocis->listMyDrives());
+        $countDrivesAtStart = count($ocis->getMyDrives());
         $ocis->createDrive('drive with quota', $quota);
         // no new drive should have been created
-        $this->assertCount($countDrivesAtStart, $ocis->listMyDrives());
+        $this->assertCount($countDrivesAtStart, $ocis->getMyDrives());
     }
 
     public function testGetGroups(): void

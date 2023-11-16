@@ -17,7 +17,7 @@ class UsersTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken($name, $password);
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->listMyDrives();
+        $ocis->getMyDrives();
     }
 
     public function testGetAllUsers(): void

@@ -285,7 +285,7 @@ class Drive
      * @throws UnauthorizedException
      * @throws HttpException
      */
-    public function listResources(string $path = "/"): array
+    public function getResources(string $path = "/"): array
     {
         $resources = [];
         $webDavClient = $this->createWebDavClient();
