@@ -14,6 +14,7 @@ use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\OdataError;
+use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
@@ -472,7 +473,7 @@ class Ocis
             [
                 'description' => $description,
                 'name' => $name,
-                'quota' => ['total' => $quota]
+                'quota' => new Quota(['total' => $quota])
             ]
         );
         try {
