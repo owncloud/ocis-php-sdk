@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\Api\GroupApi;
 use OpenAPI\Client\Api\MeDrivesApi;
 use OpenAPI\Client\Api\UsersApi;
 use OpenAPI\Client\ApiException;
@@ -22,10 +23,10 @@ use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Group;
 use Sabre\HTTP\ResponseInterface;
 use stdClass;
 use OpenAPI\Client\Api\GroupsApi;
-use Owncloud\OcisPhpSdk\Group;
 use OpenAPI\Client\Model\Group as OpenAPIGrop;
 
 /**
@@ -788,6 +789,17 @@ class Ocis
             throw new InvalidResponseException(
                 "createGroup returned an OdataError - " . $newlyCreatedGroup->getError()
             );
+        }
+    }
+
+    public function deleteGroup($groupName)
+    {
+        $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
+        $groups = $this->getGroups($groupName);
+        // look $groups return value
+        foreach ($groups as $group) {
+            $groupId = $group->getId();
+            $apiInstance->deleteGroup($groupId);
         }
     }
 
