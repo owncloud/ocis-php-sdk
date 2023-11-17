@@ -8,6 +8,13 @@ geekdocFilePath: README.md
 geekdocCollapseSection: true
 ---
 
+[![Build Status](https://drone.owncloud.com/api/badges/owncloud/ocis-php-sdk/status.svg?ref=refs/heads/main)](https://drone.owncloud.com/owncloud/ocis-php-sdk)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=coverage)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=owncloud_ocis-php-sdk&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=owncloud_ocis-php-sdk)
+
+
 # ocis-php-sdk
 This SDK allows you to interact with [ownCloud Infinite Scale (oCIS)](https://github.com/owncloud/ocis/) storage using PHP.
 
@@ -193,4 +200,20 @@ If you're working in a development environment where you might need to bypass SS
 ```
 
 To test, simply open a browser and head to http://url-of-this-file.
+
+
+## Development
+
+### Integration tests
+The integration tests start a full oCIS server with keycloak and other services using docker.
+To run the tests locally
+1. Install and setup `docker` (min version 24) and `docker compose` (min version 2.21).
+2. add these lines to your `/etc/hosts` file:
+   ```
+   127.0.0.1	ocis.owncloud.test
+   127.0.0.1	keycloak.owncloud.test
+   ```
+3. run `make test-php-integration`
+
+If something goes wrong, use `make clean` to clean the created containers and volumes. 
 
