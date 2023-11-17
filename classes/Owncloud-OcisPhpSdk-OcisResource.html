@@ -138,9 +138,9 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">11</span>
+    <span class="phpdocumentor-element-found-in__line">24</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.11" class="phpdocumentor-element-found-in__source" data-line="11" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.24" class="phpdocumentor-element-found-in__source" data-line="24" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
             <p class="phpdocumentor-summary">Class representing a file or folder inside a Drive in ownCloud Infinite Scale</p>
@@ -226,6 +226,13 @@
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getRoles">getRoles()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a>&gt;    </span>
+</dt>
+<dd>gets all possible permissions for the resource</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getSize">getSize()</a>
     <span>
                                 &nbsp;: int    </span>
@@ -247,6 +254,12 @@
     <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getType">getType()</a>
     <span>
                                 &nbsp;: string    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite">invite()</a>
+    <span>
+                                &nbsp;: bool    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
@@ -284,15 +297,15 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">40</span>
+    <span class="phpdocumentor-element-found-in__line">72</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.40" class="phpdocumentor-element-found-in__source" data-line="40" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.72" class="phpdocumentor-element-found-in__source" data-line="72" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$metadata</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$metadata</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$connectionConfig</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serviceUrl</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$accessToken</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -325,9 +338,52 @@ array (
 </section>
 
             </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$connectionConfig</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$serviceUrl</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$accessToken</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method___construct#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">phpstan-param</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                
+                                                 <section class="phpdocumentor-description"><p>array{
+'headers'?:array&lt;string, mixed&gt;,
+'verify'?:bool,
+'webfinger'?:bool,
+'guzzle'?:Client,
+'drivesPermissionsApi'?:DrivesPermissionsApi
+} $connectionConfig</p>
+</section>
+
+                                    </dd>
+                                            </dl>
 
     
 </article>
@@ -345,9 +401,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">253</span>
+    <span class="phpdocumentor-element-found-in__line">395</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.253" class="phpdocumentor-element-found-in__source" data-line="253" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.395" class="phpdocumentor-element-found-in__source" data-line="395" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -396,9 +452,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">209</span>
+    <span class="phpdocumentor-element-found-in__line">351</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.209" class="phpdocumentor-element-found-in__source" data-line="209" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.351" class="phpdocumentor-element-found-in__source" data-line="351" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -447,9 +503,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">133</span>
+    <span class="phpdocumentor-element-found-in__line">275</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.133" class="phpdocumentor-element-found-in__source" data-line="133" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.275" class="phpdocumentor-element-found-in__source" data-line="275" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -498,9 +554,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">80</span>
+    <span class="phpdocumentor-element-found-in__line">222</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.80" class="phpdocumentor-element-found-in__source" data-line="80" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.222" class="phpdocumentor-element-found-in__source" data-line="222" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -549,9 +605,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">196</span>
+    <span class="phpdocumentor-element-found-in__line">338</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.196" class="phpdocumentor-element-found-in__source" data-line="196" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.338" class="phpdocumentor-element-found-in__source" data-line="338" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -600,9 +656,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">120</span>
+    <span class="phpdocumentor-element-found-in__line">262</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.120" class="phpdocumentor-element-found-in__source" data-line="120" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.262" class="phpdocumentor-element-found-in__source" data-line="262" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -651,9 +707,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">107</span>
+    <span class="phpdocumentor-element-found-in__line">249</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.107" class="phpdocumentor-element-found-in__source" data-line="107" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.249" class="phpdocumentor-element-found-in__source" data-line="249" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -702,9 +758,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">146</span>
+    <span class="phpdocumentor-element-found-in__line">288</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.146" class="phpdocumentor-element-found-in__source" data-line="146" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.288" class="phpdocumentor-element-found-in__source" data-line="288" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -745,6 +801,98 @@ array (
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_getRoles">
+        getRoles()
+        <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getRoles" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">130</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.130" class="phpdocumentor-element-found-in__source" data-line="130" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">gets all possible permissions for the resource</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getRoles</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a>&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getRoles#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, <a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a>&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getSize">
         getSize()
         <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getSize" class="headerlink"><i class="fas fa-link"></i></a>
@@ -753,9 +901,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">176</span>
+    <span class="phpdocumentor-element-found-in__line">318</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.176" class="phpdocumentor-element-found-in__source" data-line="176" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.318" class="phpdocumentor-element-found-in__source" data-line="318" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -804,9 +952,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">93</span>
+    <span class="phpdocumentor-element-found-in__line">235</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.93" class="phpdocumentor-element-found-in__source" data-line="93" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.235" class="phpdocumentor-element-found-in__source" data-line="235" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -855,9 +1003,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">225</span>
+    <span class="phpdocumentor-element-found-in__line">367</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.225" class="phpdocumentor-element-found-in__source" data-line="225" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.367" class="phpdocumentor-element-found-in__source" data-line="367" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -906,9 +1054,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">159</span>
+    <span class="phpdocumentor-element-found-in__line">301</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.159" class="phpdocumentor-element-found-in__source" data-line="159" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.301" class="phpdocumentor-element-found-in__source" data-line="301" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -949,6 +1097,121 @@ array (
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_invite">
+        invite()
+        <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">174</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.174" class="phpdocumentor-element-found-in__source" data-line="174" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">invite</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;int, <a href="classes/Owncloud-OcisPhpSdk-User.html"><abbr title="\Owncloud\OcisPhpSdk\User">User</abbr></a>|<a href="classes/Owncloud-OcisPhpSdk-Group.html"><abbr title="\Owncloud\OcisPhpSdk\Group">Group</abbr></a>&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$recipients</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$role</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><abbr title="\DateTime">DateTime</abbr>|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$expiration</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$recipients</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;int, <a href="classes/Owncloud-OcisPhpSdk-User.html"><abbr title="\Owncloud\OcisPhpSdk\User">User</abbr></a>|<a href="classes/Owncloud-OcisPhpSdk-Group.html"><abbr title="\Owncloud\OcisPhpSdk\Group">Group</abbr></a>&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$role</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$expiration</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\DateTime">DateTime</abbr>|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_isFavorited">
         isFavorited()
         <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_isFavorited" class="headerlink"><i class="fas fa-link"></i></a>
@@ -957,9 +1220,9 @@ array (
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/OcisResource.php"><a href="files/src-ocisresource.html"><abbr title="src/OcisResource.php">OcisResource.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">240</span>
+    <span class="phpdocumentor-element-found-in__line">382</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.240" class="phpdocumentor-element-found-in__source" data-line="240" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#source-view.382" class="phpdocumentor-element-found-in__source" data-line="382" data-modal="source-view" data-src="files/src/OcisResource.php.txt"></a>
     </aside>
 
     
@@ -1116,10 +1379,12 @@ array (
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getName">getName()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getParent">getParent()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getPermission">getPermission()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getRoles">getRoles()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getSize">getSize()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getSpaceId">getSpaceId()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getTags">getTags()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getType">getType()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite">invite()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_isFavorited">isFavorited()</a></li>
                                     </ul>
             </li>

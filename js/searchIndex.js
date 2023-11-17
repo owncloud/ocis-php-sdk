@@ -406,6 +406,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method___construct"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetRoles\u0028\u0029",
+            "name": "getRoles",
+            "summary": "gets\u0020all\u0020possible\u0020permissions\u0020for\u0020the\u0020resource",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getRoles"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003Ainvite\u0028\u0029",
+            "name": "invite",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetId\u0028\u0029",
             "name": "getId",
             "summary": "",
@@ -485,6 +495,36 @@ Search.appendIndex(
             "name": "DESC",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OrderDirection.html#enumcase_DESC"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole",
+            "name": "SharingRole",
+            "summary": "class\u0020to\u0020define\u0020a\u0020role\u0020of\u0020a\u0020user\u0020or\u0020group\u0020in\u0020a\u0020share\nevery\u0020role\u0020contains\u0020specific\u0020permissions",
+            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html#method___construct"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003AgetId\u0028\u0029",
+            "name": "getId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html#method_getId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003AgetDisplayName\u0028\u0029",
+            "name": "getDisplayName",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html#method_getDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003AgetDescription\u0028\u0029",
+            "name": "getDescription",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html#method_getDescription"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003AgetWeight\u0028\u0029",
+            "name": "getWeight",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html#method_getWeight"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\User",
             "name": "User",
