@@ -24,6 +24,8 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
 use stdClass;
 use OpenAPI\Client\Api\GroupsApi;
+use Owncloud\OcisPhpSdk\Group;
+use OpenAPI\Client\Model\Group as OpenAPIGrop;
 
 /**
  * Basic class to establish the connection to an ownCloud Infinite Scale instance
@@ -752,4 +754,35 @@ class Ocis
         }
         return $notifications;
     }
+
+    /**
+    * Create a new group (if the user has the permission to do so)
+    *
+    * @param string $groupName
+    * @param string $description
+    * @return void
+    * @throws BadRequestException
+    * @throws ForbiddenException
+    * @throws NotFoundException
+    * @throws UnauthorizedException
+    * @throws \InvalidArgumentException
+    * @throws InvalidResponseException
+    * @throws HttpException
+    */
+    public function createGroup(string $groupName, string $description = "")
+    {
+        $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
+        $group = new OpenAPIGrop(["display_name" => $groupName, "description" => $description]);
+        try {
+            $newlyCreatedGroup = $apiInstance->createGroup($group);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($newlyCreatedGroup instanceof OdataError) {
+            throw new InvalidResponseException(
+                "createGroup returned an OdataError - " . $newlyCreatedGroup->getError()
+            );
+        }
+    }
+
 }
