@@ -11,7 +11,7 @@ use Owncloud\OcisPhpSdk\OrderDirection;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
-    private const GROUP_COUNT = 0;
+    private const GROUP_COUNT = 2;
 
     public function testServiceUrlTrailingSlash(): void
     {
