@@ -312,7 +312,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $personalDrive = $this->getPersonalDrive($ocis);
         $personalDrive->uploadFile('somefile.txt', 'some content');
-        $this->createdResources[] = '/somefile.txt';
+        $this->createdResources[$personalDrive->getId()][] = '/somefile.txt';
         $expectedResource = $personalDrive->getResources()[0];
         $resource = $ocis->getResourceById($expectedResource->getId());
         $this->assertSame($expectedResource->getId(), $resource->getId());
@@ -328,7 +328,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $personalDrive = $this->getPersonalDrive($ocis);
         $personalDrive->createFolder('myfolder');
-        $this->createdResources[] = '/myfolder';
+        $this->createdResources[$personalDrive->getId()][] = '/myfolder';
         $expectedResource = $personalDrive->getResources()[0];
         $resource = $ocis->getResourceById($expectedResource->getId());
         $this->assertSame($expectedResource->getId(), $resource->getId());
@@ -344,7 +344,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $personalDrive = $this->getPersonalDrive($ocis);
         $personalDrive->createFolder('myfolder');
-        $this->createdResources[] = '/myfolder';
+        $this->createdResources[$personalDrive->getId()][] = '/myfolder';
         $personalDrive->uploadFile('myfolder/somefile.txt', 'some content');
         $expectedResource = $personalDrive->getResources()[0];
         $resource = $ocis->getResourceById($expectedResource->getId());
@@ -361,7 +361,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $personalDrive = $this->getPersonalDrive($ocis);
         $personalDrive->createFolder('myfolder');
-        $this->createdResources[] = '/myfolder';
+        $this->createdResources[$personalDrive->getId()][] = '/myfolder';
         $personalDrive->uploadFile('myfolder/somefile.txt', 'some content');
         $expectedResource = $personalDrive->getResources('/myfolder')[0];
         $resource = $ocis->getResourceById($expectedResource->getId());

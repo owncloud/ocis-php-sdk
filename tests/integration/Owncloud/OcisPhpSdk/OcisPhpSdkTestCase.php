@@ -3,12 +3,8 @@
 namespace integration\Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
-use Owncloud\OcisPhpSdk\Drive; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
-use Owncloud\OcisPhpSdk\DriveOrder;
-use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
-use Owncloud\OcisPhpSdk\OrderDirection;
 use PHPUnit\Framework\TestCase;
 
 class OcisPhpSdkTestCase extends TestCase
@@ -25,7 +21,7 @@ class OcisPhpSdkTestCase extends TestCase
     /**
      * list of files and folders that were created during the tests
      * currently only for the personal drive
-     * @var array <string>
+     * @var array <string, array<string>> driveId[] => resourcePath
      */
     protected $createdResources = [];
 
@@ -61,19 +57,14 @@ class OcisPhpSdkTestCase extends TestCase
             $group->delete();
         }
 
-        foreach ($this->createdResources as $resource) {
-            /**
-             * @var Drive $personalDrive
-             */
-            $personalDrive = $ocis->getMyDrives(
-                DriveOrder::NAME,
-                OrderDirection::ASC,
-                DriveType::PERSONAL
-            )[0];
-            try {
-                $personalDrive->deleteResource($resource);
-            } catch (NotFoundException $e) {
-                // ignore, we don't care if the resource was already deleted
+        foreach ($this->createdResources as $driveId => $resources) {
+            $drive = $ocis->getDriveById($driveId);
+            foreach ($resources as $resource) {
+                try {
+                    $drive->deleteResource($resource);
+                } catch (NotFoundException $e) {
+                    // ignore, we don't care if the resource was already deleted
+                }
             }
         }
     }
@@ -120,5 +111,16 @@ class OcisPhpSdkTestCase extends TestCase
     protected function getFileIdRegex(): string
     {
         return $this->getUUIDv4Regex() . '\\$' . $this->getUUIDv4Regex() . '!' . $this->getUUIDv4Regex();
+    }
+
+    /**
+     * init a user
+     * ocis is only aware of users after the first login, because we are using keycloak
+     */
+    protected function initUser(string $name, string $password): void
+    {
+        $token = $this->getAccessToken($name, $password);
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis->getMyDrives();
     }
 }
