@@ -2,7 +2,20 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+use GuzzleHttp\Client;
+use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\ApiException;
+use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\DriveItemInvite;
+use OpenAPI\Client\Model\DriveRecipient;
+use OpenAPI\Client\Model\OdataError;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Xml\Property\ResourceType;
 
 /**
@@ -14,6 +27,19 @@ class OcisResource
      * @var array<mixed>
      */
     private array $metadata;
+    private string $accessToken;
+    private string $serviceUrl;
+    /**
+     * @phpstan-var array{
+     *                      'headers'?:array<string, mixed>,
+     *                      'verify'?:bool,
+     *                      'webfinger'?:bool,
+     *                      'guzzle'?:\GuzzleHttp\Client,
+     *                      'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
+     *                    }
+     */
+    private array $connectionConfig;
+    private Configuration $graphApiConfig;
 
     /**
      * @param array<mixed> $metadata of the resource
@@ -34,13 +60,31 @@ class OcisResource
      *          '{http://owncloud.org/ns}tags' => <null|string>,
      *          '{http://owncloud.org/ns}favorite' => <string>,
      *        )
-     *
+     * @phpstan-param array{
+     *              'headers'?:array<string, mixed>,
+     *              'verify'?:bool,
+     *              'webfinger'?:bool,
+     *              'guzzle'?:Client,
+     *              'drivesPermissionsApi'?:DrivesPermissionsApi
+     *             } $connectionConfig
      * @return void
      */
-    public function __construct(array $metadata)
-    {
+    public function __construct(
+        array $metadata,
+        array $connectionConfig,
+        string $serviceUrl,
+        string &$accessToken
+    ) {
         $this->metadata = $metadata;
+        $this->accessToken = &$accessToken;
+        $this->serviceUrl = $serviceUrl;
+        if (!Ocis::isConnectionConfigValid($connectionConfig)) {
+            throw new \InvalidArgumentException('connection configuration not valid');
+        }
+        $this->graphApiConfig = Configuration::getDefaultConfiguration()
+            ->setHost($this->serviceUrl . '/graph');
 
+        $this->connectionConfig = $connectionConfig;
     }
 
     /**
@@ -71,6 +115,104 @@ class OcisResource
         }
         /** @phpstan-ignore-next-line because next line might return mixed data*/
         return $metadata[$property->getKey()];
+    }
+
+    /**
+     * gets all possible permissions for the resource
+     * @return array<SharingRole>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws InvalidResponseException
+     */
+    public function getRoles(): array
+    {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+
+        if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
+        } else {
+            $apiInstance = new DrivesPermissionsApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+        try {
+            $collectionOfPermissions = $apiInstance->listPermissions($this->getId(), $this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($collectionOfPermissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+            );
+        }
+        $apiRoles = $collectionOfPermissions->getAtLibreGraphPermissionsRolesAllowedValues() ?? [];
+        $roles = [];
+        foreach ($apiRoles as $role) {
+            $roles[] = new SharingRole($role);
+        }
+        return $roles;
+    }
+
+    /**
+     * @param array<int, User|Group> $recipients
+     * @param SharingRole $role
+     * @param \DateTime|null $expiration
+     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): bool
+    {
+        $driveItemInviteData = [];
+        $driveItemInviteData['recipients'] = [];
+        foreach ($recipients as $recipient) {
+            $recipientData = [];
+            $recipientData['object_id'] = $recipient->getId();
+            if ($recipient instanceof Group) {
+                $recipientData['at_libre_graph_recipient_type'] = "group";
+            }
+            $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
+        }
+        $driveItemInviteData['roles'] = [$role->getId()];
+        if ($expiration !== null) {
+            $expiration->setTimezone(new \DateTimeZone('Z'));
+            $driveItemInviteData['expiration_date_time'] = $expiration->format('Y-m-d\TH:i:s:up');
+        }
+
+        if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
+        } else {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+            $apiInstance = new DrivesPermissionsApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+
+        $inviteData = new DriveItemInvite($driveItemInviteData);
+        try {
+            $permission = $apiInstance->invite($this->getId(), $this->getId(), $inviteData);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "invite returned an OdataError - " . $permission->getError()
+            );
+        }
+        return true;
     }
 
     /**

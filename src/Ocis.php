@@ -7,6 +7,7 @@ use GuzzleHttp\Exception\ClientException as GuzzleClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
+use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\Api\MeDrivesApi;
 use OpenAPI\Client\Api\UsersApi;
 use OpenAPI\Client\ApiException;
@@ -114,6 +115,17 @@ class Ocis
     }
 
     /**
+     * Helper function to check if the variable is a DrivesPermissionsApi
+     * we need this because we want to call the check with call_user_func
+     *
+     * @phpstan-ignore-next-line phpstan does not understand that this method was called via call_user_func
+     */
+    private static function isDrivesPermissionsApi(mixed $api): bool
+    {
+        return $api instanceof DrivesPermissionsApi;
+    }
+
+    /**
      * @param array<mixed> $connectionConfig
      * @ignore This function is used for internal purposes only and should not be shown in the documentation.
      *         The function is public to make it testable and because its also used from other classes.
@@ -124,7 +136,8 @@ class Ocis
             'headers' => 'is_array',
             'verify' => 'is_bool',
             'webfinger' => 'is_bool',
-            'guzzle' => 'self::isGuzzleClient'
+            'guzzle' => 'self::isGuzzleClient',
+            'drivesPermissionsApi' => 'self::isDrivesPermissionsApi'
         ];
         foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {

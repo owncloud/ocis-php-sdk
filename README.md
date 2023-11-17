@@ -74,6 +74,31 @@ Notifications can be listed using the `listNotifications` method, which will ret
 
 The `Notification` object can retrieve details of the corresponding notification and mark it as read (delete).
 
+## Sharing
+Given the correct permissions, an `OcisResource` can be shared with a group or a user. To define the access permissions of the receiver every share has to set `SharingRole`(s).
+
+```php
+// get the resources of a subfolder inside a drive
+$resources = $drive->listResources("/documents");
+
+// get all roles that are possible for that particular resource
+$roles = $resources[0]->getRoles();
+
+// find the role that is allowed to read and write the shared file or folder 
+for ($roles as $role) {
+    if ($role->getDisplayName() === 'Editor') {
+        $editorRole = $role;
+        break;
+    }
+}
+
+// find all users with a specific surname
+$users = $ocis->getUsers("gurung");
+
+// share the resource with the users
+$resources[0]->invite($users, $editorRole);
+```
+
 ## Requirements
 - PHP 8.1 or higher
 - oCIS 4.0.0 or higher
