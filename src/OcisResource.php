@@ -231,7 +231,7 @@ class OcisResource
         ?\DateTime $expiration = null,
         ?string $password = null,
         ?string $displayName = null
-    ): bool {
+    ): SharingLink {
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
         } else {
@@ -266,7 +266,15 @@ class OcisResource
                 "createLink returned an OdataError - " . $permission->getError()
             );
         }
-        return true;
+
+        return new SharingLink(
+            $permission,
+            $this,
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
+        );
+
     }
     /**
      * @return string
