@@ -27,12 +27,12 @@ class Group
         throw new InvalidResponseException(
             "Invalid id returned for group '" . print_r($openApiGroup->getId(), true) . "'"
         )
-        : $openApiGroup->getId();
+        : (string)$openApiGroup->getId();
         $this->displayName = empty($openApiGroup->getDisplayName()) ?
         throw new InvalidResponseException(
             "Invalid displayName returned for group '" . print_r($openApiGroup->getDisplayName(), true) . "'"
         )
-        : $openApiGroup->getDisplayName();
+        : (string)$openApiGroup->getDisplayName();
         $this->description = $openApiGroup->getDescription() ?? "";
         $this->groupTypes = $openApiGroup->getGroupTypes() ?? [];
 
