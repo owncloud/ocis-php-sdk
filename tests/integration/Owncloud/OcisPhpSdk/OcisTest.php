@@ -31,7 +31,10 @@ class OcisTest extends OcisPhpSdkTestCase
         );
         $drive = $ocis->createDrive('first test drive');
         $this->createdDrives[] = $drive->getId();
-        $this->assertMatchesRegularExpression(self::UUID_REGEX_PATTERN, $drive->getId());
+        $this->assertMatchesRegularExpression(
+            "/^" . $this->getUUIDv4Regex() . '\$' . $this->getUUIDv4Regex() . "$/i",
+            $drive->getId()
+        );
         // there should be one more drive
         $this->assertCount($countDrivesAtStart + 1, $ocis->getMyDrives());
     }

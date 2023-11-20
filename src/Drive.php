@@ -290,7 +290,25 @@ class Drive
         $resources = [];
         $webDavClient = $this->createWebDavClient();
         try {
-            $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), [], 1);
+            $properties = [
+                '{http://owncloud.org/ns}id',
+                '{http://owncloud.org/ns}fileid',
+                '{http://owncloud.org/ns}spaceid',
+                '{http://owncloud.org/ns}file-parent',
+                '{http://owncloud.org/ns}name',
+                '{DAV:}getetag',
+                '{http://owncloud.org/ns}permissions',
+                '{DAV:}resourcetype',
+                '{http://owncloud.org/ns}size',
+                '{DAV:}getcontentlength',
+                '{DAV:}getlastmodified',
+                '{http://owncloud.org/ns}tags',
+                '{http://owncloud.org/ns}favorite',
+                '{http://owncloud.org/ns}privatelink',
+                '{DAV:}getcontenttype',
+                '{http://owncloud.org/ns}checksums'
+            ];
+            $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), $properties, 1);
             foreach ($responses as $response) {
                 $resources[] = new OcisResource(
                     $response,
@@ -305,7 +323,8 @@ class Drive
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
-        return $resources;
+        // make sure there is again an element with index 0
+        return array_values($resources);
     }
 
     /**
