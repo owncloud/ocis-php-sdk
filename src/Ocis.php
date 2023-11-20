@@ -782,6 +782,7 @@ class Ocis
         $group = new OpenAPIGrop(["display_name" => $groupName, "description" => $description]);
         try {
             $newlyCreatedGroup = $apiInstance->createGroup($group);
+
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -792,15 +793,10 @@ class Ocis
         }
     }
 
-    public function deleteGroup($groupName)
+    public function deleteGroup(Group $group): void
     {
         $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
-        $groups = $this->getGroups($groupName);
-        // look $groups return value
-        foreach ($groups as $group) {
-            $groupId = $group->getId();
-            $apiInstance->deleteGroup($groupId);
-        }
+        $apiInstance->deleteGroup($group->getId());
     }
 
 }

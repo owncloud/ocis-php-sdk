@@ -44,6 +44,9 @@ class OcisPhpSdkTestCase extends TestCase
             $drive->disable();
             $drive->delete();
         }
+        foreach($ocis->getGroups() as $group) {
+            $ocis->deleteGroup($group);
+        }
     }
 
     protected function getGuzzleClient(): Client
