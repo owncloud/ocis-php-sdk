@@ -7,7 +7,9 @@ use OpenAPI\Client\Model\DriveItemCreateLink;
 use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\SharingLink;
 use OpenAPI\Client\Model\SharingLinkType;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\OcisResource;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ResourceLinkTest extends TestCase
@@ -66,6 +68,22 @@ class ResourceLinkTest extends TestCase
         ];
     }
 
+    private function createResource(MockObject $drivesPermissionsApi): OcisResource
+    {
+        $accessToken = 'an-access-token';
+        $connectionConfig = [
+            'drivesPermissionsApi' => $drivesPermissionsApi,
+        ];
+        $resourceMetadata = [
+            '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
+        ];
+        return new OcisResource(
+            $resourceMetadata,
+            $connectionConfig, // @phpstan-ignore-line 'drivesPermissionsApi' is a MockObject
+            'http://ocis',
+            $accessToken
+        );
+    }
     /**
      * @dataProvider createLinkDataProvider
      */
@@ -94,25 +112,62 @@ class ResourceLinkTest extends TestCase
             /** @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
             ->with('uuid-of-the-resource', 'uuid-of-the-resource', $expectedCreateLinkData)
             ->willReturn($permissionMock);
-        $accessToken = 'an-access-token';
-        $connectionConfig = [
-            'drivesPermissionsApi' => $drivesPermissionsApi,
-        ];
-        $resourceMetadata = [
-            '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
-        ];
-
-        $resource = new OcisResource(
-            $resourceMetadata,
-            $connectionConfig,
-            'http://ocis',
-            $accessToken
-        );
+        $resource = $this->createResource($drivesPermissionsApi);
 
         $result = $resource->createLink($type, $expiration, $password, $displayName);
         $this->assertEquals('https://ocis.example.com/s/uuid-of-the-link', $result->getWebUrl());
         $this->assertEquals('uuid-of-the-permission', $result->getPermissionId());
         $this->assertEquals($type, $result->getType());
         $this->assertEquals($displayName, $result->getDisplayName());
+    }
+
+    public function testInvalidIdResponse(): void
+    {
+        $this->expectException(InvalidResponseException::class);
+        $this->expectExceptionMessage('Invalid id returned for permission \'\'');
+        $permissionMock = $this->createMock(Permission::class);
+        $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
+        $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
+        $this->createResource($drivesPermissionsApi)->createLink();
+    }
+
+    public function testInvalidLinkResponse(): void
+    {
+        $this->expectException(InvalidResponseException::class);
+        $this->expectExceptionMessage('Invalid link returned for permission \'\'');
+        $permissionMock = $this->createMock(Permission::class);
+        $permissionMock->method('getId')->willReturn('uuid-of-the-permission');
+        $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
+        $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
+        $this->createResource($drivesPermissionsApi)->createLink();
+    }
+
+    public function testInvalidSharingLinkWebUrlResponse(): void
+    {
+        $this->expectException(InvalidResponseException::class);
+        $this->expectExceptionMessage('Invalid webUrl returned for sharing link \'\'');
+        $linkMock = $this->createMock(SharingLink::class);
+        $permissionMock = $this->createMock(Permission::class);
+        $permissionMock->method('getLink')->willReturn($linkMock);
+        $permissionMock->method('getId')->willReturn('uuid-of-the-permission');
+        $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
+        $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
+
+        $this->createResource($drivesPermissionsApi)->createLink();
+    }
+
+    public function testInvalidSharingLinkTypeResponse(): void
+    {
+        $this->expectException(InvalidResponseException::class);
+        $this->expectExceptionMessage('Invalid type returned for sharing link \'\'');
+        $linkMock = $this->createMock(SharingLink::class);
+        $linkMock->method('getWebUrl')->willReturn('some string');
+        $permissionMock = $this->createMock(Permission::class);
+        $permissionMock->method('getLink')->willReturn($linkMock);
+        $permissionMock->method('getId')->willReturn('uuid-of-the-permission');
+        $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
+        $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
+
+        $this->createResource($drivesPermissionsApi)->createLink();
     }
 }
