@@ -31,7 +31,7 @@ class ResourceLinkTest extends TestCase
                         'expiration_date_time' => null,
                         'display_name' => null
                     ]
-                )
+                ),
             ],
             // create a link setting all data
             [
@@ -46,7 +46,7 @@ class ResourceLinkTest extends TestCase
                         'expiration_date_time' => '2022-12-31T01:02:03:456789Z',
                         'display_name' => 'the name of the link'
                     ]
-                )
+                ),
             ],
             // set expiry time, with conversion to UTC/Z timezone
             [
@@ -61,7 +61,7 @@ class ResourceLinkTest extends TestCase
                         'expiration_date_time' => '2020-12-31T23:00:43:123456Z',
                         'display_name' => null
                     ]
-                )
+                ),
             ],
         ];
     }
@@ -83,7 +83,9 @@ class ResourceLinkTest extends TestCase
         $linkMock->method('getWebUrl')
             ->willReturn('https://ocis.example.com/s/uuid-of-the-link');
         $linkMock->method('getType')
-            ->willReturn(SharingLinkType::VIEW);
+            ->willReturn($type);
+        $linkMock->method('getAtLibreGraphDisplayName')
+            ->willReturn($displayName);
         $permissionMock->method('getLink')
             ->willReturn($linkMock);
 
@@ -109,6 +111,8 @@ class ResourceLinkTest extends TestCase
 
         $result = $resource->createLink($type, $expiration, $password, $displayName);
         $this->assertEquals('https://ocis.example.com/s/uuid-of-the-link', $result->getWebUrl());
-        // TODO more assertions
+        $this->assertEquals('uuid-of-the-permission', $result->getPermissionId());
+        $this->assertEquals($type, $result->getType());
+        $this->assertEquals($displayName, $result->getDisplayName());
     }
 }
