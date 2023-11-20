@@ -7,7 +7,6 @@ use OpenAPI\Client\Model\DriveItemCreateLink;
 use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\SharingLink;
 use OpenAPI\Client\Model\SharingLinkType;
-use Owncloud\OcisPhpSdk\LinkType;
 use Owncloud\OcisPhpSdk\OcisResource;
 use PHPUnit\Framework\TestCase;
 
@@ -21,7 +20,7 @@ class ResourceLinkTest extends TestCase
         return [
             // create a view link with minimal data
             [
-                LinkType::VIEW,
+                SharingLinkType::VIEW,
                 null,
                 null,
                 null,
@@ -36,7 +35,7 @@ class ResourceLinkTest extends TestCase
             ],
             // create a link setting all data
             [
-                LinkType::EDIT,
+                SharingLinkType::EDIT,
                 new \DateTime('2022-12-31 01:02:03.456789'),
                 'a-password',
                 'the name of the link',
@@ -51,7 +50,7 @@ class ResourceLinkTest extends TestCase
             ],
             // set expiry time, with conversion to UTC/Z timezone
             [
-                LinkType::EDIT,
+                SharingLinkType::EDIT,
                 new \DateTime('2021-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
                 null,
                 null,
@@ -71,7 +70,7 @@ class ResourceLinkTest extends TestCase
      * @dataProvider createLinkDataProvider
      */
     public function testCreateLink(
-        LinkType $type,
+        SharingLinkType $type,
         ?\DateTime $expiration,
         ?string $password,
         ?string $displayName,

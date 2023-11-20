@@ -105,12 +105,9 @@ class SharingLink
         return $this->apiPermission->getId();
     }
 
-    /**
-     * @return LinkType
-     */
-    public function getType(): LinkType
+    public function getType(): SharingLinkType
     {
-        return LinkType::tryFrom($this->apiPermission->getLink()->getType());
+        return $this->apiPermission->getLink()->getType();
     }
 
     public function getWebUrl(): string

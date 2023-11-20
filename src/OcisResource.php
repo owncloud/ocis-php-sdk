@@ -10,6 +10,7 @@ use OpenAPI\Client\Model\DriveItemCreateLink;
 use OpenAPI\Client\Model\DriveItemInvite;
 use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
+use OpenAPI\Client\Model\SharingLinkType;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
@@ -227,7 +228,7 @@ class OcisResource
      * @throws NotFoundException
      */
     public function createLink(
-        LinkType $type = LinkType::VIEW,
+        SharingLinkType $type = SharingLinkType::VIEW,
         ?\DateTime $expiration = null,
         ?string $password = null,
         ?string $displayName = null
