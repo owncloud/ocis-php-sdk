@@ -227,7 +227,7 @@ class OcisResource
      * @throws BadRequestException
      * @throws NotFoundException
      */
-    public function createLink(
+    public function createSharingLink(
         SharingLinkType $type = SharingLinkType::VIEW,
         ?\DateTime $expiration = null,
         ?string $password = null,

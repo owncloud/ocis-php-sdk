@@ -114,7 +114,7 @@ class ResourceLinkTest extends TestCase
             ->willReturn($permissionMock);
         $resource = $this->createResource($drivesPermissionsApi);
 
-        $result = $resource->createLink($type, $expiration, $password, $displayName);
+        $result = $resource->createSharingLink($type, $expiration, $password, $displayName);
         $this->assertEquals('https://ocis.example.com/s/uuid-of-the-link', $result->getWebUrl());
         $this->assertEquals('uuid-of-the-permission', $result->getPermissionId());
         $this->assertEquals($type, $result->getType());
@@ -128,7 +128,7 @@ class ResourceLinkTest extends TestCase
         $permissionMock = $this->createMock(Permission::class);
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $this->createResource($drivesPermissionsApi)->createLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink();
     }
 
     public function testInvalidLinkResponse(): void
@@ -139,7 +139,7 @@ class ResourceLinkTest extends TestCase
         $permissionMock->method('getId')->willReturn('uuid-of-the-permission');
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $this->createResource($drivesPermissionsApi)->createLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink();
     }
 
     public function testInvalidSharingLinkWebUrlResponse(): void
@@ -153,7 +153,7 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $this->createResource($drivesPermissionsApi)->createLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink();
     }
 
     public function testInvalidSharingLinkTypeResponse(): void
@@ -168,6 +168,6 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $this->createResource($drivesPermissionsApi)->createLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink();
     }
 }
