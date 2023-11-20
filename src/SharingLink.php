@@ -182,7 +182,7 @@ class SharingLink
     public function setType(SharingLinkType $linkType): bool
     {
         $link = $this->apiPermission->getLink();
-        $link->setType($linkType::EDIT);
+        $link->setType($linkType);
         $this->apiPermission->setLink($link);
 
         try {
@@ -196,5 +196,39 @@ class SharingLink
             throw ExceptionHelper::getHttpErrorException($e);
         }
         return true;
+    }
+
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     */
+    public function setExpiration(\DateTime $expiration): bool
+    {
+        $this->apiPermission->setExpirationDateTime($expiration);
+
+        try {
+            $this->getDrivesPermissionsApi()->updatePermission(
+                $this->resource->getId(),
+                $this->resource->getId(),
+                $this->getPermissionId(),
+                $this->apiPermission
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        return true;
+    }
+
+
+    /**
+     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     */
+    public function setPassword(?string $password): bool
+    {
+        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 }
