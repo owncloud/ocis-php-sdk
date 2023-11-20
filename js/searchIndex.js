@@ -391,6 +391,11 @@ Search.appendIndex(
             "summary": "Retrieve\u0020all\u0020unread\u0020notifications\u0020of\u0020the\u0020current\u0020user",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getNotifications"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AcreateGroup\u0028\u0029",
+            "name": "createGroup",
+            "summary": "Create\u0020a\u0020new\u0020group\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_createGroup"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AFUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "name": "FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "summary": "",
