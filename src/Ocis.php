@@ -776,7 +776,7 @@ class Ocis
     * @throws InvalidResponseException
     * @throws HttpException
     */
-    public function createGroup(string $groupName, string $description = "")
+    public function createGroup(string $groupName, string $description = ""): void
     {
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
         $group = new OpenAPIGrop(["display_name" => $groupName, "description" => $description]);
@@ -793,10 +793,26 @@ class Ocis
         }
     }
 
+    /**
+     * delete an existing group (if the user has the permission to do so)
+     *
+     * @param Group $group
+     * @return void
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
+     * @throws HttpException
+     */
     public function deleteGroup(Group $group): void
     {
         $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
-        $apiInstance->deleteGroup($group->getId());
+        try {
+            $apiInstance->deleteGroup($group->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
     }
 
 }
