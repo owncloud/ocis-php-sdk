@@ -149,6 +149,11 @@ class SharingLink
         return $this->sharingLink->getAtLibreGraphDisplayName();
     }
 
+    public function getExpiry(): ?\DateTime
+    {
+        return $this->apiPermission->getExpirationDateTime();
+    }
+
     /**
      * permanently delete the current sharing link
      *
