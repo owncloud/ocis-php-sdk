@@ -35,16 +35,16 @@ $ocis->setAccessToken($newAccessToken);
 
 ## Drives (spaces)
 
-Drives can be listed using the `listAllDrives` or the `listMyDrives` method.
+Drives can be listed using the `getAllDrives` or the `getMyDrives` method.
 
 The Drive class is responsible for most file/folder related actions, like listing files, creating folders, uploading files, etc.
 
 ```php
 // get the personal drive of the authorized user
-// `listMyDrives` returns all drives that the user is a member of
+// `getMyDrives` returns all drives that the user is a member of
 // but in this example the result is filtered to only return
 // the personal drive (parameter 3 = DriveType::PERSONAL)
-$drives = $ocis->listMyDrives(
+$drives = $ocis->getMyDrives(
     DriveOrder::NAME,
     OrderDirection::ASC,
     DriveType::PERSONAL
@@ -66,11 +66,11 @@ $drives[0]->createFolder("/documents");
 $drives[0]->uploadFile("/documents/myfile.txt", "Hello World!");
 
 // get an array of all resources of the "/documents" folder inside the drive
-$resources = $drives[0]->listResources("/documents");
+$resources = $drives[0]->getResources("/documents");
 ```
 
 ## Notifications
-Notifications can be listed using the `listNotifications` method, which will return an array of `Notification` objects representing all active notifications.
+Notifications can be listed using the `getNotifications` method, which will return an array of `Notification` objects representing all active notifications.
 
 The `Notification` object can retrieve details of the corresponding notification and mark it as read (delete).
 
@@ -79,7 +79,7 @@ Given the correct permissions, an `OcisResource` can be shared with a group or a
 
 ```php
 // get the resources of a subfolder inside a drive
-$resources = $drive->listResources("/documents");
+$resources = $drive->getResources("/documents");
 
 // get all roles that are possible for that particular resource
 $roles = $resources[0]->getRoles();
