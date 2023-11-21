@@ -6,21 +6,21 @@ use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Permission as ApiPermission;
+use OpenAPI\Client\Model\SharingLinkPassword;
 use OpenAPI\Client\Model\SharingLinkType;
 use OpenAPI\Client\Model\SharingLink as ApiSharingLink;
-
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
-use Owncloud\OcisPhpSdk\Exception\NotImplementedException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 /**
- * A permission to a resource
+ * Class representing a public link to a resource
  */
 class SharingLink
 {
@@ -192,7 +192,7 @@ class SharingLink
         $this->apiPermission->setLink($this->sharingLink);
 
         try {
-            $this->getDrivesPermissionsApi()->updatePermission(
+            $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
                 $this->resource->getId(),
                 $this->resource->getId(),
                 $this->getPermissionId(),
@@ -201,6 +201,12 @@ class SharingLink
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
+        if ($apiPermission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "updatePermission returned an OdataError - " . $apiPermission->getError()
+            );
+        }
+        $this->apiPermission = $apiPermission;
         return true;
     }
 
@@ -218,7 +224,7 @@ class SharingLink
         $this->apiPermission->setLink($this->sharingLink);
 
         try {
-            $this->getDrivesPermissionsApi()->updatePermission(
+            $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
                 $this->resource->getId(),
                 $this->resource->getId(),
                 $this->getPermissionId(),
@@ -227,6 +233,12 @@ class SharingLink
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
+        if ($apiPermission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "updatePermission returned an OdataError - " . $apiPermission->getError()
+            );
+        }
+        $this->apiPermission = $apiPermission;
         return true;
     }
 
@@ -243,7 +255,7 @@ class SharingLink
         $this->apiPermission->setExpirationDateTime($expiration);
 
         try {
-            $this->getDrivesPermissionsApi()->updatePermission(
+            $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
                 $this->resource->getId(),
                 $this->resource->getId(),
                 $this->getPermissionId(),
@@ -252,15 +264,48 @@ class SharingLink
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
+        if ($apiPermission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "updatePermission returned an OdataError - " . $apiPermission->getError()
+            );
+        }
+        $this->apiPermission = $apiPermission;
         return true;
     }
 
 
     /**
-     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     * @param string $password It may require a password policy. Set to empty sting to remove the password.
+     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
-    public function setPassword(?string $password): bool
+    public function setPassword(string $password): bool
     {
-        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        $newPassword = new SharingLinkPassword([
+            'password' => $password
+        ]);
+
+        try {
+            $apiPermission = $this->getDrivesPermissionsApi()->setPermissionPassword(
+                $this->resource->getId(),
+                $this->resource->getId(),
+                $this->getPermissionId(),
+                $newPassword
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($apiPermission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "setPermissionPassword returned an OdataError - " . $apiPermission->getError()
+            );
+        }
+        $this->apiPermission = $apiPermission;
+        return true;
     }
 }
