@@ -79,6 +79,7 @@ class ResourceLinkTest extends TestCase
         ];
         return new OcisResource(
             $resourceMetadata,
+            'uuid-of-the-drive',
             $connectionConfig, // @phpstan-ignore-line 'drivesPermissionsApi' is a MockObject
             'http://ocis',
             $accessToken
@@ -110,7 +111,7 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')
             /** @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
-            ->with('uuid-of-the-resource', 'uuid-of-the-resource', $expectedCreateLinkData)
+            ->with('uuid-of-the-drive', 'uuid-of-the-resource', $expectedCreateLinkData)
             ->willReturn($permissionMock);
         $resource = $this->createResource($drivesPermissionsApi);
 

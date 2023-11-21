@@ -40,6 +40,7 @@ class SharingLink
     private OcisResource $resource;
     private ApiPermission $apiPermission;
     private ApiSharingLink $sharingLink;
+    private string $driveId;
 
 
     /**
@@ -55,11 +56,13 @@ class SharingLink
     public function __construct(
         ApiPermission $apiPermission,
         OcisResource  $resource,
+        string        $driveId,
         array         $connectionConfig,
         string        $serviceUrl,
         string        &$accessToken
     ) {
         $this->apiPermission = $apiPermission;
+        $this->driveId = $driveId;
         if (!is_string($apiPermission->getId())) {
             throw new InvalidResponseException(
                 "Invalid id returned for permission '" . print_r($apiPermission->getId(), true) . "'"
@@ -193,7 +196,7 @@ class SharingLink
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
-                $this->resource->getId(),
+                $this->driveId,
                 $this->resource->getId(),
                 $this->getPermissionId(),
                 $this->apiPermission
@@ -225,7 +228,7 @@ class SharingLink
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
-                $this->resource->getId(),
+                $this->driveId,
                 $this->resource->getId(),
                 $this->getPermissionId(),
                 $this->apiPermission
@@ -256,7 +259,7 @@ class SharingLink
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
-                $this->resource->getId(),
+                $this->driveId,
                 $this->resource->getId(),
                 $this->getPermissionId(),
                 $this->apiPermission
@@ -292,7 +295,7 @@ class SharingLink
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->setPermissionPassword(
-                $this->resource->getId(),
+                $this->driveId,
                 $this->resource->getId(),
                 $this->getPermissionId(),
                 $newPassword

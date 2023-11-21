@@ -294,6 +294,7 @@ class Drive
             foreach ($responses as $response) {
                 $resources[] = new OcisResource(
                     $response,
+                    $this->getId(),
                     $this->connectionConfig,
                     $this->serviceUrl,
                     $this->accessToken

@@ -42,6 +42,7 @@ class OcisResource
      */
     private array $connectionConfig;
     private Configuration $graphApiConfig;
+    private string $driveId;
 
     /**
      * @param array<mixed> $metadata of the resource
@@ -73,11 +74,13 @@ class OcisResource
      */
     public function __construct(
         array $metadata,
+        string $driveId,
         array $connectionConfig,
         string $serviceUrl,
         string &$accessToken
     ) {
         $this->metadata = $metadata;
+        $this->driveId = $driveId;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
@@ -144,7 +147,7 @@ class OcisResource
             );
         }
         try {
-            $collectionOfPermissions = $apiInstance->listPermissions($this->getId(), $this->getId());
+            $collectionOfPermissions = $apiInstance->listPermissions($this->driveId, $this->getId());
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -205,7 +208,7 @@ class OcisResource
 
         $inviteData = new DriveItemInvite($driveItemInviteData);
         try {
-            $permission = $apiInstance->invite($this->getId(), $this->getId(), $inviteData);
+            $permission = $apiInstance->invite($this->driveId, $this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -258,7 +261,7 @@ class OcisResource
             'display_name' => $displayName
         ]);
         try {
-            $permission = $apiInstance->createLink($this->getId(), $this->getId(), $createLinkData);
+            $permission = $apiInstance->createLink($this->driveId, $this->getId(), $createLinkData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -271,6 +274,7 @@ class OcisResource
         return new SharingLink(
             $permission,
             $this,
+            $this->driveId,
             $this->connectionConfig,
             $this->serviceUrl,
             $this->accessToken
