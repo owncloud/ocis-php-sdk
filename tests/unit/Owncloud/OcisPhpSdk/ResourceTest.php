@@ -42,6 +42,7 @@ class ResourceTest extends TestCase
         $accessToken = 'aaa';
         return new OcisResource(
             $metadata,
+            'uuid-of-the-drive',
             [],
             '',
             $accessToken

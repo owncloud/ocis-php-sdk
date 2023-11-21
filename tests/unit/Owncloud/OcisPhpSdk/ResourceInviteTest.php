@@ -130,7 +130,7 @@ class ResourceInviteTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('invite')
             /** @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
-            ->with('uuid-of-the-resource', 'uuid-of-the-resource', $expectedInviteData)
+            ->with('uuid-of-the-drive', 'uuid-of-the-resource', $expectedInviteData)
             ->willReturn($this->createMock(Permission::class));
         $accessToken = 'an-access-token';
         $connectionConfig = [
@@ -142,6 +142,7 @@ class ResourceInviteTest extends TestCase
 
         $resource = new OcisResource(
             $resourceMetadata,
+            'uuid-of-the-drive',
             $connectionConfig,
             'http://ocis',
             $accessToken
