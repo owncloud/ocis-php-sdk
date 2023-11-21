@@ -78,8 +78,8 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->createGroup("philosophy-haters", "sss");
-        $ocis->createGroup("physics-lovers", "sss");
+        $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $ocis->createGroup("physics-lovers", "physics lover group");
         $groups = $ocis->getGroups();
         $this->assertCount(2, $groups);
         foreach ($groups as $group) {
@@ -158,7 +158,7 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->createGroup("physics-lovers", "sss");
+        $ocis->createGroup("physics-lovers", "physics lover group");
         $groups = $ocis->getGroups(expandMembers: true);
         $this->assertCount(1, $groups);
         if (count($groups[0]->getMembers()) <= 0) {
@@ -190,8 +190,8 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->createGroup("philosophy-haters", "sss");
-        $ocis->createGroup("physics-lovers", "sss");
+        $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $ocis->createGroup("physics-lovers", "physics lover group");
         $groups = $ocis->getGroups(search: $searchText);
         $this->assertCount(count($groupDisplayName), $groups);
         for ($i = 0; $i < count($groups); $i++) {
@@ -220,8 +220,8 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken("admin", "admin");
         $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
-        $ocis->createGroup("philosophy-haters", "sss");
-        $ocis->createGroup("physics-lovers", "sss");
+        $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $ocis->createGroup("physics-lovers", "physics lover group");
         $groups = $ocis->getGroups(search: $searchText, orderBy: $orderDirection);
         if(count($groups) <= 0) {
             $this->markTestSkipped("no groups created");
@@ -230,6 +230,24 @@ class OcisTest extends OcisPhpSdkTestCase
         for ($i = 0; $i < count($groups); $i++) {
             $this->assertEquals($resultGroups[$i], $groups[$i]->getDisplayName());
         }
+    }
+
+    /**
+     *
+     * @return void
+     */
+    public function testDeleteGroup()
+    {
+        $token = $this->getAccessToken("admin", "admin");
+        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $ocis->createGroup("physics-lovers", "physics lover group");
+        foreach($ocis->getGroups() as $group) {
+            if($group->getDisplayName() === "philosophy-haters") {
+                $ocis->deleteGroup($group);
+            }
+        }
+        $this->assertCount(1, $ocis->getGroups());
     }
 
 }

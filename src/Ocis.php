@@ -23,7 +23,6 @@ use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
-use Owncloud\OcisPhpSdk\Group;
 use Sabre\HTTP\ResponseInterface;
 use stdClass;
 use OpenAPI\Client\Api\GroupsApi;
@@ -782,7 +781,6 @@ class Ocis
         $group = new OpenAPIGrop(["display_name" => $groupName, "description" => $description]);
         try {
             $newlyCreatedGroup = $apiInstance->createGroup($group);
-
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
