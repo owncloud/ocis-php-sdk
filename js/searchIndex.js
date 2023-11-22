@@ -261,6 +261,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_getMembers"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AaddUser\u0028\u0029",
+            "name": "addUser",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_addUser"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Notification",
             "name": "Notification",
             "summary": "Class\u0020representing\u0020a\u0020single\u0020notification\u0020emitted\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
