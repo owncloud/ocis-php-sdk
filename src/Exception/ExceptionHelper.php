@@ -45,27 +45,22 @@ class ExceptionHelper
             400 => new BadRequestException(
                 $message,
                 $e->getCode(),
-                $e
             ),
             401 => new UnauthorizedException(
                 $message,
                 $e->getCode(),
-                $e
             ),
             403 => new ForbiddenException(
                 $message,
                 $e->getCode(),
-                $e
             ),
             404 => new NotFoundException(
                 $message,
                 $e->getCode(),
-                $e
             ),
             default => new HttpException(
                 $message,
                 $e->getCode(),
-                $e
             ),
         };
     }
