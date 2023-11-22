@@ -168,7 +168,7 @@ class OcisResource
      * @param array<int, User|Group> $recipients
      * @param SharingRole $role
      * @param \DateTime|null $expiration
-     * @return bool
+     * @return ShareCreated
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -176,7 +176,7 @@ class OcisResource
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): bool
+    public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): ShareCreated
     {
         $driveItemInviteData = [];
         $driveItemInviteData['recipients'] = [];
@@ -217,7 +217,14 @@ class OcisResource
                 "invite returned an OdataError - " . $permission->getError()
             );
         }
-        return true;
+        return new ShareCreated(
+            $permission,
+            $this->getId(),
+            $this->driveId,
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
+        );
     }
 
     /**
@@ -273,7 +280,7 @@ class OcisResource
 
         return new ShareLink(
             $permission,
-            $this,
+            $this->getId(),
             $this->driveId,
             $this->connectionConfig,
             $this->serviceUrl,

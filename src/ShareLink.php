@@ -2,10 +2,7 @@
 
 namespace Owncloud\OcisPhpSdk;
 
-use GuzzleHttp\Client;
-use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
-use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Permission as ApiPermission;
 use OpenAPI\Client\Model\SharingLinkPassword;
@@ -22,26 +19,9 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 /**
  * Class representing a public link to a resource
  */
-class ShareLink
+class ShareLink extends Share
 {
-    private string $accessToken;
-    /**
-     * @phpstan-var array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client,
-     *                      'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
-     *                    }
-     */
-    private array $connectionConfig;
-    private string $serviceUrl;
-    private Configuration $graphApiConfig;
-    private OcisResource $resource;
-    private ApiPermission $apiPermission;
     private ApiSharingLink $sharingLink;
-    private string $driveId;
-
 
     /**
      * @throws InvalidResponseException
@@ -55,19 +35,20 @@ class ShareLink
      */
     public function __construct(
         ApiPermission $apiPermission,
-        OcisResource  $resource,
+        string        $resourceId,
         string        $driveId,
         array         $connectionConfig,
         string        $serviceUrl,
         string        &$accessToken
     ) {
-        $this->apiPermission = $apiPermission;
-        $this->driveId = $driveId;
-        if (!is_string($apiPermission->getId())) {
-            throw new InvalidResponseException(
-                "Invalid id returned for permission '" . print_r($apiPermission->getId(), true) . "'"
-            );
-        }
+        parent::__construct(
+            $apiPermission,
+            $resourceId,
+            $driveId,
+            $connectionConfig,
+            $serviceUrl,
+            $accessToken
+        );
 
         if (!($apiPermission->getLink() instanceof ApiSharingLink)) {
             throw new InvalidResponseException(
@@ -97,39 +78,8 @@ class ShareLink
                 "'"
             );
         }
-        $this->resource = $resource;
-        $this->accessToken = &$accessToken;
-        $this->serviceUrl = $serviceUrl;
-        if (!Ocis::isConnectionConfigValid($connectionConfig)) {
-            throw new \InvalidArgumentException('connection configuration not valid');
-        }
-        $this->graphApiConfig = Configuration::getDefaultConfiguration()
-            ->setHost($this->serviceUrl . '/graph');
-
-        $this->connectionConfig = $connectionConfig;
     }
 
-    private function getDrivesPermissionsApi(): DrivesPermissionsApi
-    {
-        $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-        );
-        if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
-            return $this->connectionConfig['drivesPermissionsApi'];
-        } else {
-            return new DrivesPermissionsApi(
-                $guzzle,
-                $this->graphApiConfig
-            );
-        }
-    }
-
-    public function getPermissionId(): string
-    {
-        // in the constructor the value is checked for being the right type, but phan does not know
-        // so simply cast to string
-        return (string)$this->apiPermission->getId();
-    }
 
     /**  phan-suppress-next-line PhanTypeMismatchReturnNullable */
     public function getType(): SharingLinkType
@@ -152,35 +102,6 @@ class ShareLink
         return $this->sharingLink->getAtLibreGraphDisplayName();
     }
 
-    public function getExpiry(): ?\DateTime
-    {
-        return $this->apiPermission->getExpirationDateTime();
-    }
-
-    /**
-     * permanently delete the current sharing link
-     *
-     * @throws BadRequestException
-     * @throws ForbiddenException
-     * @throws HttpException
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     * @throws InvalidResponseException
-     */
-    public function delete(): bool
-    {
-        try {
-            $this->getDrivesPermissionsApi()->deletePermission(
-                $this->driveId,
-                $this->resource->getId(),
-                $this->getPermissionId()
-            );
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-        return true;
-    }
-
     /**
      * @throws UnauthorizedException
      * @throws ForbiddenException
@@ -197,7 +118,7 @@ class ShareLink
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
                 $this->driveId,
-                $this->resource->getId(),
+                $this->resourceId,
                 $this->getPermissionId(),
                 $this->apiPermission
             );
@@ -229,7 +150,7 @@ class ShareLink
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
                 $this->driveId,
-                $this->resource->getId(),
+                $this->resourceId,
                 $this->getPermissionId(),
                 $this->apiPermission
             );
@@ -244,38 +165,6 @@ class ShareLink
         $this->apiPermission = $apiPermission;
         return true;
     }
-
-    /**
-     * @throws UnauthorizedException
-     * @throws ForbiddenException
-     * @throws InvalidResponseException
-     * @throws BadRequestException
-     * @throws HttpException
-     * @throws NotFoundException
-     */
-    public function setExpiration(\DateTime $expiration): bool
-    {
-        $this->apiPermission->setExpirationDateTime($expiration);
-
-        try {
-            $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
-                $this->driveId,
-                $this->resource->getId(),
-                $this->getPermissionId(),
-                $this->apiPermission
-            );
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-        if ($apiPermission instanceof OdataError) {
-            throw new InvalidResponseException(
-                "updatePermission returned an OdataError - " . $apiPermission->getError()
-            );
-        }
-        $this->apiPermission = $apiPermission;
-        return true;
-    }
-
 
     /**
      * @param string $password It may require a password policy. Set to empty sting to remove the password.
@@ -296,7 +185,7 @@ class ShareLink
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->setPermissionPassword(
                 $this->driveId,
-                $this->resource->getId(),
+                $this->resourceId,
                 $this->getPermissionId(),
                 $newPassword
             );
@@ -305,7 +194,7 @@ class ShareLink
         }
         if ($apiPermission instanceof OdataError) {
             throw new InvalidResponseException(
-                "setPermissionPassword returned an OdataError - " . $apiPermission->getError()
+                "setPassword returned an OdataError - " . $apiPermission->getError()
             );
         }
         $this->apiPermission = $apiPermission;
