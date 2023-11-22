@@ -426,6 +426,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AcreateSharingLink\u0028\u0029",
+            "name": "createSharingLink",
+            "summary": "create\u0020a\u0020new\u0020\u0028public\u0029\u0020link",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_createSharingLink"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetId\u0028\u0029",
             "name": "getId",
             "summary": "",
@@ -505,6 +510,66 @@ Search.appendIndex(
             "name": "DESC",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OrderDirection.html#enumcase_DESC"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink",
+            "name": "ShareLink",
+            "summary": "Class\u0020representing\u0020a\u0020public\u0020link\u0020to\u0020a\u0020resource",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method___construct"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetPermissionId\u0028\u0029",
+            "name": "getPermissionId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getPermissionId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetType\u0028\u0029",
+            "name": "getType",
+            "summary": "phan\u002Dsuppress\u002Dnext\u002Dline\u0020PhanTypeMismatchReturnNullable",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getType"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetWebUrl\u0028\u0029",
+            "name": "getWebUrl",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getWebUrl"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetDisplayName\u0028\u0029",
+            "name": "getDisplayName",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetExpiry\u0028\u0029",
+            "name": "getExpiry",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getExpiry"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003Adelete\u0028\u0029",
+            "name": "delete",
+            "summary": "permanently\u0020delete\u0020the\u0020current\u0020sharing\u0020link",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_delete"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetDisplayName\u0028\u0029",
+            "name": "setDisplayName",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetType\u0028\u0029",
+            "name": "setType",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setType"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetExpiration\u0028\u0029",
+            "name": "setExpiration",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setExpiration"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetPassword\u0028\u0029",
+            "name": "setPassword",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setPassword"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole",
             "name": "SharingRole",

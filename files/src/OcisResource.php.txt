@@ -6,9 +6,11 @@ use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\DriveItemCreateLink;
 use OpenAPI\Client\Model\DriveItemInvite;
 use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
+use OpenAPI\Client\Model\SharingLinkType;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
@@ -40,6 +42,7 @@ class OcisResource
      */
     private array $connectionConfig;
     private Configuration $graphApiConfig;
+    private string $driveId;
 
     /**
      * @param array<mixed> $metadata of the resource
@@ -71,11 +74,13 @@ class OcisResource
      */
     public function __construct(
         array $metadata,
+        string $driveId,
         array $connectionConfig,
         string $serviceUrl,
         string &$accessToken
     ) {
         $this->metadata = $metadata;
+        $this->driveId = $driveId;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
@@ -142,7 +147,7 @@ class OcisResource
             );
         }
         try {
-            $collectionOfPermissions = $apiInstance->listPermissions($this->getId(), $this->getId());
+            $collectionOfPermissions = $apiInstance->listPermissions($this->driveId, $this->getId());
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -203,7 +208,7 @@ class OcisResource
 
         $inviteData = new DriveItemInvite($driveItemInviteData);
         try {
-            $permission = $apiInstance->invite($this->getId(), $this->getId(), $inviteData);
+            $permission = $apiInstance->invite($this->driveId, $this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -215,6 +220,67 @@ class OcisResource
         return true;
     }
 
+    /**
+     * create a new (public) link
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
+    public function createSharingLink(
+        SharingLinkType $type = SharingLinkType::VIEW,
+        ?\DateTime $expiration = null,
+        ?string $password = null,
+        ?string $displayName = null
+    ): ShareLink {
+        if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
+        } else {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+            $apiInstance = new DrivesPermissionsApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+        if ($expiration !== null) {
+            $expiration->setTimezone(new \DateTimeZone('Z'));
+            $expirationString = $expiration->format('Y-m-d\TH:i:s:up');
+        } else {
+            $expirationString = null;
+        }
+
+        $createLinkData = new DriveItemCreateLink([
+            'type' => $type->value,
+            'password' => $password,
+            'expiration_date_time' => $expirationString,
+            'display_name' => $displayName
+        ]);
+        try {
+            $permission = $apiInstance->createLink($this->driveId, $this->getId(), $createLinkData);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "createLink returned an OdataError - " . $permission->getError()
+            );
+        }
+
+        return new ShareLink(
+            $permission,
+            $this,
+            $this->driveId,
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
+        );
+
+    }
     /**
      * @return string
      * @throws InvalidResponseException
