@@ -171,7 +171,7 @@ class ShareLink
     {
         try {
             $this->getDrivesPermissionsApi()->deletePermission(
-                $this->resource->getId(),
+                $this->driveId,
                 $this->resource->getId(),
                 $this->getPermissionId()
             );
