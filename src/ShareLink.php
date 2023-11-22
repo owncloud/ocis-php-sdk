@@ -22,7 +22,7 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 /**
  * Class representing a public link to a resource
  */
-class SharingLink
+class ShareLink
 {
     private string $accessToken;
     /**

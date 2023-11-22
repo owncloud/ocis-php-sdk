@@ -235,7 +235,7 @@ class OcisResource
         ?\DateTime $expiration = null,
         ?string $password = null,
         ?string $displayName = null
-    ): SharingLink {
+    ): ShareLink {
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
         } else {
@@ -271,7 +271,7 @@ class OcisResource
             );
         }
 
-        return new SharingLink(
+        return new ShareLink(
             $permission,
             $this,
             $this->driveId,
