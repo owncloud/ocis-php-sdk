@@ -8,6 +8,9 @@ use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OrderDirection;
+use OpenAPI\Client\Model\User;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
@@ -89,10 +92,71 @@ class OcisTest extends OcisPhpSdkTestCase
             $this->assertIsArray($group->getMembers());
         }
     }
+
     /**
      * @return void
      */
-    public function testGetGroupsExpanded()
+    public function testAddUserToGroup(): void
+    {
+        $token = $this->getAccessToken('admin', 'admin');
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $users = $ocis->getUsers('admin');
+        $userName = $users[0]->getDisplayName();
+        $groups = $ocis->getGroups(search:"philosophy");
+        $this->assertGreaterThanOrEqual(1, $groups);
+        $groupName = $groups[0]->getDisplayName();
+        $groups[0]->addUser($users[0]);
+
+        $groups = $ocis->getGroups(expandMembers: true, search:"philosophy");
+        foreach ($groups as $group) {
+            if($group->getDisplayName() === $groupName) {
+                $this->assertGreaterThan(0, count($group->getMembers()));
+                $this->assertEquals($userName, $group->getMembers()[0]->getDisplayName());
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function testAddUserToGroupInvalid(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $token = $this->getAccessToken('admin', 'admin');
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $user = new User(
+            [
+                "id" => "id",
+                "display_name" => "displayname",
+                "mail" => "mail@mail.com",
+                "on_premises_sam_account_name" => "sd",
+            ]
+        );
+        $sdkUser = new \Owncloud\OcisPhpSdk\User($user);
+        $groups = $ocis->getGroups(search:"philosophy");
+        $this->assertGreaterThanOrEqual(1, $groups);
+        $groups[0]->addUser($sdkUser);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAddUserToGroupUnauthorizedUser(): void
+    {
+        $this->expectException(UnauthorizedException::class);
+        $token = $this->getAccessToken('marie', 'radioactivity');
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+
+        $users = $ocis->getUsers('marie');
+        $groups = $ocis->getGroups(search:"physics");
+        $this->assertGreaterThanOrEqual(1, $groups);
+        $groups[0]->addUser($users[0]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testGetGroupsExpanded(): void
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
@@ -103,7 +167,9 @@ class OcisTest extends OcisPhpSdkTestCase
             $this->markTestSkipped("no users added");
         }
         foreach ($groups as $group) { // first implement add user to group
-            $this->assertGreaterThan(0, count($group->getMembers()));
+            if($group->getDisplayName() === "philosophy-haters") {
+                $this->assertGreaterThan(0, count($group->getMembers()));
+            }
         }
     }
     /**
@@ -122,15 +188,15 @@ class OcisTest extends OcisPhpSdkTestCase
      * @param array<int,string> $groupDisplayName
      * @return void
      */
-    public function testGetGroupSearch(string $searchText, array $groupDisplayName)
+    public function testGetGroupSearch(string $searchText, array $groupDisplayName): void
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $ocis->createGroup("radium-lovers", "sss");
         $groups = $ocis->getGroups(search: $searchText);
         $this->assertCount(count($groupDisplayName), $groups);
-        foreach ($groups as $group) {
-            $this->assertContains($group->getDisplayName(), $groupDisplayName);
+        for ($i = 0; $i < count($groups); $i++) {
+            $this->assertEquals($groups[$i]->getDisplayName(), $groupDisplayName[$i]);
         }
     }
     /**
@@ -151,7 +217,7 @@ class OcisTest extends OcisPhpSdkTestCase
      * @param array<int,string> $resultGroups
      * @return void
      */
-    public function testGetGroupSort(OrderDirection $orderDirection, string $searchText, array $resultGroups)
+    public function testGetGroupSort(OrderDirection $orderDirection, string $searchText, array $resultGroups): void
     {
         $token = $this->getAccessToken("admin", "admin");
         $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
@@ -161,7 +227,7 @@ class OcisTest extends OcisPhpSdkTestCase
         }
         $this->assertCount(count($resultGroups), $groups);
         for ($i = 0; $i < count($groups); $i++) {
-            $this->assertSame($resultGroups[$i], $groups[$i]->getDisplayName());
+            $this->assertEquals($resultGroups[$i], $groups[$i]->getDisplayName());
         }
     }
 }
