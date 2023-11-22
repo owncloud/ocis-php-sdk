@@ -21,6 +21,11 @@ class OcisPhpSdkTestCase extends TestCase
      */
     protected $createdDrives = [];
 
+    /**
+     * @var array <\Owncloud\OcisPhpSdk\Group>
+     */
+    protected $createdGroup = [];
+
     public function setUp(): void
     {
         $this->ocisUrl = getenv('OCIS_URL') ?: 'https://ocis.owncloud.test';
@@ -44,8 +49,8 @@ class OcisPhpSdkTestCase extends TestCase
             $drive->disable();
             $drive->delete();
         }
-        foreach($ocis->getGroups() as $group) {
-            $ocis->deleteGroup($group);
+        foreach($this->createdGroup as $group) {
+            $group->delete();
         }
     }
 

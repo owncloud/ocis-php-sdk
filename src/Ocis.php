@@ -766,7 +766,7 @@ class Ocis
     *
     * @param string $groupName
     * @param string $description
-    * @return void
+    * @return Group
     * @throws BadRequestException
     * @throws ForbiddenException
     * @throws NotFoundException
@@ -775,7 +775,7 @@ class Ocis
     * @throws InvalidResponseException
     * @throws HttpException
     */
-    public function createGroup(string $groupName, string $description = ""): void
+    public function createGroup(string $groupName, string $description = ""): Group
     {
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
         $group = new OpenAPIGrop(["display_name" => $groupName, "description" => $description]);
@@ -789,12 +789,18 @@ class Ocis
                 "createGroup returned an OdataError - " . $newlyCreatedGroup->getError()
             );
         }
+        return new Group(
+            $newlyCreatedGroup,
+            $this->serviceUrl,
+            $this->connectionConfig,
+            $this->accessToken
+        );
     }
 
     /**
      * delete an existing group (if the user has the permission to do so)
      *
-     * @param Group $group
+     * @param string $groupId
      * @return void
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -803,11 +809,11 @@ class Ocis
      * @throws \InvalidArgumentException
      * @throws HttpException
      */
-    public function deleteGroup(Group $group): void
+    public function deleteGroupByID(string $groupId): void
     {
         $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
         try {
-            $apiInstance->deleteGroup($group->getId());
+            $apiInstance->deleteGroup($groupId);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
