@@ -4,35 +4,39 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
-use Owncloud\OcisPhpSdk\Drive; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
+use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\OrderDirection;
 
 class OcisResourceTest extends OcisPhpSdkTestCase
 {
-    public function testGetResources(): void
+    private Drive $personalDrive;
+    public function setUp(): void
     {
+        parent::setUp();
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        /**
-         * @var Drive $personalDrive
-         */
-        $personalDrive = $ocis->getMyDrives(
+        $this->personalDrive = $ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
             DriveType::PERSONAL
         )[0];
-        $personalDrive->uploadFile('somefile.txt', 'some content');
-        $personalDrive->uploadFile('secondfile.txt', 'some other content');
-        $personalDrive->createFolder('subfolder');
+        $this->personalDrive->uploadFile('somefile.txt', 'some content');
+        $this->personalDrive->uploadFile('secondfile.txt', 'some other content');
+        $this->personalDrive->createFolder('subfolder');
+
         $this->createdResources[] = '/somefile.txt';
         $this->createdResources[] = '/secondfile.txt';
         $this->createdResources[] = '/subfolder';
+    }
 
-        $resources = $personalDrive->getResources();
+    public function testGetResources(): void
+    {
+        $resources = $this->personalDrive->getResources();
         $this->assertCount(3, $resources);
 
         /**
@@ -97,6 +101,55 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             if ($resource->getType() === 'file') {
                 $this->assertStringContainsString('SHA1', $resource->getCheckSums()[0]['value']);
                 $this->assertStringContainsString('MD5', $resource->getCheckSums()[0]['value']);
+            }
+        }
+    }
+
+    public function testGetResourceContent(): void
+    {
+        $resources = $this->personalDrive->getResources();
+        foreach ($resources as $resource) {
+            $content = $resource->getContent();
+            switch ($resource->getName()) {
+                case 'somefile.txt':
+                    $this->assertEquals('some content', $content);
+                    break;
+                case 'secondfile.txt':
+                    $this->assertEquals('some other content', $content);
+                    break;
+                case 'subfolder':
+                    $this->assertEquals('', $content);
+                    break;
+            }
+        }
+    }
+
+    public function testGetNotExistingResourceContent(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $resources = $this->personalDrive->getResources();
+        foreach ($this->createdResources as $resource) {
+            $this->personalDrive->deleteResource($resource);
+        }
+        $resources[0]->getContent();
+    }
+
+    public function testGetResourceContentStream(): void
+    {
+        $resources = $this->personalDrive->getResources();
+        foreach ($resources as $resource) {
+            $stream = $resource->getContentStream();
+            $content = fread($stream, 1024);
+            switch ($resource->getName()) {
+                case 'somefile.txt':
+                    $this->assertEquals('some content', $content);
+                    break;
+                case 'secondfile.txt':
+                    $this->assertEquals('some other content', $content);
+                    break;
+                case 'subfolder':
+                    $this->assertEquals('', $content);
+                    break;
             }
         }
     }

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Owncloud\OcisPhpSdk\Drive; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OrderDirection;
 use PHPUnit\Framework\TestCase;
@@ -69,7 +70,11 @@ class OcisPhpSdkTestCase extends TestCase
                 OrderDirection::ASC,
                 DriveType::PERSONAL
             )[0];
-            $personalDrive->deleteResource($resource);
+            try {
+                $personalDrive->deleteResource($resource);
+            } catch (NotFoundException $e) {
+                // ignore, we don't care if the resource was already deleted
+            }
         }
     }
 

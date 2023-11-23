@@ -19,6 +19,7 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Xml\Property\ResourceType;
+use Sabre\HTTP\ResponseInterface;
 
 /**
  * Class representing a file or folder inside a Drive in ownCloud Infinite Scale
@@ -497,5 +498,52 @@ class OcisResource
             );
         }
         return rawurldecode($privateLink);
+    }
+
+    /*
+     * returns the content of this resource
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
+    public function getContent(): string
+    {
+        $response = $this->getFileResponseInterface($this->getId());
+        return $response->getBodyAsString();
+    }
+
+    /**
+     * returns a stream to get the content of this resource
+     *
+     * @return resource
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     */
+    public function getContentStream()
+    {
+        $response = $this->getFileResponseInterface($this->getId());
+        return $response->getBodyAsStream();
+    }
+
+    /**
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     */
+    private function getFileResponseInterface(string $fileId): ResponseInterface
+    {
+        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        return $webDavClient->sendRequest("GET", $fileId);
     }
 }
