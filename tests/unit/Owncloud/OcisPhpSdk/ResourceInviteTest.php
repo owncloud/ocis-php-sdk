@@ -3,10 +3,10 @@
 namespace unit\Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\Model\CollectionOfPermissions;
 use OpenAPI\Client\Model\DriveItemInvite;
 use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\Group as OpenAPIGroup;
-use OpenAPI\Client\Model\UnifiedRolePermission;
 use OpenAPI\Client\Model\User as OpenAPIUser;
 use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\UnifiedRoleDefinition;
@@ -133,11 +133,14 @@ class ResourceInviteTest extends TestCase
         $permission = $this->createMock(Permission::class);
         $permission->method('getId')
             ->willReturn('uuid-of-the-permission');
+        $permissions = $this->createMock(CollectionOfPermissions::class);
+        $permissions->method('getValue')
+            ->willReturn([$permission]);
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('invite')
             /** @phan-suppress-next-line PhanTypeMismatchArgumentProbablyReal */
             ->with('uuid-of-the-drive', 'uuid-of-the-resource', $expectedInviteData)
-            ->willReturn($permission);
+            ->willReturn($permissions);
         $accessToken = 'an-access-token';
         $connectionConfig = [
             'drivesPermissionsApi' => $drivesPermissionsApi,
@@ -163,6 +166,6 @@ class ResourceInviteTest extends TestCase
         $role = new SharingRole($openAPIRole);
 
         $result = $resource->invite($recipients, $role, $expiration);
-        $this->assertInstanceOf(ShareCreated::class, $result);
+        $this->assertContainsOnly(ShareCreated::class, $result);
     }
 }

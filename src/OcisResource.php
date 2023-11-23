@@ -168,7 +168,7 @@ class OcisResource
      * @param array<int, User|Group> $recipients
      * @param SharingRole $role
      * @param \DateTime|null $expiration
-     * @return ShareCreated
+     * @return array<ShareCreated>
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -176,7 +176,7 @@ class OcisResource
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): ShareCreated
+    public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): array
     {
         $driveItemInviteData = [];
         $driveItemInviteData['recipients'] = [];
@@ -208,23 +208,36 @@ class OcisResource
 
         $inviteData = new DriveItemInvite($driveItemInviteData);
         try {
-            $permission = $apiInstance->invite($this->driveId, $this->getId(), $inviteData);
+            $permissions = $apiInstance->invite($this->driveId, $this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
-        if ($permission instanceof OdataError) {
+        if ($permissions instanceof OdataError) {
             throw new InvalidResponseException(
-                "invite returned an OdataError - " . $permission->getError()
+                "invite returned an OdataError - " . $permissions->getError()
             );
         }
-        return new ShareCreated(
-            $permission,
-            $this->getId(),
-            $this->driveId,
-            $this->connectionConfig,
-            $this->serviceUrl,
-            $this->accessToken
-        );
+        if ($permissions->getValue() === null) {
+            throw new InvalidResponseException(
+                "invite returned an 'null' where an array of permissions were expected"
+            );
+        }
+
+        /**
+         * @var array<ShareCreated> $shares
+         */
+        $shares = [];
+        foreach ($permissions->getValue() as $permission) {
+            $shares[] = new ShareCreated(
+                $permission,
+                $this->getId(),
+                $this->driveId,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken
+            );
+        }
+        return $shares;
     }
 
     /**
