@@ -219,7 +219,7 @@ class OcisResource
         }
         if ($permissions->getValue() === null) {
             throw new InvalidResponseException(
-                "invite returned an 'null' where an array of permissions were expected"
+                "invite returned 'null' where an array of permissions were expected"
             );
         }
 
