@@ -24,7 +24,7 @@ class OcisPhpSdkTestCase extends TestCase
     /**
      * @var array <\Owncloud\OcisPhpSdk\Group>
      */
-    protected $createdGroup = [];
+    protected $createdGroups = [];
 
     public function setUp(): void
     {
@@ -49,7 +49,7 @@ class OcisPhpSdkTestCase extends TestCase
             $drive->disable();
             $drive->delete();
         }
-        foreach($this->createdGroup as $group) {
+        foreach($this->createdGroups as $group) {
             $group->delete();
         }
     }
