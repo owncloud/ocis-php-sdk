@@ -465,8 +465,10 @@ class OcisResource
     public function getPrivatelink(): string
     {
         $privateLink = $this->getMetadata(ResourceMetadata::PRIVATELINK);
-        if (is_array($privateLink)) {
-            return "";
+        if (!is_string($privateLink)) {
+            throw new InvalidResponseException(
+                'Invalid private link in response from server: ' . print_r($privateLink, true)
+            );
         }
         return rawurldecode($privateLink);
     }

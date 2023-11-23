@@ -51,11 +51,13 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                 "?^" . $this->ocisUrl . '/f/'. $this->getFileIdRegex() . "$?i",
                 $resource->getPrivatelink()
             );
-            try {
-                $this->assertEquals('file', $resource->getType());
-            } catch (\Exception $e) {
-                $this->assertEquals('folder', $resource->getType());
-            }
+            $this->assertThat(
+                $resource->getType(),
+                $this->logicalOr(
+                    $this->equalTo("file"),
+                    $this->equalTo("folder")
+                )
+            );
 
             $this->assertMatchesRegularExpression(
                 "/^" . $this->getUUIDv4Regex() . "$/i",
@@ -65,11 +67,14 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                 "/^" . $this->getFileIdRegex() . "$/i",
                 $resource->getParent()
             );
-            try {
-                $this->assertEquals('RDNVWZP', $resource->getPermission());
-            } catch (\Exception $e) {
-                $this->assertEquals('RDNVCKZP', $resource->getPermission());
-            }
+            $this->assertThat(
+                $resource->getPermission(),
+                $this->logicalOr(
+                    $this->equalTo("RDNVWZP"),
+                    $this->equalTo("RDNVCKZP")
+                )
+            );
+
             $this->assertEqualsWithDelta(
                 strtotime("now"),
                 strtotime($resource->getLastModifiedTime()),

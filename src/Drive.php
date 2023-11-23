@@ -290,24 +290,10 @@ class Drive
         $resources = [];
         $webDavClient = $this->createWebDavClient();
         try {
-            $properties = [
-                '{http://owncloud.org/ns}id',
-                '{http://owncloud.org/ns}fileid',
-                '{http://owncloud.org/ns}spaceid',
-                '{http://owncloud.org/ns}file-parent',
-                '{http://owncloud.org/ns}name',
-                '{DAV:}getetag',
-                '{http://owncloud.org/ns}permissions',
-                '{DAV:}resourcetype',
-                '{http://owncloud.org/ns}size',
-                '{DAV:}getcontentlength',
-                '{DAV:}getlastmodified',
-                '{http://owncloud.org/ns}tags',
-                '{http://owncloud.org/ns}favorite',
-                '{http://owncloud.org/ns}privatelink',
-                '{DAV:}getcontenttype',
-                '{http://owncloud.org/ns}checksums'
-            ];
+            $properties = [];
+            foreach (ResourceMetadata::cases() as $property) {
+                $properties[] = $property->value;
+            }
             $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), $properties, 1);
             foreach ($responses as $response) {
                 $resources[] = new OcisResource(
@@ -318,7 +304,7 @@ class Drive
                     $this->accessToken
                 );
             }
-            unset($resources[0]);
+            unset($resources[0]); // skip first propfind response, because its the parent folder
         } catch (SabreClientHttpException|SabreClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
