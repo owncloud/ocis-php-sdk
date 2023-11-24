@@ -14,8 +14,6 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
-    private const GROUP_COUNT = 2;
-
     public function testServiceUrlTrailingSlash(): void
     {
         $token = $this->getAccessToken('admin', 'admin');
@@ -74,16 +72,29 @@ class OcisTest extends OcisPhpSdkTestCase
     }
 
     /**
+     * @return array<int, array<int,array<int, string>>>
+     */
+    public function groupNameList(): array
+    {
+        return[
+            [["philosophy-haters", "physics-lovers"]],
+        ];
+    }
+    /**
+     * @dataProvider groupNameList
+     *
+     * @param array<string> $groupName
      * @return void
      */
-    public function testGetGroups(): void
+    public function testGetGroups(array $groupName): void
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->createGroup("philosophy-haters", "sss");
-        $ocis->createGroup("physics-lovers", "sss");
+        $philosophyHatersGroup =  $ocis->createGroup($groupName[0], "philosophy haters group");
+        $physicsLoversGroup =  $ocis->createGroup($groupName[1], "physics lover group");
+        $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups();
-        $this->assertCount(self::GROUP_COUNT, $groups);
+        $this->assertCount(2, $groups);
         foreach ($groups as $group) {
             $this->assertInstanceOf(Group::class, $group);
             $this->assertIsString($group->getId());
@@ -91,6 +102,8 @@ class OcisTest extends OcisPhpSdkTestCase
             $this->assertIsArray($group->getGroupTypes());
             $this->assertIsArray($group->getMembers());
         }
+        $groupDisplayName = [$philosophyHatersGroup->getDisplayName(),$physicsLoversGroup->getDisplayName()];
+        $this->assertTrue($groupDisplayName === [$groupName[0],$groupName[1]]);
     }
 
     /**
@@ -102,17 +115,12 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $users = $ocis->getUsers('admin');
         $userName = $users[0]->getDisplayName();
-        $groups = $ocis->getGroups(search:"philosophy");
-        $this->assertGreaterThanOrEqual(1, $groups);
-        $groupName = $groups[0]->getDisplayName();
-        $groups[0]->addUser($users[0]);
-
-        $groups = $ocis->getGroups(expandMembers: true, search:"philosophy");
-        foreach ($groups as $group) {
-            if($group->getDisplayName() === $groupName) {
-                $this->assertGreaterThan(0, count($group->getMembers()));
-                $this->assertEquals($userName, $group->getMembers()[0]->getDisplayName());
-            }
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $this->createdGroups = [$philosophyHatersGroup];
+        $philosophyHatersGroup->addUser($users[0]);
+        foreach ($ocis->getGroups(expandMembers: true) as $group) {
+            $this->assertGreaterThan(0, count($group->getMembers()));
+            $this->assertEquals($userName, $group->getMembers()[0]->getDisplayName());
         }
     }
 
@@ -124,6 +132,8 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->expectException(NotFoundException::class);
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $this->createdGroups = [$philosophyHatersGroup];
         $user = new User(
             [
                 "id" => "id",
@@ -146,7 +156,8 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->expectException(UnauthorizedException::class);
         $token = $this->getAccessToken('marie', 'radioactivity');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-
+        $physicsLoversGroup =  $ocis->createGroup("physics-lovers", "physics lovers group");
+        $this->createdGroups = [$physicsLoversGroup];
         $users = $ocis->getUsers('marie');
         $groups = $ocis->getGroups(search:"physics");
         $this->assertGreaterThanOrEqual(1, $groups);
@@ -160,16 +171,13 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->createGroup("violin-haters", "sss");
+        $physicsLoversGroup =  $ocis->createGroup("physics-lovers", "physics lovers group");
+        $this->createdGroups = [$physicsLoversGroup];
+        $physicsLoversGroup->addUser($ocis->getUsers()[0]);
         $groups = $ocis->getGroups(expandMembers: true);
-        $this->assertCount(3, $groups);
-        if (count($groups[0]->getMembers()) <= 0) {
-            $this->markTestSkipped("no users added");
-        }
-        foreach ($groups as $group) { // first implement add user to group
-            if($group->getDisplayName() === "philosophy-haters") {
-                $this->assertGreaterThan(0, count($group->getMembers()));
-            }
+        $this->assertCount(1, $groups);
+        foreach ($groups as $group) {
+            $this->assertGreaterThan(0, count($group->getMembers()));
         }
     }
     /**
@@ -192,7 +200,9 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->createGroup("radium-lovers", "sss");
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
+        $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups(search: $searchText);
         $this->assertCount(count($groupDisplayName), $groups);
         for ($i = 0; $i < count($groups); $i++) {
@@ -205,8 +215,8 @@ class OcisTest extends OcisPhpSdkTestCase
     public function orderDirection(): array
     {
         return [
-            [OrderDirection::ASC, "ph", ["philosophy-haters", "physics-lovers"]]
-//            [OrderDirection::DESC, "ph", ["physics-lovers", "philosophy-haters"]], // first implement cleanup group
+            [OrderDirection::ASC, "ph", ["philosophy-haters", "physics-lovers"]],
+            [OrderDirection::DESC, "ph", ["physics-lovers", "philosophy-haters"]]
         ];
     }
     /**
@@ -221,6 +231,9 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $token = $this->getAccessToken("admin", "admin");
         $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
+        $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups(search: $searchText, orderBy: $orderDirection);
         if(count($groups) <= 0) {
             $this->markTestSkipped("no groups created");
@@ -229,5 +242,57 @@ class OcisTest extends OcisPhpSdkTestCase
         for ($i = 0; $i < count($groups); $i++) {
             $this->assertEquals($resultGroups[$i], $groups[$i]->getDisplayName());
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function testDeleteGroup(): void
+    {
+        $token = $this->getAccessToken("admin", "admin");
+        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
+        $philosophyHatersGroup->delete();
+        $this->assertCount(1, $ocis->getGroups());
+        $this->assertEquals("physics-lovers", $ocis->getGroups()[0]->getDisplayName());
+        $this->createdGroups = [$physicsLoversGroup];
+    }
+
+    /**
+     * @return void
+     */
+    public function testDeleteGroupById(): void
+    {
+        $token = $this->getAccessToken("admin", "admin");
+        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
+        foreach($ocis->getGroups() as $group) {
+            if($group->getDisplayName() === "philosophy-haters") {
+                $ocis->deleteGroupByID($group->getId());
+            }
+        }
+        $this->assertCount(1, $ocis->getGroups());
+        $this->assertEquals("physics-lovers", $ocis->getGroups()[0]->getDisplayName());
+        $this->createdGroups = [$physicsLoversGroup];
+    }
+
+    /**
+     * @return void
+     */
+    public function testDeleteGroupByIdNoPermission(): void
+    {
+        $token = $this->getAccessToken("admin", "admin");
+        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $philosophyHatersGroup = $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        //any user other than admin can't get Group ID because of bug, thus bypassing this step
+        //Todo : make Einstein get Group ID after this bug is solved.
+        $groupId = $philosophyHatersGroup->getId();
+        $this->createdGroups = [$philosophyHatersGroup];
+        $token = $this->getAccessToken('einstein', 'relativity');
+        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $this->expectException(UnauthorizedException::class);
+        $ocis->deleteGroupByID($groupId);
     }
 }

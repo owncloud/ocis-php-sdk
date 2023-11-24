@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\Api\GroupApi;
 use OpenAPI\Client\Api\MeDrivesApi;
 use OpenAPI\Client\Api\UsersApi;
 use OpenAPI\Client\ApiException;
@@ -25,7 +26,6 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ResponseInterface;
 use stdClass;
 use OpenAPI\Client\Api\GroupsApi;
-use Owncloud\OcisPhpSdk\Group;
 use OpenAPI\Client\Model\Group as OpenAPIGrop;
 
 /**
@@ -766,7 +766,7 @@ class Ocis
     *
     * @param string $groupName
     * @param string $description
-    * @return void
+    * @return Group
     * @throws BadRequestException
     * @throws ForbiddenException
     * @throws NotFoundException
@@ -775,7 +775,7 @@ class Ocis
     * @throws InvalidResponseException
     * @throws HttpException
     */
-    public function createGroup(string $groupName, string $description = "")
+    public function createGroup(string $groupName, string $description = ""): Group
     {
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
         $group = new OpenAPIGrop(["display_name" => $groupName, "description" => $description]);
@@ -788,6 +788,34 @@ class Ocis
             throw new InvalidResponseException(
                 "createGroup returned an OdataError - " . $newlyCreatedGroup->getError()
             );
+        }
+        return new Group(
+            $newlyCreatedGroup,
+            $this->serviceUrl,
+            $this->connectionConfig,
+            $this->accessToken
+        );
+    }
+
+    /**
+     * delete an existing group (if the user has the permission to do so)
+     *
+     * @param string $groupId
+     * @return void
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
+     * @throws HttpException
+     */
+    public function deleteGroupByID(string $groupId): void
+    {
+        $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
+        try {
+            $apiInstance->deleteGroup($groupId);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
         }
     }
 
