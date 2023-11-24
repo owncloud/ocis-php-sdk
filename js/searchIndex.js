@@ -266,6 +266,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_addUser"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003Adelete\u0028\u0029",
+            "name": "delete",
+            "summary": "delete\u0020an\u0020existing\u0020group\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_delete"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Notification",
             "name": "Notification",
             "summary": "Class\u0020representing\u0020a\u0020single\u0020notification\u0020emitted\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
@@ -400,6 +405,11 @@ Search.appendIndex(
             "name": "createGroup",
             "summary": "Create\u0020a\u0020new\u0020group\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_createGroup"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AdeleteGroupByID\u0028\u0029",
+            "name": "deleteGroupByID",
+            "summary": "delete\u0020an\u0020existing\u0020group\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_deleteGroupByID"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AFUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "name": "FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",

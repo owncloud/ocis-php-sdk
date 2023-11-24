@@ -154,5 +154,27 @@ class Group
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
+        $this->members[] = $user;
+    }
+
+    /**
+     * delete an existing group (if the user has the permission to do so)
+     *
+     * @return void
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
+     * @throws HttpException
+     */
+    public function delete(): void
+    {
+        $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
+        try {
+            $apiInstance->deleteGroup($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
     }
 }

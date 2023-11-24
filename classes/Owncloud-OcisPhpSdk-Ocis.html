@@ -180,9 +180,16 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_createGroup">createGroup()</a>
     <span>
-                                &nbsp;: void    </span>
+                                &nbsp;: <a href="classes/Owncloud-OcisPhpSdk-Group.html"><abbr title="\Owncloud\OcisPhpSdk\Group">Group</abbr></a>    </span>
 </dt>
 <dd>Create a new group (if the user has the permission to do so)</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_deleteGroupByID">deleteGroupByID()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>delete an existing group (if the user has the permission to do so)</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getAllDrives">getAllDrives()</a>
@@ -596,7 +603,7 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">createGroup</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$groupName</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$description</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&quot;&quot;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">createGroup</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$groupName</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$description</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&quot;&quot;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Owncloud-OcisPhpSdk-Group.html"><abbr title="\Owncloud\OcisPhpSdk\Group">Group</abbr></a></span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -671,6 +678,108 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                 <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/Owncloud-OcisPhpSdk-Group.html"><abbr title="\Owncloud\OcisPhpSdk\Group">Group</abbr></a></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_deleteGroupByID">
+        deleteGroupByID()
+        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_deleteGroupByID" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">812</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.812" class="phpdocumentor-element-found-in__source" data-line="812" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">delete an existing group (if the user has the permission to do so)</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">deleteGroupByID</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$groupId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$groupId</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_deleteGroupByID#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\InvalidArgumentException">InvalidArgumentException</abbr></span>
                                                             
                                              
                                     </dd>
@@ -1751,6 +1860,7 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method___construct">__construct()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_createDrive">createDrive()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_createGroup">createGroup()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_deleteGroupByID">deleteGroupByID()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getAllDrives">getAllDrives()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getDriveById">getDriveById()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_getFileById">getFileById()</a></li>
