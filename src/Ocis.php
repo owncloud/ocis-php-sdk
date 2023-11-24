@@ -130,6 +130,17 @@ class Ocis
     }
 
     /**
+     * Helper function to check if the variable is a DrivesApi
+     * we need this because we want to call the check with call_user_func
+     *
+     * @phpstan-ignore-next-line phpstan does not understand that this method was called via call_user_func
+     */
+    private static function isDrivesApi(mixed $api): bool
+    {
+        return $api instanceof DrivesApi;
+    }
+
+    /**
      * @param array<mixed> $connectionConfig
      * @ignore This function is used for internal purposes only and should not be shown in the documentation.
      *         The function is public to make it testable and because its also used from other classes.
@@ -141,7 +152,8 @@ class Ocis
             'verify' => 'is_bool',
             'webfinger' => 'is_bool',
             'guzzle' => 'self::isGuzzleClient',
-            'drivesPermissionsApi' => 'self::isDrivesPermissionsApi'
+            'drivesPermissionsApi' => 'self::isDrivesPermissionsApi',
+            'drivesApi' => 'self::isDrivesApi'
         ];
         foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
@@ -572,7 +584,7 @@ class Ocis
             $responses = $webDavClient->propFind(rawurlencode($fileId), $properties);
             $resource = new OcisResource(
                 $responses,
-                '', // ToDo find a way to get the drive-id here, is it the 'spaceid'? see https://matrix.to/#/!QxIasTYvslDCVqoPzC:matrix.org/$hZUW8b6YKbAM-rGVEl-OI0OQI7hjfcD-rQNi_OIOkjQ?via=matrix.org&via=openproject.org&via=element.io
+                null,
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken

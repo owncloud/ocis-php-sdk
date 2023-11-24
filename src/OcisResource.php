@@ -3,6 +3,7 @@
 namespace Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
+use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
@@ -51,12 +52,23 @@ class OcisResource
      *        the format of the array is directly taken from the PROPFIND response
      *        returned by Sabre\DAV\Client
      *        for details about accepted metadate see: ResourceMetadata
+     * @param string|null $driveId if null the driveId will be fetched from the server using the space-id
+     * @param array $connectionConfig
+     * @param string $serviceUrl
+     * @param string $accessToken
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      * @phpstan-param array{
      *              'headers'?:array<string, mixed>,
      *              'verify'?:bool,
      *              'webfinger'?:bool,
      *              'guzzle'?:Client,
-     *              'drivesPermissionsApi'?:DrivesPermissionsApi
+     *              'drivesPermissionsApi'?:DrivesPermissionsApi,
+     *              'drivesApi'?:DrivesApi
      *             } $connectionConfig
      * @return void
      * @ignore The developer using the SDK does not need to create OcisResource objects manually,
@@ -64,13 +76,12 @@ class OcisResource
      */
     public function __construct(
         array $metadata,
-        string $driveId,
+        ?string $driveId,
         array $connectionConfig,
         string $serviceUrl,
         string &$accessToken
     ) {
         $this->metadata = $metadata;
-        $this->driveId = $driveId;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
@@ -80,6 +91,35 @@ class OcisResource
             ->setHost($this->serviceUrl . '/graph');
 
         $this->connectionConfig = $connectionConfig;
+        if ($driveId === null) {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+
+            if (array_key_exists('drivesApi', $this->connectionConfig)) {
+                $apiInstance = $this->connectionConfig['drivesApi'];
+            } else {
+                $apiInstance = new DrivesApi(
+                    $guzzle,
+                    $this->graphApiConfig
+                );
+            }
+            try {
+                $drive = $apiInstance->getDrive($this->getSpaceId());
+            } catch (ApiException $e) {
+                throw ExceptionHelper::getHttpErrorException($e);
+            }
+            if ($drive instanceof OdataError) {
+                throw new InvalidResponseException(
+                    "getDrive returned an OdataError - " . $drive->getError()
+                );
+            }
+            $driveId = $drive->getId();
+            if ($driveId === null) {
+                throw new InvalidResponseException('Could not get drive id');
+            }
+        }
+        $this->driveId = $driveId;
     }
 
     /**
@@ -531,6 +571,11 @@ class OcisResource
     {
         $response = $this->getFileResponseInterface($this->getId());
         return $response->getBodyAsStream();
+    }
+
+    public function getDriveId(): string
+    {
+        return $this->driveId;
     }
 
     /**

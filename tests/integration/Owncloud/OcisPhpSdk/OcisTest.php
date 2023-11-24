@@ -320,6 +320,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('file', $resource->getType());
         $this->assertSame(12, $resource->getSize());
         $this->assertSame('some content', $resource->getContent());
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 
     public function testGetResourceByIdEmptyFolder(): void
@@ -335,6 +336,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('folder', $resource->getType());
         $this->assertSame(0, $resource->getSize());
         $this->assertSame('', $resource->getContent()); // getting a folder does not return any content
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 
     public function testGetResourceByIdFolderWithContent(): void
@@ -351,6 +353,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('folder', $resource->getType());
         $this->assertSame(12, $resource->getSize());
         $this->assertSame('', $resource->getContent()); // getting a folder does not return any content
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 
     public function testGetResourceByIdFileInAFolder(): void
@@ -367,6 +370,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('file', $resource->getType());
         $this->assertSame(12, $resource->getSize());
         $this->assertSame('some content', $resource->getContent());
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 
     public function testGetResourceInvalidId(): void
