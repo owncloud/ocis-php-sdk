@@ -13,6 +13,8 @@ class User
     private string $onPremisesSamAccountName;
     /**
      * @param OpenAPIUser $openApiUser
+     * @ignore The developer using the SDK does not need to create User objects manually,
+     *         but should use the Ocis class to query the server for users
      */
     public function __construct(
         OpenAPIUser $openApiUser
