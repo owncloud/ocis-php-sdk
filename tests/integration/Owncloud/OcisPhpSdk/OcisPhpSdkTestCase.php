@@ -2,17 +2,18 @@
 
 namespace integration\Owncloud\OcisPhpSdk;
 
-require_once __DIR__ . '/OcisPhpSdkTestCase.php';
-
 use GuzzleHttp\Client;
+use Owncloud\OcisPhpSdk\Drive; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
+use Owncloud\OcisPhpSdk\DriveOrder;
+use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Ocis;
+use Owncloud\OcisPhpSdk\OrderDirection;
 use PHPUnit\Framework\TestCase;
 
 class OcisPhpSdkTestCase extends TestCase
 {
     private const CLIENT_ID = 'xdXOt13JKxym1B1QcEncf2XDkLAexMBFwiT9j6EfhhHFJhs2KM9jbjTmf8JBXE69';
     private const CLIENT_SECRET = 'UBntmLjC2yYCeHwsyj73Uwo9TAaecAetRwMw0xYcvNL9yRdLSUi0hUAHfvCHFeFh';
-    protected const UUID_REGEX_PATTERN = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\$[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
     protected string $ocisUrl;
     private ?string $tokenUrl = null;
     private ?Client $guzzleClient = null;
@@ -20,6 +21,12 @@ class OcisPhpSdkTestCase extends TestCase
      * @var array <string>
      */
     protected $createdDrives = [];
+    /**
+     * list of files and folders that were created during the tests
+     * currently only for the personal drive
+     * @var array <string>
+     */
+    protected $createdResources = [];
 
     /**
      * @var array <\Owncloud\OcisPhpSdk\Group>
@@ -51,6 +58,18 @@ class OcisPhpSdkTestCase extends TestCase
         }
         foreach($this->createdGroups as $group) {
             $group->delete();
+        }
+
+        foreach ($this->createdResources as $resource) {
+            /**
+             * @var Drive $personalDrive
+             */
+            $personalDrive = $ocis->getMyDrives(
+                DriveOrder::NAME,
+                OrderDirection::ASC,
+                DriveType::PERSONAL
+            )[0];
+            $personalDrive->deleteResource($resource);
         }
     }
 
@@ -86,5 +105,15 @@ class OcisPhpSdkTestCase extends TestCase
         }
         // @phpstan-ignore-next-line
         return $accessTokenResponse['access_token'];
+    }
+
+    protected function getUUIDv4Regex(): string
+    {
+        return '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}';
+    }
+
+    protected function getFileIdRegex(): string
+    {
+        return $this->getUUIDv4Regex() . '\\$' . $this->getUUIDv4Regex() . '!' . $this->getUUIDv4Regex();
     }
 }

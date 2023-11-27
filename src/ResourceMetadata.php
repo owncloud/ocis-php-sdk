@@ -21,6 +21,7 @@ enum ResourceMetadata: string
     case TAGS = "{http://owncloud.org/ns}tags";
     case FAVORITE = "{http://owncloud.org/ns}favorite";
     case CHECKSUMS = "{http://owncloud.org/ns}checksums";
+    case PRIVATELINK = '{http://owncloud.org/ns}privatelink';
 
 
 
@@ -41,6 +42,7 @@ enum ResourceMetadata: string
             self::TAGS => 'tags',
             self::FAVORITE => 'favorite',
             self::CHECKSUMS => 'checksums',
+            self::PRIVATELINK => 'privatelink',
         };
     }
 }

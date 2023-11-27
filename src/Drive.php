@@ -290,7 +290,11 @@ class Drive
         $resources = [];
         $webDavClient = $this->createWebDavClient();
         try {
-            $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), [], 1);
+            $properties = [];
+            foreach (ResourceMetadata::cases() as $property) {
+                $properties[] = $property->value;
+            }
+            $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), $properties, 1);
             foreach ($responses as $response) {
                 $resources[] = new OcisResource(
                     $response,
@@ -300,12 +304,13 @@ class Drive
                     $this->accessToken
                 );
             }
-            unset($resources[0]);
+            unset($resources[0]); // skip first propfind response, because its the parent folder
         } catch (SabreClientHttpException|SabreClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
 
-        return $resources;
+        // make sure there is again an element with index 0
+        return array_values($resources);
     }
 
     /**
