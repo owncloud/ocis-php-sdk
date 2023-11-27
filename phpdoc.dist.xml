@@ -13,7 +13,8 @@
         <api>
             <source dsn=".">
                 <path>src</path>
-                <path>vendor/owncloud/libre-graph-api-php/lib/Model/Quota.php</path>
+                <path>vendor/owncloud/libre-graph-api-php/src/Model/Quota.php</path>
+                <path>vendor/owncloud/libre-graph-api-php/src/Model/SharingLinkType.php</path>
             </source>
             <visibility>public</visibility>
             <include-source>true</include-source>
