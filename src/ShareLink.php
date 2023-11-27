@@ -113,28 +113,13 @@ class ShareLink extends Share
     public function setDisplayName(string $displayName): bool
     {
         $this->sharingLink->setAtLibreGraphDisplayName($displayName);
-        $this->apiPermission->setLink($this->sharingLink);
-
-        try {
-            $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
-                $this->driveId,
-                $this->resourceId,
-                $this->getPermissionId(),
-                $this->apiPermission
-            );
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-        if ($apiPermission instanceof OdataError) {
-            throw new InvalidResponseException(
-                "updatePermission returned an OdataError - " . $apiPermission->getError()
-            );
-        }
-        $this->apiPermission = $apiPermission;
-        return true;
+        return $this->updateLinkOfPermission();
     }
 
     /**
+     * Change the type of the current ShareLink.
+     * For details about the possible types see https://owncloud.dev/libre-graph-api/#/drives.permissions/CreateLink
+     * Types of share links are not to be confused with roles for shares!
      * @throws UnauthorizedException
      * @throws ForbiddenException
      * @throws InvalidResponseException
@@ -145,25 +130,7 @@ class ShareLink extends Share
     public function setType(SharingLinkType $linkType): bool
     {
         $this->sharingLink->setType($linkType);
-        $this->apiPermission->setLink($this->sharingLink);
-
-        try {
-            $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
-                $this->driveId,
-                $this->resourceId,
-                $this->getPermissionId(),
-                $this->apiPermission
-            );
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-        if ($apiPermission instanceof OdataError) {
-            throw new InvalidResponseException(
-                "updatePermission returned an OdataError - " . $apiPermission->getError()
-            );
-        }
-        $this->apiPermission = $apiPermission;
-        return true;
+        return $this->updateLinkOfPermission();
     }
 
     /**
@@ -195,6 +162,38 @@ class ShareLink extends Share
         if ($apiPermission instanceof OdataError) {
             throw new InvalidResponseException(
                 "setPassword returned an OdataError - " . $apiPermission->getError()
+            );
+        }
+        $this->apiPermission = $apiPermission;
+        return true;
+    }
+
+    /**
+     * @return true
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function updateLinkOfPermission(): bool
+    {
+        $this->apiPermission->setLink($this->sharingLink);
+
+        try {
+            $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
+                $this->driveId,
+                $this->resourceId,
+                $this->getPermissionId(),
+                $this->apiPermission
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($apiPermission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "updatePermission returned an OdataError - " . $apiPermission->getError()
             );
         }
         $this->apiPermission = $apiPermission;

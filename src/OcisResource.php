@@ -123,7 +123,7 @@ class OcisResource
     }
 
     /**
-     * gets all possible permissions for the resource
+     * Gets all possible Roles for the resource
      * @return array<SharingRole>
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -165,6 +165,9 @@ class OcisResource
     }
 
     /**
+     * Invite one or multiple people(user/group) to the resource.
+     * Every recipient will result in an own ShareCreated object in the returned array.
+     *
      * @param array<int, User|Group> $recipients
      * @param SharingRole $role
      * @param \DateTime|null $expiration

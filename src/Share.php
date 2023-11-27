@@ -105,7 +105,7 @@ class Share
     }
 
     /**
-     * permanently delete the current share or share link
+     * Permanently delete the current share or share link
      *
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -129,6 +129,8 @@ class Share
     }
 
     /**
+     * Change the Expiration date for the current share or share link
+     *
      * @throws UnauthorizedException
      * @throws ForbiddenException
      * @throws InvalidResponseException

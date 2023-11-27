@@ -22,6 +22,10 @@ class ShareCreated extends Share
     }
 
     /**
+     * Change the Role of the particular Share.
+     * Possible roles are defined by the resource and have to be queried using OcisResource::getRoles()
+     * Roles for shares are not to be confused with the types of share links!
+     * @see OcisResource::getRoles()
      * @throws UnauthorizedException
      * @throws ForbiddenException
      * @throws InvalidResponseException
