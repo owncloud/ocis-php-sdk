@@ -159,6 +159,16 @@ class Group
         $this->members[] = $user;
     }
 
+    public function removeUser($user): void
+    {
+        $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
+        try {
+            $apiInstance->deleteMember($this->getId(), $user->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+    }
+
     /**
      * delete an existing group (if the user has the permission to do so)
      *
