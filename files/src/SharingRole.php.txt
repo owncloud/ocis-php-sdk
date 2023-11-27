@@ -17,6 +17,8 @@ class SharingRole
     private int $weight;
 
     /**
+     * @ignore The developer using the SDK does not need to create SharingRole objects manually,
+     *         but should use OcisResource::getRoles() to query for possible roles for the given resource
      */
     public function __construct(UnifiedRoleDefinition $apiRole)
     {

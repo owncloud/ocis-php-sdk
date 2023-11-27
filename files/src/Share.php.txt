@@ -48,6 +48,9 @@ class Share
      *                       'guzzle'?:\GuzzleHttp\Client,
      *                       'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
      *                     } $connectionConfig
+     * @ignore The developer using the SDK does not need to create share objects manually,
+     *         but should use the OcisResource class to invite people to a resource and
+     *         that will create ShareCreated objects
      */
     public function __construct(
         ApiPermission $apiPermission,

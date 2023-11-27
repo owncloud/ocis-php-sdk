@@ -421,11 +421,6 @@ Search.appendIndex(
             "summary": "Class\u0020representing\u0020a\u0020file\u0020or\u0020folder\u0020inside\u0020a\u0020Drive\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method___construct"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetRoles\u0028\u0029",
             "name": "getRoles",
             "summary": "Gets\u0020all\u0020possible\u0020Roles\u0020for\u0020the\u0020resource",
@@ -531,11 +526,6 @@ Search.appendIndex(
             "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
             "url": "classes/Owncloud-OcisPhpSdk-Share.html"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method___construct"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetPermissionId\u0028\u0029",
             "name": "getPermissionId",
             "summary": "",
@@ -575,11 +565,6 @@ Search.appendIndex(
             "name": "ShareLink",
             "summary": "Class\u0020representing\u0020a\u0020public\u0020link\u0020to\u0020a\u0020resource",
             "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method___construct"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetType\u0028\u0029",
             "name": "getType",
@@ -621,11 +606,6 @@ Search.appendIndex(
             "summary": "class\u0020to\u0020define\u0020a\u0020role\u0020of\u0020a\u0020user\u0020or\u0020group\u0020in\u0020a\u0020share\nevery\u0020role\u0020contains\u0020specific\u0020permissions",
             "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html#method___construct"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003AgetId\u0028\u0029",
             "name": "getId",
             "summary": "",
@@ -651,11 +631,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-User.html"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\User\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-User.html#method___construct"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\User\u003A\u003AgetDisplayName\u0028\u0029",
             "name": "getDisplayName",
             "summary": "Get\u0020the\u0020value\u0020of\u0020displayName",
@@ -676,6 +651,191 @@ Search.appendIndex(
             "summary": "Get\u0020the\u0020value\u0020of\u0020onPremisesSamAccountName",
             "url": "classes/Owncloud-OcisPhpSdk-User.html#method_getOnPremisesSamAccountName"
         },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota",
+            "name": "Quota",
+            "summary": "Quota\u0020Class\u0020Doc\u0020Comment",
+            "url": "classes/OpenAPI-Client-Model-Quota.html"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AopenAPITypes\u0028\u0029",
+            "name": "openAPITypes",
+            "summary": "Array\u0020of\u0020property\u0020to\u0020type\u0020mappings.\u0020Used\u0020for\u0020\u0028de\u0029serialization",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_openAPITypes"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AopenAPIFormats\u0028\u0029",
+            "name": "openAPIFormats",
+            "summary": "Array\u0020of\u0020property\u0020to\u0020format\u0020mappings.\u0020Used\u0020for\u0020\u0028de\u0029serialization",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_openAPIFormats"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AisNullable\u0028\u0029",
+            "name": "isNullable",
+            "summary": "Checks\u0020if\u0020a\u0020property\u0020is\u0020nullable",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_isNullable"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AisNullableSetToNull\u0028\u0029",
+            "name": "isNullableSetToNull",
+            "summary": "Checks\u0020if\u0020a\u0020nullable\u0020property\u0020is\u0020set\u0020to\u0020null.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_isNullableSetToNull"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AattributeMap\u0028\u0029",
+            "name": "attributeMap",
+            "summary": "Array\u0020of\u0020attributes\u0020where\u0020the\u0020key\u0020is\u0020the\u0020local\u0020name,\nand\u0020the\u0020value\u0020is\u0020the\u0020original\u0020name",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_attributeMap"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003Asetters\u0028\u0029",
+            "name": "setters",
+            "summary": "Array\u0020of\u0020attributes\u0020to\u0020setter\u0020functions\u0020\u0028for\u0020deserialization\u0020of\u0020responses\u0029",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_setters"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003Agetters\u0028\u0029",
+            "name": "getters",
+            "summary": "Array\u0020of\u0020attributes\u0020to\u0020getter\u0020functions\u0020\u0028for\u0020serialization\u0020of\u0020requests\u0029",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_getters"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AgetModelName\u0028\u0029",
+            "name": "getModelName",
+            "summary": "The\u0020original\u0020name\u0020of\u0020the\u0020model.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_getModelName"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Constructor",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method___construct"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AlistInvalidProperties\u0028\u0029",
+            "name": "listInvalidProperties",
+            "summary": "Show\u0020all\u0020the\u0020invalid\u0020properties\u0020with\u0020reasons.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_listInvalidProperties"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003Avalid\u0028\u0029",
+            "name": "valid",
+            "summary": "Validate\u0020all\u0020the\u0020properties\u0020in\u0020the\u0020model\nreturn\u0020true\u0020if\u0020all\u0020passed",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_valid"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AgetDeleted\u0028\u0029",
+            "name": "getDeleted",
+            "summary": "Gets\u0020deleted",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_getDeleted"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AsetDeleted\u0028\u0029",
+            "name": "setDeleted",
+            "summary": "Sets\u0020deleted",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_setDeleted"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AgetRemaining\u0028\u0029",
+            "name": "getRemaining",
+            "summary": "Gets\u0020remaining",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_getRemaining"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AsetRemaining\u0028\u0029",
+            "name": "setRemaining",
+            "summary": "Sets\u0020remaining",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_setRemaining"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AgetState\u0028\u0029",
+            "name": "getState",
+            "summary": "Gets\u0020state",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_getState"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AsetState\u0028\u0029",
+            "name": "setState",
+            "summary": "Sets\u0020state",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_setState"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AgetTotal\u0028\u0029",
+            "name": "getTotal",
+            "summary": "Gets\u0020total",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_getTotal"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AsetTotal\u0028\u0029",
+            "name": "setTotal",
+            "summary": "Sets\u0020total",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_setTotal"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AgetUsed\u0028\u0029",
+            "name": "getUsed",
+            "summary": "Gets\u0020used",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_getUsed"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AsetUsed\u0028\u0029",
+            "name": "setUsed",
+            "summary": "Sets\u0020used",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_setUsed"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AoffsetExists\u0028\u0029",
+            "name": "offsetExists",
+            "summary": "Returns\u0020true\u0020if\u0020offset\u0020exists.\u0020False\u0020otherwise.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_offsetExists"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AoffsetGet\u0028\u0029",
+            "name": "offsetGet",
+            "summary": "Gets\u0020offset.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_offsetGet"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AoffsetSet\u0028\u0029",
+            "name": "offsetSet",
+            "summary": "Sets\u0020value\u0020based\u0020on\u0020offset.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_offsetSet"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AoffsetUnset\u0028\u0029",
+            "name": "offsetUnset",
+            "summary": "Unsets\u0020offset.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_offsetUnset"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "Serializes\u0020the\u0020object\u0020to\u0020a\u0020value\u0020that\u0020can\u0020be\u0020serialized\u0020natively\u0020by\u0020json_encode\u0028\u0029.",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "Gets\u0020the\u0020string\u0020presentation\u0020of\u0020the\u0020object",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method___toString"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003AtoHeaderValue\u0028\u0029",
+            "name": "toHeaderValue",
+            "summary": "Gets\u0020a\u0020header\u002Dsafe\u0020presentation\u0020of\u0020the\u0020object",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#method_toHeaderValue"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\Quota\u003A\u003ADISCRIMINATOR",
+            "name": "DISCRIMINATOR",
+            "summary": "",
+            "url": "classes/OpenAPI-Client-Model-Quota.html#constant_DISCRIMINATOR"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\SharingLinkType",
+            "name": "SharingLinkType",
+            "summary": "SharingLinkType\u0020Class\u0020Doc\u0020Comment",
+            "url": "classes/OpenAPI-Client-Model-SharingLinkType.html"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\SharingLinkType\u003A\u003AINTERNAL",
+            "name": "INTERNAL",
+            "summary": "",
+            "url": "classes/OpenAPI-Client-Model-SharingLinkType.html#enumcase_INTERNAL"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\SharingLinkType\u003A\u003AVIEW",
+            "name": "VIEW",
+            "summary": "",
+            "url": "classes/OpenAPI-Client-Model-SharingLinkType.html#enumcase_VIEW"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\SharingLinkType\u003A\u003AUPLOAD",
+            "name": "UPLOAD",
+            "summary": "",
+            "url": "classes/OpenAPI-Client-Model-SharingLinkType.html#enumcase_UPLOAD"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\SharingLinkType\u003A\u003AEDIT",
+            "name": "EDIT",
+            "summary": "",
+            "url": "classes/OpenAPI-Client-Model-SharingLinkType.html#enumcase_EDIT"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\SharingLinkType\u003A\u003ACREATE_ONLY",
+            "name": "CREATE_ONLY",
+            "summary": "",
+            "url": "classes/OpenAPI-Client-Model-SharingLinkType.html#enumcase_CREATE_ONLY"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model\\SharingLinkType\u003A\u003ABLOCKS_DOWNLOAD",
+            "name": "BLOCKS_DOWNLOAD",
+            "summary": "",
+            "url": "classes/OpenAPI-Client-Model-SharingLinkType.html#enumcase_BLOCKS_DOWNLOAD"
+        },                {
             "fqsen": "\\",
             "name": "\\",
             "summary": "",
@@ -695,5 +855,20 @@ Search.appendIndex(
             "name": "Exception",
             "summary": "",
             "url": "namespaces/owncloud-ocisphpsdk-exception.html"
+        },                {
+            "fqsen": "\\OpenAPI\\Client\\Model",
+            "name": "Model",
+            "summary": "",
+            "url": "namespaces/openapi-client-model.html"
+        },                {
+            "fqsen": "\\OpenAPI\\Client",
+            "name": "Client",
+            "summary": "",
+            "url": "namespaces/openapi-client.html"
+        },                {
+            "fqsen": "\\OpenAPI",
+            "name": "OpenAPI",
+            "summary": "",
+            "url": "namespaces/openapi.html"
         }            ]
 );
