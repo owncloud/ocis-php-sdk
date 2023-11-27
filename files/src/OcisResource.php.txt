@@ -48,21 +48,7 @@ class OcisResource
      * @param array<mixed> $metadata of the resource
      *        the format of the array is directly taken from the PROPFIND response
      *        returned by Sabre\DAV\Client
-     *        e.g:
-     *        array (
-     *          '{http://owncloud.org/ns}id' => <string>,
-     *          '{http://owncloud.org/ns}fileid' => <string>,
-     *          '{http://owncloud.org/ns}spaceid' => <string>,
-     *          '{http://owncloud.org/ns}file-parent' => <string>,
-     *          '{http://owncloud.org/ns}name' => <string>,
-     *          '{DAV:}getetag' => <string>,
-     *          '{http://owncloud.org/ns}permissions' => <string>,
-     *          '{DAV:}resourcetype' => <ResourceType>,
-     *          '{http://owncloud.org/ns}size' => <string>,
-     *          '{DAV:}getlastmodified' => <string>,
-     *          '{http://owncloud.org/ns}tags' => <null|string>,
-     *          '{http://owncloud.org/ns}favorite' => <string>,
-     *        )
+     *        for details about accepted metadate see: ResourceMetadata
      * @phpstan-param array{
      *              'headers'?:array<string, mixed>,
      *              'verify'?:bool,
@@ -467,5 +453,23 @@ class OcisResource
             }
         }
         return [];
+    }
+
+    /**
+     * Returns the private link to the resource.
+     * This link can be used by any user with the correct permissions to navigate to the resource in the web UI.
+     * The link is urldecoded.
+     * @return string
+     * @throws InvalidResponseException
+     */
+    public function getPrivatelink(): string
+    {
+        $privateLink = $this->getMetadata(ResourceMetadata::PRIVATELINK);
+        if (!is_string($privateLink)) {
+            throw new InvalidResponseException(
+                'Invalid private link in response from server: ' . print_r($privateLink, true)
+            );
+        }
+        return rawurldecode($privateLink);
     }
 }

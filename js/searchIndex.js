@@ -506,6 +506,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getCheckSums"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetPrivatelink\u0028\u0029",
+            "name": "getPrivatelink",
+            "summary": "Returns\u0020the\u0020private\u0020link\u0020to\u0020the\u0020resource.",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getPrivatelink"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OrderDirection",
             "name": "OrderDirection",
             "summary": "Possible\u0020order\u0020direction\u0020values\u0020for\u0020sorting\u0020responses",
