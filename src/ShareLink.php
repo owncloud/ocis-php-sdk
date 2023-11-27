@@ -32,6 +32,9 @@ class ShareLink extends Share
      *                       'guzzle'?:\GuzzleHttp\Client,
      *                       'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
      *                     } $connectionConfig
+     * @ignore The developer using the SDK does not need to create ShareLink objects manually,
+     *         but should use the OcisResource class to share resources using a link
+     *         and that will create ShareLink objects
      */
     public function __construct(
         ApiPermission $apiPermission,

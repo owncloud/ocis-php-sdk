@@ -41,6 +41,8 @@ class Group
      *                      'webfinger'?:bool,
      *                      'guzzle'?:\GuzzleHttp\Client
      *                      } $connectionConfig
+     * @ignore The developer using the SDK does not need to create Group objects manually,
+     *         but should use the Ocis class to query the server for groups
      */
     private array $connectionConfig; /** @phpstan-ignore-line */
 

@@ -40,6 +40,7 @@ class OcisResource
      *                      'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
      *                    }
      */
+
     private array $connectionConfig;
     private Configuration $graphApiConfig;
     private string $driveId;
@@ -57,6 +58,8 @@ class OcisResource
      *              'drivesPermissionsApi'?:DrivesPermissionsApi
      *             } $connectionConfig
      * @return void
+     * @ignore The developer using the SDK does not need to create OcisResource objects manually,
+     *         but should use the Drive class to query the server for resources
      */
     public function __construct(
         array $metadata,
