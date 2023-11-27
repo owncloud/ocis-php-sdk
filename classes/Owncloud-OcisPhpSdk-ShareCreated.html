@@ -97,7 +97,7 @@
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    ShareLink
+    ShareCreated
 
         <span class="phpdocumentor-element__extends">
         extends <a href="classes/Owncloud-OcisPhpSdk-Share.html"><abbr title="\Owncloud\OcisPhpSdk\Share">Share</abbr></a>
@@ -119,14 +119,14 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareCreated.php"><a href="files/src-sharecreated.html"><abbr title="src/ShareCreated.php">ShareCreated.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">22</span>
+    <span class="phpdocumentor-element-found-in__line">15</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.22" class="phpdocumentor-element-found-in__source" data-line="22" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#source-view.15" class="phpdocumentor-element-found-in__source" data-line="15" data-modal="source-view" data-src="files/src/ShareCreated.php.txt"></a>
     </aside>
 
-            <p class="phpdocumentor-summary">Class representing a public link to a resource</p>
+            <p class="phpdocumentor-summary">Parent class representing different types of share objects</p>
 
 
 
@@ -135,7 +135,7 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -150,12 +150,12 @@
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method___construct">__construct()</a>
+    <a href="classes/Owncloud-OcisPhpSdk-Share.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
@@ -168,40 +168,15 @@
 <dd>Permanently delete the current share or share link</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getDisplayName">getDisplayName()</a>
-    <span>
-                                &nbsp;: string|null    </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiry">getExpiry()</a>
     <span>
                                 &nbsp;: <abbr title="\DateTime">DateTime</abbr>|null    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getPermissionId">getPermissionId()</a>
+    <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_getPermissionId">getPermissionId()</a>
     <span>
                                 &nbsp;: string    </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getType">getType()</a>
-    <span>
-                                &nbsp;: <abbr title="\OpenAPI\Client\Model\SharingLinkType">SharingLinkType</abbr>    </span>
-</dt>
-<dd>phan-suppress-next-line PhanTypeMismatchReturnNullable</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getWebUrl">getWebUrl()</a>
-    <span>
-                                &nbsp;: string    </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setDisplayName">setDisplayName()</a>
-    <span>
-                                &nbsp;: bool    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
@@ -212,23 +187,11 @@
 <dd>Change the Expiration date for the current share or share link</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setPassword">setPassword()</a>
+    <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_setRole">setRole()</a>
     <span>
                                 &nbsp;: bool    </span>
 </dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setType">setType()</a>
-    <span>
-                                &nbsp;: bool    </span>
-</dt>
-<dd>Change the type of the current ShareLink.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_updateLinkOfPermission">updateLinkOfPermission()</a>
-    <span>
-                                &nbsp;: true    </span>
-</dt>
+<dd>Change the Role of the particular Share.</dd>
 
     </dl>
 
@@ -242,7 +205,7 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -253,15 +216,15 @@
 >
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Owncloud-OcisPhpSdk-Share.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Share.php"><a href="files/src-share.html"><abbr title="src/Share.php">Share.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">36</span>
+    <span class="phpdocumentor-element-found-in__line">52</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.36" class="phpdocumentor-element-found-in__source" data-line="36" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#source-view.52" class="phpdocumentor-element-found-in__source" data-line="52" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
     </aside>
 
     
@@ -321,7 +284,7 @@
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method___construct#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Owncloud-OcisPhpSdk-Share.html#method___construct#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
@@ -368,7 +331,7 @@
     :
     <span class="phpdocumentor-element-found-in__line">117</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.117" class="phpdocumentor-element-found-in__source" data-line="117" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#source-view.117" class="phpdocumentor-element-found-in__source" data-line="117" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Permanently delete the current share or share link</p>
@@ -450,42 +413,6 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_getDisplayName">
-        getDisplayName()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getDisplayName" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">100</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.100" class="phpdocumentor-element-found-in__source" data-line="100" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
-    </aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getDisplayName</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string|null</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="method_getExpiry">
         getExpiry()
         <a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiry" class="headerlink"><i class="fas fa-link"></i></a>
@@ -496,7 +423,7 @@
     :
     <span class="phpdocumentor-element-found-in__line">102</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.102" class="phpdocumentor-element-found-in__source" data-line="102" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#source-view.102" class="phpdocumentor-element-found-in__source" data-line="102" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
     </aside>
 
     
@@ -524,15 +451,15 @@
 >
     <h4 class="phpdocumentor-element__name" id="method_getPermissionId">
         getPermissionId()
-        <a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getPermissionId" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_getPermissionId" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Share.php"><a href="files/src-share.html"><abbr title="src/Share.php">Share.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareCreated.php"><a href="files/src-sharecreated.html"><abbr title="src/ShareCreated.php">ShareCreated.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">95</span>
+    <span class="phpdocumentor-element-found-in__line">17</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.95" class="phpdocumentor-element-found-in__source" data-line="95" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#source-view.17" class="phpdocumentor-element-found-in__source" data-line="17" data-modal="source-view" data-src="files/src/ShareCreated.php.txt"></a>
     </aside>
 
     
@@ -558,180 +485,6 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_getType">
-        getType()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getType" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">85</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.85" class="phpdocumentor-element-found-in__source" data-line="85" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
-    </aside>
-
-        <p class="phpdocumentor-summary">phan-suppress-next-line PhanTypeMismatchReturnNullable</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getType</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\OpenAPI\Client\Model\SharingLinkType">SharingLinkType</abbr></span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><abbr title="\OpenAPI\Client\Model\SharingLinkType">SharingLinkType</abbr></span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_getWebUrl">
-        getWebUrl()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getWebUrl" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">93</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.93" class="phpdocumentor-element-found-in__source" data-line="93" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
-    </aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getWebUrl</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_setDisplayName">
-        setDisplayName()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setDisplayName" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">113</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.113" class="phpdocumentor-element-found-in__source" data-line="113" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
-    </aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setDisplayName</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$displayName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$displayName</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setDisplayName#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                                            </dl>
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">bool</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="method_setExpiration">
         setExpiration()
         <a href="classes/Owncloud-OcisPhpSdk-Share.html#method_setExpiration" class="headerlink"><i class="fas fa-link"></i></a>
@@ -742,7 +495,7 @@
     :
     <span class="phpdocumentor-element-found-in__line">141</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.141" class="phpdocumentor-element-found-in__source" data-line="141" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#source-view.141" class="phpdocumentor-element-found-in__source" data-line="141" data-modal="source-view" data-src="files/src/Share.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Change the Expiration date for the current share or share link</p>
@@ -834,139 +587,36 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_setPassword">
-        setPassword()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setPassword" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_setRole">
+        setRole()
+        <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_setRole" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareCreated.php"><a href="files/src-sharecreated.html"><abbr title="src/ShareCreated.php">ShareCreated.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">146</span>
+    <span class="phpdocumentor-element-found-in__line">36</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.146" class="phpdocumentor-element-found-in__source" data-line="146" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#source-view.36" class="phpdocumentor-element-found-in__source" data-line="36" data-modal="source-view" data-src="files/src/ShareCreated.php.txt"></a>
     </aside>
 
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setPassword</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$password</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$password</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>It may require a password policy. Set to empty sting to remove the password.</p>
-</section>
-
-            </dd>
-            </dl>
-
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setPassword#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                                            </dl>
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">bool</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_setType">
-        setType()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setType" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">130</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.130" class="phpdocumentor-element-found-in__source" data-line="130" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
-    </aside>
-
-        <p class="phpdocumentor-summary">Change the type of the current ShareLink.</p>
+        <p class="phpdocumentor-summary">Change the Role of the particular Share.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\OpenAPI\Client\Model\SharingLinkType">SharingLinkType</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$linkType</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+                    <span class="phpdocumentor-signature__name">setRole</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$role</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
-        <section class="phpdocumentor-description"><p>For details about the possible types see https://owncloud.dev/libre-graph-api/#/drives.permissions/CreateLink
-Types of share links are not to be confused with roles for shares!</p>
+        <section class="phpdocumentor-description"><p>Possible roles are defined by the resource and have to be queried using OcisResource::getRoles()
+Roles for shares are not to be confused with the types of share links!</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$linkType</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\OpenAPI\Client\Model\SharingLinkType">SharingLinkType</abbr></span>
+                <span class="phpdocumentor-signature__argument__name">$role</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -976,11 +626,19 @@ Types of share links are not to be confused with roles for shares!</p>
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setType#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_setRole#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getRoles"><abbr title="\Owncloud\OcisPhpSdk\OcisResource::getRoles()">OcisResource::getRoles()</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">throws</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
@@ -1036,104 +694,13 @@ Types of share links are not to be confused with roles for shares!</p>
             </section>
 
 </article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_updateLinkOfPermission">
-        updateLinkOfPermission()
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_updateLinkOfPermission" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareLink.php"><a href="files/src-sharelink.html"><abbr title="src/ShareLink.php">ShareLink.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">180</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#source-view.180" class="phpdocumentor-element-found-in__source" data-line="180" data-modal="source-view" data-src="files/src/ShareLink.php.txt"></a>
-    </aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">updateLinkOfPermission</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">true</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_updateLinkOfPermission#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                            <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">throws</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
-                                                            
-                                             
-                                    </dd>
-                                            </dl>
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">true</span>
-            </section>
-
-</article>
             </section>
 
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/ShareLink.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/src/ShareCreated.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -1232,7 +799,7 @@ Types of share links are not to be confused with roles for shares!</p>
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#toc-methods">Methods</a></li>
+                                                                                <li><a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
             
@@ -1240,18 +807,12 @@ Types of share links are not to be confused with roles for shares!</p>
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method___construct">__construct()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-Share.html#method___construct">__construct()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Share.html#method_delete">delete()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getDisplayName">getDisplayName()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiry">getExpiry()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getPermissionId">getPermissionId()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getType">getType()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getWebUrl">getWebUrl()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setDisplayName">setDisplayName()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_getPermissionId">getPermissionId()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Share.html#method_setExpiration">setExpiration()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setPassword">setPassword()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setType">setType()</a></li>
-                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#method_updateLinkOfPermission">updateLinkOfPermission()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_setRole">setRole()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -1271,7 +832,7 @@ Types of share links are not to be confused with roles for shares!</p>
     </section>
 </section>
         </div>
-        <a href="classes/Owncloud-OcisPhpSdk-ShareLink.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Owncloud-OcisPhpSdk-ShareCreated.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

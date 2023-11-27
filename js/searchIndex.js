@@ -428,12 +428,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetRoles\u0028\u0029",
             "name": "getRoles",
-            "summary": "gets\u0020all\u0020possible\u0020permissions\u0020for\u0020the\u0020resource",
+            "summary": "Gets\u0020all\u0020possible\u0020Roles\u0020for\u0020the\u0020resource",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getRoles"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003Ainvite\u0028\u0029",
             "name": "invite",
-            "summary": "",
+            "summary": "Invite\u0020one\u0020or\u0020multiple\u0020people\u0028user\/group\u0029\u0020to\u0020the\u0020resource.",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AcreateSharingLink\u0028\u0029",
@@ -526,6 +526,51 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OrderDirection.html#enumcase_DESC"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share",
+            "name": "Share",
+            "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method___construct"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetPermissionId\u0028\u0029",
+            "name": "getPermissionId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getPermissionId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetExpiry\u0028\u0029",
+            "name": "getExpiry",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiry"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003Adelete\u0028\u0029",
+            "name": "delete",
+            "summary": "Permanently\u0020delete\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_delete"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AsetExpiration\u0028\u0029",
+            "name": "setExpiration",
+            "summary": "Change\u0020the\u0020Expiration\u0020date\u0020for\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_setExpiration"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated",
+            "name": "ShareCreated",
+            "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated\u003A\u003AgetPermissionId\u0028\u0029",
+            "name": "getPermissionId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_getPermissionId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated\u003A\u003AsetRole\u0028\u0029",
+            "name": "setRole",
+            "summary": "Change\u0020the\u0020Role\u0020of\u0020the\u0020particular\u0020Share.",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_setRole"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink",
             "name": "ShareLink",
             "summary": "Class\u0020representing\u0020a\u0020public\u0020link\u0020to\u0020a\u0020resource",
@@ -535,11 +580,6 @@ Search.appendIndex(
             "name": "__construct",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method___construct"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetPermissionId\u0028\u0029",
-            "name": "getPermissionId",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getPermissionId"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetType\u0028\u0029",
             "name": "getType",
@@ -556,16 +596,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getDisplayName"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetExpiry\u0028\u0029",
-            "name": "getExpiry",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getExpiry"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003Adelete\u0028\u0029",
-            "name": "delete",
-            "summary": "permanently\u0020delete\u0020the\u0020current\u0020sharing\u0020link",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_delete"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetDisplayName\u0028\u0029",
             "name": "setDisplayName",
             "summary": "",
@@ -573,18 +603,18 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetType\u0028\u0029",
             "name": "setType",
-            "summary": "",
+            "summary": "Change\u0020the\u0020type\u0020of\u0020the\u0020current\u0020ShareLink.",
             "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setType"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetExpiration\u0028\u0029",
-            "name": "setExpiration",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setExpiration"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetPassword\u0028\u0029",
             "name": "setPassword",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setPassword"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AupdateLinkOfPermission\u0028\u0029",
+            "name": "updateLinkOfPermission",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_updateLinkOfPermission"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole",
             "name": "SharingRole",
