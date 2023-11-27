@@ -159,6 +159,18 @@ class Group
         $this->members[] = $user;
     }
 
+    /**
+     * remove an existing user from group
+     * @param User $user
+     *
+     * @return void
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
+     * @throws HttpException
+     */
     public function removeUser($user): void
     {
         $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);

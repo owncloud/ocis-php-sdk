@@ -134,7 +134,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return void
      */
-    public function testRemoveUserFromGroup(): void
+    public function testRemoveExistingUserFromGroup(): void
     {
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
@@ -148,6 +148,19 @@ class OcisTest extends OcisPhpSdkTestCase
         }
     }
 
+    /**
+     * @return void
+     */
+    public function testRemoveUserNotAddedToGroup(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $token = $this->getAccessToken('admin', 'admin');
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $users = $ocis->getUsers('admin');
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $this->createdGroups = [$philosophyHatersGroup];
+        $philosophyHatersGroup->removeUser($users[0]);
+    }
     /**
      * @return void
      */
