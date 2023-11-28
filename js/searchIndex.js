@@ -558,7 +558,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AsetExpiration\u0028\u0029",
             "name": "setExpiration",
-            "summary": "Change\u0020the\u0020Expiration\u0020date\u0020for\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link",
+            "summary": "Change\u0020the\u0020Expiration\u0020date\u0020for\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link\nSet\u0020to\u0020null\u0020to\u0020remove\u0020the\u0020expiration\u0020date",
             "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_setExpiration"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated",

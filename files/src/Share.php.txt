@@ -133,6 +133,7 @@ class Share
 
     /**
      * Change the Expiration date for the current share or share link
+     * Set to null to remove the expiration date
      *
      * @throws UnauthorizedException
      * @throws ForbiddenException
@@ -141,7 +142,7 @@ class Share
      * @throws HttpException
      * @throws NotFoundException
      */
-    public function setExpiration(\DateTime $expiration): bool
+    public function setExpiration(?\DateTime $expiration): bool
     {
         $this->apiPermission->setExpirationDateTime($expiration);
 
