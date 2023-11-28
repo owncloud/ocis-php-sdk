@@ -411,6 +411,11 @@ Search.appendIndex(
             "summary": "delete\u0020an\u0020existing\u0020group\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_deleteGroupByID"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetSharedByMe\u0028\u0029",
+            "name": "getSharedByMe",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getSharedByMe"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AFUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "name": "FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "summary": "",
