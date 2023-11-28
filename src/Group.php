@@ -161,8 +161,8 @@ class Group
 
     /**
      * remove an existing user from group
-     * @param User $user
      *
+     * @param User $user
      * @return void
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -179,6 +179,7 @@ class Group
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
+        $this->members[] = $user;
     }
 
     /**
