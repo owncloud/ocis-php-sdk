@@ -160,7 +160,7 @@ class Group
     }
 
     /**
-     * remove an existing user from group
+     * Remove an existing user from the current group
      *
      * @param User $user
      * @return void
@@ -180,7 +180,7 @@ class Group
             throw ExceptionHelper::getHttpErrorException($e);
         }
         foreach($this->members as $memberIndex => $member) {
-            if ($member->getDisplayName() === $user->getDisplayName()) {
+            if ($member->getId() === $user->getId()) {
                 unset($this->members[$memberIndex]);
             }
         }
