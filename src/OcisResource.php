@@ -3,6 +3,7 @@
 namespace Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
+use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
@@ -19,6 +20,7 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Xml\Property\ResourceType;
+use Sabre\HTTP\ResponseInterface;
 
 /**
  * Class representing a file or folder inside a Drive in ownCloud Infinite Scale
@@ -50,12 +52,23 @@ class OcisResource
      *        the format of the array is directly taken from the PROPFIND response
      *        returned by Sabre\DAV\Client
      *        for details about accepted metadate see: ResourceMetadata
+     * @param string|null $driveId if null the driveId will be fetched from the server using the space-id
+     * @param array $connectionConfig
+     * @param string $serviceUrl
+     * @param string $accessToken
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
      * @phpstan-param array{
      *              'headers'?:array<string, mixed>,
      *              'verify'?:bool,
      *              'webfinger'?:bool,
      *              'guzzle'?:Client,
-     *              'drivesPermissionsApi'?:DrivesPermissionsApi
+     *              'drivesPermissionsApi'?:DrivesPermissionsApi,
+     *              'drivesApi'?:DrivesApi
      *             } $connectionConfig
      * @return void
      * @ignore The developer using the SDK does not need to create OcisResource objects manually,
@@ -63,13 +76,12 @@ class OcisResource
      */
     public function __construct(
         array $metadata,
-        string $driveId,
+        ?string $driveId,
         array $connectionConfig,
         string $serviceUrl,
         string &$accessToken
     ) {
         $this->metadata = $metadata;
-        $this->driveId = $driveId;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
@@ -79,6 +91,35 @@ class OcisResource
             ->setHost($this->serviceUrl . '/graph');
 
         $this->connectionConfig = $connectionConfig;
+        if ($driveId === null) {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+
+            if (array_key_exists('drivesApi', $this->connectionConfig)) {
+                $apiInstance = $this->connectionConfig['drivesApi'];
+            } else {
+                $apiInstance = new DrivesApi(
+                    $guzzle,
+                    $this->graphApiConfig
+                );
+            }
+            try {
+                $drive = $apiInstance->getDrive($this->getSpaceId());
+            } catch (ApiException $e) {
+                throw ExceptionHelper::getHttpErrorException($e);
+            }
+            if ($drive instanceof OdataError) {
+                throw new InvalidResponseException(
+                    "getDrive returned an OdataError - " . $drive->getError()
+                );
+            }
+            $driveId = $drive->getId();
+            if ($driveId === null) {
+                throw new InvalidResponseException('Could not get drive id');
+            }
+        }
+        $this->driveId = $driveId;
     }
 
     /**
@@ -497,5 +538,57 @@ class OcisResource
             );
         }
         return rawurldecode($privateLink);
+    }
+
+    /*
+     * returns the content of this resource
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
+    public function getContent(): string
+    {
+        $response = $this->getFileResponseInterface($this->getId());
+        return $response->getBodyAsString();
+    }
+
+    /**
+     * returns a stream to get the content of this resource
+     *
+     * @return resource
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     */
+    public function getContentStream()
+    {
+        $response = $this->getFileResponseInterface($this->getId());
+        return $response->getBodyAsStream();
+    }
+
+    public function getDriveId(): string
+    {
+        return $this->driveId;
+    }
+
+    /**
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     */
+    private function getFileResponseInterface(string $fileId): ResponseInterface
+    {
+        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        return $webDavClient->sendRequest("GET", $fileId);
     }
 }

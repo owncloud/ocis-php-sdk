@@ -24,7 +24,8 @@ use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
-use Sabre\HTTP\ResponseInterface;
+use Sabre\HTTP\ClientException as SabreClientException;
+use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 use stdClass;
 use OpenAPI\Client\Api\GroupsApi;
 use OpenAPI\Client\Model\Group as OpenAPIGrop;
@@ -130,6 +131,17 @@ class Ocis
     }
 
     /**
+     * Helper function to check if the variable is a DrivesApi
+     * we need this because we want to call the check with call_user_func
+     *
+     * @phpstan-ignore-next-line phpstan does not understand that this method was called via call_user_func
+     */
+    private static function isDrivesApi(mixed $api): bool
+    {
+        return $api instanceof DrivesApi;
+    }
+
+    /**
      * @param array<mixed> $connectionConfig
      * @ignore This function is used for internal purposes only and should not be shown in the documentation.
      *         The function is public to make it testable and because its also used from other classes.
@@ -141,7 +153,8 @@ class Ocis
             'verify' => 'is_bool',
             'webfinger' => 'is_bool',
             'guzzle' => 'self::isGuzzleClient',
-            'drivesPermissionsApi' => 'self::isDrivesPermissionsApi'
+            'drivesPermissionsApi' => 'self::isDrivesPermissionsApi',
+            'drivesApi' => 'self::isDrivesApi'
         ];
         foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
@@ -553,7 +566,6 @@ class Ocis
     }
 
     /**
-     * Get the content of the file referenced by the unique id
      *
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -561,40 +573,29 @@ class Ocis
      * @throws UnauthorizedException
      * @throws HttpException
      */
-    public function getFileById(string $fileId): string
+    public function getResourceById(string $fileId): OcisResource
     {
-        $response = $this->getFileResponseInterface($fileId);
-        return $response->getBodyAsString();
-    }
-
-    /**
-     * Get the file referenced by the unique id and return the stream
-     *
-     * @return resource
-     * @throws BadRequestException
-     * @throws ForbiddenException
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     * @throws HttpException
-     */
-    public function getFileStreamById(string $fileId)
-    {
-        $response = $this->getFileResponseInterface($fileId);
-        return $response->getBodyAsStream();
-    }
-
-    /**
-     * @throws BadRequestException
-     * @throws ForbiddenException
-     * @throws NotFoundException
-     * @throws UnauthorizedException
-     * @throws HttpException
-     */
-    private function getFileResponseInterface(string $fileId): ResponseInterface
-    {
-        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
+        $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl() . '/dav/spaces/']);
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
-        return $webDavClient->sendRequest("GET", $fileId);
+        try {
+            $properties = [];
+            foreach (ResourceMetadata::cases() as $property) {
+                $properties[] = $property->value;
+            }
+            $responses = $webDavClient->propFind(rawurlencode($fileId), $properties);
+            $resource = new OcisResource(
+                $responses,
+                null,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken
+            );
+        } catch (SabreClientHttpException|SabreClientException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        // make sure there is again an element with index 0
+        return $resource;
     }
 
     /**

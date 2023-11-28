@@ -4,6 +4,9 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
+use Owncloud\OcisPhpSdk\Drive;
+use Owncloud\OcisPhpSdk\DriveOrder;
+use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\Ocis;
@@ -14,18 +17,22 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
+    private function getOcis(string $username, string $password): Ocis
+    {
+        $token = $this->getAccessToken($username, $password);
+        return new Ocis($this->ocisUrl, $token, ['verify' => false]);
+    }
+
     public function testServiceUrlTrailingSlash(): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl . '///', $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $drives = $ocis->getMyDrives();
         $this->assertTrue((is_array($drives) && count($drives) > 1));
     }
 
     public function testCreateDrive(): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $countDrivesAtStart = count(
             $ocis->getMyDrives()
         );
@@ -41,8 +48,7 @@ class OcisTest extends OcisPhpSdkTestCase
 
     public function testCreateDriveNoPermissions(): void
     {
-        $token = $this->getAccessToken('einstein', 'relativity');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('einstein', 'relativity');
         $this->expectException(ForbiddenException::class);
         $countDrivesAtStart = count($ocis->getMyDrives());
         $ocis->createDrive('first test drive');
@@ -65,8 +71,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public function testCreateDriveInvalidQuota(int $quota): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $this->expectException(\InvalidArgumentException::class);
         $countDrivesAtStart = count($ocis->getMyDrives());
         $ocis->createDrive('drive with quota', $quota);
@@ -91,8 +96,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public function testGetGroups(array $groupName): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup($groupName[0], "philosophy haters group");
         $physicsLoversGroup =  $ocis->createGroup($groupName[1], "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
@@ -133,8 +137,7 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testAddUserToGroupInvalid(): void
     {
         $this->expectException(NotFoundException::class);
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
         $this->createdGroups = [$philosophyHatersGroup];
         $user = new User(
@@ -157,8 +160,7 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testAddUserToGroupUnauthorizedUser(): void
     {
         $this->expectException(UnauthorizedException::class);
-        $token = $this->getAccessToken('marie', 'radioactivity');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('marie', 'radioactivity');
         $physicsLoversGroup =  $ocis->createGroup("physics-lovers", "physics lovers group");
         $this->createdGroups = [$physicsLoversGroup];
         $users = $ocis->getUsers('marie');
@@ -172,8 +174,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public function testGetGroupsExpanded(): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $physicsLoversGroup =  $ocis->createGroup("physics-lovers", "physics lovers group");
         $this->createdGroups = [$physicsLoversGroup];
         $physicsLoversGroup->addUser($ocis->getUsers()[0]);
@@ -201,8 +202,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public function testGetGroupSearch(string $searchText, array $groupDisplayName): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
         $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
@@ -232,8 +232,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public function testGetGroupSort(OrderDirection $orderDirection, string $searchText, array $resultGroups): void
     {
-        $token = $this->getAccessToken("admin", "admin");
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
         $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
@@ -297,5 +296,87 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
         $this->expectException(UnauthorizedException::class);
         $ocis->deleteGroupByID($groupId);
+    }
+
+    private function getPersonalDrive(Ocis $ocis): Drive
+    {
+        return $ocis->getMyDrives(
+            DriveOrder::NAME,
+            OrderDirection::ASC,
+            DriveType::PERSONAL
+        )[0];
+    }
+
+    public function testGetResourceById(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->uploadFile('somefile.txt', 'some content');
+        $this->createdResources[] = '/somefile.txt';
+        $expectedResource = $personalDrive->getResources()[0];
+        $resource = $ocis->getResourceById($expectedResource->getId());
+        $this->assertSame($expectedResource->getId(), $resource->getId());
+        $this->assertSame('somefile.txt', $resource->getName());
+        $this->assertSame('file', $resource->getType());
+        $this->assertSame(12, $resource->getSize());
+        $this->assertSame('some content', $resource->getContent());
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
+    }
+
+    public function testGetResourceByIdEmptyFolder(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('myfolder');
+        $this->createdResources[] = '/myfolder';
+        $expectedResource = $personalDrive->getResources()[0];
+        $resource = $ocis->getResourceById($expectedResource->getId());
+        $this->assertSame($expectedResource->getId(), $resource->getId());
+        $this->assertSame('myfolder', $resource->getName());
+        $this->assertSame('folder', $resource->getType());
+        $this->assertSame(0, $resource->getSize());
+        $this->assertSame('', $resource->getContent()); // getting a folder does not return any content
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
+    }
+
+    public function testGetResourceByIdFolderWithContent(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('myfolder');
+        $this->createdResources[] = '/myfolder';
+        $personalDrive->uploadFile('myfolder/somefile.txt', 'some content');
+        $expectedResource = $personalDrive->getResources()[0];
+        $resource = $ocis->getResourceById($expectedResource->getId());
+        $this->assertSame($expectedResource->getId(), $resource->getId());
+        $this->assertSame('myfolder', $resource->getName());
+        $this->assertSame('folder', $resource->getType());
+        $this->assertSame(12, $resource->getSize());
+        $this->assertSame('', $resource->getContent()); // getting a folder does not return any content
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
+    }
+
+    public function testGetResourceByIdFileInAFolder(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('myfolder');
+        $this->createdResources[] = '/myfolder';
+        $personalDrive->uploadFile('myfolder/somefile.txt', 'some content');
+        $expectedResource = $personalDrive->getResources('/myfolder')[0];
+        $resource = $ocis->getResourceById($expectedResource->getId());
+        $this->assertSame($expectedResource->getId(), $resource->getId());
+        $this->assertSame('somefile.txt', $resource->getName());
+        $this->assertSame('file', $resource->getType());
+        $this->assertSame(12, $resource->getSize());
+        $this->assertSame('some content', $resource->getContent());
+        $this->assertSame($personalDrive->getId(), $resource->getDriveId());
+    }
+
+    public function testGetResourceInvalidId(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $ocis = $this->getOcis('admin', 'admin');
+        $ocis->getResourceById('not-existing-id');
     }
 }
