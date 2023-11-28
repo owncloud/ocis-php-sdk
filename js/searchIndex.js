@@ -381,15 +381,10 @@ Search.appendIndex(
             "summary": "Get\u0020list\u0020of\u0020groups\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getGroups"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetFileById\u0028\u0029",
-            "name": "getFileById",
-            "summary": "Get\u0020the\u0020content\u0020of\u0020the\u0020file\u0020referenced\u0020by\u0020the\u0020unique\u0020id",
-            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getFileById"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetFileStreamById\u0028\u0029",
-            "name": "getFileStreamById",
-            "summary": "Get\u0020the\u0020file\u0020referenced\u0020by\u0020the\u0020unique\u0020id\u0020and\u0020return\u0020the\u0020stream",
-            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getFileStreamById"
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetResourceById\u0028\u0029",
+            "name": "getResourceById",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getResourceById"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetUsers\u0028\u0029",
             "name": "getUsers",
@@ -510,6 +505,21 @@ Search.appendIndex(
             "name": "getPrivatelink",
             "summary": "Returns\u0020the\u0020private\u0020link\u0020to\u0020the\u0020resource.",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getPrivatelink"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetContent\u0028\u0029",
+            "name": "getContent",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getContent"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetContentStream\u0028\u0029",
+            "name": "getContentStream",
+            "summary": "returns\u0020a\u0020stream\u0020to\u0020get\u0020the\u0020content\u0020of\u0020this\u0020resource",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getContentStream"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetDriveId\u0028\u0029",
+            "name": "getDriveId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getDriveId"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OrderDirection",
             "name": "OrderDirection",
