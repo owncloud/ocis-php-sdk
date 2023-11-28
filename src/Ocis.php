@@ -9,6 +9,7 @@ use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\Api\GroupApi;
+use OpenAPI\Client\Api\MeDriveApi;
 use OpenAPI\Client\Api\MeDrivesApi;
 use OpenAPI\Client\Api\UsersApi;
 use OpenAPI\Client\ApiException;
@@ -819,4 +820,65 @@ class Ocis
         }
     }
 
+    /**
+     * @return array<ShareCreated>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function getSharedByMe(): array
+    {
+        $apiInstance = new MeDriveApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $shareList = $apiInstance->listSharedByMe();
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($shareList instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listSharedByMe returned an OdataError - " . $shareList->getError()
+            );
+        }
+        if ($shareList->getValue() === null) {
+            throw new InvalidResponseException(
+                "listSharedByMe returned 'null' where an array of data were expected"
+            );
+        }
+        $shares = [];
+        foreach ($shareList->getValue() as $share) {
+            $resourceId = empty($share->getId()) ?
+                throw new InvalidResponseException(
+                    "Invalid resource id '" . print_r($share->getId(), true) . "'"
+                )
+                : (string)$share->getId();
+
+            $driveId = empty($share->getParentReference()) || empty($share->getParentReference()->getDriveId()) ?
+                throw new InvalidResponseException(
+                    "Invalid driveId '" . print_r($share->getParentReference(), true) . "'"
+                )
+                : (string)$share->getParentReference()->getDriveId();
+
+            if (!is_iterable($share->getPermissions())) {
+                throw new InvalidResponseException("Invalid permissions provided");
+            }
+            foreach ($share->getPermissions() as $apiSharePermission) {
+
+                $shares[] = new ShareCreated(
+                    $apiSharePermission,
+                    $resourceId,
+                    $driveId,
+                    $this->connectionConfig,
+                    $this->serviceUrl,
+                    $this->accessToken
+                );
+            }
+        }
+        return $shares;
+    }
 }
