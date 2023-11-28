@@ -179,7 +179,12 @@ class Group
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
-        $this->members[] = $user;
+        foreach($this->members as $memberIndex => $member) {
+            if ($member->getDisplayName() === $user->getDisplayName()) {
+                unset($this->members[$memberIndex]);
+            }
+        }
+        $this->members =  array_values($this->members);
     }
 
     /**
