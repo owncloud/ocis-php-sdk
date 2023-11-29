@@ -48,19 +48,15 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         }
 
         $this->einstein = $this->ocis->getUsers('einstein')[0];
-
-        // in future this will have to come also from the system, but the permissions API is not implemented yet
-        // so we have to create a SharingRole manually
-        $this->viewerRole = new SharingRole(
-            new UnifiedRoleDefinition(
-                [
-                    'id' => 'viewer',
-                    'display_name' => 'viewer',
-                    'description' => 'viewer',
-                    'at_libre_graph_weight' => 1,
-                ]
-            )
-        );
+        /**
+         * @var SharingRole $role
+         */
+        foreach ($this->resourceToShare->getRoles() as $role) {
+            if ($role->getDisplayName() === 'Viewer') {
+                $this->viewerRole = $role;
+                break;
+            }
+        }
     }
 
     public function testInviteUser(): void
