@@ -822,6 +822,41 @@ class Ocis
     }
 
     /**
+     * @return array<ShareRecieved>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function getSharedWithMe(): array
+    {
+        $apiInstance = new MeDriveApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $shareList = $apiInstance->listSharedWithMe();
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($shareList instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listSharedWithMe returned an OdataError - " . $shareList->getError()
+            );
+        }
+        $apiShares = $shareList->getValue() ?? [];
+        $shares = [];
+        foreach ($apiShares as $share) {
+            $shares[] = new ShareRecieved(
+                $share
+            );
+        }
+        return $shares;
+    }
+
+    /**
      * @return array<ShareCreated>
      * @throws BadRequestException
      * @throws ForbiddenException
