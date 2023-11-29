@@ -4,7 +4,6 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
-use OpenAPI\Client\Model\UnifiedRoleDefinition;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
