@@ -103,7 +103,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
             'philosophy-haters',
-            "philosophy haters group"
+            'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
@@ -118,7 +118,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
             'philosophy-haters',
-            "philosophy haters group"
+            'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
