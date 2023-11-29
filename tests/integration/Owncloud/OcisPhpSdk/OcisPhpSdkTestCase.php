@@ -117,10 +117,11 @@ class OcisPhpSdkTestCase extends TestCase
      * init a user
      * ocis is only aware of users after the first login, because we are using keycloak
      */
-    protected function initUser(string $name, string $password): void
+    protected function initUser(string $name, string $password): Ocis
     {
         $token = $this->getAccessToken($name, $password);
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $ocis->getMyDrives();
+        return $ocis;
     }
 }

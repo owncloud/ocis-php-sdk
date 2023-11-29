@@ -20,16 +20,18 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     private User $einstein;
     private SharingRole $viewerRole;
     private OcisResource $resourceToShare;
+    private Ocis $ocis;
+    private Ocis $einsteinOcis;
     public function setUp(): void
     {
         parent::setUp();
-        $this->initUser('einstein', 'relativity');
+        $this->einsteinOcis = $this->initUser('einstein', 'relativity');
         $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $this->ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         /**
          * @var Drive $personalDrive
          */
-        $personalDrive = $ocis->getMyDrives(
+        $personalDrive = $this->ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
             DriveType::PERSONAL
@@ -37,7 +39,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
 
         $personalDrive->uploadFile('to-share-test.txt', 'some content');
-        $this->createsResources[$personalDrive->getId()] = 'to-share-test.txt';
+        $this->createdResources[$personalDrive->getId()][] = 'to-share-test.txt';
         $resources = $personalDrive->getResources();
         /**
          * @var OcisResource $resource
@@ -49,7 +51,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
             }
         }
 
-        $this->einstein = $ocis->getUsers('einstein')[0];
+        $this->einstein = $this->ocis->getUsers('einstein')[0];
 
         // in future this will have to come also from the system, but the permissions API is not implemented yet
         // so we have to create a SharingRole manually
@@ -65,11 +67,73 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         );
     }
 
-    public function testInvite()
+    public function testInviteUser()
     {
-        $result = $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
-        $this->assertTrue($result);
+        $shares = $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
+        $this->assertCount(1, $shares);
+        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $this->assertCount(1, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
     }
+
+    public function testInviteAnotherUser()
+    {
+        $marieOcis = $this->initUser('marie', 'radioactivity');
+        $marie = $this->ocis->getUsers('marie')[0];
+        $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
+        $shares = $this->resourceToShare->invite([$marie], $this->viewerRole);
+        $this->assertCount(1, $shares);
+        $receivedShares = $marieOcis->getSharedWithMe();
+        $this->assertCount(1, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
+    }
+
+    public function testInviteMultipleUsersAtOnce()
+    {
+        $marieOcis = $this->initUser('marie', 'radioactivity');
+        $marie = $this->ocis->getUsers('marie')[0];
+        $shares = $this->resourceToShare->invite([$this->einstein,$marie], $this->viewerRole);
+        $this->assertCount(2, $shares);
+        $receivedShares = $marieOcis->getSharedWithMe();
+        $this->assertCount(1, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
+
+        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $this->assertCount(1, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
+    }
+
+    public function testInviteGroup()
+    {
+        $philosophyHatersGroup =  $this->ocis->createGroup(
+            'philosophy-haters',
+            "philosophy haters group"
+        );
+        $this->createdGroups = [$philosophyHatersGroup];
+        $philosophyHatersGroup->addUser($this->einstein);
+        $shares = $this->resourceToShare->invite([$philosophyHatersGroup], $this->viewerRole);
+        $this->assertCount(1, $shares);
+        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $this->assertCount(1, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
+    }
+
+    public function testInviteGroupAndUserOfTheGroup()
+    {
+        $philosophyHatersGroup =  $this->ocis->createGroup(
+            'philosophy-haters',
+            "philosophy haters group"
+        );
+        $this->createdGroups = [$philosophyHatersGroup];
+        $philosophyHatersGroup->addUser($this->einstein);
+        $shares = $this->resourceToShare->invite([$philosophyHatersGroup, $this->einstein], $this->viewerRole);
+        $this->assertCount(2, $shares);
+        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $this->assertCount(2, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[1]->getName());
+    }
+
     public function testInviteSameUserAgain()
     {
         $this->expectException(ForbiddenException::class);
