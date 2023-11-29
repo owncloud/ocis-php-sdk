@@ -133,6 +133,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     public function testInviteSameUserAgain(): void
     {
         $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7842');
+        // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(ForbiddenException::class);
         $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
         $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
