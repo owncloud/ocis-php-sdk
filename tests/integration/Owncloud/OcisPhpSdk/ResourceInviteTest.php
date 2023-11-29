@@ -5,7 +5,6 @@ namespace integration\Owncloud\OcisPhpSdk;
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use OpenAPI\Client\Model\UnifiedRoleDefinition;
-use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
@@ -28,9 +27,6 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->einsteinOcis = $this->initUser('einstein', 'relativity');
         $token = $this->getAccessToken('admin', 'admin');
         $this->ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        /**
-         * @var Drive $personalDrive
-         */
         $personalDrive = $this->ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
@@ -67,7 +63,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         );
     }
 
-    public function testInviteUser()
+    public function testInviteUser(): void
     {
         $shares = $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
         $this->assertCount(1, $shares);
@@ -76,7 +72,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
     }
 
-    public function testInviteAnotherUser()
+    public function testInviteAnotherUser(): void
     {
         $marieOcis = $this->initUser('marie', 'radioactivity');
         $marie = $this->ocis->getUsers('marie')[0];
@@ -88,7 +84,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
     }
 
-    public function testInviteMultipleUsersAtOnce()
+    public function testInviteMultipleUsersAtOnce(): void
     {
         $marieOcis = $this->initUser('marie', 'radioactivity');
         $marie = $this->ocis->getUsers('marie')[0];
@@ -103,7 +99,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
     }
 
-    public function testInviteGroup()
+    public function testInviteGroup(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
             'philosophy-haters',
@@ -118,7 +114,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
     }
 
-    public function testInviteGroupAndUserOfTheGroup()
+    public function testInviteGroupAndUserOfTheGroup(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
             'philosophy-haters',
@@ -134,7 +130,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertSame($this->resourceToShare->getName(), $receivedShares[1]->getName());
     }
 
-    public function testInviteSameUserAgain()
+    public function testInviteSameUserAgain(): void
     {
         $this->expectException(ForbiddenException::class);
         $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
