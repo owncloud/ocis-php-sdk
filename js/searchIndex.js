@@ -191,6 +191,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-DriveType.html#enumcase_VIRTUAL"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveType\u003A\u003AMOUNTPOINT",
+            "name": "MOUNTPOINT",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveType.html#enumcase_MOUNTPOINT"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\BadRequestException",
             "name": "BadRequestException",
             "summary": "Exception\u0020for\u0020HTTP\u0020400\u0020errors",
