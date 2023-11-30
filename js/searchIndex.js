@@ -271,6 +271,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_addUser"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AremoveUser\u0028\u0029",
+            "name": "removeUser",
+            "summary": "Remove\u0020an\u0020existing\u0020user\u0020from\u0020the\u0020current\u0020group",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_removeUser"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003Adelete\u0028\u0029",
             "name": "delete",
             "summary": "delete\u0020an\u0020existing\u0020group\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
