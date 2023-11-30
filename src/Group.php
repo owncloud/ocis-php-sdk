@@ -160,6 +160,34 @@ class Group
     }
 
     /**
+     * Remove an existing user from the current group
+     *
+     * @param User $user
+     * @return void
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws \InvalidArgumentException
+     * @throws HttpException
+     */
+    public function removeUser($user): void
+    {
+        $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
+        try {
+            $apiInstance->deleteMember($this->getId(), $user->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        foreach($this->members as $memberIndex => $member) {
+            if ($member->getId() === $user->getId()) {
+                unset($this->members[$memberIndex]);
+            }
+        }
+        $this->members =  array_values($this->members);
+    }
+
+    /**
      * delete an existing group (if the user has the permission to do so)
      *
      * @return void

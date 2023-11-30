@@ -134,6 +134,47 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return void
      */
+    public function testRemoveExistingUserFromGroup(): void
+    {
+        $token = $this->getAccessToken('admin', 'admin');
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $einsteinUserToken = $this->getAccessToken('einstein', 'relativity');
+        $einsteinUserOcis = new Ocis($this->ocisUrl, $einsteinUserToken, ["verify" => false]);
+        $users = $ocis->getUsers();
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $this->createdGroups = [$philosophyHatersGroup];
+        foreach($users as $user) {
+            $philosophyHatersGroup->addUser($user);
+        }
+        $initialMemberCount = count($philosophyHatersGroup->getMembers());
+        foreach ($users as $user) {
+            if($user->getDisplayName() === "Albert Einstein") {
+                $philosophyHatersGroup->removeUser($user);
+            }
+        }
+        $adminUserName = $users[0]->getDisplayName();
+        $createdGroup = $ocis->getGroups(expandMembers: true);
+        $this->assertEquals($initialMemberCount - 1, count($createdGroup[0]->getMembers()));
+        $this->assertEquals($adminUserName, $createdGroup[0]->getMembers()[0]->getDisplayName());
+    }
+
+    /**
+     * @return void
+     */
+    public function testRemoveUserNotAddedToGroup(): void
+    {
+        $this->expectException(NotFoundException::class);
+        $token = $this->getAccessToken('admin', 'admin');
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $users = $ocis->getUsers('admin');
+        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        $this->createdGroups = [$philosophyHatersGroup];
+        $philosophyHatersGroup->removeUser($users[0]);
+    }
+
+    /**
+     * @return void
+     */
     public function testAddUserToGroupInvalid(): void
     {
         $this->expectException(NotFoundException::class);

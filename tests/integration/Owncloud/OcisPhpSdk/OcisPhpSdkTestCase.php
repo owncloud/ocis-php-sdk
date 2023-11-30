@@ -60,6 +60,7 @@ class OcisPhpSdkTestCase extends TestCase
         foreach($this->createdGroups as $group) {
             $group->delete();
         }
+        $this->createdGroups = [];
 
         foreach ($this->createdResources as $resource) {
             /**
