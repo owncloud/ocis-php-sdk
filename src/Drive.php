@@ -9,6 +9,7 @@ use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveItem;
+use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
@@ -170,6 +171,45 @@ class Drive
     public function getRawData(): mixed
     {
         return $this->apiDrive->jsonSerialize();
+    }
+
+    public function isDisabled(): bool
+    {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+
+        $apiInstance = new DrivesApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+        // need to re-read the drive data, because it might have changed by now
+        try {
+            $apiDrive = $apiInstance->getDrive($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiDrive instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getDrive returned an OdataError - " . $apiDrive->getError()
+            );
+        }
+        $this->apiDrive = $apiDrive;
+        $root = $this->apiDrive->getRoot();
+        if (!($root instanceof DriveItem)) {
+            throw new InvalidResponseException(
+                'Could not get root of drive "' . print_r($root, true) . '"'
+            );
+        }
+        $deleted = $root->getDeleted();
+        if ($deleted === null) {
+            return false;
+        }
+        if ($deleted->getState() === 'trashed') {
+            return true;
+        }
+        return false;
     }
 
     /**

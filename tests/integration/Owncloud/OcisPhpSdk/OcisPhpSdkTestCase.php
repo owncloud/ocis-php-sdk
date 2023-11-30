@@ -112,6 +112,12 @@ class OcisPhpSdkTestCase extends TestCase
         return $accessTokenResponse['access_token'];
     }
 
+    protected function getOcis(string $username, string $password): Ocis
+    {
+        $token = $this->getAccessToken($username, $password);
+        return new Ocis($this->ocisUrl, $token, ['verify' => false]);
+    }
+
     protected function getUUIDv4Regex(): string
     {
         return '[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}';

@@ -17,12 +17,6 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
-    private function getOcis(string $username, string $password): Ocis
-    {
-        $token = $this->getAccessToken($username, $password);
-        return new Ocis($this->ocisUrl, $token, ['verify' => false]);
-    }
-
     public function testServiceUrlTrailingSlash(): void
     {
         $ocis = $this->getOcis('admin', 'admin');
