@@ -28,7 +28,7 @@ use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 use stdClass;
 use OpenAPI\Client\Api\GroupsApi;
-use OpenAPI\Client\Model\Group as OpenAPIGrop;
+use OpenAPI\Client\Model\Group as OpenAPIGroup;
 
 /**
  * Basic class to establish the connection to an ownCloud Infinite Scale instance
@@ -780,7 +780,7 @@ class Ocis
     public function createGroup(string $groupName, string $description = ""): Group
     {
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
-        $group = new OpenAPIGrop(["display_name" => $groupName, "description" => $description]);
+        $group = new OpenAPIGroup(["display_name" => $groupName, "description" => $description]);
         try {
             $newlyCreatedGroup = $apiInstance->createGroup($group);
         } catch (ApiException $e) {
@@ -822,7 +822,7 @@ class Ocis
     }
 
     /**
-     * @return array<ShareRecieved>
+     * @return array<ShareReceived>
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -849,7 +849,7 @@ class Ocis
         $apiShares = $shareList->getValue() ?? [];
         $shares = [];
         foreach ($apiShares as $share) {
-            $shares[] = new ShareRecieved(
+            $shares[] = new ShareReceived(
                 $share
             );
         }

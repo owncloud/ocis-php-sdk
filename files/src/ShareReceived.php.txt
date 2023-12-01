@@ -13,7 +13,7 @@ use Owncloud\OcisPhpSdk\Exception\NotImplementedException;
  * Ensures that the return type is correct, but Phan does not recognize it.
  * @phan-file-suppress PhanTypeMismatchReturnNullable
  */
-class ShareRecieved
+class ShareReceived
 {
     private DriveItem $shareReceived;
 
