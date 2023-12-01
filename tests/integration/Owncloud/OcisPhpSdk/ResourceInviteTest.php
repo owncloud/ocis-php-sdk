@@ -17,6 +17,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 {
     private User $einstein;
     private SharingRole $viewerRole;
+    private SharingRole $managerRole;
     private OcisResource $resourceToShare;
     private Ocis $ocis;
     private Ocis $einsteinOcis;
@@ -53,7 +54,9 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         foreach ($this->resourceToShare->getRoles() as $role) {
             if ($role->getDisplayName() === 'Viewer') {
                 $this->viewerRole = $role;
-                break;
+            }
+            if ($role->getDisplayName() === 'Manager') {
+                $this->managerRole = $role;
             }
         }
     }
@@ -134,4 +137,12 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
     }
 
+    public function testInviteSameUserAgainWithDifferentRole(): void
+    {
+        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7842');
+        // @phpstan-ignore-next-line because the test is skipped
+        $this->expectException(ForbiddenException::class);
+        $this->resourceToShare->invite([$this->einstein], $this->viewerRole);
+        $this->resourceToShare->invite([$this->einstein], $this->managerRole);
+    }
 }
