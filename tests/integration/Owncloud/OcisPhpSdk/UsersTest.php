@@ -9,17 +9,6 @@ use Owncloud\OcisPhpSdk\Ocis;
 
 class UsersTest extends OcisPhpSdkTestCase
 {
-    /**
-     * init a user
-     * ocis is only aware of users after the first login, because we are using keycloak
-     */
-    private function initUser(string $name, string $password): void
-    {
-        $token = $this->getAccessToken($name, $password);
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $ocis->getMyDrives();
-    }
-
     public function testGetAllUsers(): void
     {
         $this->initUser('einstein', 'relativity');

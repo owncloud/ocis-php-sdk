@@ -29,9 +29,9 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->personalDrive->uploadFile('secondfile.txt', 'some other content');
         $this->personalDrive->createFolder('subfolder');
 
-        $this->createdResources[] = '/somefile.txt';
-        $this->createdResources[] = '/secondfile.txt';
-        $this->createdResources[] = '/subfolder';
+        $this->createdResources[$this->personalDrive->getId()][] = '/somefile.txt';
+        $this->createdResources[$this->personalDrive->getId()][] = '/secondfile.txt';
+        $this->createdResources[$this->personalDrive->getId()][] = '/subfolder';
     }
 
     public function testGetResources(): void
@@ -128,7 +128,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $this->expectException(NotFoundException::class);
         $resources = $this->personalDrive->getResources();
-        foreach ($this->createdResources as $resource) {
+        foreach ($this->createdResources[$this->personalDrive->getId()] as $resource) {
             $this->personalDrive->deleteResource($resource);
         }
         $resources[0]->getContent();
