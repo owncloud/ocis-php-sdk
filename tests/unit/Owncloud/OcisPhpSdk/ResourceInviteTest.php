@@ -40,8 +40,8 @@ class ResourceInviteTest extends TestCase
                 'display_name' => 'smart-people',
             ]
         );
-        $accessTocken = "acstok";
-        $smartPeopleGroup = new Group($openAPIGroup, "url", [], $accessTocken);
+        $accessToken = "acstok";
+        $smartPeopleGroup = new Group($openAPIGroup, "url", [], $accessToken);
 
         return [
             // invite for a single recipient

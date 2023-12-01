@@ -51,7 +51,7 @@ class OcisResource
      * @param array<mixed> $metadata of the resource
      *        the format of the array is directly taken from the PROPFIND response
      *        returned by Sabre\DAV\Client
-     *        for details about accepted metadate see: ResourceMetadata
+     *        for details about accepted metadata see: ResourceMetadata
      * @param string|null $driveId if null the driveId will be fetched from the server using the space-id
      * @param array $connectionConfig
      * @param string $serviceUrl
