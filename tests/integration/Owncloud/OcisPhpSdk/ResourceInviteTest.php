@@ -128,6 +128,34 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertSame($this->resourceToShare->getName(), $receivedShares[1]->getName());
     }
 
+    public function testInviteMultipleGroups(): void
+    {
+        $marieOcis = $this->initUser('marie', 'radioactivity');
+        $marie = $this->ocis->getUsers('marie')[0];
+        $philosophyHatersGroup =  $this->ocis->createGroup(
+            'philosophy-haters',
+            'philosophy haters group'
+        );
+        $physicsLoversGroup =  $this->ocis->createGroup(
+            'physics-lovers',
+            'physics lovers group'
+        );
+        $this->createdGroups = [$philosophyHatersGroup, $physicsLoversGroup];
+        $philosophyHatersGroup->addUser($this->einstein);
+        $physicsLoversGroup->addUser($this->einstein);
+        $physicsLoversGroup->addUser($marie);
+        $shares = $this->resourceToShare->invite([$physicsLoversGroup, $philosophyHatersGroup], $this->viewerRole);
+        $this->assertCount(2, $shares);
+        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $this->assertCount(2, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[1]->getName());
+
+        $receivedShares = $marieOcis->getSharedWithMe();
+        $this->assertCount(1, $receivedShares);
+        $this->assertSame($this->resourceToShare->getName(), $receivedShares[0]->getName());
+    }
+
     public function testInviteSameUserAgain(): void
     {
         $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7842');
