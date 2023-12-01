@@ -44,7 +44,7 @@ config = {
     "codestyle": True,
     "phpstan": True,
     "phan": True,
-    "phpunit": True,
+    "php-unit": True,
 }
 
 trigger = {
@@ -59,9 +59,9 @@ def main(ctx):
     codeStylePipeline = tests(ctx, "codestyle", "make test-php-style", [DEFAULT_PHP_VERSION], False)
     phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan", [DEFAULT_PHP_VERSION], False)
     phanPipeline = tests(ctx, "phan", "make test-php-phan", [DEFAULT_PHP_VERSION], False)
-    testsPipelinesWithCoverage = tests(ctx, "phpunit", "make test-php-unit", [DEFAULT_PHP_VERSION], True)
+    testsPipelinesWithCoverage = tests(ctx, "php-unit", "make test-php-unit", [DEFAULT_PHP_VERSION], True)
     testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
-    testsPipelinesWithoutCoverage = tests(ctx, "phpunit", "make test-php-unit", [8.2], False)
+    testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2], False)
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2], False)
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
@@ -83,10 +83,10 @@ def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
     steps = keycloakService() + restoreOcisCache() + ocisService() + cacheRestore()
     for php in phpversions:
-        name = "php-integration-test-%s" % php
+        name = "php-integration-%s" % php
         steps.append(
             {
-                "name": "php-integration-test",
+                "name": "php-integration",
                 "image": OC_CI_PHP % php,
                 "environment": {
                     "OCIS_URL": "https://ocis:9200",
