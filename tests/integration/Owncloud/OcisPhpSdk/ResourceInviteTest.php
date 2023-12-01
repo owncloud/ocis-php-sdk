@@ -17,7 +17,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 {
     private User $einstein;
     private SharingRole $viewerRole;
-    private SharingRole $managerRole;
+    private SharingRole $managerRole; // @phpstan-ignore-line the property is used, but in a skipped test
     private OcisResource $resourceToShare;
     private Ocis $ocis;
     private Ocis $einsteinOcis;
