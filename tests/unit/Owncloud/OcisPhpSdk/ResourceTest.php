@@ -40,7 +40,7 @@ class ResourceTest extends TestCase
      * @param array<mixed> $metadata
      * @return OcisResource
      */
-    private function createOcisResouce(array $metadata): OcisResource
+    private function createOcisResource(array $metadata): OcisResource
     {
         $accessToken = 'aaa';
         return new OcisResource(
@@ -59,7 +59,7 @@ class ResourceTest extends TestCase
     {
         $metadata = [];
         $metadata['{DAV:}resourcetype'] = new ResourceType($resourceType);
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $result = $resource->getType();
         $this->assertSame($expectedResult, $result);
     }
@@ -89,7 +89,7 @@ class ResourceTest extends TestCase
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Received invalid data for the key \"resourcetype\" in the response array");
         $metadata['{DAV:}resourcetype'] = new ResourceType($resourceType);
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $result = $resource->getType();
     }
 
@@ -130,7 +130,7 @@ class ResourceTest extends TestCase
         $metadata = [];
         $metadata['{DAV:}resourcetype'] = new ResourceType($data);
         $metadata[$sizeKey] = $actualSize;
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $result = $resource->getSize();
         $this->assertSame($expectedSize, $result);
     }
@@ -156,7 +156,7 @@ class ResourceTest extends TestCase
         $this->expectExceptionMessage("Received an invalid value for size in the response");
         $metadata['{DAV:}resourcetype'] = new ResourceType($data);
         $metadata[$sizeKey] = $actualSize;
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $result = $resource->getSize();
     }
 
@@ -185,7 +185,7 @@ class ResourceTest extends TestCase
         $metadata = [];
         $metadata['{DAV:}resourcetype'] = new ResourceType($fileType);
         $metadata['{DAV:}getcontenttype'] = $expectedResult;
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $result = $resource->getContentType();
         $this->assertSame($expectedResult, $result);
     }
@@ -199,7 +199,7 @@ class ResourceTest extends TestCase
         $tags = [["mytag"], ["asd", "asd"], [''], [null]];
         foreach ($tags as $tag) {
             $metadata['{http://owncloud.org/ns}tags'] = implode(',', $tag);
-            $resource = $this->createOcisResouce($metadata);
+            $resource = $this->createOcisResource($metadata);
             $result = $resource->getTags();
             if ($tag === [null] || $tag === ['']) {
                 $tag = [];
@@ -227,7 +227,7 @@ class ResourceTest extends TestCase
     {
         $metadata = [];
         $metadata['{http://owncloud.org/ns}favorite'] = $value;
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $result = $resource->isFavorited();
         $this->assertIsBool($result);
         $this->assertSame($result, (bool)$value);
@@ -253,7 +253,7 @@ class ResourceTest extends TestCase
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Value of property \"favorite\" invalid in the server response");
         $metadata['{http://owncloud.org/ns}favorite'] = $value;
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $resource->isFavorited();
     }
 
@@ -282,7 +282,7 @@ class ResourceTest extends TestCase
         $metadata['{DAV:}resourcetype'] = new ResourceType($fileType);
         $metadata['{DAV:}getcontentlength'] = 1;
         $metadata['{http://owncloud.org/ns}checksums'] = $value;
-        $resource = $this->createOcisResouce($metadata);
+        $resource = $this->createOcisResource($metadata);
         $result = $resource->getCheckSums();
         $this->assertEquals($value, $result);
     }
@@ -293,14 +293,14 @@ class ResourceTest extends TestCase
     public function testGettersCorrectResponse(): void
     {
         $metadata = [];
-        foreach ($this->properties as ['property' => $property, "function" => $properytFunc]) {
+        foreach ($this->properties as ['property' => $property, "function" => $propertyFunc]) {
             if (in_array($property, ['etag', 'lastmodified'])) {
                 $metadata['{DAV:}get' . $property] = $property;
             } else {
                 $metadata['{http://owncloud.org/ns}' . $property] = $property;
             }
-            $resource = $this->createOcisResouce($metadata);
-            $result = $resource->$properytFunc();
+            $resource = $this->createOcisResource($metadata);
+            $result = $resource->$propertyFunc();
             $this->assertSame($property, $result);
         }
     }
@@ -311,12 +311,12 @@ class ResourceTest extends TestCase
     public function testGettersEmptyResponseKey(): void
     {
         $metadata = [];
-        foreach ($this->properties as ['property' => $property, "function" => $properytFunc]) {
+        foreach ($this->properties as ['property' => $property, "function" => $propertyFunc]) {
             $metadata[''] = $property;
-            $resource = $this->createOcisResouce($metadata);
+            $resource = $this->createOcisResource($metadata);
             $result = null;
             try {
-                $result = $resource->$properytFunc();
+                $result = $resource->$propertyFunc();
             } catch (InvalidResponseException $e) {
                 $this->assertSame('Could not find property "' . $property . '" in response', $e->getMessage());
             }
@@ -330,16 +330,16 @@ class ResourceTest extends TestCase
     public function testGettersValuesAreNull(): void
     {
         $metadata = [];
-        foreach ($this->properties as ['property' => $property, "function" => $properytFunc]) {
+        foreach ($this->properties as ['property' => $property, "function" => $propertyFunc]) {
             if (in_array($property, ["etag", "lastmodified"])) {
                 $metadata['{DAV:}get' . $property] = null;
             } else {
                 $metadata['{http://owncloud.org/ns}' . $property] = null;
             }
-            $resource = $this->createOcisResouce($metadata);
+            $resource = $this->createOcisResource($metadata);
             $result = null;
             try {
-                $result = $resource->$properytFunc();
+                $result = $resource->$propertyFunc();
             } catch (InvalidResponseException $e) {
                 $this->assertSame('Invalid response from server', $e->getMessage());
             }
