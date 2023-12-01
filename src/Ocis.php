@@ -822,7 +822,7 @@ class Ocis
     }
 
     /**
-     * @return array<ShareRecieved>
+     * @return array<ShareReceived>
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -849,7 +849,7 @@ class Ocis
         $apiShares = $shareList->getValue() ?? [];
         $shares = [];
         foreach ($apiShares as $share) {
-            $shares[] = new ShareRecieved(
+            $shares[] = new ShareReceived(
                 $share
             );
         }
