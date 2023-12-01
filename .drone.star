@@ -44,7 +44,7 @@ config = {
     "codestyle": True,
     "phpstan": True,
     "phan": True,
-    "phpunit": True,
+    "php-unit": True,
 }
 
 trigger = {
