@@ -11,6 +11,7 @@ use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\Api\GroupApi;
 use OpenAPI\Client\Api\MeDriveApi;
 use OpenAPI\Client\Api\MeDrivesApi;
+use OpenAPI\Client\Api\UserApi;
 use OpenAPI\Client\Api\UsersApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
@@ -633,6 +634,67 @@ class Ocis
             $users[] = new User($apiUser);
         }
         return $users;
+    }
+
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     */
+    public function getUserById(string $userId): User
+    {
+        $apiInstance = new UserApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiUser = $apiInstance->getUser($userId);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiUser instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getUser returned an OdataError - " . $apiUser->getError()
+            );
+        }
+        return new User($apiUser);
+    }
+
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     */
+    public function getGroupById(string $groupId): Group
+    {
+        $apiInstance = new GroupApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiGroup = $apiInstance->getGroup($groupId);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiGroup instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getGroup returned an OdataError - " . $apiGroup->getError()
+            );
+        }
+        return new Group(
+            $apiGroup,
+            $this->serviceUrl,
+            $this->connectionConfig,
+            $this->accessToken
+        );
     }
 
     /**
