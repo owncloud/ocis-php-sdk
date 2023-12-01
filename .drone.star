@@ -83,10 +83,10 @@ def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
     steps = keycloakService() + restoreOcisCache() + ocisService() + cacheRestore()
     for php in phpversions:
-        name = "php-integration-test-%s" % php
+        name = "php-integration-%s" % php
         steps.append(
             {
-                "name": "php-integration-test",
+                "name": "php-integration",
                 "image": OC_CI_PHP % php,
                 "environment": {
                     "OCIS_URL": "https://ocis:9200",
