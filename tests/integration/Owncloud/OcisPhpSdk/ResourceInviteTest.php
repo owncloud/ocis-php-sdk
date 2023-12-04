@@ -6,6 +6,7 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
@@ -75,6 +76,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     {
         $shares = $this->fileToShare->invite([$this->einstein], $this->viewerRole);
         $this->assertCount(1, $shares);
+        $this->assertNull($shares[0]->getExpiry());
         $receivedShares = $this->einsteinOcis->getSharedWithMe();
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
@@ -92,7 +94,6 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
     public function testInviteMultipleUsersAtOnce(): void
     {
-
         $shares = $this->fileToShare->invite([$this->einstein,$this->marie], $this->viewerRole);
         $this->assertCount(2, $shares);
         $receivedShares = $this->marieOcis->getSharedWithMe();
@@ -181,12 +182,33 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
     public function testInviteWithExpiry(): void
     {
-        $tomorrow = new \DateTime('tomorrow');
+        $tomorrow = new \DateTimeImmutable('tomorrow');
         $shares = $this->fileToShare->invite([$this->einstein], $this->viewerRole, $tomorrow);
         $this->assertCount(1, $shares);
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertCount(1, $createdShares);
+        $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiry());
         $this->assertSame($tomorrow->getTimestamp(), $createdShares[0]->getExpiry()->getTimestamp());
+    }
+
+    public function testInviteWithPastExpiry(): void
+    {
+        $this->expectException(BadRequestException::class);
+        $yesterday = new \DateTimeImmutable('yesterday');
+        $this->fileToShare->invite([$this->einstein], $this->viewerRole, $yesterday);
+    }
+
+    public function testInviteWithExpiryTimezone(): void
+    {
+        $expiry = new \DateTimeImmutable('2060-01-01 12:00:00', new \DateTimeZone('Europe/Kyiv'));
+        $shares = $this->fileToShare->invite([$this->marie], $this->viewerRole, $expiry);
+        $this->assertCount(1, $shares);
+        $createdShares = $this->ocis->getSharedByMe();
+        $this->assertCount(1, $createdShares);
+        $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiry());
+        // The returned expiry is in UTC timezone (2 hours earlier than the expiry time in Kyiv)
+        $this->assertSame("Thu, 01 Jan 2060 10:00:00 +0000", $createdShares[0]->getExpiry()->format('r'));
+        $this->assertSame("Z", $createdShares[0]->getExpiry()->getTimezone()->getName());
     }
 
     public function testGetReceiversOfShareCreatedByInvite(): void
