@@ -224,7 +224,6 @@ class OcisResource
         $driveItemInviteData['roles'] = [$role->getId()];
         if ($expiration !== null) {
             $expirationMutable = \DateTime::createFromImmutable($expiration);
-            $expirationMutable->setTimezone(new \DateTimeZone('Z'));
             $driveItemInviteData['expiration_date_time'] = $expirationMutable;
         }
 
