@@ -76,7 +76,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     {
         $shares = $this->fileToShare->invite([$this->einstein], $this->viewerRole);
         $this->assertCount(1, $shares);
-        $this->assertNull($shares[0]->getExpiry());
+        $this->assertNull($shares[0]->getExpiration());
         $receivedShares = $this->einsteinOcis->getSharedWithMe();
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
@@ -187,8 +187,8 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertCount(1, $shares);
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertCount(1, $createdShares);
-        $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiry());
-        $this->assertSame($tomorrow->getTimestamp(), $createdShares[0]->getExpiry()->getTimestamp());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiration());
+        $this->assertSame($tomorrow->getTimestamp(), $createdShares[0]->getExpiration()->getTimestamp());
     }
 
     public function testInviteWithPastExpiry(): void
@@ -205,10 +205,10 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertCount(1, $shares);
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertCount(1, $createdShares);
-        $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiry());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiration());
         // The returned expiry is in UTC timezone (2 hours earlier than the expiry time in Kyiv)
-        $this->assertSame("Thu, 01 Jan 2060 10:00:00 +0000", $createdShares[0]->getExpiry()->format('r'));
-        $this->assertSame("Z", $createdShares[0]->getExpiry()->getTimezone()->getName());
+        $this->assertSame("Thu, 01 Jan 2060 10:00:00 +0000", $createdShares[0]->getExpiration()->format('r'));
+        $this->assertSame("Z", $createdShares[0]->getExpiration()->getTimezone()->getName());
     }
 
     public function testGetReceiversOfShareCreatedByInvite(): void

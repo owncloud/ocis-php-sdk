@@ -102,7 +102,7 @@ class Share
         return (string)$this->apiPermission->getId();
     }
 
-    public function getExpiry(): ?\DateTimeImmutable
+    public function getExpiration(): ?\DateTimeImmutable
     {
         $expiry = $this->apiPermission->getExpirationDateTime();
         if ($expiry === null) {

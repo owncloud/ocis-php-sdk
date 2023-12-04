@@ -134,10 +134,10 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $sharesFromInvite[0]->setExpiration($tomorrow);
         $sharedByMeShares = $this->ocis->getSharedByMe();
 
-        $this->assertInstanceOf(\DateTimeImmutable::class, $sharesFromInvite[0]->getExpiry());
-        $this->assertSame($tomorrow->getTimestamp(), $sharesFromInvite[0]->getExpiry()->getTimestamp());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $sharedByMeShares[0]->getExpiry());
-        $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiry()->getTimestamp());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $sharesFromInvite[0]->getExpiration());
+        $this->assertSame($tomorrow->getTimestamp(), $sharesFromInvite[0]->getExpiration()->getTimestamp());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $sharedByMeShares[0]->getExpiration());
+        $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiration()->getTimestamp());
     }
 
     public function testSetExpirationDateOnObjectFromSharedByMe(): void
@@ -150,7 +150,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $sharedByMeShares = $this->ocis->getSharedByMe();
         $sharedByMeShares[0]->setExpiration($tomorrow);
 
-        $this->assertInstanceOf(\DateTimeImmutable::class, $sharedByMeShares[0]->getExpiry());
-        $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiry()->getTimestamp());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $sharedByMeShares[0]->getExpiration());
+        $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiration()->getTimestamp());
     }
 }
