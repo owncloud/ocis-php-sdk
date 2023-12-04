@@ -200,7 +200,7 @@ class OcisResource
      *
      * @param array<int, User|Group> $recipients
      * @param SharingRole $role
-     * @param \DateTime|null $expiration
+     * @param \DateTimeImmutable|null $expiration
      * @return array<ShareCreated>
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -209,7 +209,7 @@ class OcisResource
      * @throws NotFoundException
      * @throws UnauthorizedException
      */
-    public function invite($recipients, SharingRole $role, ?\DateTime $expiration = null): array
+    public function invite($recipients, SharingRole $role, ?\DateTimeImmutable $expiration = null): array
     {
         $driveItemInviteData = [];
         $driveItemInviteData['recipients'] = [];
@@ -223,8 +223,9 @@ class OcisResource
         }
         $driveItemInviteData['roles'] = [$role->getId()];
         if ($expiration !== null) {
-            $expiration->setTimezone(new \DateTimeZone('Z'));
-            $driveItemInviteData['expiration_date_time'] = $expiration;
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+            $expirationMutable->setTimezone(new \DateTimeZone('Z'));
+            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
         }
 
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
