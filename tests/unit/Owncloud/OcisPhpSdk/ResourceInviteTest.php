@@ -99,7 +99,7 @@ class ResourceInviteTest extends TestCase
                             ),
                         ],
                         'roles' => ['uuid-of-the-role'],
-                        'expiration_date_time' => '2022-12-31T01:02:03:456789Z'
+                        'expiration_date_time' => new \DateTime('2022-12-31 01:02:03.456789Z')
                     ]
                 )
             ],
@@ -117,7 +117,7 @@ class ResourceInviteTest extends TestCase
                             ),
                         ],
                         'roles' => ['uuid-of-the-role'],
-                        'expiration_date_time' => '2021-01-01T12:00:43:123456Z'
+                        'expiration_date_time' => new \DateTime('2021-01-01 12:00:43.123456Z')
                     ]
                 )
             ],

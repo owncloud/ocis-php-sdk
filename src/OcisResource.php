@@ -224,7 +224,7 @@ class OcisResource
         $driveItemInviteData['roles'] = [$role->getId()];
         if ($expiration !== null) {
             $expiration->setTimezone(new \DateTimeZone('Z'));
-            $driveItemInviteData['expiration_date_time'] = $expiration->format('Y-m-d\TH:i:s:up');
+            $driveItemInviteData['expiration_date_time'] = $expiration;
         }
 
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
