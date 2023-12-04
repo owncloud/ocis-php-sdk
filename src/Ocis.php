@@ -40,14 +40,12 @@ class Ocis
         'This function is not implemented yet! Place, name and signature of the function might change!';
     private string $serviceUrl;
     private string $accessToken;
-    private ?DrivesApi $drivesApiInstance = null;
-    private ?DrivesGetDrivesApi $drivesGetDrivesApiInstance = null;
     private Configuration $graphApiConfig;
     private Client $guzzle;
     private string $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
 
     /**
-     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:Client}
+     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool, 'webfinger'?:bool, 'guzzle'?:Client,'drivesApi'?:DrivesApi,'drivesGetDrivesApi'?:DrivesGetDrivesApi}
      */
     private array $connectionConfig;
 
@@ -141,6 +139,11 @@ class Ocis
         return $api instanceof DrivesApi;
     }
 
+    public static function isDrivesGetDrivesApi(mixed $api): bool
+    {
+        return $api instanceof DrivesGetDrivesApi;
+    }
+
     /**
      * @param array<mixed> $connectionConfig
      * @ignore This function is used for internal purposes only and should not be shown in the documentation.
@@ -154,7 +157,8 @@ class Ocis
             'webfinger' => 'is_bool',
             'guzzle' => 'self::isGuzzleClient',
             'drivesPermissionsApi' => 'self::isDrivesPermissionsApi',
-            'drivesApi' => 'self::isDrivesApi'
+            'drivesApi' => 'self::isDrivesApi',
+            'drivesGetDrivesApi' => 'self::isDrivesGetDrivesApi'
         ];
         foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
@@ -201,22 +205,6 @@ class Ocis
     }
 
     /**
-     * @ignore This function is mainly for unit tests and should not be shown in the documentation
-     */
-    public function setDrivesApiInstance(DrivesApi|null $apiInstance): void
-    {
-        $this->drivesApiInstance = $apiInstance;
-    }
-
-    /**
-     * @ignore This function is mainly for unit tests and should not be shown in the documentation
-     */
-    public function setDrivesGetDrivesApiInstance(DrivesGetDrivesApi|null $apiInstance): void
-    {
-        $this->drivesGetDrivesApiInstance = $apiInstance;
-    }
-
-    /**
      * Update the access token. Call this function after refreshing the access token.
      *
      * @throws \InvalidArgumentException
@@ -225,8 +213,6 @@ class Ocis
     {
         $this->accessToken = $accessToken;
         $this->guzzle = new Client(Ocis::createGuzzleConfig($this->connectionConfig, $accessToken));
-        $this->drivesApiInstance = null;
-        $this->drivesGetDrivesApiInstance = null;
     }
 
     /**
@@ -299,13 +285,13 @@ class Ocis
         OrderDirection $orderDirection = OrderDirection::ASC,
         DriveType      $type = null
     ): array {
-        if ($this->drivesGetDrivesApiInstance === null) {
+        if (array_key_exists('drivesGetDrivesApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesGetDrivesApi'];
+        } else {
             $apiInstance = new DrivesGetDrivesApi(
                 $this->guzzle,
                 $this->graphApiConfig
             );
-        } else {
-            $apiInstance = $this->drivesGetDrivesApiInstance;
         }
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
         $filter = $this->getListDrivesFilterString($type);
@@ -476,15 +462,14 @@ class Ocis
         if ($quota < 0) {
             throw new \InvalidArgumentException('Quota cannot be less than 0');
         }
-        if ($this->drivesApiInstance === null) {
+        if (array_key_exists('drivesApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesApi'];
+        } else {
             $apiInstance = new DrivesApi(
                 $this->guzzle,
                 $this->graphApiConfig
             );
-        } else {
-            $apiInstance = $this->drivesApiInstance;
         }
-
         $apiDrive = new ApiDrive(
             [
                 'description' => $description,

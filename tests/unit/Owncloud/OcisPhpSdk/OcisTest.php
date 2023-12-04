@@ -65,14 +65,17 @@ class OcisTest extends TestCase
     {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
-        $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
         assert($createDriveMock instanceof DrivesApi);
         $error = (new OdataError())
                 ->setError(new OdataErrorMain(['message' => 'something went wrong']));
         $createDriveMock->method('createDrive')
                         ->willReturn($error);
-        $ocis->setDrivesApiInstance($createDriveMock);
+        $ocis = new Ocis(
+            'https://localhost:9200',
+            'doesNotMatter',
+            ['drivesApi' => $createDriveMock]
+        );
         $ocis->createDrive('driveName');
     }
 
@@ -91,12 +94,15 @@ class OcisTest extends TestCase
     public function testCreateDriveForbidden(): void
     {
         $this->expectException(ForbiddenException::class);
-        $ocis = new Ocis('https://localhost:9200', 'doesNotMatter');
         $createDriveMock = $this->createMock(DrivesApi::class);
         assert($createDriveMock instanceof DrivesApi);
         $createDriveMock->method('createDrive')
             ->willThrowException(new ApiException('forbidden', 403));
-        $ocis->setDrivesApiInstance($createDriveMock);
+        $ocis = new Ocis(
+            'https://localhost:9200',
+            'doesNotMatter',
+            ['drivesApi' => $createDriveMock]
+        );
         $ocis->createDrive('driveName');
     }
 
@@ -113,7 +119,11 @@ class OcisTest extends TestCase
         assert($drivesGetDrivesApi instanceof DrivesGetDrivesApi);
         $drivesGetDrivesApi->method('listAllDrives')
             ->willReturn($driveCollectionMock);
-        $ocis->setDrivesGetDrivesApiInstance($drivesGetDrivesApi);
+        $ocis = new Ocis(
+            'https://localhost:9200',
+            'tokenWhenCreated',
+            ['drivesGetDrivesApi' => $drivesGetDrivesApi]
+        );
         $drives = $ocis->getAllDrives();
         foreach ($drives as $drive) {
             $this->assertEquals('tokenWhenCreated', $drive->getAccessToken());
