@@ -179,6 +179,16 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite([$this->einstein], $this->managerRole);
     }
 
+    public function testInviteWithExpiry(): void
+    {
+        $tomorrow = new \DateTime('tomorrow');
+        $shares = $this->fileToShare->invite([$this->einstein], $this->viewerRole, $tomorrow);
+        $this->assertCount(1, $shares);
+        $createdShares = $this->ocis->getSharedByMe();
+        $this->assertCount(1, $createdShares);
+        $this->assertSame($tomorrow->getTimestamp(), $createdShares[0]->getExpiry()->getTimestamp());
+    }
+
     public function testGetReceiversOfShareCreatedByInvite(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
