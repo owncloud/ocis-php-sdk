@@ -5,6 +5,8 @@ namespace integration\Owncloud\OcisPhpSdk;
 use GuzzleHttp\Client;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
+use Owncloud\OcisPhpSdk\OcisResource;
+use Owncloud\OcisPhpSdk\SharingRole;
 use PHPUnit\Framework\TestCase;
 
 class OcisPhpSdkTestCase extends TestCase
@@ -58,7 +60,7 @@ class OcisPhpSdkTestCase extends TestCase
             }
 
         }
-        foreach($this->createdGroups as $group) {
+        foreach ($this->createdGroups as $group) {
             $group->delete();
         }
         $this->createdGroups = [];
@@ -135,5 +137,15 @@ class OcisPhpSdkTestCase extends TestCase
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $ocis->getMyDrives();
         return $ocis;
+    }
+
+    protected function getRoleByName(OcisResource $resource, string $roleName): SharingRole
+    {
+        foreach ($resource->getRoles() as $role) {
+            if ($role->getDisplayName() === $roleName) {
+                return $role;
+            }
+        }
+        throw new \Exception('Role not found');
     }
 }
