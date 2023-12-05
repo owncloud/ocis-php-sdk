@@ -216,6 +216,7 @@ class Drive
      * Deletes the current drive irreversibly.
      * A drive can only be deleted if it has already been disabled.
      * Calling this function on a drive that is not disabled will have no effect.
+     * Only project spaces can be deleted.
      *
      * @throws UnauthorizedException
      * @throws ForbiddenException
@@ -248,6 +249,7 @@ class Drive
      * Disables the current drive without deleting it.
      * Disabling a drive is the prerequisite for deleting it.
      * Calling this function on a drive that is already disabled will have no effect.
+     * Only project spaces can be disabled.
      *
      * @throws UnauthorizedException
      * @throws ForbiddenException
@@ -271,6 +273,17 @@ class Drive
         }
     }
 
+    /**
+     * Enables the current drive.
+     * Calling this function on a drive that is already enabled will have no effect.
+     * Only project spaces can be enabled.
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     */
     public function enable(): void
     {
         $connectionConfig = array_merge(
