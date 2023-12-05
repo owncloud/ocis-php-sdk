@@ -8,12 +8,9 @@ use OpenAPI\Client\Model\SharingLinkType;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
-use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
-use Owncloud\OcisPhpSdk\SharingRole;
-use Owncloud\OcisPhpSdk\User;
 
 class ResourceShareLinkTest extends OcisPhpSdkTestCase
 {
@@ -51,7 +48,7 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
     }
 
     /**
-     * @return array<int,array<int,SharingLinkType>>
+     * @return array<int,array<int,SharingLinkType|bool|string>>
      */
     public function sharingLinkTypeDataProvider(): array
     {
@@ -97,8 +94,10 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
     {
         $tomorrow = new \DateTimeImmutable('tomorrow');
         $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $tomorrow);
+        $this->assertInstanceOf(\DateTimeImmutable::class, $link->getExpiration());
         $this->assertSame($tomorrow->getTimestamp(), $link->getExpiration()->getTimestamp());
         $createdShares = $this->ocis->getSharedByMe();
+        $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiration());
         $this->assertSame($tomorrow->getTimestamp(), $createdShares[0]->getExpiration()->getTimestamp());
     }
 
