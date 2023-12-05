@@ -411,6 +411,16 @@ Search.appendIndex(
             "summary": "retrieve\u0020users\u0020known\u0020by\u0020the\u0020system",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getUsers"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetUserById\u0028\u0029",
+            "name": "getUserById",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getUserById"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetGroupById\u0028\u0029",
+            "name": "getGroupById",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getGroupById"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetNotifications\u0028\u0029",
             "name": "getNotifications",
             "summary": "Retrieve\u0020all\u0020unread\u0020notifications\u0020of\u0020the\u0020current\u0020user",
@@ -600,6 +610,11 @@ Search.appendIndex(
             "name": "setRole",
             "summary": "Change\u0020the\u0020Role\u0020of\u0020the\u0020particular\u0020Share.",
             "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_setRole"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated\u003A\u003AgetReceiver\u0028\u0029",
+            "name": "getReceiver",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_getReceiver"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink",
             "name": "ShareLink",
