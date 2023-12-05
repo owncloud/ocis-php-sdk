@@ -28,7 +28,7 @@ class ResourceLinkTest extends TestCase
                 null,
                 new DriveItemCreateLink(
                     [
-                        'type' => 'view',
+                        'type' => SharingLinkType::VIEW,
                         'password' => null,
                         'expiration_date_time' => null,
                         'display_name' => null
@@ -43,7 +43,7 @@ class ResourceLinkTest extends TestCase
                 'the name of the link',
                 new DriveItemCreateLink(
                     [
-                        'type' => 'edit',
+                        'type' => SharingLinkType::EDIT,
                         'password' => 'a-password',
                         'expiration_date_time' => new \DateTime('2022-12-31 01:02:03.456789Z'),
                         'display_name' => 'the name of the link'
@@ -58,7 +58,7 @@ class ResourceLinkTest extends TestCase
                 null,
                 new DriveItemCreateLink(
                     [
-                        'type' => 'edit',
+                        'type' => SharingLinkType::EDIT,
                         'password' => null,
                         'expiration_date_time' => new \DateTime('2020-12-31 23:00:43.123456Z'),
                         'display_name' => null
