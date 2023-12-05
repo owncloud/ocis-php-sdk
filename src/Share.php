@@ -21,7 +21,7 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
  */
 class Share
 {
-    private string $accessToken;
+    protected string $accessToken;
     /**
      * @phpstan-var array{
      *                      'headers'?:array<string, mixed>,
