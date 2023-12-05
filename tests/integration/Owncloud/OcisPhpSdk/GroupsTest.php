@@ -7,7 +7,6 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 use OpenAPI\Client\Model\User;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
-use Owncloud\OcisPhpSdk\Ocis;
 
 class GroupsTest extends OcisPhpSdkTestCase
 {
@@ -16,8 +15,7 @@ class GroupsTest extends OcisPhpSdkTestCase
      */
     public function testAddUserToGroup(): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $users = $ocis->getUsers('admin');
         $userName = $users[0]->getDisplayName();
         $philosophyHatersGroup =  $ocis->createGroup(
@@ -37,10 +35,8 @@ class GroupsTest extends OcisPhpSdkTestCase
      */
     public function testRemoveExistingUserFromGroup(): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $einsteinUserToken = $this->getAccessToken('einstein', 'relativity');
-        $einsteinUserOcis = new Ocis($this->ocisUrl, $einsteinUserToken, ["verify" => false]);
+        $ocis = $this->getOcis('admin', 'admin');
+        $einsteinUserOcis = $this->initUser('einstein', 'relativity');
         $users = $ocis->getUsers();
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophy-haters",
@@ -68,8 +64,7 @@ class GroupsTest extends OcisPhpSdkTestCase
     public function testRemoveUserNotAddedToGroup(): void
     {
         $this->expectException(NotFoundException::class);
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $users = $ocis->getUsers('admin');
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophy-haters",
@@ -111,7 +106,7 @@ class GroupsTest extends OcisPhpSdkTestCase
     public function testAddUserToGroupUnauthorizedUser(): void
     {
         $this->expectException(UnauthorizedException::class);
-        $ocis = $this->getOcis('marie', 'radioactivity');
+        $ocis = $this->initUser('marie', 'radioactivity');
         $physicsLoversGroup =  $ocis->createGroup(
             "physics-lovers",
             "physics lovers group"
@@ -129,8 +124,7 @@ class GroupsTest extends OcisPhpSdkTestCase
      */
     public function testDeleteGroup(): void
     {
-        $token = $this->getAccessToken("admin", "admin");
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophy-haters",
             "philosophy haters group"

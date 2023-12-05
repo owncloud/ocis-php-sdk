@@ -191,8 +191,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public function testDeleteGroupById(): void
     {
-        $token = $this->getAccessToken("admin", "admin");
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $ocis->createGroup("philosophy-haters", "philosophy haters group");
         $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
         foreach($ocis->getGroups() as $group) {
@@ -210,8 +209,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public function testDeleteGroupByIdNoPermission(): void
     {
-        $token = $this->getAccessToken("admin", "admin");
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup = $ocis->createGroup("philosophy-haters", "philosophy haters group");
         //any user other than admin can't get Group ID because of bug, thus bypassing this step
         //Todo : make Einstein get Group ID after this bug is solved.
