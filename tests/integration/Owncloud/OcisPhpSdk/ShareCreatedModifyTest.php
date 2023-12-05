@@ -130,7 +130,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(NotFoundException::class);
         $sharesFromInvite = $this->fileToShare->invite([$this->einstein], $this->viewerRole);
-        $tomorrow = new \DateTime('tomorrow');
+        $tomorrow = new \DateTimeImmutable('tomorrow');
         $sharesFromInvite[0]->setExpiration($tomorrow);
         $sharedByMeShares = $this->ocis->getSharedByMe();
 
@@ -146,7 +146,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(NotFoundException::class);
         $this->fileToShare->invite([$this->einstein], $this->viewerRole);
-        $tomorrow = new \DateTime('tomorrow');
+        $tomorrow = new \DateTimeImmutable('tomorrow');
         $sharedByMeShares = $this->ocis->getSharedByMe();
         $sharedByMeShares[0]->setExpiration($tomorrow);
 

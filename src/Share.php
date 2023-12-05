@@ -148,9 +148,14 @@ class Share
      * @throws HttpException
      * @throws NotFoundException
      */
-    public function setExpiration(?\DateTime $expiration): bool
+    public function setExpiration(?\DateTimeImmutable $expiration): bool
     {
-        $this->apiPermission->setExpirationDateTime($expiration);
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+        } else {
+            $expirationMutable = null;
+        }
+        $this->apiPermission->setExpirationDateTime($expirationMutable);
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
