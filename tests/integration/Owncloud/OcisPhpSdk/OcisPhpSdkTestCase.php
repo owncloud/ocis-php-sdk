@@ -49,9 +49,14 @@ class OcisPhpSdkTestCase extends TestCase
         $token = $this->getAccessToken('admin', 'admin');
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         foreach ($this->createdDrives as $driveId) {
-            $drive = $ocis->getDriveById($driveId);
-            $drive->disable();
-            $drive->delete();
+            try {
+                $drive = $ocis->getDriveById($driveId);
+                $drive->disable();
+                $drive->delete();
+            } catch (NotFoundException $e) {
+                // ignore, we don't care if the drive was already deleted
+            }
+
         }
         foreach($this->createdGroups as $group) {
             $group->delete();

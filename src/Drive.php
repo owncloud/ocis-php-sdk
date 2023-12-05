@@ -271,6 +271,27 @@ class Drive
         }
     }
 
+    public function enable(): void
+    {
+        $connectionConfig = array_merge(
+            $this->connectionConfig,
+            ['headers' => ['Restore' => 'true']]
+        );
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken)
+        );
+
+        $apiInstance = new DrivesApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiInstance->updateDrive($this->getId(), new ApiDrive(['name' => $this->getName()]));
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+    }
+
     /**
      * @todo This function is not implemented yet! Place, name and signature of the function might change!
      */
