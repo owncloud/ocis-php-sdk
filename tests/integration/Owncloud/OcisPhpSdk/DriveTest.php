@@ -34,10 +34,9 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testEnableNotExistingDrive(): void
     {
-        $this->expectException(NotFoundException::class);
         $this->drive->disable();
         $this->drive->delete();
+        $this->expectException(NotFoundException::class);
         $this->drive->enable();
-        $this->assertFalse($this->drive->isDisabled());
     }
 }
