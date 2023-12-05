@@ -38,14 +38,14 @@ class ResourceLinkTest extends TestCase
             // create a link setting all data
             [
                 SharingLinkType::EDIT,
-                new \DateTime('2022-12-31 01:02:03.456789'),
+                new \DateTimeImmutable('2022-12-31 01:02:03.456789'),
                 'a-password',
                 'the name of the link',
                 new DriveItemCreateLink(
                     [
                         'type' => 'edit',
                         'password' => 'a-password',
-                        'expiration_date_time' => '2022-12-31T01:02:03:456789Z',
+                        'expiration_date_time' => new \DateTime('2022-12-31 01:02:03.456789Z'),
                         'display_name' => 'the name of the link'
                     ]
                 ),
@@ -53,14 +53,14 @@ class ResourceLinkTest extends TestCase
             // set expiry time, with conversion to UTC/Z timezone
             [
                 SharingLinkType::EDIT,
-                new \DateTime('2021-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
+                new \DateTimeImmutable('2021-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
                 null,
                 null,
                 new DriveItemCreateLink(
                     [
                         'type' => 'edit',
                         'password' => null,
-                        'expiration_date_time' => '2020-12-31T23:00:43:123456Z',
+                        'expiration_date_time' => new \DateTime('2020-12-31 23:00:43.123456Z'),
                         'display_name' => null
                     ]
                 ),
@@ -90,7 +90,7 @@ class ResourceLinkTest extends TestCase
      */
     public function testCreateLink(
         SharingLinkType $type,
-        ?\DateTime $expiration,
+        ?\DateTimeImmutable $expiration,
         ?string $password,
         ?string $displayName,
         DriveItemCreateLink $expectedCreateLinkData

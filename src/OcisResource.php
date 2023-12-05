@@ -285,7 +285,7 @@ class OcisResource
      */
     public function createSharingLink(
         SharingLinkType $type = SharingLinkType::VIEW,
-        ?\DateTime $expiration = null,
+        ?\DateTimeImmutable $expiration = null,
         ?string $password = null,
         ?string $displayName = null
     ): ShareLink {
@@ -301,16 +301,15 @@ class OcisResource
             );
         }
         if ($expiration !== null) {
-            $expiration->setTimezone(new \DateTimeZone('Z'));
-            $expirationString = $expiration->format('Y-m-d\TH:i:s:up');
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
         } else {
-            $expirationString = null;
+            $expirationMutable = null;
         }
 
         $createLinkData = new DriveItemCreateLink([
-            'type' => $type->value,
+            'type' => $type,
             'password' => $password,
-            'expiration_date_time' => $expirationString,
+            'expiration_date_time' => $expirationMutable,
             'display_name' => $displayName
         ]);
         try {
