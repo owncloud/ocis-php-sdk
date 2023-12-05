@@ -7,7 +7,6 @@ use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Identity;
 use OpenAPI\Client\Model\RemoteItem;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
-use Owncloud\OcisPhpSdk\Exception\NotImplementedException;
 
 /**
  * Ensures that the return type is correct, but Phan does not recognize it.
@@ -208,21 +207,5 @@ class ShareReceived
         return empty($ownerUser->getId()) ? throw new InvalidResponseException(
             "Invalid share owner id '" . print_r($ownerUser->getId(), true) . "'"
         ) : $ownerUser->getId();
-    }
-
-    /**
-     * @todo This function is not implemented yet!
-     */
-    public function accept(
-    ): void {
-        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
-    }
-
-    /**
-     * @todo This function is not implemented yet!
-     */
-    public function decline(
-    ): void {
-        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
     }
 }
