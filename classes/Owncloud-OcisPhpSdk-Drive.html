@@ -207,6 +207,13 @@
 THIS ACTION CANNOT BE REVERTED!</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_enable">enable()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Enables the current drive.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_getAlias">getAlias()</a>
     <span>
                                 &nbsp;: string    </span>
@@ -397,9 +404,9 @@ THIS ACTION CANNOT BE REVERTED!</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">402</span>
+    <span class="phpdocumentor-element-found-in__line">436</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.402" class="phpdocumentor-element-found-in__source" data-line="402" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.436" class="phpdocumentor-element-found-in__source" data-line="436" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -490,9 +497,9 @@ THIS ACTION CANNOT BE REVERTED!</dd>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">226</span>
+    <span class="phpdocumentor-element-found-in__line">227</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.226" class="phpdocumentor-element-found-in__source" data-line="226" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.227" class="phpdocumentor-element-found-in__source" data-line="227" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Deletes the current drive irreversibly.</p>
@@ -504,7 +511,8 @@ THIS ACTION CANNOT BE REVERTED!</dd>
     <div class="phpdocumentor-label-line">
         </div>
         <section class="phpdocumentor-description"><p>A drive can only be deleted if it has already been disabled.
-Calling this function on a drive that is not disabled will have no effect.</p>
+Calling this function on a drive that is not disabled will have no effect.
+Only project spaces can be deleted.</p>
 </section>
 
     
@@ -573,9 +581,9 @@ Calling this function on a drive that is not disabled will have no effect.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">487</span>
+    <span class="phpdocumentor-element-found-in__line">521</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.487" class="phpdocumentor-element-found-in__source" data-line="487" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.521" class="phpdocumentor-element-found-in__source" data-line="521" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Delete (move to trash-bin) the Ocis resource (file or folder) at the given path in the current drive</p>
@@ -667,9 +675,9 @@ Calling this function on a drive that is not disabled will have no effect.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">258</span>
+    <span class="phpdocumentor-element-found-in__line">260</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.258" class="phpdocumentor-element-found-in__source" data-line="258" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.260" class="phpdocumentor-element-found-in__source" data-line="260" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Disables the current drive without deleting it.</p>
@@ -681,7 +689,8 @@ Calling this function on a drive that is not disabled will have no effect.</p>
     <div class="phpdocumentor-label-line">
         </div>
         <section class="phpdocumentor-description"><p>Disabling a drive is the prerequisite for deleting it.
-Calling this function on a drive that is already disabled will have no effect.</p>
+Calling this function on a drive that is already disabled will have no effect.
+Only project spaces can be disabled.</p>
 </section>
 
     
@@ -750,9 +759,9 @@ Calling this function on a drive that is already disabled will have no effect.</
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">524</span>
+    <span class="phpdocumentor-element-found-in__line">558</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.524" class="phpdocumentor-element-found-in__source" data-line="524" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.558" class="phpdocumentor-element-found-in__source" data-line="558" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Empty the trash-bin of the current drive. ALL FILES AND FOLDERS IN THE TRASH-BIN WILL BE DELETED!
@@ -827,6 +836,89 @@ THIS ACTION CANNOT BE REVERTED!</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_enable">
+        enable()
+        <a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_enable" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">287</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.287" class="phpdocumentor-element-found-in__source" data-line="287" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Enables the current drive.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">enable</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+        <section class="phpdocumentor-description"><p>Calling this function on a drive that is already enabled will have no effect.
+Only project spaces can be enabled.</p>
+</section>
+
+    
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_enable#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getAlias">
         getAlias()
         <a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_getAlias" class="headerlink"><i class="fas fa-link"></i></a>
@@ -871,9 +963,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">366</span>
+    <span class="phpdocumentor-element-found-in__line">400</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.366" class="phpdocumentor-element-found-in__source" data-line="366" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.400" class="phpdocumentor-element-found-in__source" data-line="400" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Download and return the content of the file at the given path in the current drive</p>
@@ -965,9 +1057,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">385</span>
+    <span class="phpdocumentor-element-found-in__line">419</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.385" class="phpdocumentor-element-found-in__source" data-line="385" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.419" class="phpdocumentor-element-found-in__source" data-line="419" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Return a stream resource for the file at the given path in the current drive.</p>
@@ -1267,9 +1359,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">412</span>
+    <span class="phpdocumentor-element-found-in__line">446</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.412" class="phpdocumentor-element-found-in__source" data-line="412" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.446" class="phpdocumentor-element-found-in__source" data-line="446" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -1329,9 +1421,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">420</span>
+    <span class="phpdocumentor-element-found-in__line">454</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.420" class="phpdocumentor-element-found-in__source" data-line="420" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.454" class="phpdocumentor-element-found-in__source" data-line="454" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -1391,9 +1483,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">328</span>
+    <span class="phpdocumentor-element-found-in__line">362</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.328" class="phpdocumentor-element-found-in__source" data-line="328" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.362" class="phpdocumentor-element-found-in__source" data-line="362" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">List the content of a specific path in the current drive</p>
@@ -1680,9 +1772,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">506</span>
+    <span class="phpdocumentor-element-found-in__line">540</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.506" class="phpdocumentor-element-found-in__source" data-line="506" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.540" class="phpdocumentor-element-found-in__source" data-line="540" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Move or rename an Ocis resource in the current drive</p>
@@ -1781,9 +1873,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">293</span>
+    <span class="phpdocumentor-element-found-in__line">327</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.293" class="phpdocumentor-element-found-in__source" data-line="293" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.327" class="phpdocumentor-element-found-in__source" data-line="327" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -1843,9 +1935,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">301</span>
+    <span class="phpdocumentor-element-found-in__line">335</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.301" class="phpdocumentor-element-found-in__source" data-line="301" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.335" class="phpdocumentor-element-found-in__source" data-line="335" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -1905,9 +1997,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">277</span>
+    <span class="phpdocumentor-element-found-in__line">311</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.277" class="phpdocumentor-element-found-in__source" data-line="277" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.311" class="phpdocumentor-element-found-in__source" data-line="311" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -1967,9 +2059,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">285</span>
+    <span class="phpdocumentor-element-found-in__line">319</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.285" class="phpdocumentor-element-found-in__source" data-line="285" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.319" class="phpdocumentor-element-found-in__source" data-line="319" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -2029,9 +2121,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">311</span>
+    <span class="phpdocumentor-element-found-in__line">345</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.311" class="phpdocumentor-element-found-in__source" data-line="311" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.345" class="phpdocumentor-element-found-in__source" data-line="345" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -2091,9 +2183,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">535</span>
+    <span class="phpdocumentor-element-found-in__line">569</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.535" class="phpdocumentor-element-found-in__source" data-line="535" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.569" class="phpdocumentor-element-found-in__source" data-line="569" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -2156,9 +2248,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">544</span>
+    <span class="phpdocumentor-element-found-in__line">578</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.544" class="phpdocumentor-element-found-in__source" data-line="544" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.578" class="phpdocumentor-element-found-in__source" data-line="578" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
     
@@ -2221,9 +2313,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">453</span>
+    <span class="phpdocumentor-element-found-in__line">487</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.453" class="phpdocumentor-element-found-in__source" data-line="453" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.487" class="phpdocumentor-element-found-in__source" data-line="487" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Upload the given content to a specific path in the current drive</p>
@@ -2322,9 +2414,9 @@ THIS ACTION CANNOT BE REVERTED!</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Drive.php"><a href="files/src-drive.html"><abbr title="src/Drive.php">Drive.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">470</span>
+    <span class="phpdocumentor-element-found-in__line">504</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.470" class="phpdocumentor-element-found-in__source" data-line="470" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Drive.html#source-view.504" class="phpdocumentor-element-found-in__source" data-line="504" data-modal="source-view" data-src="files/src/Drive.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Stream the given resource to a specific path in the current drive</p>
@@ -2529,6 +2621,7 @@ THIS ACTION CANNOT BE REVERTED!</p>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_deleteResource">deleteResource()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_disable">disable()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_emptyTrashbin">emptyTrashbin()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_enable">enable()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_getAlias">getAlias()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_getFile">getFile()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_getFileStream">getFileStream()</a></li>

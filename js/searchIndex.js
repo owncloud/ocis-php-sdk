@@ -71,6 +71,11 @@ Search.appendIndex(
             "summary": "Disables\u0020the\u0020current\u0020drive\u0020without\u0020deleting\u0020it.",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_disable"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003Aenable\u0028\u0029",
+            "name": "enable",
+            "summary": "Enables\u0020the\u0020current\u0020drive.",
+            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_enable"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AsetName\u0028\u0029",
             "name": "setName",
             "summary": "",
