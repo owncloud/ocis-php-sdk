@@ -74,6 +74,7 @@ services:
       GRAPH_ASSIGN_DEFAULT_USER_ROLE: false
       GRAPH_USERNAME_MATCH: "none"
       OCIS_LOG_LEVEL: "debug"
+      POSTPROCESSING_DELAY: "15s"
     restart: unless-stopped
     labels:
       - "traefik.enable=true"

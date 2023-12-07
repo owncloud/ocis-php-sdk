@@ -10,6 +10,7 @@ use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\OrderDirection;
@@ -149,7 +150,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $resources = $this->personalDrive->getResources();
         foreach ($resources as $resource) {
-            $content = $resource->getContent();
+            $content = $this->getContentOfResource425Save($resource);
             switch ($resource->getName()) {
                 case 'somefile.txt':
                     $this->assertEquals('some content', $content);
@@ -178,7 +179,14 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $resources = $this->personalDrive->getResources();
         foreach ($resources as $resource) {
-            $stream = $resource->getContentStream();
+            $stream = null;
+            while ($stream === null) {
+                try {
+                    $stream = $resource->getContentStream();
+                } catch (TooEarlyException) {
+                    sleep(1);
+                }
+            }
             $content = fread($stream, 1024);
             switch ($resource->getName()) {
                 case 'somefile.txt':
@@ -200,7 +208,8 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $resources = $this->personalDrive->getResources('/subfolder');
         $this->assertCount(1, $resources);
         $this->assertEquals('uploaded.txt', $resources[0]->getName());
-        $this->assertEquals('some content', $resources[0]->getContent());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('some content', $content);
     }
 
     public function testUploadFileOverwritingExisting(): void
@@ -210,7 +219,8 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $resources = $this->personalDrive->getResources('/subfolder');
         $this->assertCount(1, $resources);
         $this->assertEquals('uploaded.txt', $resources[0]->getName());
-        $this->assertEquals('new content', $resources[0]->getContent());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('new content', $content);
     }
 
     public function testUploadFileNotExistingFolder(): void
@@ -231,7 +241,8 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $resources = $this->personalDrive->getResources('/subfolder');
         $this->assertCount(1, $resources);
         $this->assertEquals('uploaded.txt', $resources[0]->getName());
-        $this->assertEquals('some content', $resources[0]->getContent());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('some content', $content);
     }
 
     public function testUploadFileNoPermission(): void
@@ -268,6 +279,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $resources = $this->personalDrive->getResources('/subfolder');
         $this->assertCount(1, $resources);
         $this->assertEquals('uploaded.txt', $resources[0]->getName());
-        $this->assertEquals('some content', $resources[0]->getContent());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('some content', $content);
     }
 }

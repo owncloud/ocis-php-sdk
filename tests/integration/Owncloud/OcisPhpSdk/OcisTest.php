@@ -242,7 +242,8 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('somefile.txt', $resource->getName());
         $this->assertSame('file', $resource->getType());
         $this->assertSame(12, $resource->getSize());
-        $this->assertSame('some content', $resource->getContent());
+        $content = $this->getContentOfResource425Save($resource);
+        $this->assertSame('some content', $content);
         $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 
@@ -292,7 +293,8 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('somefile.txt', $resource->getName());
         $this->assertSame('file', $resource->getType());
         $this->assertSame(12, $resource->getSize());
-        $this->assertSame('some content', $resource->getContent());
+        $content = $this->getContentOfResource425Save($resource);
+        $this->assertSame('some content', $content);
         $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 

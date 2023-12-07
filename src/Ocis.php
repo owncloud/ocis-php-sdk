@@ -573,7 +573,7 @@ class Ocis
             foreach (ResourceMetadata::cases() as $property) {
                 $properties[] = $property->value;
             }
-            $responses = $webDavClient->propFind(rawurlencode($fileId), $properties);
+            $responses = $webDavClient->propFindUnfiltered(rawurlencode($fileId), $properties);
             $resource = new OcisResource(
                 $responses,
                 null,

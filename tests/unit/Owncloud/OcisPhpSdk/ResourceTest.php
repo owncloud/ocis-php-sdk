@@ -58,7 +58,7 @@ class ResourceTest extends TestCase
     public function testGetFileTypeValid(string|null $resourceType, string $expectedResult): void
     {
         $metadata = [];
-        $metadata['{DAV:}resourcetype'] = new ResourceType($resourceType);
+        $metadata[200]['{DAV:}resourcetype'] = new ResourceType($resourceType);
         $resource = $this->createOcisResource($metadata);
         $result = $resource->getType();
         $this->assertSame($expectedResult, $result);
@@ -88,7 +88,7 @@ class ResourceTest extends TestCase
         $metadata = [];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Received invalid data for the key \"resourcetype\" in the response array");
-        $metadata['{DAV:}resourcetype'] = new ResourceType($resourceType);
+        $metadata[200]['{DAV:}resourcetype'] = new ResourceType($resourceType);
         $resource = $this->createOcisResource($metadata);
         $result = $resource->getType();
     }
@@ -128,8 +128,8 @@ class ResourceTest extends TestCase
         string $sizeKey
     ): void {
         $metadata = [];
-        $metadata['{DAV:}resourcetype'] = new ResourceType($data);
-        $metadata[$sizeKey] = $actualSize;
+        $metadata[200]['{DAV:}resourcetype'] = new ResourceType($data);
+        $metadata[200][$sizeKey] = $actualSize;
         $resource = $this->createOcisResource($metadata);
         $result = $resource->getSize();
         $this->assertSame($expectedSize, $result);
@@ -154,8 +154,8 @@ class ResourceTest extends TestCase
         $metadata = [];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Received an invalid value for size in the response");
-        $metadata['{DAV:}resourcetype'] = new ResourceType($data);
-        $metadata[$sizeKey] = $actualSize;
+        $metadata[200]['{DAV:}resourcetype'] = new ResourceType($data);
+        $metadata[200][$sizeKey] = $actualSize;
         $resource = $this->createOcisResource($metadata);
         $result = $resource->getSize();
     }
@@ -183,8 +183,8 @@ class ResourceTest extends TestCase
     public function testGetContentType(string $expectedResult, null|string $fileType): void
     {
         $metadata = [];
-        $metadata['{DAV:}resourcetype'] = new ResourceType($fileType);
-        $metadata['{DAV:}getcontenttype'] = $expectedResult;
+        $metadata[200]['{DAV:}resourcetype'] = new ResourceType($fileType);
+        $metadata[200]['{DAV:}getcontenttype'] = $expectedResult;
         $resource = $this->createOcisResource($metadata);
         $result = $resource->getContentType();
         $this->assertSame($expectedResult, $result);
@@ -198,7 +198,7 @@ class ResourceTest extends TestCase
         $metadata = [];
         $tags = [["mytag"], ["asd", "asd"], [''], [null]];
         foreach ($tags as $tag) {
-            $metadata['{http://owncloud.org/ns}tags'] = implode(',', $tag);
+            $metadata[200]['{http://owncloud.org/ns}tags'] = implode(',', $tag);
             $resource = $this->createOcisResource($metadata);
             $result = $resource->getTags();
             if ($tag === [null] || $tag === ['']) {
@@ -226,7 +226,7 @@ class ResourceTest extends TestCase
     public function testGetFavorite(string|int $value): void
     {
         $metadata = [];
-        $metadata['{http://owncloud.org/ns}favorite'] = $value;
+        $metadata[200]['{http://owncloud.org/ns}favorite'] = $value;
         $resource = $this->createOcisResource($metadata);
         $result = $resource->isFavorited();
         $this->assertIsBool($result);
@@ -252,7 +252,7 @@ class ResourceTest extends TestCase
         $metadata = [];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Value of property \"favorite\" invalid in the server response");
-        $metadata['{http://owncloud.org/ns}favorite'] = $value;
+        $metadata[200]['{http://owncloud.org/ns}favorite'] = $value;
         $resource = $this->createOcisResource($metadata);
         $resource->isFavorited();
     }
@@ -279,9 +279,9 @@ class ResourceTest extends TestCase
     public function testGetCheckSum(array $value, string|null $fileType): void
     {
         $metadata = [];
-        $metadata['{DAV:}resourcetype'] = new ResourceType($fileType);
-        $metadata['{DAV:}getcontentlength'] = 1;
-        $metadata['{http://owncloud.org/ns}checksums'] = $value;
+        $metadata[200]['{DAV:}resourcetype'] = new ResourceType($fileType);
+        $metadata[200]['{DAV:}getcontentlength'] = 1;
+        $metadata[200]['{http://owncloud.org/ns}checksums'] = $value;
         $resource = $this->createOcisResource($metadata);
         $result = $resource->getCheckSums();
         $this->assertEquals($value, $result);
@@ -295,9 +295,9 @@ class ResourceTest extends TestCase
         $metadata = [];
         foreach ($this->properties as ['property' => $property, "function" => $propertyFunc]) {
             if (in_array($property, ['etag', 'lastmodified'])) {
-                $metadata['{DAV:}get' . $property] = $property;
+                $metadata[200]['{DAV:}get' . $property] = $property;
             } else {
-                $metadata['{http://owncloud.org/ns}' . $property] = $property;
+                $metadata[200]['{http://owncloud.org/ns}' . $property] = $property;
             }
             $resource = $this->createOcisResource($metadata);
             $result = $resource->$propertyFunc();
@@ -312,7 +312,7 @@ class ResourceTest extends TestCase
     {
         $metadata = [];
         foreach ($this->properties as ['property' => $property, "function" => $propertyFunc]) {
-            $metadata[''] = $property;
+            $metadata[200][''] = $property;
             $resource = $this->createOcisResource($metadata);
             $result = null;
             try {
@@ -332,9 +332,9 @@ class ResourceTest extends TestCase
         $metadata = [];
         foreach ($this->properties as ['property' => $property, "function" => $propertyFunc]) {
             if (in_array($property, ["etag", "lastmodified"])) {
-                $metadata['{DAV:}get' . $property] = null;
+                $metadata[200]['{DAV:}get' . $property] = null;
             } else {
-                $metadata['{http://owncloud.org/ns}' . $property] = null;
+                $metadata[200]['{http://owncloud.org/ns}' . $property] = null;
             }
             $resource = $this->createOcisResource($metadata);
             $result = null;
@@ -354,7 +354,7 @@ class ResourceTest extends TestCase
         $driveApiMock->method('getDrive')
             ->willReturn($driveMock);
         $accessToken = 'aaa';
-        $metadata = ['{http://owncloud.org/ns}spaceid' => 'spaceid'];
+        $metadata[200] = ['{http://owncloud.org/ns}spaceid' => 'spaceid'];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage('Could not get drive id');
         // @phan-suppress-next-line PhanNoopNew we are expecting an exception
@@ -374,7 +374,7 @@ class ResourceTest extends TestCase
         $driveApiMock->method('getDrive')
             ->willReturn($errorMock);
         $accessToken = 'aaa';
-        $metadata = ['{http://owncloud.org/ns}spaceid' => 'spaceid'];
+        $metadata[200] = ['{http://owncloud.org/ns}spaceid' => 'spaceid'];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage('getDrive returned an OdataError - ');
         // @phan-suppress-next-line PhanNoopNew we are expecting an exception

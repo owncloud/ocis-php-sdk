@@ -4,6 +4,7 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\SharingRole;
@@ -147,5 +148,18 @@ class OcisPhpSdkTestCase extends TestCase
             }
         }
         throw new \Exception('Role not found');
+    }
+
+    protected function getContentOfResource425Save(OcisResource $resource): string
+    {
+        $content = null;
+        while ($content === null) {
+            try {
+                $content = $resource->getContent();
+            } catch (TooEarlyException) {
+                sleep(1);
+            }
+        }
+        return $content;
     }
 }

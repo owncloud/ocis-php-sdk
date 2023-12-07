@@ -18,6 +18,7 @@ use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Xml\Property\ResourceType;
 use Sabre\HTTP\ResponseInterface;
@@ -131,8 +132,16 @@ class OcisResource
     private function getMetadata(ResourceMetadata $property): array|string
     {
         $metadata = [];
-        if (array_key_exists($property->value, $this->metadata)) {
-            $metadata[$property->getKey()] = $this->metadata[$property->value];
+        // for metadata accept status codes of 200 and 425 (too early) status codes
+        // any other status code is regarded as an error
+        foreach ([200, 425] as $statusCode) {
+            if (
+                array_key_exists($statusCode, $this->metadata) &&
+                array_key_exists($property->value, $this->metadata[$statusCode])
+            ) {
+                $metadata[$property->getKey()] = $this->metadata[$statusCode][$property->value];
+                break;
+            }
         }
         if ($metadata === []) {
             throw new InvalidResponseException(
@@ -539,7 +548,7 @@ class OcisResource
         return rawurldecode($privateLink);
     }
 
-    /*
+    /**
      * returns the content of this resource
      *
      * @throws UnauthorizedException
@@ -548,6 +557,7 @@ class OcisResource
      * @throws HttpException
      * @throws BadRequestException
      * @throws NotFoundException
+     * @throws TooEarlyException
      */
     public function getContent(): string
     {
@@ -583,6 +593,7 @@ class OcisResource
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws HttpException
+     * @throws TooEarlyException
      */
     private function getFileResponseInterface(string $fileId): ResponseInterface
     {

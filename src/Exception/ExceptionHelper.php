@@ -19,7 +19,13 @@ class ExceptionHelper
      */
     public static function getHttpErrorException(
         GuzzleException|ApiException|SabreClientHttpException|SabreClientException $e
-    ): BadRequestException|NotFoundException|ForbiddenException|UnauthorizedException|HttpException|ConflictException {
+    ): BadRequestException|
+    NotFoundException|
+    ForbiddenException|
+    UnauthorizedException|
+    HttpException|
+    ConflictException|
+    TooEarlyException {
         $message = "";
         if ($e instanceof ApiException) {
             $rawResponseBody = $e->getResponseBody();
@@ -64,6 +70,10 @@ class ExceptionHelper
             ),
             409 => new ConflictException(
                 $message,
+                $e->getCode(),
+                $e
+            ),
+            425 => new TooEarlyException(
                 $e->getCode(),
                 $e
             ),
