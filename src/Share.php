@@ -102,9 +102,15 @@ class Share
         return (string)$this->apiPermission->getId();
     }
 
-    public function getExpiry(): ?\DateTime
+    public function getExpiration(): ?\DateTimeImmutable
     {
-        return $this->apiPermission->getExpirationDateTime();
+        $expiry = $this->apiPermission->getExpirationDateTime();
+        if ($expiry === null) {
+            return null;
+        } else {
+            return \DateTimeImmutable::createFromMutable($expiry);
+        }
+
     }
 
     /**
@@ -142,9 +148,14 @@ class Share
      * @throws HttpException
      * @throws NotFoundException
      */
-    public function setExpiration(?\DateTime $expiration): bool
+    public function setExpiration(?\DateTimeImmutable $expiration): bool
     {
-        $this->apiPermission->setExpirationDateTime($expiration);
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+        } else {
+            $expirationMutable = null;
+        }
+        $this->apiPermission->setExpirationDateTime($expirationMutable);
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(

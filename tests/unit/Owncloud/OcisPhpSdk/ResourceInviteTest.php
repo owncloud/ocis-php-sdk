@@ -87,7 +87,7 @@ class ResourceInviteTest extends TestCase
             // set expiry time
             [
                 [$smartPeopleGroup],
-                new \DateTime('2022-12-31 01:02:03.456789'),
+                new \DateTimeImmutable('2022-12-31 01:02:03.456789'),
                 new DriveItemInvite(
                     [
                         'recipients' => [
@@ -99,14 +99,14 @@ class ResourceInviteTest extends TestCase
                             ),
                         ],
                         'roles' => ['uuid-of-the-role'],
-                        'expiration_date_time' => '2022-12-31T01:02:03:456789Z'
+                        'expiration_date_time' => new \DateTimeImmutable('2022-12-31 01:02:03.456789Z')
                     ]
                 )
             ],
             // set expiry time, with conversion to UTC/Z timezone
             [
                 [$einstein],
-                new \DateTime('2021-01-01 17:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
+                new \DateTimeImmutable('2021-01-01 17:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
                 new DriveItemInvite(
                     [
                         'recipients' => [
@@ -117,7 +117,7 @@ class ResourceInviteTest extends TestCase
                             ),
                         ],
                         'roles' => ['uuid-of-the-role'],
-                        'expiration_date_time' => '2021-01-01T12:00:43:123456Z'
+                        'expiration_date_time' => new \DateTimeImmutable('2021-01-01 12:00:43.123456Z')
                     ]
                 )
             ],
@@ -128,7 +128,7 @@ class ResourceInviteTest extends TestCase
      * @dataProvider inviteDataProvider
      * @param array<int, User|Group> $recipients
      */
-    public function testInvite($recipients, ?\DateTime $expiration, DriveItemInvite $expectedInviteData): void
+    public function testInvite($recipients, ?\DateTimeImmutable $expiration, DriveItemInvite $expectedInviteData): void
     {
         $permission = $this->createMock(Permission::class);
         $permission->method('getId')
