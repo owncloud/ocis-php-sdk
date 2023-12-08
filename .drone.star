@@ -566,6 +566,7 @@ def composerInstall():
             "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
         },
         "commands": [
+            "composer clear",
             "composer install",
         ],
     }]
