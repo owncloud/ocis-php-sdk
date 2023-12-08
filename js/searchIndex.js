@@ -586,10 +586,10 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getPermissionId"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetExpiry\u0028\u0029",
-            "name": "getExpiry",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetExpiration\u0028\u0029",
+            "name": "getExpiration",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiry"
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiration"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003Adelete\u0028\u0029",
             "name": "delete",
