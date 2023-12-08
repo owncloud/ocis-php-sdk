@@ -53,17 +53,20 @@ class Ocis
     /**
      * @phpstan-param array{
      *                        'headers'?:array<string, mixed>,
+     *                        'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
      *                        'verify'?:bool,
      *                        'webfinger'?:bool,
      *                        'guzzle'?:Client
      *                        } $connectionConfig
-     *        valid config keys are: headers, verify, webfinger, guzzle
+     *        valid config keys are: headers, proxy, verify, webfinger, guzzle
      *        headers has to be an array in the form like
      *        [
      *            'User-Agent' => 'testing/1.0',
      *            'Accept'     => 'application/json',
      *            'X-Foo'      => ['Bar', 'Baz']
      *        ]
+     *        proxy is an array or a string that defines the proxy configuration, the schema is the same as for guzzle 7
+     *              https://docs.guzzlephp.org/en/stable/request-options.html#proxy
      *        verify is a boolean to disable SSL checking
      *        webfinger is a boolean to enable webfinger discovery, in that case $serviceUrl is the webfinger url
      *        guzzle is a guzzle client instance that can be injected e.g. to be used for unit tests
@@ -159,7 +162,8 @@ class Ocis
             'guzzle' => 'self::isGuzzleClient',
             'drivesPermissionsApi' => 'self::isDrivesPermissionsApi',
             'drivesApi' => 'self::isDrivesApi',
-            'drivesGetDrivesApi' => 'self::isDrivesGetDrivesApi'
+            'drivesGetDrivesApi' => 'self::isDrivesGetDrivesApi',
+            'proxy' => 'is_array',
         ];
         foreach ($connectionConfig as $key => $check) {
             if (!array_key_exists($key, $validConnectionConfigKeys)) {
@@ -185,6 +189,7 @@ class Ocis
      *         The function is public to make it testable.
      * @phpstan-param array{
      *                       'headers'?:array<string, mixed>,
+     *                       'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
      *                       'verify'?:bool,
      *                       'webfinger'?:bool,
      *                       'guzzle'?:Client
