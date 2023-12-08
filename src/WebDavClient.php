@@ -2,6 +2,7 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+use GuzzleHttp\Utils as GuzzleUtils;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
@@ -46,6 +47,7 @@ class WebDavClient extends Client
     /**
      * @phpstan-param array{
      *                      'headers'?:array<string, mixed>,
+     *                      'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
      *                      'verify'?:bool,
      *                      'webfinger'?:bool,
      *                      'guzzle'?:\GuzzleHttp\Client
@@ -66,6 +68,34 @@ class WebDavClient extends Client
             $settings[CURLOPT_SSL_VERIFYPEER] = $connectionConfig['verify'];
             $settings[CURLOPT_SSL_VERIFYHOST] = $connectionConfig['verify'];
         }
+
+        // set the proxy settings, basically same as done in guzzle
+        if (isset($connectionConfig['proxy'])) {
+            $scheme = parse_url($this->baseUri, PHP_URL_SCHEME);
+
+            if (is_string($connectionConfig['proxy'])) {
+                $settings[CURLOPT_PROXY] = $connectionConfig['proxy'];
+            } elseif (
+                array_key_exists('proxy', $connectionConfig) &&
+                is_array($connectionConfig['proxy'])
+            ) {
+                if (isset($connectionConfig['proxy'][$scheme])) {
+                    $host = parse_url($this->baseUri, PHP_URL_HOST);
+                    if (isset($connectionConfig['proxy']['no']) &&
+                        is_string($host) &&
+                        GuzzleUtils::isHostInNoProxy($host, $connectionConfig['proxy']['no'])) {
+                        // @phpstan-ignore-next-line unsetting an item that does not exist in array does work
+                        unset($settings[CURLOPT_PROXY]);
+                    } else {
+                        // we have already checked if 'proxy' item exists and is an array and that $scheme is set
+                        // @phan-suppress-next-next-line PhanTypeArraySuspiciousNullable
+                        // @phan-suppress-next-line PhanTypePossiblyInvalidDimOffset
+                        $settings[CURLOPT_PROXY] = $connectionConfig['proxy'][$scheme];
+                    }
+                }
+            }
+        }
+
         return $settings;
     }
 
@@ -74,6 +104,7 @@ class WebDavClient extends Client
      * enable exceptions for send method
      * @phpstan-param array{
      *                       'headers'?:array<string, mixed>,
+     *                       'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
      *                       'verify'?:bool,
      *                       'webfinger'?:bool,
      *                       'guzzle'?:\GuzzleHttp\Client
