@@ -566,7 +566,7 @@ def composerInstall():
             "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
         },
         "commands": [
-            "composer clear",
+            "composer update owncloud/libre-graph-api-php",
             "composer install",
         ],
     }]
