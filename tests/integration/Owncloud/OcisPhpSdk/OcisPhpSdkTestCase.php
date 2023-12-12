@@ -4,7 +4,10 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
+use Owncloud\OcisPhpSdk\OcisResource;
+use Owncloud\OcisPhpSdk\SharingRole;
 use PHPUnit\Framework\TestCase;
 
 class OcisPhpSdkTestCase extends TestCase
@@ -58,7 +61,7 @@ class OcisPhpSdkTestCase extends TestCase
             }
 
         }
-        foreach($this->createdGroups as $group) {
+        foreach ($this->createdGroups as $group) {
             $group->delete();
         }
         $this->createdGroups = [];
@@ -135,5 +138,34 @@ class OcisPhpSdkTestCase extends TestCase
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $ocis->getMyDrives();
         return $ocis;
+    }
+
+    protected function getRoleByName(OcisResource $resource, string $roleName): SharingRole
+    {
+        foreach ($resource->getRoles() as $role) {
+            if ($role->getDisplayName() === $roleName) {
+                return $role;
+            }
+        }
+        throw new \Exception('Role not found');
+    }
+
+    protected function getContentOfResource425Save(OcisResource $resource): string
+    {
+        $content = null;
+        $timeout = 10;
+        $count = 0;
+        while ($content === null) {
+            try {
+                $content = $resource->getContent();
+            } catch (TooEarlyException) {
+                $this->assertLessThan($timeout, $count);
+                sleep(1);
+                $count++;
+            }
+        }
+        // check for null is done above
+        // @phan-suppress-next-line PhanTypeMismatchReturnNullable
+        return $content;
     }
 }

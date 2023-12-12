@@ -368,7 +368,7 @@ class Drive
             foreach (ResourceMetadata::cases() as $property) {
                 $properties[] = $property->value;
             }
-            $responses = $webDavClient->propFind(rawurlencode(ltrim($path, "/")), $properties, 1);
+            $responses = $webDavClient->propFindUnfiltered(rawurlencode(ltrim($path, "/")), $properties, 1);
             foreach ($responses as $response) {
                 $resources[] = new OcisResource(
                     $response,
