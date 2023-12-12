@@ -187,6 +187,8 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                     sleep(1);
                 }
             }
+            // check for null is done above
+            // @phan-suppress-next-line PhanTypeMismatchArgumentNullableInternal
             $content = fread($stream, 1024);
             switch ($resource->getName()) {
                 case 'somefile.txt':

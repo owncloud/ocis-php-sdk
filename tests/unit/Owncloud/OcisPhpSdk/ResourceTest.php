@@ -37,7 +37,7 @@ class ResourceTest extends TestCase
     }
 
     /**
-     * @param array<mixed> $metadata
+     * @param array<int, array<mixed>> $metadata
      * @return OcisResource
      */
     private function createOcisResource(array $metadata): OcisResource
@@ -354,7 +354,7 @@ class ResourceTest extends TestCase
         $driveApiMock->method('getDrive')
             ->willReturn($driveMock);
         $accessToken = 'aaa';
-        $metadata[200] = ['{http://owncloud.org/ns}spaceid' => 'spaceid'];
+        $metadata = [200 => ['{http://owncloud.org/ns}spaceid' => 'spaceid']];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage('Could not get drive id');
         // @phan-suppress-next-line PhanNoopNew we are expecting an exception
@@ -374,7 +374,7 @@ class ResourceTest extends TestCase
         $driveApiMock->method('getDrive')
             ->willReturn($errorMock);
         $accessToken = 'aaa';
-        $metadata[200] = ['{http://owncloud.org/ns}spaceid' => 'spaceid'];
+        $metadata = [200 => ['{http://owncloud.org/ns}spaceid' => 'spaceid']];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage('getDrive returned an OdataError - ');
         // @phan-suppress-next-line PhanNoopNew we are expecting an exception

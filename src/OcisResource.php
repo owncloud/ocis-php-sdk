@@ -29,7 +29,7 @@ use Sabre\HTTP\ResponseInterface;
 class OcisResource
 {
     /**
-     * @var array<mixed>
+     * @var array<int, array<mixed>>
      */
     private array $metadata;
     private string $accessToken;
@@ -49,7 +49,7 @@ class OcisResource
     private string $driveId;
 
     /**
-     * @param array<mixed> $metadata of the resource
+     * @param array<int, array<mixed>> $metadata of the resource
      *        the format of the array is directly taken from the PROPFIND response
      *        returned by Sabre\DAV\Client
      *        for details about accepted metadata see: ResourceMetadata
@@ -575,6 +575,7 @@ class OcisResource
      * @throws HttpException
      * @throws InvalidResponseException
      * @throws NotFoundException
+     * @throws TooEarlyException
      */
     public function getContentStream()
     {

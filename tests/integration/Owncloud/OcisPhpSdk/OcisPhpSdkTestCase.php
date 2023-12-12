@@ -160,6 +160,8 @@ class OcisPhpSdkTestCase extends TestCase
                 sleep(1);
             }
         }
+        // check for null is done above
+        // @phan-suppress-next-line PhanTypeMismatchReturnNullable
         return $content;
     }
 }
