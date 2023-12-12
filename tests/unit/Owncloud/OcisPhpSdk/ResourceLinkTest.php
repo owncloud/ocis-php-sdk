@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 
 class ResourceLinkTest extends TestCase
 {
+    private const PASSWORD = "p@$\$w0rD";
     /**
      * @return array<mixed>
      */
@@ -24,12 +25,12 @@ class ResourceLinkTest extends TestCase
             [
                 SharingLinkType::VIEW,
                 null,
-                null,
+                self::PASSWORD,
                 null,
                 new DriveItemCreateLink(
                     [
                         'type' => SharingLinkType::VIEW,
-                        'password' => null,
+                        'password' => self::PASSWORD,
                         'expiration_date_time' => null,
                         'display_name' => null
                     ]
@@ -39,12 +40,12 @@ class ResourceLinkTest extends TestCase
             [
                 SharingLinkType::EDIT,
                 new \DateTimeImmutable('2022-12-31 01:02:03.456789'),
-                'a-password',
+                self::PASSWORD,
                 'the name of the link',
                 new DriveItemCreateLink(
                     [
                         'type' => SharingLinkType::EDIT,
-                        'password' => 'a-password',
+                        'password' => self::PASSWORD,
                         'expiration_date_time' => new \DateTime('2022-12-31 01:02:03.456789Z'),
                         'display_name' => 'the name of the link'
                     ]
@@ -54,12 +55,12 @@ class ResourceLinkTest extends TestCase
             [
                 SharingLinkType::EDIT,
                 new \DateTimeImmutable('2021-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
-                null,
+                self::PASSWORD,
                 null,
                 new DriveItemCreateLink(
                     [
                         'type' => SharingLinkType::EDIT,
-                        'password' => null,
+                        'password' => self::PASSWORD,
                         'expiration_date_time' => new \DateTime('2020-12-31 23:00:43.123456Z'),
                         'display_name' => null
                     ]
@@ -129,7 +130,7 @@ class ResourceLinkTest extends TestCase
         $permissionMock = $this->createMock(Permission::class);
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $this->createResource($drivesPermissionsApi)->createSharingLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
     }
 
     public function testInvalidLinkResponse(): void
@@ -140,7 +141,7 @@ class ResourceLinkTest extends TestCase
         $permissionMock->method('getId')->willReturn('uuid-of-the-permission');
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $this->createResource($drivesPermissionsApi)->createSharingLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
     }
 
     public function testInvalidSharingLinkWebUrlResponse(): void
@@ -154,7 +155,7 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $this->createResource($drivesPermissionsApi)->createSharingLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
     }
 
     public function testInvalidSharingLinkTypeResponse(): void
@@ -169,6 +170,6 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $this->createResource($drivesPermissionsApi)->createSharingLink();
+        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
     }
 }
