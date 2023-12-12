@@ -146,7 +146,9 @@ class ResourceInviteTest extends TestCase
             'drivesPermissionsApi' => $drivesPermissionsApi,
         ];
         $resourceMetadata = [
-            '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
+            200 => [
+                '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
+            ]
         ];
 
         $resource = new OcisResource(

@@ -7,7 +7,10 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
+use Owncloud\OcisPhpSdk\Exception\ConflictException;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\OrderDirection;
@@ -15,12 +18,13 @@ use Owncloud\OcisPhpSdk\OrderDirection;
 class OcisResourceTest extends OcisPhpSdkTestCase
 {
     private Drive $personalDrive;
+    private Ocis $ocis;
     public function setUp(): void
     {
         parent::setUp();
         $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $this->personalDrive = $ocis->getMyDrives(
+        $this->ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $this->personalDrive = $this->ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
             DriveType::PERSONAL
@@ -32,6 +36,43 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->createdResources[$this->personalDrive->getId()][] = '/somefile.txt';
         $this->createdResources[$this->personalDrive->getId()][] = '/secondfile.txt';
         $this->createdResources[$this->personalDrive->getId()][] = '/subfolder';
+    }
+
+    /**
+     * @param Ocis $ocis
+     * @return array<Drive>
+     */
+    private function getMountpoints(Ocis $ocis): array
+    {
+        // we need to wait till the mountpoint appears
+        $retryCounter = 0;
+        do {
+            $mountpoints = $ocis->getMyDrives(
+                DriveOrder::NAME,
+                OrderDirection::ASC,
+                DriveType::MOUNTPOINT
+            );
+            if (count($mountpoints) === 0) {
+                sleep(1);
+            }
+            $retryCounter++;
+            $this->assertLessThan(10, $retryCounter);
+        } while (count($mountpoints) === 0);
+        return $mountpoints;
+    }
+
+    private function share(string $receiverName, string $roleName, string $resourceName): void
+    {
+        $receiver = $this->ocis->getUsers($receiverName)[0];
+        $resources = $this->personalDrive->getResources();
+
+        foreach ($resources as $resource) {
+            if ($resource->getName() === $resourceName) {
+                $role = $this->getRoleByName($resource, $roleName);
+                $resource->invite([$receiver], $role);
+                break;
+            }
+        }
     }
 
     public function testGetResources(): void
@@ -109,7 +150,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $resources = $this->personalDrive->getResources();
         foreach ($resources as $resource) {
-            $content = $resource->getContent();
+            $content = $this->getContentOfResource425Save($resource);
             switch ($resource->getName()) {
                 case 'somefile.txt':
                     $this->assertEquals('some content', $content);
@@ -138,7 +179,16 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $resources = $this->personalDrive->getResources();
         foreach ($resources as $resource) {
-            $stream = $resource->getContentStream();
+            $stream = null;
+            while ($stream === null) {
+                try {
+                    $stream = $resource->getContentStream();
+                } catch (TooEarlyException) {
+                    sleep(1);
+                }
+            }
+            // check for null is done above
+            // @phan-suppress-next-line PhanTypeMismatchArgumentNullableInternal
             $content = fread($stream, 1024);
             switch ($resource->getName()) {
                 case 'somefile.txt':
@@ -152,5 +202,86 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                     break;
             }
         }
+    }
+
+    public function testUploadFile(): void
+    {
+        $this->personalDrive->uploadFile('/subfolder/uploaded.txt', 'some content');
+        $resources = $this->personalDrive->getResources('/subfolder');
+        $this->assertCount(1, $resources);
+        $this->assertEquals('uploaded.txt', $resources[0]->getName());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('some content', $content);
+    }
+
+    public function testUploadFileOverwritingExisting(): void
+    {
+        $this->personalDrive->uploadFile('/subfolder/uploaded.txt', 'some content');
+        $this->personalDrive->uploadFile('/subfolder/uploaded.txt', 'new content');
+        $resources = $this->personalDrive->getResources('/subfolder');
+        $this->assertCount(1, $resources);
+        $this->assertEquals('uploaded.txt', $resources[0]->getName());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('new content', $content);
+    }
+
+    public function testUploadFileNotExistingFolder(): void
+    {
+        $this->expectException(ConflictException::class);
+        $this->personalDrive->uploadFile('/folder-not-existing/uploaded.txt', 'some content');
+    }
+
+    public function testUploadFileToReceivedFolderShare(): void
+    {
+        $einsteinOcis = $this->initUser('einstein', 'relativity');
+        $this->share('einstein', 'Editor', 'subfolder');
+
+        $sharesReceivedByEinstein = $this->getMountpoints($einsteinOcis);
+
+        $sharesReceivedByEinstein[0]->uploadFile('/uploaded.txt', 'some content');
+
+        $resources = $this->personalDrive->getResources('/subfolder');
+        $this->assertCount(1, $resources);
+        $this->assertEquals('uploaded.txt', $resources[0]->getName());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('some content', $content);
+    }
+
+    public function testUploadFileNoPermission(): void
+    {
+        $einsteinOcis = $this->initUser('einstein', 'relativity');
+        $einstein = $this->ocis->getUsers('einstein')[0];
+        $resources = $this->personalDrive->getResources();
+
+        foreach ($resources as $resource) {
+            if ($resource->getName() === 'subfolder') {
+                $role = $this->getRoleByName($resource, 'Viewer');
+                $resource->invite([$einstein], $role);
+                break;
+            }
+        }
+
+        $sharesReceivedByEinstein = $this->getMountpoints($einsteinOcis);
+
+        $this->expectException(ForbiddenException::class);
+        $sharesReceivedByEinstein[0]->uploadFile('/uploaded.txt', 'some content');
+    }
+
+    public function testUploadFileStream(): void
+    {
+        $localFileName = tempnam(sys_get_temp_dir(), "FOO");
+        $this->assertNotFalse($localFileName, 'could not create temp file');
+        $fp = fopen($localFileName, "w");
+        $this->assertNotFalse($fp, 'could not open temp file');
+        $this->assertSame(12, fwrite($fp, 'some content'));
+        fclose($fp);
+        $fp = fopen($localFileName, "r");
+        $this->assertNotFalse($fp, 'could not open temp file');
+        $this->personalDrive->uploadFileStream('/subfolder/uploaded.txt', $fp);
+        $resources = $this->personalDrive->getResources('/subfolder');
+        $this->assertCount(1, $resources);
+        $this->assertEquals('uploaded.txt', $resources[0]->getName());
+        $content = $this->getContentOfResource425Save($resources[0]);
+        $this->assertEquals('some content', $content);
     }
 }

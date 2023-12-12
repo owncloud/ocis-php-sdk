@@ -74,9 +74,9 @@ class ResourceLinkTest extends TestCase
         $connectionConfig = [
             'drivesPermissionsApi' => $drivesPermissionsApi,
         ];
-        $resourceMetadata = [
+        $resourceMetadata = [200 => [
             '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
-        ];
+        ]];
         return new OcisResource(
             $resourceMetadata,
             'uuid-of-the-drive',

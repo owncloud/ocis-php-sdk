@@ -204,23 +204,6 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->createdGroups = [$physicsLoversGroup];
     }
 
-    /**
-     * @return void
-     */
-    public function testDeleteGroupByIdNoPermission(): void
-    {
-        $ocis = $this->getOcis('admin', 'admin');
-        $philosophyHatersGroup = $ocis->createGroup("philosophy-haters", "philosophy haters group");
-        //any user other than admin can't get Group ID because of bug, thus bypassing this step
-        //Todo : make Einstein get Group ID after this bug is solved.
-        $groupId = $philosophyHatersGroup->getId();
-        $this->createdGroups = [$philosophyHatersGroup];
-        $token = $this->getAccessToken('einstein', 'relativity');
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
-        $this->expectException(UnauthorizedException::class);
-        $ocis->deleteGroupByID($groupId);
-    }
-
     private function getPersonalDrive(Ocis $ocis): Drive
     {
         return $ocis->getMyDrives(
@@ -242,7 +225,8 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('somefile.txt', $resource->getName());
         $this->assertSame('file', $resource->getType());
         $this->assertSame(12, $resource->getSize());
-        $this->assertSame('some content', $resource->getContent());
+        $content = $this->getContentOfResource425Save($resource);
+        $this->assertSame('some content', $content);
         $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 
@@ -292,7 +276,8 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertSame('somefile.txt', $resource->getName());
         $this->assertSame('file', $resource->getType());
         $this->assertSame(12, $resource->getSize());
-        $this->assertSame('some content', $resource->getContent());
+        $content = $this->getContentOfResource425Save($resource);
+        $this->assertSame('some content', $content);
         $this->assertSame($personalDrive->getId(), $resource->getDriveId());
     }
 

@@ -573,7 +573,7 @@ class Ocis
             foreach (ResourceMetadata::cases() as $property) {
                 $properties[] = $property->value;
             }
-            $responses = $webDavClient->propFind(rawurlencode($fileId), $properties);
+            $responses = $webDavClient->propFindUnfiltered(rawurlencode($fileId), $properties);
             $resource = new OcisResource(
                 $responses,
                 null,
@@ -591,6 +591,7 @@ class Ocis
 
     /**
      * retrieve users known by the system
+     * NOTE: if this function is used by a normal user a search string with atleast 3 characters should be provided
      *
      * @param string|null $search
      * @return array<User>
