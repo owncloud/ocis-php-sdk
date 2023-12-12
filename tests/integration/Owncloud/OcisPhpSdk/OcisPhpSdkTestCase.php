@@ -153,11 +153,15 @@ class OcisPhpSdkTestCase extends TestCase
     protected function getContentOfResource425Save(OcisResource $resource): string
     {
         $content = null;
+        $timeout = 10;
+        $count = 0;
         while ($content === null) {
             try {
                 $content = $resource->getContent();
             } catch (TooEarlyException) {
+                $this->assertLessThan($timeout, $count);
                 sleep(1);
+                $count++;
             }
         }
         // check for null is done above
