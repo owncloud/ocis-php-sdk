@@ -211,6 +211,11 @@ Search.appendIndex(
             "summary": "Exception\u0020for\u0020HTTP\u0020400\u0020errors",
             "url": "classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\ConflictException",
+            "name": "ConflictException",
+            "summary": "Exception\u0020for\u0020HTTP\u0020409\u0020errors",
+            "url": "classes/Owncloud-OcisPhpSdk-Exception-ConflictException.html"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\ForbiddenException",
             "name": "ForbiddenException",
             "summary": "Exception\u0020for\u0020HTTP\u0020403\u0020errors",
@@ -235,6 +240,16 @@ Search.appendIndex(
             "name": "NotImplementedException",
             "summary": "Exception\u0020for\u0020functionalities\u0020that\u0020are\u0020planned\u0020but\u0020are\u0020not\u0020implemented\u0020yet",
             "url": "classes/Owncloud-OcisPhpSdk-Exception-NotImplementedException.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\TooEarlyException",
+            "name": "TooEarlyException",
+            "summary": "Exception\u0020for\u0020HTTP\u0020425\u0020errors",
+            "url": "classes/Owncloud-OcisPhpSdk-Exception-TooEarlyException.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\TooEarlyException\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Exception-TooEarlyException.html#method___construct"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\UnauthorizedException",
             "name": "UnauthorizedException",
@@ -548,7 +563,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetContent\u0028\u0029",
             "name": "getContent",
-            "summary": "",
+            "summary": "returns\u0020the\u0020content\u0020of\u0020this\u0020resource",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getContent"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetContentStream\u0028\u0029",
