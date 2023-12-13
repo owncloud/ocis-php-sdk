@@ -21,6 +21,19 @@ class UsersTest extends OcisPhpSdkTestCase
         $this->assertGreaterThanOrEqual(3, $users);
     }
 
+    public function testGetUsersByNormalUser(): void
+    {
+        $this->initUser('einstein', 'relativity');
+        $this->initUser('marie', 'radioactivity');
+        $token = $this->getAccessToken('marie', 'radioactivity');
+
+        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $users = $ocis->getUsers("mar");
+        $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
+        $this->assertGreaterThanOrEqual(1, $users);
+        $this->assertEquals('Marie Curie', $users[0]->getDisplayName());
+    }
+
     public function testSearchUsers(): void
     {
         $this->initUser('marie', 'radioactivity');
@@ -37,11 +50,11 @@ class UsersTest extends OcisPhpSdkTestCase
 
     public function testGetAllUsersAsUnprivilegedUser(): void
     {
-        $this->expectException(ForbiddenException::class);
         $this->initUser('marie', 'radioactivity');
         $token = $this->getAccessToken('einstein', 'relativity');
 
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $this->expectException(ForbiddenException::class);
         $users = $ocis->getUsers();
         $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
         $this->assertGreaterThanOrEqual(3, $users);

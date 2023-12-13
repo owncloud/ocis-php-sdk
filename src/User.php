@@ -10,7 +10,7 @@ class User
     private string $id;
     private string $displayName;
     private string $mail;
-    private string $onPremisesSamAccountName;
+    private string|null $onPremisesSamAccountName;
     /**
      * @param OpenAPIUser $openApiUser
      * @ignore The developer using the SDK does not need to create User objects manually,
@@ -34,10 +34,7 @@ class User
             "Invalid mail returned for user '" . print_r($openApiUser->getMail(), true) . "'"
         )
         : (string)$openApiUser->getMail();
-        $this->onPremisesSamAccountName = empty($openApiUser->getOnPremisesSamAccountName()) ?
-        throw new InvalidResponseException("Invalid onPremisesSamAccountName returned for user '" .
-            print_r($openApiUser->getOnPremisesSamAccountName(), true) . "'")
-        : (string)$openApiUser->getOnPremisesSamAccountName();
+        $this->onPremisesSamAccountName = $openApiUser->getOnPremisesSamAccountName();
     }
 
     /**
@@ -67,7 +64,7 @@ class User
     /**
      * Get the value of onPremisesSamAccountName
      */
-    public function getOnPremisesSamAccountName(): string
+    public function getOnPremisesSamAccountName(): string|null
     {
         return $this->onPremisesSamAccountName;
     }
