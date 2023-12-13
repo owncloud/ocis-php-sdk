@@ -101,7 +101,7 @@ $resources[0]->invite($users, $editorRole);
 
 ## Requirements
 - PHP 8.1 or higher
-- oCIS 4.0.0 or higher
+- oCIS 5.0.0 or higher
 
 ## Acquiring an Access Token
 For an easier experience in acquiring an access token, several PHP OIDC client libraries are available. The following code snippet showcases how to retrieve an access token with the `facile-it/php-openid-client` library.
