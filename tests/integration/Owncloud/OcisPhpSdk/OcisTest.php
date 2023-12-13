@@ -25,21 +25,21 @@ class OcisTest extends OcisPhpSdkTestCase
 
     public function testGetMyDrives(): void
     {
-        $adminOcis = $this -> getOcis('admin', 'admin');
-        $marieOcis = $this -> getOcis('marie', 'radioactivity');
+        $adminOcis = $this->getOcis('admin', 'admin');
+        $marieOcis = $this->getOcis('marie', 'radioactivity');
 
-        $adminDrive = $adminOcis -> createDrive('Admin Project Drive');
-        $this -> createdDrives[] = $adminDrive -> getId();
+        $adminDrive = $adminOcis->createDrive('Admin Project Drive');
+        $this->createdDrives[] = $adminDrive->getId();
 
-        $adminPersonalDrive = $adminOcis -> getMyDrives(
+        $adminPersonalDrive = $adminOcis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
             DriveType::PERSONAL
         )[0];
 
-        $adminPersonalDrive -> createFolder('sharedAdminFolder');
+        $adminPersonalDrive->createFolder('sharedAdminFolder');
         $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
-        $resources = $adminPersonalDrive -> getResources();
+        $resources = $adminPersonalDrive->getResources();
 
         $sharedResource = null;
 
@@ -53,11 +53,11 @@ class OcisTest extends OcisPhpSdkTestCase
                 "resource not found "
             );
         }
-        $marie = $adminOcis -> getUsers('marie')[0];
+        $marie = $adminOcis->getUsers('marie')[0];
 
         $managerRole = null;
-        foreach ($sharedResource->getRoles()  as $role) {
-            if ($role -> getDisplayName() === 'Manager') {
+        foreach($sharedResource->getRoles() as $role) {
+            if($role->getDisplayName() === 'Manager') {
                 $managerRole = $role;
             }
         }
@@ -67,14 +67,14 @@ class OcisTest extends OcisPhpSdkTestCase
                 "manager role not found "
             );
         }
-        $sharedResource -> invite([$marie], $managerRole);
+        $sharedResource->invite([$marie], $managerRole);
 
-        $marieDrive = $marieOcis -> getMyDrives();
-        $this -> assertContainsOnlyInstancesOf(Drive::class, $marieDrive);
+        $marieDrive = $marieOcis->getMyDrives();
+        $this->assertContainsOnlyInstancesOf(Drive::class, $marieDrive);
         foreach ($marieDrive as $drive) {
-            $this -> assertNotSame('Admin Project Drive', $drive -> getName());
-            if ($drive -> getType() === DriveType::MOUNTPOINT) {
-                $this -> assertEquals('sharedAdminFolder', $drive -> getName());
+            $this->assertNotSame('Admin Project Drive', $drive->getName());
+            if ($drive->getType() === DriveType::MOUNTPOINT) {
+                $this->assertEquals('sharedAdminFolder', $drive->getName());
             }
         }
     }
@@ -91,13 +91,13 @@ class OcisTest extends OcisPhpSdkTestCase
         $managementDrive = $adminOcis->createDrive('Management Project Drive');
         $this->createdDrives[] = $managementDrive->getId();
 
-        $adminPersonalDrive = $adminOcis -> getMyDrives(
+        $adminPersonalDrive = $adminOcis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
             DriveType::PERSONAL
         )[0];
 
-        $adminPersonalDrive -> createFolder('sharedAdminFolder');
+        $adminPersonalDrive->createFolder('sharedAdminFolder');
         $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
         $resources = $adminPersonalDrive->getResources();
 
@@ -113,11 +113,11 @@ class OcisTest extends OcisPhpSdkTestCase
             );
         }
 
-        $katherine = $adminOcis -> getUsers('katherine')[0];
+        $katherine = $adminOcis->getUsers('katherine')[0];
 
         $managerRole = null;
-        foreach ($sharedResource->getRoles()  as $role) {
-            if ($role -> getDisplayName() === 'Manager') {
+        foreach($sharedResource->getRoles() as $role) {
+            if ($role->getDisplayName() === 'Manager') {
                 $managerRole = $role;
             }
         }
@@ -126,7 +126,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 "manager role not found "
             );
         }
-        $sharedResource -> invite([$katherine], $managerRole);
+        $sharedResource->invite([$katherine], $managerRole);
 
         $drives = $adminOcis->getAllDrives();
         foreach ($drives as $drive) {
@@ -149,8 +149,8 @@ class OcisTest extends OcisPhpSdkTestCase
                     )
                 );
             }
-            if ($drive -> getType() === DriveType::MOUNTPOINT) {
-                $this -> assertEquals('sharedAdminFolder', $drive -> getName());
+            if($drive->getType() === DriveType::MOUNTPOINT) {
+                $this->assertEquals('sharedAdminFolder', $drive->getName());
             }
         }
     }
@@ -177,7 +177,7 @@ class OcisTest extends OcisPhpSdkTestCase
 
         $managementDrive = null;
         $sportDrive = null;
-        if ($driveType === DriveType::PROJECT) {
+        if($driveType === DriveType::PROJECT) {
             $sportDrive = $adminOcis->createDrive('Sport Project Drive');
             $this->createdDrives[] = $sportDrive->getId();
             $managementDrive = $adminOcis->createDrive('Management Project Drive');
@@ -191,7 +191,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 DriveType::PERSONAL
             )[0];
 
-            $adminPersonalDrive -> createFolder('sharedAdminFolder');
+            $adminPersonalDrive->createFolder('sharedAdminFolder');
             $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
             $resources = $adminPersonalDrive->getResources();
 
@@ -206,11 +206,11 @@ class OcisTest extends OcisPhpSdkTestCase
                 );
             }
 
-            $katherine = $adminOcis -> getUsers('katherine')[0];
+            $katherine = $adminOcis->getUsers('katherine')[0];
 
             $managerRole = null;
-            foreach ($sharedResource->getRoles()  as $role) {
-                if ($role -> getDisplayName() === 'Manager') {
+            foreach ($sharedResource->getRoles() as $role) {
+                if ($role->getDisplayName() === 'Manager') {
                     $managerRole = $role;
                 }
             }
@@ -221,7 +221,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 );
             }
 
-            $sharedResource -> invite([$katherine], $managerRole);
+            $sharedResource->invite([$katherine], $managerRole);
         }
 
         $drives = $adminOcis->getAllDrives(
@@ -244,7 +244,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 );
             }
             if ($drive->getType() === DriveType::MOUNTPOINT) {
-                $this -> assertEquals('sharedAdminFolder', $drive -> getName());
+                $this->assertEquals('sharedAdminFolder', $drive->getName());
             }
             if ($drive->getType() === DriveType::VIRTUAL) {
                 $this->assertEquals('Shares', $drive->getName());
@@ -305,6 +305,7 @@ class OcisTest extends OcisPhpSdkTestCase
             [-100],
         ];
     }
+
     /**
      * @dataProvider invalidQuotaProvider
      */
@@ -337,8 +338,8 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testGetGroups(array $groupName): void
     {
         $ocis = $this->getOcis('admin', 'admin');
-        $philosophyHatersGroup =  $ocis->createGroup($groupName[0], "philosophy haters group");
-        $physicsLoversGroup =  $ocis->createGroup($groupName[1], "physics lover group");
+        $philosophyHatersGroup = $ocis->createGroup($groupName[0], "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup($groupName[1], "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups();
         $this->assertCount(2, $groups);
@@ -378,6 +379,7 @@ class OcisTest extends OcisPhpSdkTestCase
             ["ph",["philosophy-haters", "physics-lovers"]],
         ];
     }
+
     /**
      * @dataProvider searchText
      *
@@ -408,6 +410,7 @@ class OcisTest extends OcisPhpSdkTestCase
             [OrderDirection::DESC, "ph", ["physics-lovers", "philosophy-haters"]]
         ];
     }
+
     /**
      * @dataProvider orderDirection
      *
