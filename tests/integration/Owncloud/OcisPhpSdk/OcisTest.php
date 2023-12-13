@@ -23,6 +23,252 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertTrue((is_array($drives) && count($drives) > 1));
     }
 
+    public function testGetMyDrives(): void
+    {
+        $adminOcis = $this->getOcis('admin', 'admin');
+        $marieOcis = $this->getOcis('marie', 'radioactivity');
+
+        $adminDrive = $adminOcis->createDrive('Admin Project Drive');
+        $this->createdDrives[] = $adminDrive->getId();
+
+        $adminPersonalDrive = $adminOcis->getMyDrives(
+            DriveOrder::NAME,
+            OrderDirection::ASC,
+            DriveType::PERSONAL
+        )[0];
+
+        $adminPersonalDrive->createFolder('sharedAdminFolder');
+        $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
+        $resources = $adminPersonalDrive->getResources();
+
+        $sharedResource = null;
+
+        foreach ($resources as $resource) {
+            if ($resource->getName() === 'sharedAdminFolder') {
+                $sharedResource = $resource;
+            }
+        }
+        if(empty($sharedResource)) {
+            throw new \Error(
+                "resource not found "
+            );
+        }
+        $marie = $adminOcis->getUsers('marie')[0];
+
+        $managerRole = null;
+        foreach($sharedResource->getRoles() as $role) {
+            if($role->getDisplayName() === 'Manager') {
+                $managerRole = $role;
+            }
+        }
+
+        if(empty($managerRole)) {
+            throw new \Error(
+                "manager role not found "
+            );
+        }
+        $sharedResource->invite([$marie], $managerRole);
+
+        $marieDrive = $marieOcis->getMyDrives();
+        $this->assertContainsOnlyInstancesOf(Drive::class, $marieDrive);
+        foreach ($marieDrive as $drive) {
+            $this->assertNotSame('Admin Project Drive', $drive->getName());
+            if ($drive->getType() === DriveType::MOUNTPOINT) {
+                $this->assertEquals('sharedAdminFolder', $drive->getName());
+            }
+        }
+    }
+
+    public function testGetAllDrives(): void
+    {
+        $adminOcis = $this->getOcis('admin', 'admin');
+        $katherineOcis = $this->getOcis('katherine', 'gemini');
+        $katherineDrive = $katherineOcis->createDrive('katherine Project Drive');
+        $this->createdDrives[] = $katherineDrive->getId();
+
+        $sportDrive = $adminOcis->createDrive('Sport Project Drive');
+        $this->createdDrives[] = $sportDrive->getId();
+        $managementDrive = $adminOcis->createDrive('Management Project Drive');
+        $this->createdDrives[] = $managementDrive->getId();
+
+        $adminPersonalDrive = $adminOcis->getMyDrives(
+            DriveOrder::NAME,
+            OrderDirection::ASC,
+            DriveType::PERSONAL
+        )[0];
+
+        $adminPersonalDrive->createFolder('sharedAdminFolder');
+        $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
+        $resources = $adminPersonalDrive->getResources();
+
+        foreach ($resources as $resource) {
+            if ($resource->getName() === 'sharedAdminFolder') {
+                $sharedResource = $resource;
+            }
+        }
+
+        if(empty($sharedResource)) {
+            throw new \Error(
+                "resource not found "
+            );
+        }
+
+        $katherine = $adminOcis->getUsers('katherine')[0];
+
+        $managerRole = null;
+        foreach($sharedResource->getRoles() as $role) {
+            if ($role->getDisplayName() === 'Manager') {
+                $managerRole = $role;
+            }
+        }
+        if(empty($managerRole)) {
+            throw new \Error(
+                "manager role not found "
+            );
+        }
+        $sharedResource->invite([$katherine], $managerRole);
+
+        $drives = $adminOcis->getAllDrives();
+        foreach ($drives as $drive) {
+            $this->assertInstanceOf(Drive::class, $drive);
+            $this->assertThat(
+                $drive->getType(),
+                $this->logicalOr(
+                    $this->equalTo(DriveType::PROJECT),
+                    $this->equalTo(DriveType::PERSONAL),
+                    $this->equalTo(DriveType::VIRTUAL),
+                )
+            );
+            if($drive->getType() === DriveType::PROJECT) {
+                $this->assertThat(
+                    $drive->getName(),
+                    $this->logicalOr(
+                        $this->equalTo('katherine Project Drive'),
+                        $this->equalTo('Sport Project Drive'),
+                        $this->equalTo('Management Project Drive'),
+                    )
+                );
+            }
+            if($drive->getType() === DriveType::MOUNTPOINT) {
+                $this->assertEquals('sharedAdminFolder', $drive->getName());
+            }
+        }
+    }
+
+    /**
+     * @return array<int, array<int, int|DriveType>>
+     */
+    public function drivesType()
+    {
+        return [
+            [DriveType::PROJECT],
+            [DriveType::PERSONAL],
+            [DriveType::VIRTUAL],
+            [DriveType::MOUNTPOINT],
+        ];
+    }
+
+    /**
+     * @dataProvider drivesType
+     */
+    public function testGetAllDrivesType(DriveType $driveType): void
+    {
+        $adminOcis = $this->getOcis('admin', 'admin');
+
+        $managementDrive = null;
+        $sportDrive = null;
+        if($driveType === DriveType::PROJECT) {
+            $sportDrive = $adminOcis->createDrive('Sport Project Drive');
+            $this->createdDrives[] = $sportDrive->getId();
+            $managementDrive = $adminOcis->createDrive('Management Project Drive');
+            $this->createdDrives[] = $managementDrive->getId();
+        }
+
+        if($driveType === DriveType::MOUNTPOINT) {
+            $adminPersonalDrive = $adminOcis -> getMyDrives(
+                DriveOrder::NAME,
+                OrderDirection::ASC,
+                DriveType::PERSONAL
+            )[0];
+
+            $adminPersonalDrive->createFolder('sharedAdminFolder');
+            $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
+            $resources = $adminPersonalDrive->getResources();
+
+            foreach ($resources as $resource) {
+                if ($resource->getName() === 'sharedAdminFolder') {
+                    $sharedResource = $resource;
+                }
+            }
+            if(empty($sharedResource)) {
+                throw new \Error(
+                    "resource not found "
+                );
+            }
+
+            $katherine = $adminOcis->getUsers('katherine')[0];
+
+            $managerRole = null;
+            foreach ($sharedResource->getRoles() as $role) {
+                if ($role->getDisplayName() === 'Manager') {
+                    $managerRole = $role;
+                }
+            }
+
+            if(empty($managerRole)) {
+                throw new \Error(
+                    "manager role not found "
+                );
+            }
+
+            $sharedResource->invite([$katherine], $managerRole);
+        }
+
+        $drives = $adminOcis->getAllDrives(
+            DriveOrder::NAME,
+            OrderDirection::ASC,
+            $driveType
+        );
+        $this->assertContainsOnlyInstancesOf(Drive::class, $drives);
+        foreach ($drives as $drive) {
+            $this->assertEquals($drive->getType(), $driveType);
+            if ($drive->getType() === DriveType::PROJECT) {
+                $this->assertThat(
+                    $drive->getName(),
+                    $this->logicalOr(
+                        // @phpstan-ignore-next-line because the test is skipped
+                        $this->equalTo($managementDrive->getName()),
+                        // @phpstan-ignore-next-line because the test is skipped
+                        $this->equalTo($sportDrive->getName())
+                    )
+                );
+            }
+            if ($drive->getType() === DriveType::MOUNTPOINT) {
+                $this->assertEquals('sharedAdminFolder', $drive->getName());
+            }
+            if ($drive->getType() === DriveType::VIRTUAL) {
+                $this->assertEquals('Shares', $drive->getName());
+            }
+        }
+    }
+
+    public function testGetDriveById(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $sportDrive = $ocis->createDrive('Sport Project Drive');
+        $this->createdDrives[] = $sportDrive->getId();
+        $drive = $ocis->getDriveById($sportDrive->getId());
+        $this->assertInstanceOf(Drive::class, $drive);
+        $this->assertEquals($drive->getId(), $sportDrive->getId());
+        $this->assertEquals($drive->getName(), $sportDrive->getName());
+        $this->assertEquals($drive->getType(), $sportDrive->getType());
+        $this->assertEquals($drive->getRoot(), $sportDrive->getRoot());
+        $this->markTestIncomplete(
+            'libre graph issue-149 sends broken quota object while creating drive'
+        );
+        //  $this->assertEquals($sportDrive, $drive);
+    }
+
     public function testCreateDrive(): void
     {
         $ocis = $this->getOcis('admin', 'admin');
@@ -59,6 +305,7 @@ class OcisTest extends OcisPhpSdkTestCase
             [-100],
         ];
     }
+
     /**
      * @dataProvider invalidQuotaProvider
      */
@@ -91,8 +338,8 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testGetGroups(array $groupName): void
     {
         $ocis = $this->getOcis('admin', 'admin');
-        $philosophyHatersGroup =  $ocis->createGroup($groupName[0], "philosophy haters group");
-        $physicsLoversGroup =  $ocis->createGroup($groupName[1], "physics lover group");
+        $philosophyHatersGroup = $ocis->createGroup($groupName[0], "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup($groupName[1], "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups();
         $this->assertCount(2, $groups);
@@ -132,6 +379,7 @@ class OcisTest extends OcisPhpSdkTestCase
             ["ph",["philosophy-haters", "physics-lovers"]],
         ];
     }
+
     /**
      * @dataProvider searchText
      *
@@ -162,6 +410,7 @@ class OcisTest extends OcisPhpSdkTestCase
             [OrderDirection::DESC, "ph", ["physics-lovers", "philosophy-haters"]]
         ];
     }
+
     /**
      * @dataProvider orderDirection
      *
