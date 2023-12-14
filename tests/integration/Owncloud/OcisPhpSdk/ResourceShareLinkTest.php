@@ -104,8 +104,6 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
 
     public function testCreateLinkPastExpiry(): void
     {
-        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7880');
-        // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(BadRequestException::class);
         $yesterday = new \DateTimeImmutable('yesterday');
         $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $yesterday, self::PASSWORD);
