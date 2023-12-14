@@ -4,7 +4,7 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
-use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Ocis;
 
 class UsersTest extends OcisPhpSdkTestCase
@@ -37,7 +37,7 @@ class UsersTest extends OcisPhpSdkTestCase
 
     public function testGetAllUsersAsUnprivilegedUser(): void
     {
-        $this->expectException(UnauthorizedException::class);
+        $this->expectException(ForbiddenException::class);
         $this->initUser('marie', 'radioactivity');
         $token = $this->getAccessToken('einstein', 'relativity');
 

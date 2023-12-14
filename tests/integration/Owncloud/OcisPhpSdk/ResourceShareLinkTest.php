@@ -14,6 +14,7 @@ use Owncloud\OcisPhpSdk\OrderDirection;
 
 class ResourceShareLinkTest extends OcisPhpSdkTestCase
 {
+    private const PASSWORD = "p@$\$w0rD";
     private OcisResource $fileToShare;
     private OcisResource $folderToShare;
     private Ocis $ocis;
@@ -76,12 +77,12 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         }
         $expectedCountShares = 0;
         if ($validForFile) {
-            $link = $this->fileToShare->createSharingLink($type);
+            $link = $this->fileToShare->createSharingLink($type, null, self::PASSWORD);
             $this->assertSame($type, $link->getType());
             $expectedCountShares++;
         }
         if ($validForFolder) {
-            $link = $this->folderToShare->createSharingLink($type);
+            $link = $this->folderToShare->createSharingLink($type, null, self::PASSWORD);
             $this->assertSame($type, $link->getType());
             $expectedCountShares++;
         }
@@ -93,12 +94,12 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
     public function testCreateLinkWithExpiry(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow');
-        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $tomorrow);
+        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $tomorrow, self::PASSWORD);
         $this->assertInstanceOf(\DateTimeImmutable::class, $link->getExpiration());
-        $this->assertSame($tomorrow->getTimestamp(), $link->getExpiration()->getTimestamp());
+        $this->assertSame($tomorrow->modify("+1 day -1 second")->getTimestamp(), $link->getExpiration()->getTimestamp());
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiration());
-        $this->assertSame($tomorrow->getTimestamp(), $createdShares[0]->getExpiration()->getTimestamp());
+        $this->assertSame($tomorrow->modify("+1 day -1 second")->getTimestamp(), $createdShares[0]->getExpiration()->getTimestamp());
     }
 
     public function testCreateLinkPastExpiry(): void
@@ -107,23 +108,22 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(BadRequestException::class);
         $yesterday = new \DateTimeImmutable('yesterday');
-        $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $yesterday);
+        $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $yesterday, self::PASSWORD);
     }
 
     public function testCreateLinkWithExpiryTimezone(): void
     {
         $expiry = new \DateTimeImmutable('2060-01-01 12:00:00', new \DateTimeZone('Europe/Kyiv'));
-        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $expiry);
+        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $expiry, self::PASSWORD);
         $this->assertInstanceOf(\DateTimeImmutable::class, $link->getExpiration());
-        // The returned expiry is in UTC timezone (2 hours earlier than the expiry time in Kyiv)
-        $this->assertSame("Thu, 01 Jan 2060 10:00:00 +0000", $link->getExpiration()->format('r'));
+        $this->assertSame("Thu, 01 Jan 2060 21:59:59 +0000", $link->getExpiration()->format('r'));
         $this->assertSame("Z", $link->getExpiration()->getTimezone()->getName());
 
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertCount(1, $createdShares);
         $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiration());
         // The returned expiry is in UTC timezone (2 hours earlier than the expiry time in Kyiv)
-        $this->assertSame("Thu, 01 Jan 2060 10:00:00 +0000", $createdShares[0]->getExpiration()->format('r'));
+        $this->assertSame("Thu, 01 Jan 2060 21:59:59 +0000", $createdShares[0]->getExpiration()->format('r'));
         $this->assertSame("Z", $createdShares[0]->getExpiration()->getTimezone()->getName());
     }
 }
