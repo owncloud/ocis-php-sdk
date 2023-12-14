@@ -12,6 +12,7 @@ use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
@@ -112,6 +113,7 @@ class ShareLink extends Share
      * @throws BadRequestException
      * @throws HttpException
      * @throws NotFoundException
+     * @throws InternalServerErrorException
      */
     public function setDisplayName(string $displayName): bool
     {
@@ -129,6 +131,7 @@ class ShareLink extends Share
      * @throws BadRequestException
      * @throws HttpException
      * @throws NotFoundException
+     * @throws InternalServerErrorException
      */
     public function setType(SharingLinkType $linkType): bool
     {
@@ -145,6 +148,7 @@ class ShareLink extends Share
      * @throws InvalidResponseException
      * @throws NotFoundException
      * @throws UnauthorizedException
+     * @throws InternalServerErrorException
      */
     public function setPassword(string $password): bool
     {
@@ -179,6 +183,7 @@ class ShareLink extends Share
      * @throws InvalidResponseException
      * @throws NotFoundException
      * @throws UnauthorizedException
+     * @throws InternalServerErrorException
      */
     public function updateLinkOfPermission(): bool
     {

@@ -7,6 +7,7 @@ use OpenAPI\Client\Api\GroupApi;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Group as OpenApiGroup;
 use OpenAPI\Client\Model\MemberReference;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
@@ -140,6 +141,7 @@ class Group
      * @throws UnauthorizedException
      * @throws HttpException
      * @throws InvalidResponseException
+     * @throws InternalServerErrorException
      *
      * @return void
      */
@@ -170,6 +172,7 @@ class Group
      * @throws UnauthorizedException
      * @throws \InvalidArgumentException
      * @throws HttpException
+     * @throws InternalServerErrorException
      */
     public function removeUser($user): void
     {
@@ -197,6 +200,7 @@ class Group
      * @throws UnauthorizedException
      * @throws \InvalidArgumentException
      * @throws HttpException
+     * @throws InternalServerErrorException
      */
     public function delete(): void
     {
