@@ -226,6 +226,11 @@ Search.appendIndex(
             "summary": "general\u0020exception\u0020for\u0020HTTP\u0020error\u0020responses\u0020that\u0020are\u0020not\u0020handled\u0020by\u0020the\u0020other\u0020custom\u0020exceptions",
             "url": "classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\InternalServerErrorException",
+            "name": "InternalServerErrorException",
+            "summary": "Exception\u0020for\u0020HTTP\u0020500\u0020errors",
+            "url": "classes/Owncloud-OcisPhpSdk-Exception-InternalServerErrorException.html"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\InvalidResponseException",
             "name": "InvalidResponseException",
             "summary": "Exception\u0020thrown\u0020if\u0020the\u0020ownCloud\u0020Infinite\u0020Scale\u0020server\u0020returns\u0020an\u0020invalid\u0020response.",

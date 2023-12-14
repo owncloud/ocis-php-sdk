@@ -6,6 +6,7 @@ use GuzzleHttp\Utils as GuzzleUtils;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Client;
@@ -32,6 +33,7 @@ class WebDavClient extends Client
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws HttpException
+     * @throws InternalServerErrorException
      */
     public function sendRequest(string $method, string $url = '', $body = null, array $headers = []): ResponseInterface
     {
