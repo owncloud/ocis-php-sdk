@@ -25,7 +25,8 @@ class ExceptionHelper
     UnauthorizedException|
     HttpException|
     ConflictException|
-    TooEarlyException {
+    TooEarlyException|
+    InternalServerErrorException {
         $message = "";
         if ($e instanceof ApiException) {
             $rawResponseBody = $e->getResponseBody();
@@ -74,6 +75,11 @@ class ExceptionHelper
                 $e
             ),
             425 => new TooEarlyException(
+                $e->getCode(),
+                $e
+            ),
+            500 => new InternalServerErrorException(
+                $message,
                 $e->getCode(),
                 $e
             ),

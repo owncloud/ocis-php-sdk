@@ -9,6 +9,7 @@ use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use PHPUnit\Framework\TestCase;
@@ -29,25 +30,25 @@ class ExceptionHelperTest extends TestCase
             ["GuzzleHttpRequestException", "status 402 is unusual", 402, HttpException::class],
             ["GuzzleHttpRequestException", "request was forbidden", 403, ForbiddenException::class],
             ["GuzzleHttpRequestException", "not found", 404, NotFoundException::class],
-            ["GuzzleHttpRequestException", "internal server error", 500, HttpException::class],
+            ["GuzzleHttpRequestException", "internal server error", 500, InternalServerErrorException::class],
             ["SabreClientHttpException", "Bad Request", 400, BadRequestException::class],
             ["SabreClientHttpException", "Unauthorized", 401, UnauthorizedException::class],
             ["SabreClientHttpException", "Payment Required", 402, HttpException::class],
             ["SabreClientHttpException", "Forbidden", 403, ForbiddenException::class],
             ["SabreClientHttpException", "Not Found", 404, NotFoundException::class],
-            ["SabreClientHttpException", "Internal Server Error", 500, HttpException::class],
+            ["SabreClientHttpException", "Internal Server Error", 500, InternalServerErrorException::class],
             ["SabreClientException", "Bad Request", 400, BadRequestException::class],
             ["SabreClientException", "Unauthorized", 401, UnauthorizedException::class],
             ["SabreClientException", "Payment Required", 402, HttpException::class],
             ["SabreClientException", "Forbidden", 403, ForbiddenException::class],
             ["SabreClientException", "Not Found", 404, NotFoundException::class],
-            ["SabreClientException", "Internal Server Error", 500, HttpException::class],
+            ["SabreClientException", "Internal Server Error", 500, InternalServerErrorException::class],
             ["ApiException", "Bad Request", 400, BadRequestException::class],
             ["ApiException", "Unauthorized", 401, UnauthorizedException::class],
             ["ApiException", "Payment Required", 402, HttpException::class],
             ["ApiException", "Forbidden", 403, ForbiddenException::class],
             ["ApiException", "Not Found", 404, NotFoundException::class],
-            ["ApiException", "Internal Server Error", 500, HttpException::class],
+            ["ApiException", "Internal Server Error", 500, InternalServerErrorException::class],
         ];
     }
 
