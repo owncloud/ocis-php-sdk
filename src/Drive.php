@@ -15,6 +15,7 @@ use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\NotImplementedException;
@@ -173,6 +174,15 @@ class Drive
         return $this->apiDrive->jsonSerialize();
     }
 
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     */
     public function isDisabled(): bool
     {
         $guzzle = new Client(
@@ -223,6 +233,7 @@ class Drive
      * @throws BadRequestException
      * @throws HttpException
      * @throws NotFoundException
+     * @throws InternalServerErrorException
      */
     public function delete(): void
     {
@@ -256,6 +267,7 @@ class Drive
      * @throws HttpException
      * @throws BadRequestException
      * @throws NotFoundException
+     * @throws InternalServerErrorException
      */
     public function disable(): void
     {
@@ -283,6 +295,7 @@ class Drive
      * @throws BadRequestException
      * @throws HttpException
      * @throws NotFoundException
+     * @throws InternalServerErrorException
      */
     public function enable(): void
     {
@@ -358,6 +371,7 @@ class Drive
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws HttpException
+     * @throws InternalServerErrorException
      */
     public function getResources(string $path = "/"): array
     {
@@ -396,6 +410,7 @@ class Drive
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws HttpException
+     * @throws InternalServerErrorException
      */
     public function getFile(string $path)
     {

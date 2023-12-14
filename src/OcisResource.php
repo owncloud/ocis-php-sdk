@@ -16,6 +16,7 @@ use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
@@ -63,6 +64,7 @@ class OcisResource
      * @throws InvalidResponseException
      * @throws NotFoundException
      * @throws UnauthorizedException
+     * @throws InternalServerErrorException
      * @phpstan-param array{
      *              'headers'?:array<string, mixed>,
      *              'verify'?:bool,
@@ -170,6 +172,7 @@ class OcisResource
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws InvalidResponseException
+     * @throws InternalServerErrorException
      */
     public function getRoles(): array
     {
@@ -217,6 +220,7 @@ class OcisResource
      * @throws InvalidResponseException
      * @throws NotFoundException
      * @throws UnauthorizedException
+     * @throws InternalServerErrorException
      */
     public function invite($recipients, SharingRole $role, ?\DateTimeImmutable $expiration = null): array
     {
@@ -291,6 +295,7 @@ class OcisResource
      * @throws InvalidResponseException
      * @throws BadRequestException
      * @throws NotFoundException
+     * @throws InternalServerErrorException
      */
     public function createSharingLink(
         SharingLinkType $type = SharingLinkType::VIEW,
@@ -558,6 +563,7 @@ class OcisResource
      * @throws BadRequestException
      * @throws NotFoundException
      * @throws TooEarlyException
+     * @throws InternalServerErrorException
      */
     public function getContent(): string
     {
@@ -576,6 +582,7 @@ class OcisResource
      * @throws InvalidResponseException
      * @throws NotFoundException
      * @throws TooEarlyException
+     * @throws InternalServerErrorException
      */
     public function getContentStream()
     {
@@ -595,6 +602,7 @@ class OcisResource
      * @throws UnauthorizedException
      * @throws HttpException
      * @throws TooEarlyException
+     * @throws InternalServerErrorException
      */
     private function getFileResponseInterface(string $fileId): ResponseInterface
     {
