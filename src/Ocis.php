@@ -591,6 +591,7 @@ class Ocis
 
     /**
      * retrieve users known by the system
+     * NOTE: if this function is used by a normal user a search string with at least 3 characters should be provided
      *
      * @param string|null $search
      * @return array<User>

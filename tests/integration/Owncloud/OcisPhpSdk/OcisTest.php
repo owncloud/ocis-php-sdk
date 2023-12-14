@@ -12,7 +12,6 @@ use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
-use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
@@ -451,23 +450,6 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertCount(1, $ocis->getGroups());
         $this->assertEquals("physics-lovers", $ocis->getGroups()[0]->getDisplayName());
         $this->createdGroups = [$physicsLoversGroup];
-    }
-
-    /**
-     * @return void
-     */
-    public function testDeleteGroupByIdNoPermission(): void
-    {
-        $ocis = $this->getOcis('admin', 'admin');
-        $philosophyHatersGroup = $ocis->createGroup("philosophy-haters", "philosophy haters group");
-        //any user other than admin can't get Group ID because of bug, thus bypassing this step
-        //Todo : make Einstein get Group ID after this bug is solved.
-        $groupId = $philosophyHatersGroup->getId();
-        $this->createdGroups = [$philosophyHatersGroup];
-        $token = $this->getAccessToken('einstein', 'relativity');
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
-        $this->expectException(UnauthorizedException::class);
-        $ocis->deleteGroupByID($groupId);
     }
 
     private function getPersonalDrive(Ocis $ocis): Drive

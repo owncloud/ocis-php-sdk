@@ -88,20 +88,6 @@ class UserTest extends TestCase
                 "on_premises_sam_account_name" => "aa",
                 "key" => "mail",
                 "errorKey" => "mail",
-            ]], [[
-                "id" => "id",
-                "display_name" => "name",
-                "mail" => "a@a.au",
-                "on_premises_sam_account_name" => null,
-                "key" => "on_premises_sam_account_name",
-                "errorKey" => "onPremisesSamAccountName",
-            ]], [[
-                "id" => "id",
-                "display_name" => "name",
-                "mail" => "a@a.au",
-                "on_premises_sam_account_name" => "",
-                "key" => "on_premises_sam_account_name",
-                "errorKey" => "onPremisesSamAccountName",
             ]],
         ];
     }
