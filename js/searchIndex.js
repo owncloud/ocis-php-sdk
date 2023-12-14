@@ -428,7 +428,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetUsers\u0028\u0029",
             "name": "getUsers",
-            "summary": "retrieve\u0020users\u0020known\u0020by\u0020the\u0020system",
+            "summary": "retrieve\u0020users\u0020known\u0020by\u0020the\u0020system\nNOTE\u003A\u0020if\u0020this\u0020function\u0020is\u0020used\u0020by\u0020a\u0020normal\u0020user\u0020a\u0020search\u0020string\u0020with\u0020at\u0020least\u00203\u0020characters\u0020should\u0020be\u0020provided",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getUsers"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetUserById\u0028\u0029",
