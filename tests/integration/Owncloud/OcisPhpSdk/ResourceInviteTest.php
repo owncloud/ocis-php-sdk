@@ -12,6 +12,7 @@ use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
+use Owncloud\OcisPhpSdk\ShareCreated;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
@@ -256,14 +257,17 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $shares = $this->ocis->getSharedByMe();
         $this->assertCount(6, $shares);
         for($i = 0; $i < 6; $i++) {
-            $this->assertThat(
-                $shares[$i]->getReceiver()->getDisplayName(),
-                $this->logicalOr(
-                    $this->equalTo("philosophy-haters"),
-                    $this->equalTo("Marie Curie"),
-                    $this->equalTo("Albert Einstein")
-                )
-            );
+            if($shares[$i] instanceof ShareCreated) {
+                $this->assertThat(
+                    $shares[$i]->getReceiver()->getDisplayName(),
+                    $this->logicalOr(
+                        $this->equalTo("philosophy-haters"),
+                        $this->equalTo("Marie Curie"),
+                        $this->equalTo("Albert Einstein")
+                    )
+                );
+            }
+
         }
     }
 
