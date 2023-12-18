@@ -10,13 +10,18 @@ use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\OrderDirection;
+use Owncloud\OcisPhpSdk\ShareLink;
+use OpenAPI\Client\Model\SharingLinkType;
+use OpenAPI\Client\Model\DriveItemCreateLink;
 
 class OcisResourceTest extends OcisPhpSdkTestCase
 {
+    private const PASSWORD = "p@$\$w0rD";
     private Drive $personalDrive;
     private Ocis $ocis;
     public function setUp(): void
@@ -283,5 +288,66 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->assertEquals('uploaded.txt', $resources[0]->getName());
         $content = $this->getContentOfResource425Save($resources[0]);
         $this->assertEquals('some content', $content);
+    }
+
+    public function createLinkDataProvider(): array
+    {
+        return [
+            [
+                SharingLinkType::INTERNAL,
+                null,
+                self::PASSWORD,
+                null,
+            ],
+            [
+                SharingLinkType::VIEW,
+                new \DateTimeImmutable('2029-12-31 01:02:03.456789'),
+                self::PASSWORD,
+                'the name of the link',
+            ],
+            [
+                SharingLinkType::UPLOAD,
+                new \DateTimeImmutable('2029-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
+                self::PASSWORD,
+                null,
+            ],[
+                SharingLinkType::EDIT,
+                new \DateTimeImmutable('2029-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
+                self::PASSWORD,
+                null,
+            ],[
+                SharingLinkType::CREATE_ONLY,
+                new \DateTimeImmutable('2029-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
+                self::PASSWORD,
+                null,
+            ],[
+                SharingLinkType::BLOCKS_DOWNLOAD,
+                new \DateTimeImmutable('2029-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
+                self::PASSWORD,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider createLinkDataProvider
+     */
+    public function testCreateSharingLink(
+        SharingLinkType $type,
+        ?\DateTimeImmutable $expiration,
+        ?string $password,
+        ?string $displayName
+    ): void {
+        $resource = $this->personalDrive->getResources()[0];
+        if(in_array($type, [SharingLinkType::UPLOAD,SharingLinkType::CREATE_ONLY,SharingLinkType::BLOCKS_DOWNLOAD])) {
+            $this->markTestSkipped("bad req");
+        }
+        $sharingLink = $resource->createSharingLink(
+            type:$type,
+            expiration:$expiration,
+            password:$password,
+            displayName: $displayName,
+        );
+        $this->assertInstanceOf(ShareLink::class, $sharingLink);
     }
 }
