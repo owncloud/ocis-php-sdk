@@ -11,6 +11,8 @@ use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
+use Owncloud\OcisPhpSdk\ShareCreated;
+use Owncloud\OcisPhpSdk\ShareReceived;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
@@ -264,5 +266,25 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
                 )
             );
         }
+    }
+
+    public function testInviteUserToAReceivedShare(): void
+    {
+        $this->fileToShare->invite([$this->einstein], $this->managerRole);
+        /**
+         * @var ShareReceived $receivedShare
+         */
+        $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
+        $resource = $this->einsteinOcis->getResourceById($receivedShare->getRemoteItemId());
+        $resource->invite([$this->marie], $this->viewerRole);
+        /**
+         * @var ShareReceived $receivedShare
+         */
+        $receivedShare = $this->marieOcis->getSharedWithMe()[0];
+        $this->assertSame('to-share-test.txt', $receivedShare->getName());
+        $this->assertSame(
+            'some content',
+            $this->marieOcis->getResourceById($receivedShare->getRemoteItemId())->getContent()
+        );
     }
 }

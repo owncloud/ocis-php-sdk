@@ -105,7 +105,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             );
 
             $this->assertMatchesRegularExpression(
-                "/^" . $this->getUUIDv4Regex() . "$/i",
+                "/^" . $this->getspaceIdRegex() . "$/i",
                 $resource->getSpaceId()
             );
             $this->assertMatchesRegularExpression(

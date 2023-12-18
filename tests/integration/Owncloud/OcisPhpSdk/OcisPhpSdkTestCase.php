@@ -128,6 +128,11 @@ class OcisPhpSdkTestCase extends TestCase
         return $this->getUUIDv4Regex() . '\\$' . $this->getUUIDv4Regex() . '!' . $this->getUUIDv4Regex();
     }
 
+
+    protected function getspaceIdRegex(): string
+    {
+        return $this->getUUIDv4Regex() . '\\$' . $this->getUUIDv4Regex();
+    }
     /**
      * init a user
      * ocis is only aware of users after the first login, because we are using keycloak
