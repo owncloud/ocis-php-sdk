@@ -14,6 +14,7 @@ use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\OrderDirection;
+use Owncloud\OcisPhpSdk\SharingRole;
 
 class OcisResourceTest extends OcisPhpSdkTestCase
 {
@@ -347,5 +348,31 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $this->expectException(NotFoundException::class);
         $this->personalDrive->moveResource($invalidResources, 'subfolder/'. $invalidResources);
+    }
+
+    public function testGetRoles(): void
+    {
+        $resources = $this->personalDrive->getResources();
+        foreach ($resources as $resource) {
+            $role = $resource->getRoles();
+            $this->assertContainsOnlyInstancesOf(SharingRole::class, $role);
+        }
+    }
+
+    public function testGetRolesOfDeletedResources(): void
+    {
+        $this->personalDrive->uploadFile('/newResource.txt', 'new content');
+        $resources = $this->personalDrive->getResources();
+        $newResource = null;
+        foreach ($resources as $resource) {
+            if($resource->getName() === 'newResource.txt') {
+                $newResource = $resource;
+            }
+        }
+        $this->personalDrive->deleteResource('/newResource.txt');
+        $this->expectException(NotFoundException::class);
+        if($newResource !== null) {
+            $newResource->getRoles();
+        }
     }
 }
