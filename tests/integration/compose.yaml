@@ -52,7 +52,7 @@ services:
 
 
   ocis:
-    image: ocis:sharing
+    image: owncloud/ocis:${OCIS_VERSION:-latest}
     networks:
       ocis-net:
     entrypoint: /bin/sh
