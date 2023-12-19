@@ -2,9 +2,6 @@
 
 namespace unit\Owncloud\OcisPhpSdk;
 
-use OpenAPI\Client\Api\DrivesApi;
-use OpenAPI\Client\Model\Drive;
-use OpenAPI\Client\Model\OdataError;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\OcisResource;
 use PHPUnit\Framework\TestCase;

@@ -3,7 +3,6 @@
 namespace Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
-use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;

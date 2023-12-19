@@ -11,8 +11,7 @@ use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
-use Owncloud\OcisPhpSdk\ShareCreated;
-use Owncloud\OcisPhpSdk\ShareReceived;
+use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
