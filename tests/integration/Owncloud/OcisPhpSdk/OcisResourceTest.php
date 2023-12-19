@@ -32,10 +32,12 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->personalDrive->uploadFile('somefile.txt', 'some content');
         $this->personalDrive->uploadFile('secondfile.txt', 'some other content');
         $this->personalDrive->createFolder('subfolder');
+        $this->personalDrive->createFolder('secondfolder');
 
         $this->createdResources[$this->personalDrive->getId()][] = '/somefile.txt';
         $this->createdResources[$this->personalDrive->getId()][] = '/secondfile.txt';
         $this->createdResources[$this->personalDrive->getId()][] = '/subfolder';
+        $this->createdResources[$this->personalDrive->getId()][] = '/secondfolder';
     }
 
     /**
@@ -78,7 +80,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     public function testGetResources(): void
     {
         $resources = $this->personalDrive->getResources();
-        $this->assertCount(3, $resources);
+        $this->assertCount(4, $resources);
 
         /**
          * @var OcisResource $resource
@@ -135,7 +137,13 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             $this->assertEquals([], $resource->getTags());
             $this->assertIsInt($resource->getSize());
             if ($resource->getType() === 'folder') {
-                $this->assertEquals('subfolder', $resource->getName());
+                $this->assertThat(
+                    $resource->getName(),
+                    $this->logicalOr(
+                        $this->equalTo("subfolder"),
+                        $this->equalTo("secondfolder")
+                    )
+                );
             } else {
                 $this->assertStringContainsString('file.txt', $resource->getName());
             }
@@ -283,5 +291,61 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->assertEquals('uploaded.txt', $resources[0]->getName());
         $content = $this->getContentOfResource425Save($resources[0]);
         $this->assertEquals('some content', $content);
+    }
+
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public function resources()
+    {
+        return [
+            ['somefile.txt','file'],
+            ['secondfolder','folder']
+        ];
+    }
+    /**
+     * @dataProvider resources
+     */
+    public function testMoveResource(string $resourceName, string $type): void
+    {
+        $rootResources = $this->personalDrive->getResources();
+
+        $isResourceMoved = $this->personalDrive->moveResource($resourceName, 'subfolder/'.$resourceName);
+        $this->assertTrue($isResourceMoved);
+
+        $resourceInsideFolder = $this->personalDrive->getResources('/subfolder');
+        $this->assertCount(1, $resourceInsideFolder);
+
+        $rootResourcesAfterMove = $this->personalDrive->getResources();
+        $this->assertCount(count($rootResources) - 1, $rootResourcesAfterMove);
+
+        foreach ($rootResourcesAfterMove as $resource) {
+            $this->assertNotEquals($resourceName, $resource->getName(), "Resource $resourceName should not exist at root afte move");
+        }
+
+        if ($type === 'file') {
+            $fileContent = $this->personalDrive->getFile('subfolder/'.$resourceName);
+            $this->assertEquals('some content', $fileContent);
+        }
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public function invalidResources()
+    {
+        return [
+            ['nonExistentFile.txt'],
+            ['nonExistentFile']
+        ];
+    }
+    /**
+     * @dataProvider invalidResources
+     */
+    public function testMoveNonExistentResource(string $invalidResources): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->personalDrive->moveResource($invalidResources, 'subfolder/'. $invalidResources);
     }
 }
