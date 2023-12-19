@@ -558,11 +558,6 @@ class OcisResource
         return $response->getBodyAsStream();
     }
 
-    public function getDriveId(): string
-    {
-        return $this->driveId;
-    }
-
     /**
      * @throws BadRequestException
      * @throws ForbiddenException
