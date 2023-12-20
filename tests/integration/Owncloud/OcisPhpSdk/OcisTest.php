@@ -4,6 +4,7 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
+use OpenAPI\Client\Model\SharingLinkType;
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
@@ -12,6 +13,10 @@ use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\ShareCreated;
+use Owncloud\OcisPhpSdk\ShareLink;
+use Owncloud\OcisPhpSdk\ShareReceived;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
@@ -452,6 +457,23 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->createdGroups = [$physicsLoversGroup];
     }
 
+    /**
+     * @return void
+     */
+    public function testDeleteGroupByIdNoPermission(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $philosophyHatersGroup = $ocis->createGroup("philosophy-haters", "philosophy haters group");
+        //any user other than admin can't get Group ID because of bug, thus bypassing this step
+        //Todo : make Einstein get Group ID after this bug is solved.
+        $groupId = $philosophyHatersGroup->getId();
+        $this->createdGroups = [$philosophyHatersGroup];
+        $token = $this->getAccessToken('einstein', 'relativity');
+        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $this->expectException(UnauthorizedException::class);
+        $ocis->deleteGroupByID($groupId);
+    }
+
     private function getPersonalDrive(Ocis $ocis): Drive
     {
         return $ocis->getMyDrives(
@@ -534,5 +556,116 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->expectException(NotFoundException::class);
         $ocis = $this->getOcis('admin', 'admin');
         $ocis->getResourceById('not-existing-id');
+    }
+
+    public function testGetShareCreatedByMe(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $einstein = $ocis->getUsers('einstein')[0];
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('newFolder');
+        $this->createdResources[$personalDrive->getId()][] = '/newFolder';
+        $resources = $personalDrive->getResources();
+        $sharedResource = null;
+        foreach ($resources as $resource) {
+            if ($resource->getName() === 'newFolder') {
+                $sharedResource = $resource;
+            }
+        }
+        if(empty($sharedResource)) {
+            throw new \Error(
+                "resource not found "
+            );
+        }
+        $editorRole = null;
+        foreach($sharedResource->getRoles() as $role) {
+            if($role->getDisplayName() === 'Editor') {
+                $editorRole = $role;
+            }
+        }
+        if(empty($editorRole)) {
+            throw new \Error(
+                "Editor role not found "
+            );
+        }
+        $sharedResource->invite([$einstein], $editorRole);
+        $myShare = $ocis->getSharedByMe();
+        $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
+        $this->assertEquals($myShare[0]->getReceiver()->getDisplayName(), 'Albert Einstein');
+    }
+
+    public function testGetShareCreatedAndShareCreatedLinkByMe(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $einstein = $ocis->getUsers('einstein')[0];
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('newFolder');
+        $this->createdResources[$personalDrive->getId()][] = '/newFolder';
+        $resources = $personalDrive->getResources();
+        $sharedResource = null;
+        foreach ($resources as $resource) {
+            if ($resource->getName() === 'newFolder') {
+                $sharedResource = $resource;
+            }
+        }
+        if(empty($sharedResource)) {
+            throw new \Error(
+                "resource not found "
+            );
+        }
+        $editorRole = null;
+        foreach($sharedResource->getRoles() as $role) {
+            if($role->getDisplayName() === 'Editor') {
+                $editorRole = $role;
+            }
+        }
+        if(empty($editorRole)) {
+            throw new \Error(
+                "Editor role not found "
+            );
+        }
+        $sharedResource->invite([$einstein], $editorRole);
+        $sharedResource->createSharingLink(SharingLinkType::VIEW, new \DateTimeImmutable('2023-12-31 01:02:03.456789'), 'Test@123', '');
+        $myShare = $ocis->getSharedByMe();
+        $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
+        $this->assertInstanceOf(ShareLink::class, $myShare[1]);
+    }
+
+    public function testGetSharedWithMe(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $einsteinOcis = $this->initUser('einstein', 'relativity');
+        $einstein = $ocis->getUsers('einstein')[0];
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('newFolder');
+        $this->createdResources[$personalDrive->getId()][] = '/newFolder';
+        $resources = $personalDrive->getResources();
+        $sharedResource = null;
+        foreach ($resources as $resource) {
+            if ($resource->getName() === 'newFolder') {
+                $sharedResource = $resource;
+            }
+        }
+        if(empty($sharedResource)) {
+            throw new \Error(
+                "resource not found "
+            );
+        }
+        $editorRole = null;
+        foreach($sharedResource->getRoles() as $role) {
+            if($role->getDisplayName() === 'Editor') {
+                $editorRole = $role;
+            }
+        }
+        if(empty($editorRole)) {
+            throw new \Error(
+                "Editor role not found "
+            );
+        }
+        $sharedResource->invite([$einstein], $editorRole);
+        $myShare = $einsteinOcis->getSharedWithMe();
+        $this->assertInstanceOf(ShareReceived::class, $myShare[0]);
+        $this->assertEquals($myShare[0]->getName(), 'newFolder');
+        $this->assertEquals($myShare[0]->getOwnerName(), "Admin");
     }
 }

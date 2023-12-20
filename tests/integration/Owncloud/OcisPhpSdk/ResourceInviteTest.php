@@ -257,16 +257,15 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $shares = $this->ocis->getSharedByMe();
         $this->assertCount(6, $shares);
         for($i = 0; $i < 6; $i++) {
-            if($shares[$i] instanceof ShareCreated) {
-                $this->assertThat(
-                    $shares[$i]->getReceiver()->getDisplayName(),
-                    $this->logicalOr(
-                        $this->equalTo("philosophy-haters"),
-                        $this->equalTo("Marie Curie"),
-                        $this->equalTo("Albert Einstein")
-                    )
-                );
-            }
+            $this->assertInstanceOf(ShareCreated::class, $shares[$i]);
+            $this->assertThat(
+                $shares[$i]->getReceiver()->getDisplayName(),
+                $this->logicalOr(
+                    $this->equalTo("philosophy-haters"),
+                    $this->equalTo("Marie Curie"),
+                    $this->equalTo("Albert Einstein")
+                )
+            );
 
         }
     }
