@@ -116,7 +116,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $share = new ShareCreated(
             $permission,
             $this->fileToShare->getId(),
-            $this->fileToShare->getDriveId(),
+            $this->fileToShare->getSpaceId(),
             ['verify' => false],
             $this->ocisUrl,
             $token

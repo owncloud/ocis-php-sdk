@@ -2,9 +2,6 @@
 
 namespace unit\Owncloud\OcisPhpSdk;
 
-use OpenAPI\Client\Api\DrivesApi;
-use OpenAPI\Client\Model\Drive;
-use OpenAPI\Client\Model\OdataError;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\OcisResource;
 use PHPUnit\Framework\TestCase;
@@ -45,7 +42,6 @@ class ResourceTest extends TestCase
         $accessToken = 'aaa';
         return new OcisResource(
             $metadata,
-            'uuid-of-the-drive',
             [],
             '',
             $accessToken
@@ -345,45 +341,5 @@ class ResourceTest extends TestCase
             }
             $this->assertNull($result);
         }
-    }
-
-    public function testDriveIdCannotBeFetchedUsingSpaceId(): void
-    {
-        $driveMock = $this->createMock(Drive::class);
-        $driveApiMock = $this->createMock(DrivesApi::class);
-        $driveApiMock->method('getDrive')
-            ->willReturn($driveMock);
-        $accessToken = 'aaa';
-        $metadata = [200 => ['{http://owncloud.org/ns}spaceid' => 'spaceid']];
-        $this->expectException(InvalidResponseException::class);
-        $this->expectExceptionMessage('Could not get drive id');
-        // @phan-suppress-next-line PhanNoopNew we are expecting an exception
-        new OcisResource(
-            $metadata,
-            null,
-            ['drivesApi' => $driveApiMock],
-            '',
-            $accessToken
-        );
-    }
-
-    public function testFetchingDriveIdByUsingSpaceIdReturnsOdataError(): void
-    {
-        $errorMock = $this->createMock(OdataError::class);
-        $driveApiMock = $this->createMock(DrivesApi::class);
-        $driveApiMock->method('getDrive')
-            ->willReturn($errorMock);
-        $accessToken = 'aaa';
-        $metadata = [200 => ['{http://owncloud.org/ns}spaceid' => 'spaceid']];
-        $this->expectException(InvalidResponseException::class);
-        $this->expectExceptionMessage('getDrive returned an OdataError - ');
-        // @phan-suppress-next-line PhanNoopNew we are expecting an exception
-        new OcisResource(
-            $metadata,
-            null,
-            ['drivesApi' => $driveApiMock],
-            '',
-            $accessToken
-        );
     }
 }

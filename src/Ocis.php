@@ -585,7 +585,6 @@ class Ocis
             $responses = $webDavClient->propFindUnfiltered(rawurlencode($fileId), $properties);
             $resource = new OcisResource(
                 $responses,
-                null,
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken

@@ -77,10 +77,10 @@ class ResourceLinkTest extends TestCase
         ];
         $resourceMetadata = [200 => [
             '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
+            '{http://owncloud.org/ns}spaceid' => 'uuid-of-the-drive',
         ]];
         return new OcisResource(
             $resourceMetadata,
-            'uuid-of-the-drive',
             $connectionConfig, // @phpstan-ignore-line 'drivesPermissionsApi' is a MockObject
             'http://ocis',
             $accessToken

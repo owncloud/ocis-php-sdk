@@ -3,7 +3,7 @@
 namespace Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
-use OpenAPI\Client\Api\DrivesApi;
+use OpenAPI\Client\Api\DrivesApi; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
@@ -47,14 +47,12 @@ class OcisResource
 
     private array $connectionConfig;
     private Configuration $graphApiConfig;
-    private string $driveId;
 
     /**
      * @param array<int, array<mixed>> $metadata of the resource
      *        the format of the array is directly taken from the PROPFIND response
      *        returned by Sabre\DAV\Client
      *        for details about accepted metadata see: ResourceMetadata
-     * @param string|null $driveId if null the driveId will be fetched from the server using the space-id
      * @param array $connectionConfig
      * @param string $serviceUrl
      * @param string $accessToken
@@ -79,7 +77,6 @@ class OcisResource
      */
     public function __construct(
         array $metadata,
-        ?string $driveId,
         array $connectionConfig,
         string $serviceUrl,
         string &$accessToken
@@ -94,35 +91,6 @@ class OcisResource
             ->setHost($this->serviceUrl . '/graph');
 
         $this->connectionConfig = $connectionConfig;
-        if ($driveId === null) {
-            $guzzle = new Client(
-                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-            );
-
-            if (array_key_exists('drivesApi', $this->connectionConfig)) {
-                $apiInstance = $this->connectionConfig['drivesApi'];
-            } else {
-                $apiInstance = new DrivesApi(
-                    $guzzle,
-                    $this->graphApiConfig
-                );
-            }
-            try {
-                $drive = $apiInstance->getDrive($this->getSpaceId());
-            } catch (ApiException $e) {
-                throw ExceptionHelper::getHttpErrorException($e);
-            }
-            if ($drive instanceof OdataError) {
-                throw new InvalidResponseException(
-                    "getDrive returned an OdataError - " . $drive->getError()
-                );
-            }
-            $driveId = $drive->getId();
-            if ($driveId === null) {
-                throw new InvalidResponseException('Could not get drive id');
-            }
-        }
-        $this->driveId = $driveId;
     }
 
     /**
@@ -189,7 +157,7 @@ class OcisResource
             );
         }
         try {
-            $collectionOfPermissions = $apiInstance->listPermissions($this->driveId, $this->getId());
+            $collectionOfPermissions = $apiInstance->listPermissions($this->getSpaceId(), $this->getId());
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -254,7 +222,7 @@ class OcisResource
 
         $inviteData = new DriveItemInvite($driveItemInviteData);
         try {
-            $permissions = $apiInstance->invite($this->driveId, $this->getId(), $inviteData);
+            $permissions = $apiInstance->invite($this->getSpaceId(), $this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -277,7 +245,7 @@ class OcisResource
             $shares[] = new ShareCreated(
                 $permission,
                 $this->getId(),
-                $this->driveId,
+                $this->getSpaceId(),
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken
@@ -327,7 +295,7 @@ class OcisResource
             'display_name' => $displayName
         ]);
         try {
-            $permission = $apiInstance->createLink($this->driveId, $this->getId(), $createLinkData);
+            $permission = $apiInstance->createLink($this->getSpaceId(), $this->getId(), $createLinkData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -340,7 +308,7 @@ class OcisResource
         return new ShareLink(
             $permission,
             $this->getId(),
-            $this->driveId,
+            $this->getSpaceId(),
             $this->connectionConfig,
             $this->serviceUrl,
             $this->accessToken
@@ -588,11 +556,6 @@ class OcisResource
     {
         $response = $this->getFileResponseInterface($this->getId());
         return $response->getBodyAsStream();
-    }
-
-    public function getDriveId(): string
-    {
-        return $this->driveId;
     }
 
     /**

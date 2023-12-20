@@ -148,12 +148,12 @@ class ResourceInviteTest extends TestCase
         $resourceMetadata = [
             200 => [
                 '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
+                '{http://owncloud.org/ns}spaceid' => 'uuid-of-the-drive',
             ]
         ];
 
         $resource = new OcisResource(
             $resourceMetadata,
-            'uuid-of-the-drive',
             $connectionConfig,
             'http://ocis',
             $accessToken
