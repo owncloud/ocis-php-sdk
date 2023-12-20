@@ -175,4 +175,13 @@ class GroupsTest extends OcisPhpSdkTestCase
         $this->expectException(UnauthorizedException::class);
         $ocisEinstein->deleteGroupByID($groupId);
     }
+
+    public function testDeleteNonExistingGroup(): void
+    {
+        $token = $this->getAccessToken("admin", "admin");
+        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $this->expectException(NotFoundException::class);
+        $ocis->deleteGroupByID("thisgroupdosenotexist");
+    }
+
 }
