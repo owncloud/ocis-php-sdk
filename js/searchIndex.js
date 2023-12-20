@@ -576,11 +576,6 @@ Search.appendIndex(
             "summary": "returns\u0020a\u0020stream\u0020to\u0020get\u0020the\u0020content\u0020of\u0020this\u0020resource",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getContentStream"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetDriveId\u0028\u0029",
-            "name": "getDriveId",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getDriveId"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OrderDirection",
             "name": "OrderDirection",
             "summary": "Possible\u0020order\u0020direction\u0020values\u0020for\u0020sorting\u0020responses",
