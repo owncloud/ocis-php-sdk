@@ -625,7 +625,7 @@ class OcisTest extends OcisPhpSdkTestCase
             );
         }
         $sharedResource->invite([$einstein], $editorRole);
-        $sharedResource->createSharingLink(SharingLinkType::VIEW, new \DateTimeImmutable('2023-12-31 01:02:03.456789'), 'Test@123', '');
+        $sharedResource->createSharingLink(SharingLinkType::VIEW);
         $myShare = $ocis->getSharedByMe();
         $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
         $this->assertInstanceOf(ShareLink::class, $myShare[1]);
