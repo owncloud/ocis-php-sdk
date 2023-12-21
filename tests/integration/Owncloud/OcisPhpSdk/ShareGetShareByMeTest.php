@@ -37,25 +37,27 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         $this->personalDrive->createFolder('newFolder');
         $this->createdResources[$this->personalDrive->getId()][] = '/newFolder';
         $resources = $this->personalDrive->getResources();
+        $sharedResource = null;
         foreach ($resources as $resource) {
             if ($resource->getName() === 'newFolder') {
-                $this->sharedResource = $resource;
+                $sharedResource = $resource;
             }
         }
-        if (empty($this->sharedResource)) {
-            throw new \Error(
-                "resource not found "
-            );
+        if ($sharedResource === null) {
+            throw new \Error("resource not found ");
         }
+        $this->sharedResource = $sharedResource;
+
+        $editorRole = null;
         foreach ($this->sharedResource->getRoles() as $role) {
             if ($role->getDisplayName() === 'Editor') {
-                $this->editorRole = $role;
+                $editorRole = $role;
             }
         }
-        $this->assertNotEmpty(
-            $this->editorRole,
-            "Editor role not found "
-        );
+        if ($editorRole === null) {
+            throw new \Error("Editor role not found");
+        }
+        $this->editorRole = $editorRole;
     }
 
     public function testGetShareByMe(): void
@@ -63,7 +65,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         $this->sharedResource->invite([$this->einstein], $this->editorRole);
         $myShare = $this->ocis->getSharedByMe();
         $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
-        $this->assertEquals($myShare[0]->getReceiver()->getDisplayName(), 'Albert Einstein');
+        $this->assertEquals('Albert Einstein', $myShare[0]->getReceiver()->getDisplayName());
         $this->assertSame($this->sharedResource->getId(), $myShare[0]->getResourceId());
         $this->assertSame($this->personalDrive->getId(), $myShare[0]->getDriveId());
     }
@@ -73,7 +75,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         $this->sharedResource->createSharingLink(
             SharingLinkType::VIEW,
             new \DateTimeImmutable('2023-12-31 01:02:03.456789'),
-            'Test@123',
+            self::VALID_LINK_PASSWORD,
             ''
         );
         $myShare = $this->ocis->getSharedByMe();
@@ -84,24 +86,19 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
 
     public function testGetShareAndShareLinkByMe(): void
     {
-
         $this->sharedResource->invite([$this->einstein], $this->editorRole);
         $this->sharedResource->createSharingLink(
             SharingLinkType::VIEW,
             new \DateTimeImmutable('2023-12-31 01:02:03.456789'),
-            'Test@123',
+            self::VALID_LINK_PASSWORD,
             ''
         );
         $myShare = $this->ocis->getSharedByMe();
         $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
         $this->assertInstanceOf(ShareLink::class, $myShare[1]);
-        $this->assertThat(
-            $this->sharedResource->getId(),
-            $this->logicalOr(
-                $this->equalTo($myShare[0]->getResourceId()),
-                $this->equalTo($myShare[1]->getResourceId()),
-            )
-        );
+        $this->assertEquals($this->sharedResource->getId(), $myShare[0]->getResourceId());
+        $this->assertEquals($this->sharedResource->getId(), $myShare[1]->getResourceId());
         $this->assertSame($this->personalDrive->getId(), $myShare[0]->getDriveId());
+        $this->assertSame($this->personalDrive->getId(), $myShare[1]->getDriveId());
     }
 }

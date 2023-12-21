@@ -261,6 +261,13 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
             $this->assertInstanceOf(ShareCreated::class, $shares[$i]);
             $this->assertSame($this->personalDrive->getId(), $shares[$i]->getDriveId());
             $this->assertThat(
+                $shares[$i]->getResourceId(),
+                $this->logicalOr(
+                    $this->equalTo($this->folderToShare->getId()),
+                    $this->equalTo($this->fileToShare->getId())
+                )
+            );
+            $this->assertThat(
                 $shares[$i]->getReceiver()->getDisplayName(),
                 $this->logicalOr(
                     $this->equalTo("philosophy-haters"),
