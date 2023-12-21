@@ -2,7 +2,6 @@
 
 namespace Owncloud\OcisPhpSdk;
 
-use DateTime;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Identity;
 use OpenAPI\Client\Model\RemoteItem;
@@ -70,7 +69,7 @@ class ShareReceived
      * @return string
      * @throws InvalidResponseException
      */
-    public function getDriveId(): string
+    public function getParentDriveId(): string
     {
         return empty($this->shareReceived->getParentReference())
         || empty($this->shareReceived->getParentReference()->getDriveId()) ?
@@ -84,7 +83,7 @@ class ShareReceived
      * @return string
      * @throws InvalidResponseException
      */
-    public function getDriveType(): string
+    public function getParentDriveType(): string
     {
         return empty($this->shareReceived->getParentReference())
         || empty($this->shareReceived->getParentReference()->getDriveType())
@@ -161,16 +160,19 @@ class ShareReceived
     }
 
     /**
-     * @return DateTime
+     * @return \DateTimeImmutable
      * @throws InvalidResponseException
      */
-    public function getRemoteItemSharedDateTime(): DateTime
+    public function getRemoteItemSharedDateTime(): \DateTimeImmutable
     {
         $sharedInfo = $this->getShared();
-        return empty($sharedInfo->getSharedDateTime()) ?
+        $time = $sharedInfo->getSharedDateTime();
+        if (empty($time)) {
             throw new InvalidResponseException(
                 "Invalid shared DateTime'" . print_r($sharedInfo->getSharedDateTime(), true) . "'"
-            ) : $sharedInfo->getSharedDateTime();
+            );
+        }
+        return \DateTimeImmutable::createFromMutable($time);
     }
 
     /**
