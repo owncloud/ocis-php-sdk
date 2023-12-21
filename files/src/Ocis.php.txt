@@ -925,7 +925,7 @@ class Ocis
     }
 
     /**
-     * @return array<ShareCreated>
+     * @return array<ShareCreated|ShareLink>
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -973,15 +973,25 @@ class Ocis
                 throw new InvalidResponseException("Invalid permissions provided");
             }
             foreach ($share->getPermissions() as $apiSharePermission) {
-
-                $shares[] = new ShareCreated(
-                    $apiSharePermission,
-                    $resourceId,
-                    $driveId,
-                    $this->connectionConfig,
-                    $this->serviceUrl,
-                    $this->accessToken
-                );
+                if($apiSharePermission->getLink() === null) {
+                    $shares[] = new ShareCreated(
+                        $apiSharePermission,
+                        $resourceId,
+                        $driveId,
+                        $this->connectionConfig,
+                        $this->serviceUrl,
+                        $this->accessToken
+                    );
+                } else {
+                    $shares[] = new ShareLink(
+                        $apiSharePermission,
+                        $resourceId,
+                        $driveId,
+                        $this->connectionConfig,
+                        $this->serviceUrl,
+                        $this->accessToken
+                    );
+                }
             }
         }
         return $shares;

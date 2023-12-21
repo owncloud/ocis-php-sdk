@@ -606,6 +606,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiration"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetDriveId\u0028\u0029",
+            "name": "getDriveId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getDriveId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetResourceId\u0028\u0029",
+            "name": "getResourceId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getResourceId"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003Adelete\u0028\u0029",
             "name": "delete",
             "summary": "Permanently\u0020delete\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link",
