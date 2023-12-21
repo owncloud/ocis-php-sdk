@@ -111,7 +111,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     public function testInviteGroup(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophy-haters',
+            'philosophyhaters',
             'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
@@ -126,7 +126,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     public function testInviteGroupAndUserOfTheGroup(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophy-haters',
+            'philosophyhaters',
             'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
@@ -142,11 +142,11 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     public function testInviteMultipleGroups(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophy-haters',
+            'philosophyhaters',
             'philosophy haters group'
         );
         $physicsLoversGroup =  $this->ocis->createGroup(
-            'physics-lovers',
+            'physicslovers',
             'physics lovers group'
         );
         $this->createdGroups = [$philosophyHatersGroup, $physicsLoversGroup];
@@ -217,7 +217,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     public function testGetReceiversOfShareCreatedByInvite(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophy-haters',
+            'philosophyhaters',
             'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
@@ -231,7 +231,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
             $this->assertThat(
                 $shares[$i]->getReceiver()->getDisplayName(),
                 $this->logicalOr(
-                    $this->equalTo("philosophy-haters"),
+                    $this->equalTo("philosophyhaters"),
                     $this->equalTo("Marie Curie"),
                     $this->equalTo("Albert Einstein")
                 )
@@ -242,7 +242,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     public function testGetReceiversOfShareReturnedBySharedByMe(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophy-haters',
+            'philosophyhaters',
             'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
@@ -270,7 +270,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
             $this->assertThat(
                 $shares[$i]->getReceiver()->getDisplayName(),
                 $this->logicalOr(
-                    $this->equalTo("philosophy-haters"),
+                    $this->equalTo("philosophyhaters"),
                     $this->equalTo("Marie Curie"),
                     $this->equalTo("Albert Einstein")
                 )

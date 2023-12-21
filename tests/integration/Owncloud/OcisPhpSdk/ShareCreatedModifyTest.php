@@ -76,7 +76,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
     public function testDeleteGroupShare(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophy-haters',
+            'philosophyhaters',
             'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
@@ -86,7 +86,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
             $this->assertInstanceOf(ShareCreated::class, $share);
-            if ($share->getReceiver()->getDisplayName() === 'philosophy-haters') {
+            if ($share->getReceiver()->getDisplayName() === 'philosophyhaters') {
                 $share->delete();
                 break;
             }
