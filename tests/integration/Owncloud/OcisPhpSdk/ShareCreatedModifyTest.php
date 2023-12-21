@@ -61,9 +61,11 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite([$this->einstein, $this->marie], $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
+            $this->assertInstanceOf(ShareCreated::class, $share);
             if ($share->getReceiver()->getDisplayName() === 'Albert Einstein') {
                 $share->delete();
                 break;
+
             }
         }
         $this->assertCount(1, $this->ocis->getSharedByMe());
@@ -83,6 +85,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite([$this->einstein, $philosophyHatersGroup, $this->marie], $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
+            $this->assertInstanceOf(ShareCreated::class, $share);
             if ($share->getReceiver()->getDisplayName() === 'philosophy-haters') {
                 $share->delete();
                 break;
