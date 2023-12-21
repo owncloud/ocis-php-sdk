@@ -324,7 +324,7 @@ class OcisTest extends OcisPhpSdkTestCase
     public function groupNameList(): array
     {
         return[
-            [["philosophy-haters", "physics-lovers"]],
+            [["philosophyhaters", "physicslovers"]],
         ];
     }
 
@@ -359,7 +359,7 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testGetGroupsExpanded(): void
     {
         $ocis = $this->getOcis('admin', 'admin');
-        $physicsLoversGroup =  $ocis->createGroup("physics-lovers", "physics lovers group");
+        $physicsLoversGroup =  $ocis->createGroup("physicslovers", "physics lovers group");
         $this->createdGroups = [$physicsLoversGroup];
         $physicsLoversGroup->addUser($ocis->getUsers()[0]);
         $groups = $ocis->getGroups(expandMembers: true);
@@ -375,7 +375,7 @@ class OcisTest extends OcisPhpSdkTestCase
     public function searchText(): array
     {
         return [
-            ["ph",["philosophy-haters", "physics-lovers"]],
+            ["ph",["philosophyhaters", "physicslovers"]],
         ];
     }
 
@@ -389,8 +389,8 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testGetGroupSearch(string $searchText, array $groupDisplayName): void
     {
         $ocis = $this->getOcis('admin', 'admin');
-        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
-        $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
+        $philosophyHatersGroup =  $ocis->createGroup("philosophyhaters", "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup("physicslovers", "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups(search: $searchText);
         $this->assertCount(count($groupDisplayName), $groups);
@@ -405,8 +405,8 @@ class OcisTest extends OcisPhpSdkTestCase
     public function orderDirection(): array
     {
         return [
-            [OrderDirection::ASC, "ph", ["philosophy-haters", "physics-lovers"]],
-            [OrderDirection::DESC, "ph", ["physics-lovers", "philosophy-haters"]]
+            [OrderDirection::ASC, "ph", ["philosophyhaters", "physicslovers"]],
+            [OrderDirection::DESC, "ph", ["physicslovers", "philosophyhaters"]]
         ];
     }
 
@@ -421,8 +421,8 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testGetGroupSort(OrderDirection $orderDirection, string $searchText, array $resultGroups): void
     {
         $ocis = $this->getOcis('admin', 'admin');
-        $philosophyHatersGroup =  $ocis->createGroup("philosophy-haters", "philosophy haters group");
-        $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
+        $philosophyHatersGroup =  $ocis->createGroup("philosophyhaters", "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup("physicslovers", "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups(search: $searchText, orderBy: $orderDirection);
         if(count($groups) <= 0) {
@@ -440,15 +440,15 @@ class OcisTest extends OcisPhpSdkTestCase
     public function testDeleteGroupById(): void
     {
         $ocis = $this->getOcis('admin', 'admin');
-        $ocis->createGroup("philosophy-haters", "philosophy haters group");
-        $physicsLoversGroup = $ocis->createGroup("physics-lovers", "physics lover group");
+        $ocis->createGroup("philosophyhaters", "philosophy haters group");
+        $physicsLoversGroup = $ocis->createGroup("physicslovers", "physics lover group");
         foreach($ocis->getGroups() as $group) {
-            if($group->getDisplayName() === "philosophy-haters") {
+            if($group->getDisplayName() === "philosophyhaters") {
                 $ocis->deleteGroupByID($group->getId());
             }
         }
         $this->assertCount(1, $ocis->getGroups());
-        $this->assertEquals("physics-lovers", $ocis->getGroups()[0]->getDisplayName());
+        $this->assertEquals("physicslovers", $ocis->getGroups()[0]->getDisplayName());
         $this->createdGroups = [$physicsLoversGroup];
     }
 
