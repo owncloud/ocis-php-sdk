@@ -811,6 +811,8 @@ class Ocis
             ) {
                 if (!isset($ocsData[$key])) {
                     $notificationContent->$key = "";
+                } else {
+                    $notificationContent->$key = $ocsData[$key];
                 }
             }
             $notificationContent->{'messageRichParameters'} =
