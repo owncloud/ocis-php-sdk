@@ -4,6 +4,7 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
+use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
@@ -24,6 +25,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     private SharingRole $managerRole;
     private OcisResource $fileToShare;
     private OcisResource $folderToShare;
+    private Drive $personalDrive;
     private Ocis $ocis;
     private Ocis $einsteinOcis;
     private Ocis $marieOcis;
@@ -34,18 +36,17 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->marieOcis = $this->initUser('marie', 'radioactivity');
         $token = $this->getAccessToken('admin', 'admin');
         $this->ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
-        $personalDrive = $this->ocis->getMyDrives(
+        $this->personalDrive = $this->ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
             DriveType::PERSONAL
         )[0];
 
-
-        $personalDrive->uploadFile('to-share-test.txt', 'some content');
-        $this->createdResources[$personalDrive->getId()][] = 'to-share-test.txt';
-        $personalDrive->createFolder('folder-to-share');
-        $this->createdResources[$personalDrive->getId()][] = 'folder-to-share';
-        $resources = $personalDrive->getResources();
+        $this->personalDrive->uploadFile('to-share-test.txt', 'some content');
+        $this->createdResources[$this->personalDrive->getId()][] = 'to-share-test.txt';
+        $this->personalDrive->createFolder('folder-to-share');
+        $this->createdResources[$this->personalDrive->getId()][] = 'folder-to-share';
+        $resources = $this->personalDrive->getResources();
         /**
          * @var OcisResource $resource
          */
@@ -258,6 +259,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->assertCount(6, $shares);
         for($i = 0; $i < 6; $i++) {
             $this->assertInstanceOf(ShareCreated::class, $shares[$i]);
+            $this->assertSame($this->personalDrive->getId(), $shares[$i]->getDriveId());
             $this->assertThat(
                 $shares[$i]->getReceiver()->getDisplayName(),
                 $this->logicalOr(

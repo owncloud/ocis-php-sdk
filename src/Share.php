@@ -114,6 +114,15 @@ class Share
 
     }
 
+    public function getDriveId(): string
+    {
+        return $this->driveId;
+    }
+
+    public function getResourceId(): string
+    {
+        return $this->resourceId;
+    }
     /**
      * Permanently delete the current share or share link
      *
