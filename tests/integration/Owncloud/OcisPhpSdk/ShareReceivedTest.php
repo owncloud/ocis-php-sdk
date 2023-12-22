@@ -51,7 +51,7 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
 
     public function testGetAttributesOfReceivedShare(): void
     {
-        $shares = $this->fileToShare->invite([$this->einstein], $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
         /**
          * @var ShareReceived $receivedShare
          */
