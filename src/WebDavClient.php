@@ -47,30 +47,58 @@ class WebDavClient extends Client
     }
 
     /**
-     * @phpstan-param array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client
-     *                     } $connectionConfig
      * @return array<int, mixed>
      */
-    public function createCurlSettings(array $connectionConfig, string $accessToken): array
+    private function getCurlAuthSettings(string $accessToken): array
     {
         $settings = [];
         $settings[CURLOPT_HTTPAUTH] = CURLAUTH_BEARER;
         $settings[CURLOPT_XOAUTH2_BEARER] = $accessToken;
+        return $settings;
+    }
+
+    /**
+     * @phpstan-param array{
+     *                       'headers'?:array<string, mixed>,
+     *                      } $connectionConfig
+     * @return array<int, mixed>
+     */
+    private function getCurlHeaders(array $connectionConfig): array
+    {
+        $settings = [];
         if (isset($connectionConfig['headers'])) {
             foreach ($connectionConfig['headers'] as $header => $value) {
                 $settings[CURLOPT_HTTPHEADER][] = $header . ': ' . $value;
             }
         }
+        return $settings;
+    }
+
+    /**
+     * @phpstan-param array{
+     *                       'verify'?:bool
+     *                      } $connectionConfig
+     * @return array<int, mixed>
+     */
+    private function getCurlVerifySettings(array $connectionConfig): array
+    {
+        $settings = [];
         if (isset($connectionConfig['verify'])) {
             $settings[CURLOPT_SSL_VERIFYPEER] = $connectionConfig['verify'];
             $settings[CURLOPT_SSL_VERIFYHOST] = $connectionConfig['verify'];
         }
+        return $settings;
+    }
 
+    /**
+     * @phpstan-param array{
+     *                      'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
+     *                     } $connectionConfig
+     * @return array<int, mixed>
+     */
+    private function getCurlProxySettings(array $connectionConfig): array
+    {
+        $settings = [];
         // set the proxy settings, basically same as done in guzzle
         if (isset($connectionConfig['proxy'])) {
             $scheme = parse_url($this->baseUri, PHP_URL_SCHEME);
@@ -97,7 +125,26 @@ class WebDavClient extends Client
                 }
             }
         }
+        return $settings;
+    }
 
+    /**
+     * @phpstan-param array{
+     *                      'headers'?:array<string, mixed>,
+     *                      'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
+     *                      'verify'?:bool,
+     *                      'webfinger'?:bool,
+     *                      'guzzle'?:\GuzzleHttp\Client
+     *                     } $connectionConfig
+     * @return array<int, mixed>
+     */
+    public function createCurlSettings(array $connectionConfig, string $accessToken): array
+    {
+        $settings = [];
+        $settings = $settings + $this->getCurlAuthSettings($accessToken);
+        $settings = $settings + $this->getCurlHeaders($connectionConfig);
+        $settings = $settings + $this->getCurlVerifySettings($connectionConfig);
+        $settings = $settings + $this->getCurlProxySettings($connectionConfig);
         return $settings;
     }
 
