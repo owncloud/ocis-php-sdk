@@ -55,8 +55,6 @@ class UsersTest extends OcisPhpSdkTestCase
 
         $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
         $this->expectException(ForbiddenException::class);
-        $users = $ocis->getUsers();
-        $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
-        $this->assertGreaterThanOrEqual(3, $users);
+        $ocis->getUsers();
     }
 }
