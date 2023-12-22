@@ -68,7 +68,6 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         $this->assertSame($this->fileToShare->getId(), $receivedShare->getRemoteItemId());
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getRemoteItemName());
         $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());
-        $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());
         $this->assertEqualsWithDelta(time(), $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(), 120);
         $this->assertStringContainsString('Admin', $receivedShare->getOwnerName());
         $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getOwnerId());
