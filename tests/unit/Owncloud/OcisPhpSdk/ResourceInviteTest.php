@@ -46,7 +46,7 @@ class ResourceInviteTest extends TestCase
         return [
             // invite for a single recipient
             [
-                [$einstein],
+                $einstein,
                 null,
                 new DriveItemInvite(
                     [
@@ -54,29 +54,6 @@ class ResourceInviteTest extends TestCase
                             new DriveRecipient(
                                 [
                                     'object_id' => 'uuid-of-einstein',
-                                ]
-                            ),
-                        ],
-                        'roles' => ['uuid-of-the-role'],
-                    ]
-                )
-            ],
-            // invite a user and a group
-            [
-                [$einstein, $smartPeopleGroup],
-                null,
-                new DriveItemInvite(
-                    [
-                        'recipients' => [
-                            new DriveRecipient(
-                                [
-                                    'object_id' => 'uuid-of-einstein',
-                                ]
-                            ),
-                            new DriveRecipient(
-                                [
-                                    'object_id' => 'uuid-of-smart-people-group',
-                                    'at_libre_graph_recipient_type' => 'group',
                                 ]
                             ),
                         ],
@@ -86,7 +63,7 @@ class ResourceInviteTest extends TestCase
             ],
             // set expiry time
             [
-                [$smartPeopleGroup],
+                $smartPeopleGroup,
                 new \DateTimeImmutable('2022-12-31 01:02:03.456789'),
                 new DriveItemInvite(
                     [
@@ -105,7 +82,7 @@ class ResourceInviteTest extends TestCase
             ],
             // set expiry time, with conversion to UTC/Z timezone
             [
-                [$einstein],
+                $einstein,
                 new \DateTimeImmutable('2021-01-01 17:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
                 new DriveItemInvite(
                     [
@@ -126,10 +103,12 @@ class ResourceInviteTest extends TestCase
 
     /**
      * @dataProvider inviteDataProvider
-     * @param array<int, User|Group> $recipients
      */
-    public function testInvite($recipients, ?\DateTimeImmutable $expiration, DriveItemInvite $expectedInviteData): void
-    {
+    public function testInvite(
+        User|Group $recipient,
+        ?\DateTimeImmutable $expiration,
+        DriveItemInvite $expectedInviteData
+    ): void {
         $permission = $this->createMock(Permission::class);
         $permission->method('getId')
             ->willReturn('uuid-of-the-permission');
@@ -167,7 +146,7 @@ class ResourceInviteTest extends TestCase
         );
         $role = new SharingRole($openAPIRole);
 
-        $result = $resource->invite($recipients, $role, $expiration);
-        $this->assertContainsOnly(ShareCreated::class, $result);
+        $result = $resource->invite($recipient, $role, $expiration);
+        $this->assertInstanceOf(ShareCreated::class, $result);
     }
 }

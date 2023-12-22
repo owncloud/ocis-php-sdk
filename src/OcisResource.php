@@ -11,6 +11,7 @@ use OpenAPI\Client\Model\DriveItemCreateLink;
 use OpenAPI\Client\Model\DriveItemInvite;
 use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
+use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\SharingLinkType;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
@@ -175,13 +176,13 @@ class OcisResource
     }
 
     /**
-     * Invite one or multiple people(user/group) to the resource.
+     * Invite a user or group to the resource.
      * Every recipient will result in an own ShareCreated object in the returned array.
      *
-     * @param array<int, User|Group> $recipients
+     * @param User|Group $recipient
      * @param SharingRole $role
      * @param \DateTimeImmutable|null $expiration
-     * @return array<ShareCreated>
+     * @return ShareCreated
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -190,18 +191,16 @@ class OcisResource
      * @throws UnauthorizedException
      * @throws InternalServerErrorException
      */
-    public function invite($recipients, SharingRole $role, ?\DateTimeImmutable $expiration = null): array
+    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): ShareCreated
     {
         $driveItemInviteData = [];
         $driveItemInviteData['recipients'] = [];
-        foreach ($recipients as $recipient) {
-            $recipientData = [];
-            $recipientData['object_id'] = $recipient->getId();
-            if ($recipient instanceof Group) {
-                $recipientData['at_libre_graph_recipient_type'] = "group";
-            }
-            $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
+        $recipientData = [];
+        $recipientData['object_id'] = $recipient->getId();
+        if ($recipient instanceof Group) {
+            $recipientData['at_libre_graph_recipient_type'] = "group";
         }
+        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
         $driveItemInviteData['roles'] = [$role->getId()];
         if ($expiration !== null) {
             $expirationMutable = \DateTime::createFromImmutable($expiration);
@@ -231,27 +230,25 @@ class OcisResource
                 "invite returned an OdataError - " . $permissions->getError()
             );
         }
-        if ($permissions->getValue() === null) {
+        $permissionsValue = $permissions->getValue();
+        if (
+            $permissionsValue === null ||
+            !array_key_exists(0, $permissionsValue) ||
+            !($permissionsValue[0] instanceof Permission)
+        ) {
             throw new InvalidResponseException(
-                "invite returned 'null' where an array of permissions were expected"
+                "invite returned invalid data " . print_r($permissionsValue, true)
             );
         }
 
-        /**
-         * @var array<ShareCreated> $shares
-         */
-        $shares = [];
-        foreach ($permissions->getValue() as $permission) {
-            $shares[] = new ShareCreated(
-                $permission,
-                $this->getId(),
-                $this->getSpaceId(),
-                $this->connectionConfig,
-                $this->serviceUrl,
-                $this->accessToken
-            );
-        }
-        return $shares;
+        return new ShareCreated(
+            $permissionsValue[0],
+            $this->getId(),
+            $this->getSpaceId(),
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
+        );
     }
 
     /**

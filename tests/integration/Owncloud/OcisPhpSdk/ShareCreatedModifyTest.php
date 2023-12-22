@@ -58,7 +58,8 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 
     public function testDeleteIndividualShare(): void
     {
-        $this->fileToShare->invite([$this->einstein, $this->marie], $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $this->fileToShare->invite($this->marie, $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
             $this->assertInstanceOf(ShareCreated::class, $share);
@@ -76,17 +77,19 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
     public function testDeleteGroupShare(): void
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophyhaters',
+            'philosophy-haters',
             'philosophy haters group'
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
 
-        $this->fileToShare->invite([$this->einstein, $philosophyHatersGroup, $this->marie], $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $this->fileToShare->invite($philosophyHatersGroup, $this->viewerRole);
+        $this->fileToShare->invite($this->marie, $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
             $this->assertInstanceOf(ShareCreated::class, $share);
-            if ($share->getReceiver()->getDisplayName() === 'philosophyhaters') {
+            if ($share->getReceiver()->getDisplayName() === 'philosophy-haters') {
                 $share->delete();
                 break;
             }
@@ -101,7 +104,8 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7872');
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(NotFoundException::class);
-        $this->fileToShare->invite([$this->einstein, $this->marie], $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $this->fileToShare->invite($this->marie, $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         $shares[0]->delete();
         $shares[0]->delete();
@@ -132,15 +136,15 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->markTestSkipped('Not implemented yet in oCIS, see https://github.com/owncloud/ocis/issues/6993');
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(NotFoundException::class);
-        $sharesFromInvite = $this->fileToShare->invite([$this->einstein], $this->viewerRole);
+        $shareFromInvite = $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $tomorrow = new \DateTimeImmutable('tomorrow');
-        $sharesFromInvite[0]->setExpiration($tomorrow);
+        $shareFromInvite->setExpiration($tomorrow);
         $sharedByMeShares = $this->ocis->getSharedByMe();
 
-        $this->assertInstanceOf(\DateTimeImmutable::class, $sharesFromInvite[0]->getExpiration());
-        $this->assertSame($tomorrow->getTimestamp(), $sharesFromInvite[0]->getExpiration()->getTimestamp());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $sharedByMeShares[0]->getExpiration());
-        $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiration()->getTimestamp());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $shareFromInvite->getExpiration());
+        $this->assertSame($tomorrow->getTimestamp(), $shareFromInvite->getExpiration()->getTimestamp());
+        $this->assertInstanceOf(\DateTimeImmutable::class, $shareFromInvite->getExpiration());
+        $this->assertSame($tomorrow->getTimestamp(), $shareFromInvite->getExpiration()->getTimestamp());
     }
 
     public function testSetExpirationDateOnObjectFromSharedByMe(): void
@@ -148,7 +152,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->markTestSkipped('Not implemented yet in oCIS, see https://github.com/owncloud/ocis/issues/6993');
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(NotFoundException::class);
-        $this->fileToShare->invite([$this->einstein], $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $tomorrow = new \DateTimeImmutable('tomorrow');
         $sharedByMeShares = $this->ocis->getSharedByMe();
         $sharedByMeShares[0]->setExpiration($tomorrow);
