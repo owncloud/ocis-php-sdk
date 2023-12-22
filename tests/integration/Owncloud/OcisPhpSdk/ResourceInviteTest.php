@@ -77,9 +77,9 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
     public function testInviteUser(): void
     {
-        $shares = $this->fileToShare->invite([$this->einstein], $this->viewerRole);
-        $this->assertCount(1, $shares);
-        $this->assertNull($shares[0]->getExpiration());
+        $share = $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $this->assertNull($share->getExpiration());
+        $this->assertSame($this->fileToShare->getId(), $share->getResourceId());
         $receivedShares = $this->einsteinOcis->getSharedWithMe();
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
@@ -87,23 +87,10 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
     public function testInviteAnotherUser(): void
     {
-        $this->fileToShare->invite([$this->einstein], $this->viewerRole);
-        $shares = $this->fileToShare->invite([$this->marie], $this->viewerRole);
-        $this->assertCount(1, $shares);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $share = $this->fileToShare->invite($this->marie, $this->viewerRole);
+        $this->assertSame($this->fileToShare->getId(), $share->getResourceId());
         $receivedShares = $this->marieOcis->getSharedWithMe();
-        $this->assertCount(1, $receivedShares);
-        $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
-    }
-
-    public function testInviteMultipleUsersAtOnce(): void
-    {
-        $shares = $this->fileToShare->invite([$this->einstein,$this->marie], $this->viewerRole);
-        $this->assertCount(2, $shares);
-        $receivedShares = $this->marieOcis->getSharedWithMe();
-        $this->assertCount(1, $receivedShares);
-        $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
-
-        $receivedShares = $this->einsteinOcis->getSharedWithMe();
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
     }
@@ -116,51 +103,9 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
-        $shares = $this->fileToShare->invite([$philosophyHatersGroup], $this->viewerRole);
-        $this->assertCount(1, $shares);
+        $share = $this->fileToShare->invite($philosophyHatersGroup, $this->viewerRole);
+        $this->assertSame($this->fileToShare->getId(), $share->getResourceId());
         $receivedShares = $this->einsteinOcis->getSharedWithMe();
-        $this->assertCount(1, $receivedShares);
-        $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
-    }
-
-    public function testInviteGroupAndUserOfTheGroup(): void
-    {
-        $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophyhaters',
-            'philosophy haters group'
-        );
-        $this->createdGroups = [$philosophyHatersGroup];
-        $philosophyHatersGroup->addUser($this->einstein);
-        $shares = $this->fileToShare->invite([$philosophyHatersGroup, $this->einstein], $this->viewerRole);
-        $this->assertCount(2, $shares);
-        $receivedShares = $this->einsteinOcis->getSharedWithMe();
-        $this->assertCount(2, $receivedShares);
-        $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
-        $this->assertSame($this->fileToShare->getName(), $receivedShares[1]->getName());
-    }
-
-    public function testInviteMultipleGroups(): void
-    {
-        $philosophyHatersGroup =  $this->ocis->createGroup(
-            'philosophyhaters',
-            'philosophy haters group'
-        );
-        $physicsLoversGroup =  $this->ocis->createGroup(
-            'physicslovers',
-            'physics lovers group'
-        );
-        $this->createdGroups = [$philosophyHatersGroup, $physicsLoversGroup];
-        $philosophyHatersGroup->addUser($this->einstein);
-        $physicsLoversGroup->addUser($this->einstein);
-        $physicsLoversGroup->addUser($this->marie);
-        $shares = $this->fileToShare->invite([$physicsLoversGroup, $philosophyHatersGroup], $this->viewerRole);
-        $this->assertCount(2, $shares);
-        $receivedShares = $this->einsteinOcis->getSharedWithMe();
-        $this->assertCount(2, $receivedShares);
-        $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
-        $this->assertSame($this->fileToShare->getName(), $receivedShares[1]->getName());
-
-        $receivedShares = $this->marieOcis->getSharedWithMe();
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
     }
@@ -170,8 +115,8 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7842');
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(ForbiddenException::class);
-        $this->fileToShare->invite([$this->einstein], $this->viewerRole);
-        $this->fileToShare->invite([$this->einstein], $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
     }
 
     public function testInviteSameUserAgainWithDifferentRole(): void
@@ -179,15 +124,16 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7842');
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(ForbiddenException::class);
-        $this->fileToShare->invite([$this->einstein], $this->viewerRole);
-        $this->fileToShare->invite([$this->einstein], $this->managerRole);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $this->fileToShare->invite($this->einstein, $this->managerRole);
     }
 
     public function testInviteWithExpiry(): void
     {
         $tomorrow = new \DateTimeImmutable('tomorrow');
-        $shares = $this->fileToShare->invite([$this->einstein], $this->viewerRole, $tomorrow);
-        $this->assertCount(1, $shares);
+        $share = $this->fileToShare->invite($this->einstein, $this->viewerRole, $tomorrow);
+        $this->assertInstanceOf(\DateTimeImmutable::class, $share->getExpiration());
+        $this->assertSame($tomorrow->getTimestamp(), $share->getExpiration()->getTimestamp());
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertCount(1, $createdShares);
         $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiration());
@@ -198,14 +144,17 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     {
         $this->expectException(BadRequestException::class);
         $yesterday = new \DateTimeImmutable('yesterday');
-        $this->fileToShare->invite([$this->einstein], $this->viewerRole, $yesterday);
+        $this->fileToShare->invite($this->einstein, $this->viewerRole, $yesterday);
     }
 
     public function testInviteWithExpiryTimezone(): void
     {
         $expiry = new \DateTimeImmutable('2060-01-01 12:00:00', new \DateTimeZone('Europe/Kyiv'));
-        $shares = $this->fileToShare->invite([$this->marie], $this->viewerRole, $expiry);
-        $this->assertCount(1, $shares);
+        $share = $this->fileToShare->invite($this->marie, $this->viewerRole, $expiry);
+        $this->assertInstanceOf(\DateTimeImmutable::class, $share->getExpiration());
+        // The returned expiry is in UTC timezone (2 hours earlier than the expiry time in Kyiv)
+        $this->assertSame("Thu, 01 Jan 2060 10:00:00 +0000", $share->getExpiration()->format('r'));
+        $this->assertSame("Z", $share->getExpiration()->getTimezone()->getName());
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertCount(1, $createdShares);
         $this->assertInstanceOf(\DateTimeImmutable::class, $createdShares[0]->getExpiration());
@@ -222,21 +171,13 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
-        $shares = $this->fileToShare->invite(
-            [$this->einstein, $this->marie, $philosophyHatersGroup],
-            $this->viewerRole
-        );
-        $this->assertCount(3, $shares);
-        for($i = 0; $i < 3; $i++) {
-            $this->assertThat(
-                $shares[$i]->getReceiver()->getDisplayName(),
-                $this->logicalOr(
-                    $this->equalTo("philosophyhaters"),
-                    $this->equalTo("Marie Curie"),
-                    $this->equalTo("Albert Einstein")
-                )
-            );
-        }
+        $shares = [];
+        $shares[] = $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $shares[] = $this->fileToShare->invite($this->marie, $this->viewerRole);
+        $shares[] = $this->fileToShare->invite($philosophyHatersGroup, $this->viewerRole);
+        $this->assertSame("Albert Einstein", $shares[0]->getReceiver()->getDisplayName());
+        $this->assertSame("Marie Curie", $shares[1]->getReceiver()->getDisplayName());
+        $this->assertSame("philosophyhaters", $shares[2]->getReceiver()->getDisplayName());
     }
 
     public function testGetReceiversOfShareReturnedBySharedByMe(): void
@@ -247,14 +188,12 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
-        $this->fileToShare->invite(
-            [$this->einstein, $this->marie, $philosophyHatersGroup],
-            $this->viewerRole
-        );
-        $this->folderToShare->invite(
-            [$this->einstein, $this->marie, $philosophyHatersGroup],
-            $this->viewerRole
-        );
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        $this->fileToShare->invite($this->marie, $this->viewerRole);
+        $this->fileToShare->invite($philosophyHatersGroup, $this->viewerRole);
+        $this->folderToShare->invite($this->einstein, $this->viewerRole);
+        $this->folderToShare->invite($this->marie, $this->viewerRole);
+        $this->folderToShare->invite($philosophyHatersGroup, $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         $this->assertCount(6, $shares);
         for($i = 0; $i < 6; $i++) {
@@ -281,13 +220,13 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
     public function testInviteUserToAReceivedShare(): void
     {
-        $this->fileToShare->invite([$this->einstein], $this->managerRole);
+        $this->fileToShare->invite($this->einstein, $this->managerRole);
         /**
          * @var ShareReceived $receivedShare
          */
         $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
         $resource = $this->einsteinOcis->getResourceById($receivedShare->getRemoteItemId());
-        $resource->invite([$this->marie], $this->viewerRole);
+        $resource->invite($this->marie, $this->viewerRole);
         /**
          * @var ShareReceived $receivedShare
          */

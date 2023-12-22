@@ -72,7 +72,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         foreach ($resources as $resource) {
             if ($resource->getName() === $resourceName) {
                 $role = $this->getRoleByName($resource, $roleName);
-                $resource->invite([$receiver], $role);
+                $resource->invite($receiver, $role);
                 break;
             }
         }
@@ -265,7 +265,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         foreach ($resources as $resource) {
             if ($resource->getName() === 'subfolder') {
                 $role = $this->getRoleByName($resource, 'Viewer');
-                $resource->invite([$einstein], $role);
+                $resource->invite($einstein, $role);
                 break;
             }
         }

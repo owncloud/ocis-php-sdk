@@ -66,7 +66,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 "manager role not found "
             );
         }
-        $sharedResource->invite([$marie], $managerRole);
+        $sharedResource->invite($marie, $managerRole);
 
         $marieDrive = $marieOcis->getMyDrives();
         $this->assertContainsOnlyInstancesOf(Drive::class, $marieDrive);
@@ -125,7 +125,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 "manager role not found "
             );
         }
-        $sharedResource->invite([$katherine], $managerRole);
+        $sharedResource->invite($katherine, $managerRole);
 
         $drives = $adminOcis->getAllDrives();
         foreach ($drives as $drive) {
@@ -220,7 +220,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 );
             }
 
-            $sharedResource->invite([$katherine], $managerRole);
+            $sharedResource->invite($katherine, $managerRole);
         }
 
         $drives = $adminOcis->getAllDrives(

@@ -62,7 +62,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
 
     public function testGetShareByMe(): void
     {
-        $this->sharedResource->invite([$this->einstein], $this->editorRole);
+        $this->sharedResource->invite($this->einstein, $this->editorRole);
         $myShare = $this->ocis->getSharedByMe();
         $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
         $this->assertEquals('Albert Einstein', $myShare[0]->getReceiver()->getDisplayName());
@@ -86,7 +86,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
 
     public function testGetShareAndShareLinkByMe(): void
     {
-        $this->sharedResource->invite([$this->einstein], $this->editorRole);
+        $this->sharedResource->invite($this->einstein, $this->editorRole);
         $this->sharedResource->createSharingLink(
             SharingLinkType::VIEW,
             new \DateTimeImmutable('2023-12-31 01:02:03.456789'),
