@@ -488,7 +488,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003Ainvite\u0028\u0029",
             "name": "invite",
-            "summary": "Invite\u0020one\u0020or\u0020multiple\u0020people\u0028user\/group\u0029\u0020to\u0020the\u0020resource.",
+            "summary": "Invite\u0020a\u0020user\u0020or\u0020group\u0020to\u0020the\u0020resource.",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_invite"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AcreateSharingLink\u0028\u0029",
