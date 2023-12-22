@@ -711,15 +711,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getEtag"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetDriveId\u0028\u0029",
-            "name": "getDriveId",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetParentDriveId\u0028\u0029",
+            "name": "getParentDriveId",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getDriveId"
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getParentDriveId"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetDriveType\u0028\u0029",
-            "name": "getDriveType",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetParentDriveType\u0028\u0029",
+            "name": "getParentDriveType",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getDriveType"
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getParentDriveType"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetRemoteItemId\u0028\u0029",
             "name": "getRemoteItemId",
