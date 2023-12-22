@@ -167,14 +167,15 @@ class Share
         } else {
             $expirationMutable = null;
         }
-        $this->apiPermission->setExpirationDateTime($expirationMutable);
+        $apiPermission = new ApiPermission();
+        $apiPermission->setExpirationDateTime($expirationMutable);
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
                 $this->driveId,
                 $this->resourceId,
                 $this->getPermissionId(),
-                $this->apiPermission
+                $apiPermission
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
