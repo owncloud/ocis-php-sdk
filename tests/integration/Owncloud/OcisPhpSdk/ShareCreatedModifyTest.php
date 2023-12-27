@@ -14,6 +14,7 @@ use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\ShareCreated;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
+use OpenAPI\Client\Model\SharingLinkType;
 
 class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 {
@@ -136,7 +137,6 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $shareFromInvite = $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $tomorrow = new \DateTimeImmutable('tomorrow');
         $shareFromInvite->setExpiration($tomorrow);
-        $sharedByMeShares = $this->ocis->getSharedByMe();
 
         $this->assertInstanceOf(\DateTimeImmutable::class, $shareFromInvite->getExpiration());
         $this->assertSame($tomorrow->getTimestamp(), $shareFromInvite->getExpiration()->getTimestamp());
@@ -153,5 +153,13 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 
         $this->assertInstanceOf(\DateTimeImmutable::class, $sharedByMeShares[0]->getExpiration());
         $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiration()->getTimestamp());
+    }
+
+    public function testDeleteShareLink(): void
+    {
+        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, null, "p@$\$w0rD");
+        $link->delete();
+        $linkFromSharedByMe = $this->ocis->getSharedByMe();
+        $this->assertCount(0, $linkFromSharedByMe);
     }
 }
