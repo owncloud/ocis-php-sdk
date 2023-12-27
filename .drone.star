@@ -67,6 +67,8 @@ def main(ctx):
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
     afterPipelines = codeStylePipeline + phpStanPipeline + phanPipeline + testsPipelinesWithCoverage + testsPipelinesWithoutCoverage
     dependsOn(cacheDependencies(), afterPipelines)
+    docsPipeline = docs()
+    dependsOn(cacheDependencies(), docsPipeline)
     return (
         cacheDependencies() +
         cacheOcisPipeline(ctx) +
@@ -76,7 +78,7 @@ def main(ctx):
         testsPipelinesWithCoverage +
         testsPipelinesWithoutCoverage +
         sonarPipeline +
-        docs()
+        docsPipeline
     )
 
 def phpIntegrationTest(ctx, phpversions, coverage):
@@ -452,6 +454,7 @@ def docs():
                 },
             },
         ],
+        "depends_on": [],
         "trigger": trigger,
     }]
 
