@@ -59,9 +59,9 @@ def main(ctx):
     codeStylePipeline = tests(ctx, "codestyle", "make test-php-style", [DEFAULT_PHP_VERSION], False)
     phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan", [DEFAULT_PHP_VERSION], False)
     phanPipeline = tests(ctx, "phan", "make test-php-phan", [DEFAULT_PHP_VERSION], False)
-    testsPipelinesWithCoverage = tests(ctx, "php-unit", "make test-php-unit", [DEFAULT_PHP_VERSION], True)
+    testsPipelinesWithCoverage = tests(ctx, "php-unit", "make test-php-unit", [DEFAULT_PHP_VERSION], True, True)
     testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
-    testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2], False)
+    testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2], False, True)
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2], False)
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
@@ -95,6 +95,7 @@ def phpIntegrationTest(ctx, phpversions, coverage):
                     "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
                 },
                 "commands": [
+                    installPhpXdebugCommand(php),
                     "make test-php-integration-ci",
                 ],
             },
@@ -316,7 +317,7 @@ def keycloakService():
         },
     ]
 
-def tests(ctx, name, command, phpversions, coverage):
+def tests(ctx, name, command, phpversions, coverage, xdebugNeeded = False):
     pipelines = []
     if name in config and config[name]:
         for php in phpversions:
@@ -328,7 +329,7 @@ def tests(ctx, name, command, phpversions, coverage):
                     "environment": {
                         "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
                     },
-                    "commands": [
+                    "commands": ([installPhpXdebugCommand(php)] if xdebugNeeded else []) + [
                         "composer install",
                         command,
                     ],
@@ -664,3 +665,6 @@ def cacheRebuildOnEventPush():
             ],
         },
     }]
+
+def installPhpXdebugCommand(php):
+    return "add-apt-repository ppa:ondrej/php && apt-get install -y php%s-xdebug" % php
