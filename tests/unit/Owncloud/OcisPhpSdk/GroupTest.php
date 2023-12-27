@@ -12,7 +12,7 @@ class GroupTest extends TestCase
     /**
      * @return array<int, array<int, array<string, array<int, string>|string>>>
      */
-    public function validGroupData(): array
+    public static function validGroupData(): array
     {
         return [
             [[
@@ -64,7 +64,7 @@ class GroupTest extends TestCase
      *      ],
      *
      */
-    public function InvalidGroupData(): array
+    public static function invalidGroupData(): array
     {
         return [
             [[ // id is null
@@ -99,7 +99,7 @@ class GroupTest extends TestCase
     }
 
     /**
-     * @dataProvider InvalidGroupData
+     * @dataProvider invalidGroupData
      *
      * @param array<string,string|array<int,string>> $data
      * @param string $key

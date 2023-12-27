@@ -18,7 +18,7 @@ class ResourceLinkTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function createLinkDataProvider(): array
+    public static function createLinkDataProvider(): array
     {
         return [
             // create a view link with minimal data

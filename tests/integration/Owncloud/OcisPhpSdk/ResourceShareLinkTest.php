@@ -50,7 +50,7 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
     /**
      * @return array<int,array<int,SharingLinkType|bool|string>>
      */
-    public function sharingLinkTypeDataProvider(): array
+    public static function sharingLinkTypeDataProvider(): array
     {
         return [
             [SharingLinkType::INTERNAL, true, true, ''],

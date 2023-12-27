@@ -12,7 +12,7 @@ class UserTest extends TestCase
     /**
      * @return array<int, array<int, array<string, string>>>
      */
-    public function validUserData(): array
+    public static function validUserData(): array
     {
         return [
             [[
@@ -42,7 +42,7 @@ class UserTest extends TestCase
     /**
      * @return array<int, array<int, array<string, string|null>>>
      */
-    public function invalidUserData(): array
+    public static function invalidUserData(): array
     {
         return [
 

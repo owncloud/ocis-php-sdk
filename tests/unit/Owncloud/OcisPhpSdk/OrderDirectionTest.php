@@ -10,7 +10,7 @@ class OrderDirectionTest extends TestCase
     /**
      * @return array<int,array{0:OrderDirection,1:string}>
      */
-    public function validOrderDirections(): array
+    public static function validOrderDirections(): array
     {
         return [
             [OrderDirection::ASC, "asc"],
