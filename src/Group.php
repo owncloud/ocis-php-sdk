@@ -17,6 +17,9 @@ use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use OpenAPI\Client\ApiException;
 
+/**
+ * @phpstan-import-type ConnectionConfig from Ocis
+ */
 class Group
 {
     private string $id;
@@ -36,12 +39,7 @@ class Group
     private string $accessToken;
 
     /**
-     * @phpstan-param array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client
-     *                      } $connectionConfig
+     * @phpstan-var ConnectionConfig
      * @ignore The developer using the SDK does not need to create Group objects manually,
      *         but should use the Ocis class to query the server for groups
      */
@@ -50,12 +48,7 @@ class Group
     /**
      * @param OpenApiGroup $openApiGroup
      * @param string $serviceUrl
-     * @phpstan-param array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client
-     *                      } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @param string $accessToken
      */
     public function __construct(

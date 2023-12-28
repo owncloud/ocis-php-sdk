@@ -19,6 +19,8 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 /**
  * Class representing a public link to a resource
+ *
+ * @phpstan-import-type ConnectionConfig from Ocis
  */
 class ShareLink extends Share
 {
@@ -26,13 +28,7 @@ class ShareLink extends Share
 
     /**
      * @throws InvalidResponseException
-     * @phpstan-param array{
-     *                       'headers'?:array<string, mixed>,
-     *                       'verify'?:bool,
-     *                       'webfinger'?:bool,
-     *                       'guzzle'?:\GuzzleHttp\Client,
-     *                       'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
-     *                     } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @ignore The developer using the SDK does not need to create ShareLink objects manually,
      *         but should use the OcisResource class to share resources using a link
      *         and that will create ShareLink objects

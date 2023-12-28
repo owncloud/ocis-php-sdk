@@ -25,6 +25,8 @@ use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 
 /**
  * Class representing a single drive/space in ownCloud Infinite Scale
+ *
+ * @phpstan-import-type ConnectionConfig from Ocis
  */
 class Drive
 {
@@ -33,12 +35,7 @@ class Drive
     private string $webDavUrl = '';
 
     /**
-     * @phpstan-var array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client
-     *                    }
+     * @phpstan-var ConnectionConfig
      */
     private array $connectionConfig;
     private Configuration $graphApiConfig;
@@ -47,12 +44,7 @@ class Drive
     /**
      * @ignore The developer using the SDK does not need to create drives manually, but should use the Ocis class
      *         to get or create drives, so this constructor should not be listed in the documentation.
-     * @phpstan-param array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client
-     *                      } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @throws \InvalidArgumentException
      */
     public function __construct(
