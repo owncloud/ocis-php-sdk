@@ -3,6 +3,8 @@
 namespace unit\Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Model\Group;
+use Owncloud\OcisPhpSdk\User as SdkUser;
+use OpenAPI\Client\Model\User;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Group as SdkGroup;
 use PHPUnit\Framework\TestCase;
@@ -108,10 +110,42 @@ class GroupTest extends TestCase
      */
     public function testInvalidDataInListGroup(array $data, string $key, string $errorMsg)
     {
-        $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Invalid $errorMsg returned for group '" . print_r($data[$key], true));
         $libGroup = new Group($data);
         $accessToken = "acstok";
+        $this->expectException(InvalidResponseException::class);
         $group = new SdkGroup($libGroup, "url", [], $accessToken);
+        $group->getId();
+        $group->getDisplayName();
+        $group->getMembers();
+    }
+
+    public function testSetMembers(): void
+    {
+        $libGroup = new Group(
+            [
+                "id" => "as",
+                "description" => "a",
+                "display_name" => "name",
+                "group_types" => ["aa"],
+                "members" => [],
+            ]
+        );
+        $accessToken = "acstok";
+        $group = new SdkGroup($libGroup, "url", [], $accessToken);
+        $this->assertCount(0, $group->getMembers());
+        $group->setMembers(
+            new SdkUser(
+                new User(
+                    [
+                        "id" => "id",
+                        "display_name" => "displayname",
+                        "mail" => "mail@mail.com",
+                        "on_premises_sam_account_name" => "sd",
+                    ],
+                )
+            )
+        );
+        $this->assertCount(1, $group->getMembers());
     }
 }
