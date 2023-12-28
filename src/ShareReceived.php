@@ -4,6 +4,7 @@ namespace Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Identity;
+use OpenAPI\Client\Model\ItemReference;
 use OpenAPI\Client\Model\RemoteItem;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
@@ -66,31 +67,48 @@ class ShareReceived
     }
 
     /**
-     * @return string
      * @throws InvalidResponseException
      */
-    public function getParentDriveId(): string
+    private function getParentReference(): ItemReference
     {
-        return empty($this->shareReceived->getParentReference())
-        || empty($this->shareReceived->getParentReference()->getDriveId()) ?
-           throw new InvalidResponseException(
-               "Invalid driveId '" . print_r($this->shareReceived->getParentReference(), true) . "'"
-           )
-           : $this->shareReceived->getParentReference()->getDriveId();
+        return empty($this->shareReceived->getParentReference()) ?
+            throw new InvalidResponseException(
+                "Invalid parentReference returned for received share  '" .
+                print_r($this->shareReceived->getParentReference(), true) . "'"
+            )
+            : $this->shareReceived->getParentReference();
+
     }
 
     /**
      * @return string
      * @throws InvalidResponseException
      */
-    public function getParentDriveType(): string
+    public function getParentDriveId(): string
     {
-        return empty($this->shareReceived->getParentReference())
-        || empty($this->shareReceived->getParentReference()->getDriveType())
-            ? throw new InvalidResponseException(
-                "Invalid drive type '" . print_r($this->shareReceived->getParentReference(), true) . "'"
-            )
-            : $this->shareReceived->getParentReference()->getDriveType();
+        $parentReference = $this->getParentReference();
+        return empty($parentReference->getDriveId()) ?
+           throw new InvalidResponseException(
+               "Invalid driveId returned in parentReference of received share '" .
+               print_r($parentReference->getDriveId(), true) . "'"
+           )
+           : $parentReference->getDriveId();
+    }
+
+    /**
+     * @throws InvalidResponseException
+     */
+    public function getParentDriveType(): DriveType
+    {
+        $driveTypeString = (string)$this->getParentReference()->getDriveType();
+        $driveType = DriveType::tryFrom($driveTypeString);
+        if ($driveType instanceof DriveType) {
+            return $driveType;
+        }
+        throw new InvalidResponseException(
+            'Invalid driveType returned in parentReference of received share: "' .
+            print_r($driveTypeString, true) . '"'
+        );
     }
 
     /**
@@ -100,7 +118,7 @@ class ShareReceived
     {
         return empty($this -> shareReceived -> getRemoteItem())
             ? throw new InvalidResponseException(
-                "Invalid remote item'" . print_r($this -> shareReceived -> getParentReference(), true) . "'"
+                "Invalid remote item '" . print_r($this -> shareReceived -> getParentReference(), true) . "'"
             ) : $this->shareReceived->getRemoteItem();
     }
 
