@@ -5,6 +5,9 @@ namespace unit\Owncloud\OcisPhpSdk;
 use Owncloud\OcisPhpSdk\WebDavClient;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @phpstan-import-type ConnectionConfig from \Owncloud\OcisPhpSdk\Ocis
+ */
 class WebDavClientTest extends TestCase
 {
     /**
@@ -89,12 +92,7 @@ class WebDavClientTest extends TestCase
     }
 
     /**
-     * @phpstan-param array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client
-     *                     } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @param array<mixed> $expectedCurlSettingsArray
      * @dataProvider connectionConfigProvider
      */

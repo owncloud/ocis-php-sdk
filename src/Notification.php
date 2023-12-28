@@ -13,6 +13,8 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 /**
  * Class representing a single notification emitted in ownCloud Infinite Scale
+ *
+ * @phpstan-import-type ConnectionConfig from Ocis
  */
 class Notification
 {
@@ -35,17 +37,12 @@ class Notification
     private string $serviceUrl;
 
     /**
-     * @phpstan-var array{'headers'?:array<string, mixed>, 'verify'?:bool}
+     * @phpstan-var ConnectionConfig
      */
     private array $connectionConfig;
 
     /**
-     * @phpstan-param array{
-     *                        'headers'?:array<string, mixed>,
-     *                        'verify'?:bool,
-     *                        'webfinger'?:bool,
-     *                        'guzzle'?:\GuzzleHttp\Client
-     *                        } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @phpstan-param object{
      *    app: string,
      *    user: string,

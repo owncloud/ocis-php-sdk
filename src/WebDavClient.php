@@ -18,6 +18,7 @@ use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 
 /**
  * @ignore This is only used for internal purposes and should not show up in the documentation
+ * @phpstan-import-type ConnectionConfig from Ocis
  */
 class WebDavClient extends Client
 {
@@ -58,9 +59,7 @@ class WebDavClient extends Client
     }
 
     /**
-     * @phpstan-param array{
-     *                       'headers'?:array<string, mixed>,
-     *                      } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @return array<int, mixed>
      */
     private function getCurlHeaders(array $connectionConfig): array
@@ -75,9 +74,7 @@ class WebDavClient extends Client
     }
 
     /**
-     * @phpstan-param array{
-     *                       'verify'?:bool
-     *                      } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @return array<int, mixed>
      */
     private function getCurlVerifySettings(array $connectionConfig): array
@@ -91,9 +88,7 @@ class WebDavClient extends Client
     }
 
     /**
-     * @phpstan-param array{
-     *                      'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
-     *                     } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @return array<int, mixed>
      */
     private function getCurlProxySettings(array $connectionConfig): array
@@ -129,13 +124,7 @@ class WebDavClient extends Client
     }
 
     /**
-     * @phpstan-param array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client
-     *                     } $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @return array<int, mixed>
      */
     public function createCurlSettings(array $connectionConfig, string $accessToken): array
@@ -151,13 +140,7 @@ class WebDavClient extends Client
     /**
      * set curl settings
      * enable exceptions for send method
-     * @phpstan-param array{
-     *                       'headers'?:array<string, mixed>,
-     *                       'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
-     *                       'verify'?:bool,
-     *                       'webfinger'?:bool,
-     *                       'guzzle'?:\GuzzleHttp\Client
-     *                      } $connectionConfig     *
+     * @phpstan-param ConnectionConfig $connectionConfig
      */
     public function setCustomSetting(array $connectionConfig, string $accessToken): void
     {

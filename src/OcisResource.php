@@ -27,6 +27,8 @@ use Sabre\HTTP\ResponseInterface;
 
 /**
  * Class representing a file or folder inside a Drive in ownCloud Infinite Scale
+ *
+ * @phpstan-import-type ConnectionConfig from Ocis
  */
 class OcisResource
 {
@@ -36,16 +38,10 @@ class OcisResource
     private array $metadata;
     private string $accessToken;
     private string $serviceUrl;
-    /**
-     * @phpstan-var array{
-     *                      'headers'?:array<string, mixed>,
-     *                      'verify'?:bool,
-     *                      'webfinger'?:bool,
-     *                      'guzzle'?:\GuzzleHttp\Client,
-     *                      'drivesPermissionsApi'?:\OpenAPI\Client\Api\DrivesPermissionsApi,
-     *                    }
-     */
 
+    /**
+     * @phpstan-var ConnectionConfig
+     */
     private array $connectionConfig;
     private Configuration $graphApiConfig;
 
@@ -54,7 +50,7 @@ class OcisResource
      *        the format of the array is directly taken from the PROPFIND response
      *        returned by Sabre\DAV\Client
      *        for details about accepted metadata see: ResourceMetadata
-     * @param array $connectionConfig
+     * @phpstan-param ConnectionConfig $connectionConfig
      * @param string $serviceUrl
      * @param string $accessToken
      * @throws BadRequestException
@@ -64,14 +60,6 @@ class OcisResource
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws InternalServerErrorException
-     * @phpstan-param array{
-     *              'headers'?:array<string, mixed>,
-     *              'verify'?:bool,
-     *              'webfinger'?:bool,
-     *              'guzzle'?:Client,
-     *              'drivesPermissionsApi'?:DrivesPermissionsApi,
-     *              'drivesApi'?:DrivesApi
-     *             } $connectionConfig
      * @return void
      * @ignore The developer using the SDK does not need to create OcisResource objects manually,
      *         but should use the Drive class to query the server for resources
