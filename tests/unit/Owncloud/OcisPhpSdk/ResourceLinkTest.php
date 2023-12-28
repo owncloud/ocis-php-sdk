@@ -141,7 +141,8 @@ class ResourceLinkTest extends TestCase
         $permissionMock->method('getId')->willReturn('uuid-of-the-permission');
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link->getType();
     }
 
     public function testInvalidSharingLinkWebUrlResponse(): void
@@ -155,7 +156,8 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link->getWebUrl();
     }
 
     public function testInvalidSharingLinkTypeResponse(): void
@@ -170,6 +172,7 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link->getType();
     }
 }
