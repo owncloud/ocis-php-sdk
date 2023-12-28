@@ -22,7 +22,7 @@ class ResourceInviteTest extends TestCase
     /**
      * @return array<mixed>
      */
-    public function inviteDataProvider(): array
+    public static function inviteDataProvider(): array
     {
         $openAPIUser = new OpenAPIUser(
             [

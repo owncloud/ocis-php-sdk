@@ -166,7 +166,7 @@ class OcisTest extends TestCase
     /**
      * @return array<int, mixed>
      */
-    public function invalidJsonNotificationResponse(): array
+    public static function invalidJsonNotificationResponse(): array
     {
         return [
             [""],
@@ -191,7 +191,7 @@ class OcisTest extends TestCase
     /**
      * @return array<int, mixed>
      */
-    public function invalidOcsNotificationResponse(): array
+    public static function invalidOcsNotificationResponse(): array
     {
         return [
             ['{"ocs":{"meta":{"message":"","status":"","statuscode":200}}}'],
@@ -218,7 +218,7 @@ class OcisTest extends TestCase
     /**
      * @return array<int, mixed>
      */
-    public function invalidOrMissingIdInOcsNotificationResponse(): array
+    public static function invalidOrMissingIdInOcsNotificationResponse(): array
     {
         return [
             ['{"ocs":{"data":[{"notification_id":""}]}}'],
@@ -262,7 +262,7 @@ class OcisTest extends TestCase
     /**
      * @return array<int, mixed>
      */
-    public function connectionConfigDataProvider(): array
+    public static function connectionConfigDataProvider(): array
     {
         return [
             [
@@ -375,7 +375,7 @@ class OcisTest extends TestCase
     /**
      * @return array<int, mixed>
      */
-    public function noNotificationsDataProvider(): array
+    public static function noNotificationsDataProvider(): array
     {
         return [
             ['{"ocs":{"data":[]}}'],

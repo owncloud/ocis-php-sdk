@@ -1,7 +1,7 @@
 # docker compose command, defaults to v3
 # for v2: set this as docker-compose using the environment variable
 DCO:=docker compose
-PHPUNIT=phpdbg -qrr -d memory_limit=4096M -d zend.enable_gc=0 "vendor/bin/phpunit"
+PHPUNIT=php -d memory_limit=4096M -d zend.enable_gc=0 -d xdebug.mode=coverage "vendor/bin/phpunit"
 run-with-cleanup = $(1) && $(2) || (ret=$$?; $(2) && exit $$ret)
 
 #

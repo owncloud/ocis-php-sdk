@@ -25,7 +25,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int,array<int,string|null>>
      */
-    public function dataProviderValidFileType(): array
+    public static function dataProviderValidFileType(): array
     {
         return [
             ['{DAV:}collection', 'folder'],
@@ -63,7 +63,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int, array<int, int|string>>
      */
-    public function dataProviderInvalidFileType(): array
+    public static function dataProviderInvalidFileType(): array
     {
         return ([
             ["as"],
@@ -92,7 +92,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int, array<int, int|string|null>>
      */
-    public function validSizes(): array
+    public static function validSizes(): array
     {
         return [
             [0, 0, null, '{DAV:}getcontentlength'],
@@ -134,7 +134,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int, array<int, int|string|null>>
      */
-    public function inValidSizes(): array
+    public static function inValidSizes(): array
     {
         return [
             ["g", '{DAV:}collection', '{http://owncloud.org/ns}size'],
@@ -159,7 +159,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int, array<int, int|string|null>>
      */
-    public function validContentType(): array
+    public static function validContentType(): array
     {
         return [
             ['text/plain', null],
@@ -207,7 +207,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int, array<int, int|string|null>>
      */
-    public function favoriteValue(): array
+    public static function favoriteValue(): array
     {
         return [
             [0],
@@ -232,7 +232,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int, array<int, string>>
      */
-    public function invalidFavoriteValues(): array
+    public static function invalidFavoriteValues(): array
     {
         return [
             ['2'],
@@ -256,7 +256,7 @@ class ResourceTest extends TestCase
     /**
      * @return array<int, array<int, array<string, string>|string|null>>
      */
-    public function checkSumValue(): array
+    public static function checkSumValue(): array
     {
         return [
             [["aa" => "aa"], null],

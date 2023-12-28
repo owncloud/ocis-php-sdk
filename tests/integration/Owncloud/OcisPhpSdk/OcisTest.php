@@ -157,7 +157,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, int|DriveType>>
      */
-    public function drivesType()
+    public static function drivesType()
     {
         return [
             [DriveType::PROJECT],
@@ -297,7 +297,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return array<int,array<int,int>>
      */
-    public function invalidQuotaProvider()
+    public static function invalidQuotaProvider()
     {
         return [
             [-1],
@@ -321,7 +321,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int,array<int, string>>>
      */
-    public function groupNameList(): array
+    public static function groupNameList(): array
     {
         return[
             [["philosophyhaters", "physicslovers"]],
@@ -372,7 +372,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, array<int, string>|int|string>>
      */
-    public function searchText(): array
+    public static function searchText(): array
     {
         return [
             ["ph",["philosophyhaters", "physicslovers"]],
@@ -402,7 +402,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, array<int,  string>|int|OrderDirection|string>>
      */
-    public function orderDirection(): array
+    public static function orderDirection(): array
     {
         return [
             [OrderDirection::ASC, "ph", ["philosophyhaters", "physicslovers"]],

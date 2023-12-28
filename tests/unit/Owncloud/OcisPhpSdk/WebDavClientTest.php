@@ -10,7 +10,7 @@ class WebDavClientTest extends TestCase
     /**
      * @return array<int, array<int, array<mixed>|string>>
      */
-    public function connectionConfigProvider(): array
+    public static function connectionConfigProvider(): array
     {
         return [
             [[], 'https://ocis.sdk.tests:9009', [CURLOPT_HTTPAUTH => CURLAUTH_BEARER, CURLOPT_XOAUTH2_BEARER => 'token']],

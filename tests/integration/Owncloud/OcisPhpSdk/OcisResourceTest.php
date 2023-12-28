@@ -298,7 +298,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, string>>
      */
-    public function resources()
+    public static function resources()
     {
         return [
             ['somefile.txt','file'],
@@ -334,7 +334,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, string>>
      */
-    public function invalidResources()
+    public static function invalidResources()
     {
         return [
             ['nonExistentFile.txt'],

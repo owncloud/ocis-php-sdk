@@ -76,7 +76,7 @@ class OcisWebfingerTest extends TestCase
     /**
      * @return array<array<string>>
      **/
-    public function invalidTokenProvider(): array
+    public static function invalidTokenProvider(): array
     {
         return [
             ["onlyHeaderNoPayload"],
@@ -125,7 +125,7 @@ class OcisWebfingerTest extends TestCase
     /**
      * @return array<array<string>>
      **/
-    public function invalidResponseContentProvider(): array
+    public static function invalidResponseContentProvider(): array
     {
         return [
             ["notJson"],

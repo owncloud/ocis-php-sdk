@@ -10,7 +10,7 @@ class DriveOrderTest extends TestCase
     /**
      * @return array<int,array{0:DriveOrder,1:string}>
      */
-    public function validDriveOrders(): array
+    public static function validDriveOrders(): array
     {
         return [
             [DriveOrder::LASTMODIFIED, "lastModifiedDateTime"],

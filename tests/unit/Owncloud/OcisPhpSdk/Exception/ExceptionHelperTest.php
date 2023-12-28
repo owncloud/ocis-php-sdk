@@ -22,7 +22,7 @@ class ExceptionHelperTest extends TestCase
     /**
      * @return array<int,array{0:string,1:string,2:int, 3:class-string}>
      */
-    public function exceptionData(): array
+    public static function exceptionData(): array
     {
         return [
             ["GuzzleHttpRequestException", "bad request", 400, BadRequestException::class],

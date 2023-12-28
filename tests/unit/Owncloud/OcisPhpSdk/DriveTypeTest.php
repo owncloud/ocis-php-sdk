@@ -9,7 +9,7 @@ class DriveTypeTest extends TestCase
 {
     /**
      * @return array<int,array{0:DriveType,1:string}>     */
-    public function validDriveTypes(): array
+    public static function validDriveTypes(): array
     {
         return [
             [DriveType::PERSONAL, "personal"],
