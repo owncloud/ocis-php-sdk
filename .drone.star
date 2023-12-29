@@ -83,8 +83,8 @@ def main(ctx):
 
 def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
-    steps = keycloakService() + restoreOcisCache() + ocisService() + cacheRestore()
     for php in phpversions:
+        steps = keycloakService() + restoreOcisCache() + ocisService() + cacheRestore()
         name = "php-integration-%s" % php
         steps.append(
             {
@@ -321,10 +321,10 @@ def tests(ctx, name, command, phpversions, coverage, xdebugNeeded = False):
     pipelines = []
     if name in config and config[name]:
         for php in phpversions:
-            name = "%s-%s" % (name, php)
+            fullname = "%s-%s" % (name, php)
             steps = cacheRestore() + [
                 {
-                    "name": name,
+                    "name": fullname,
                     "image": OC_CI_PHP % php,
                     "environment": {
                         "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
@@ -336,11 +336,11 @@ def tests(ctx, name, command, phpversions, coverage, xdebugNeeded = False):
                 },
             ]
             if coverage:
-                steps += coverageSteps(ctx, name)
+                steps += coverageSteps(ctx, fullname)
             pipelines += [
                 {
                     "kind": "pipeline",
-                    "name": name,
+                    "name": fullname,
                     "steps": steps,
                     "depends_on": [],
                     "trigger": trigger,
