@@ -15,12 +15,22 @@ class UserTest extends TestCase
     public static function validUserData(): array
     {
         return [
-            [[
-                "id" => "id",
-                "display_name" => "displayname",
-                "mail" => "mail@mail.com",
-                "on_premises_sam_account_name" => "sd",
-            ]],
+            [
+                [
+                    "id" => "id",
+                    "display_name" => "displayname",
+                    "mail" => "mail@mail.com",
+                    "on_premises_sam_account_name" => "sd",
+                ],
+            ],
+            [
+                [
+                    "id" => "0",
+                    "display_name" => "0",
+                    "mail" => "0@mail.com",
+                    "on_premises_sam_account_name" => "sd",
+                ],
+            ],
         ];
     }
 
