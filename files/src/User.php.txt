@@ -30,7 +30,7 @@ class User
      */
     public function getDisplayName(): string
     {
-        return empty($this->displayName) ?
+        return (($this->displayName === null) || ($this->displayName === '')) ?
         throw new InvalidResponseException(
             "Invalid displayName returned for user '" . print_r($this->displayName, true) . "'"
         )
@@ -42,7 +42,7 @@ class User
      */
     public function getId(): string
     {
-        return empty($this->id) ?
+        return (($this->id === null) || ($this->id === '')) ?
         throw new InvalidResponseException(
             "Invalid id returned for user '" . print_r($this->id, true) . "'"
         ) : (string)$this->id;
