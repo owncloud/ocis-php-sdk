@@ -113,6 +113,9 @@ class UserTest extends TestCase
             ]
         );
         $user = new SdkUser($libUser);
+        $user->getDisplayName();
+        $user->getMail();
+        $user->getId();
     }
 
 }
