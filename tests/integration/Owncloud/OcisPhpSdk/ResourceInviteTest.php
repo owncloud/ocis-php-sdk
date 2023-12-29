@@ -80,7 +80,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $share = $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $this->assertNull($share->getExpiration());
         $this->assertSame($this->fileToShare->getId(), $share->getResourceId());
-        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
     }
@@ -90,7 +90,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $share = $this->fileToShare->invite($this->marie, $this->viewerRole);
         $this->assertSame($this->fileToShare->getId(), $share->getResourceId());
-        $receivedShares = $this->marieOcis->getSharedWithMe();
+        $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis);
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
     }
@@ -105,7 +105,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $philosophyHatersGroup->addUser($this->einstein);
         $share = $this->fileToShare->invite($philosophyHatersGroup, $this->viewerRole);
         $this->assertSame($this->fileToShare->getId(), $share->getResourceId());
-        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
         $this->assertCount(1, $receivedShares);
         $this->assertSame($this->fileToShare->getName(), $receivedShares[0]->getName());
     }
@@ -224,13 +224,14 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         /**
          * @var ShareReceived $receivedShare
          */
-        $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
+        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
+
         $resource = $this->einsteinOcis->getResourceById($receivedShare->getRemoteItemId());
         $resource->invite($this->marie, $this->viewerRole);
         /**
          * @var ShareReceived $receivedShare
          */
-        $receivedShare = $this->marieOcis->getSharedWithMe()[0];
+        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis)[0];
         $this->assertSame('to-share-test.txt', $receivedShare->getName());
         $this->assertSame(
             'some content',

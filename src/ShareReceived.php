@@ -7,6 +7,7 @@ use OpenAPI\Client\Model\Identity;
 use OpenAPI\Client\Model\ItemReference;
 use OpenAPI\Client\Model\RemoteItem;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 
 /**
  * Ensures that the return type is correct, but Phan does not recognize it.
@@ -34,9 +35,7 @@ class ShareReceived
     public function getId(): string
     {
         return empty($this->shareReceived->getId())
-            ? throw new InvalidResponseException(
-                "Invalid Id '" . print_r($this->shareReceived->getId(), true) . "'"
-            )
+            ? throw new TooEarlyException()
             : $this->shareReceived->getId();
     }
 

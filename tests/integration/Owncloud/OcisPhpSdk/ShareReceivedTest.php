@@ -7,6 +7,7 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
@@ -55,16 +56,14 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         /**
          * @var ShareReceived $receivedShare
          */
-        $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
+        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
         $this->assertInstanceOf(ShareReceived::class, $receivedShare);
-        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getId());
+        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getRemoteItemId());
+        $this->assertMatchesRegularExpression('/' . $this->getFileIdRegex() . '/', $receivedShare->getId());
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getName());
-        // multiple issues with id in getSharedWithMe, see https://github.com/owncloud/ocis/issues/8000
-        // $this->assertSame($this->personalDrive->getId(), $receivedShare->getParentDriveId());
-        // shareWithMe does not return a drive type for parentReference, see https://github.com/owncloud/ocis/issues/8029
-        // $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
-        // etags returned by sharedWithMe is not quoted, see https://github.com/owncloud/ocis/issues/8045
-        // $this->assertSame($this->fileToShare->getEtag(), $receivedShare->getEtag());
+        $this->assertStringContainsString($this->personalDrive->getId(), $receivedShare->getParentDriveId());
+        $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
+        $this->assertSame($this->fileToShare->getEtag(), $receivedShare->getEtag());
         $this->assertSame($this->fileToShare->getId(), $receivedShare->getRemoteItemId());
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getRemoteItemName());
         $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());

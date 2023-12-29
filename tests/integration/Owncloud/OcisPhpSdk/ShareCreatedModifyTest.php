@@ -71,8 +71,8 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
             }
         }
         $this->assertCount(1, $this->ocis->getSharedByMe());
-        $this->assertCount(0, $this->einsteinOcis->getSharedWithMe());
-        $this->assertCount(1, $this->marieOcis->getSharedWithMe());
+        $this->assertCount(0, $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis));
+        $this->assertCount(1, $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis));
     }
 
     public function testDeleteGroupShare(): void
@@ -96,8 +96,8 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
             }
         }
         $this->assertCount(2, $this->ocis->getSharedByMe());
-        $this->assertCount(1, $this->einsteinOcis->getSharedWithMe());
-        $this->assertCount(1, $this->marieOcis->getSharedWithMe());
+        $this->assertCount(1, $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis));
+        $this->assertCount(1, $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis));
     }
 
     public function testDeleteAnAlreadyDeletedShare(): void

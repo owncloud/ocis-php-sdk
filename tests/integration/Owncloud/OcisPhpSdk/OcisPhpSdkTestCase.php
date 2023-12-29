@@ -7,6 +7,7 @@ use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
+use Owncloud\OcisPhpSdk\ShareReceived;
 use Owncloud\OcisPhpSdk\SharingRole;
 use PHPUnit\Framework\TestCase;
 
@@ -173,5 +174,33 @@ class OcisPhpSdkTestCase extends TestCase
         // check for null is done above
         // @phan-suppress-next-line PhanTypeMismatchReturnNullable
         return $content;
+    }
+
+    /**
+     * wrapper around `getSharedWithMe()` that makes sure the share is auto-accepted
+     * the auto-accepting happens async, so calling getSharedWithMe() directly might be too early.
+     * @param Ocis $ocis
+     * @return array<ShareReceived>
+     */
+    protected function getSharedWithMeWaitTillShareIsAccepted(Ocis $ocis): array
+    {
+        $receivedShares = [];
+        $timeout = time() + 10;
+        while (time() < $timeout) {
+            $receivedShares = $ocis->getSharedWithMe();
+            $ids = [];
+            foreach ($receivedShares as $share) {
+                try {
+                    $ids[] = $share->getId();
+                } catch (TooEarlyException $e) {
+                    sleep(1);
+                    break;
+                }
+            }
+            if (count($ids) === count($receivedShares)) {
+                break;
+            }
+        }
+        return $receivedShares;
     }
 }

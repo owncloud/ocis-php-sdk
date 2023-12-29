@@ -64,7 +64,7 @@ class ShareTestGetSharedWithMeTest extends OcisPhpSdkTestCase
     public function testGetShareWithMe(): void
     {
         $this->folderToShare->invite($this->einstein, $this->editorRole);
-        $receivedShare = $this->einsteinOcis->getSharedWithMe();
+        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
         $this->assertInstanceOf(ShareReceived::class, $receivedShare[0]);
         $this->assertEquals($this->folderToShare->getName(), $receivedShare[0]->getName());
         $this->assertSame($this->folderToShare->getId(), $receivedShare[0]->getRemoteItemId());
@@ -82,7 +82,7 @@ class ShareTestGetSharedWithMeTest extends OcisPhpSdkTestCase
         $philosophyHatersGroup->addUser($this->einstein);
         $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
         $this->folderToShare->invite($this->einstein, $this->editorRole);
-        $receivedShare = $this->einsteinOcis->getSharedWithMe();
+        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
         $this->assertInstanceOf(ShareReceived::class, $receivedShare[0]);
         $this->assertInstanceOf(ShareReceived::class, $receivedShare[1]);
         $this->assertCount(2, $receivedShare);
