@@ -93,6 +93,7 @@ def phpIntegrationTest(ctx, phpversions, coverage):
                 "image": OC_CI_PHP % php,
                 "environment": {
                     "OCIS_URL": "https://ocis:9200",
+                    "OCISWRAPPER_URL": "http://ocis:5200",
                     "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
                 },
                 "commands": [
