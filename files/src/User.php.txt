@@ -7,10 +7,10 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
 class User
 {
-    private string $id;
-    private string $displayName;
-    private string $mail;
-    private string|null $onPremisesSamAccountName;
+    private ?string $id;
+    private ?string $displayName;
+    private ?string $mail;
+    private ?string $onPremisesSamAccountName;
     /**
      * @param OpenAPIUser $openApiUser
      * @ignore The developer using the SDK does not need to create User objects manually,
@@ -19,21 +19,9 @@ class User
     public function __construct(
         OpenAPIUser $openApiUser
     ) {
-        $this->id = empty($openApiUser->getId()) ?
-        throw new InvalidResponseException(
-            "Invalid id returned for user '" . print_r($openApiUser->getid(), true) . "'"
-        )
-        : (string)$openApiUser->getId();
-        $this->displayName = empty($openApiUser->getDisplayName()) ?
-        throw new InvalidResponseException(
-            "Invalid displayName returned for user '" . print_r($openApiUser->getDisplayName(), true) . "'"
-        )
-        : (string)$openApiUser->getDisplayName();
-        $this->mail = empty($openApiUser->getMail()) ?
-        throw new InvalidResponseException(
-            "Invalid mail returned for user '" . print_r($openApiUser->getMail(), true) . "'"
-        )
-        : (string)$openApiUser->getMail();
+        $this->id = $openApiUser->getId();
+        $this->displayName = $openApiUser->getDisplayName();
+        $this->mail = $openApiUser->getMail();
         $this->onPremisesSamAccountName = $openApiUser->getOnPremisesSamAccountName();
     }
 
@@ -42,7 +30,11 @@ class User
      */
     public function getDisplayName(): string
     {
-        return $this->displayName;
+        return empty($this->displayName) ?
+        throw new InvalidResponseException(
+            "Invalid displayName returned for user '" . print_r($this->displayName, true) . "'"
+        )
+        : (string)$this->displayName;
     }
 
     /**
@@ -50,7 +42,10 @@ class User
      */
     public function getId(): string
     {
-        return $this->id;
+        return empty($this->id) ?
+        throw new InvalidResponseException(
+            "Invalid id returned for user '" . print_r($this->id, true) . "'"
+        ) : (string)$this->id;
     }
 
     /**
@@ -58,7 +53,11 @@ class User
      */
     public function getMail(): string
     {
-        return $this->mail;
+        return empty($this->mail) ?
+        throw new InvalidResponseException(
+            "Invalid mail returned for user '" . print_r($this->mail, true) . "'"
+        )
+        : (string)$this->mail;
     }
 
     /**
