@@ -97,6 +97,7 @@ services:
       start_period: 20s
     volumes:
       - ./ocis/tests/ociswrapper/bin/ociswrapper:/usr/bin/ociswrapper
+
   postgres:
     image: postgres:alpine
     networks:

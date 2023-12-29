@@ -19,6 +19,7 @@ DEFAULT_PHP_VERSION = "8.1"
 dir = {
     "base": "/drone/src",
     "ocis_bin": "/drone/src/ocis_bin",
+    "ociswrapper_bin": "/drone/src/ociswrapper_bin",
 }
 
 # minio mc environment variables
@@ -142,7 +143,7 @@ def ocisService():
             "environment": environment,
             "commands": [
                 "%s/ocis init --insecure true" % dir["ocis_bin"],
-                "%s/ocis server" % dir["ocis_bin"],
+                "%s/ociswrapper serve --bin %s/ocis --url %s" % (dir["ociswrapper_bin"], dir["ocis_bin"], "https://ocis:9200"),
             ],
         },
         {
@@ -185,6 +186,25 @@ def buildOcis():
                 "retry -t 3 'make build'",
                 "mkdir -p %s/$OCIS_COMMITID" % dir["base"],
                 "cp bin/ocis %s/$OCIS_COMMITID/" % dir["base"],
+            ],
+            "environment": {
+                "HTTP_PROXY": {
+                    "from_secret": "drone_http_proxy",
+                },
+                "HTTPS_PROXY": {
+                    "from_secret": "drone_http_proxy",
+                },
+            },
+        },
+        {
+            "name": "build-ociswrapper",
+            "image": OC_CI_GOLANG,
+            "commands": [
+                ". ./.drone.env",
+                "cd ocis/ocis/",
+                "make -C tests/ociswrapper build",
+                "mkdir -p %s/$OCIS_COMMITID" % dir["base"],
+                "cp tests/ociswrapper/bin/ociswrapper %s/$OCIS_COMMITID/" % dir["base"],
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -248,6 +268,7 @@ def cacheOcis():
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
             "mc cp -r -a %s/$OCIS_COMMITID/ocis s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID" % dir["base"],
+            "mc cp -r -a %s/$OCIS_COMMITID/ociswrapper s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID" % dir["base"],
             "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
         ],
     }]
@@ -259,9 +280,11 @@ def restoreOcisCache():
         "environment": MINIO_MC_ENV,
         "commands": [
             "mkdir -p %s" % dir["ocis_bin"],
+            "mkdir -p %s" % dir["ociswrapper_bin"],
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
             "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID/ocis %s" % dir["ocis_bin"],
+            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID/ociswrapper %s" % dir["ociswrapper_bin"],
         ],
     }]
 
