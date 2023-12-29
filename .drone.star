@@ -61,8 +61,8 @@ def main(ctx):
     phanPipeline = tests(ctx, "phan", "make test-php-phan", [DEFAULT_PHP_VERSION], False)
     testsPipelinesWithCoverage = tests(ctx, "php-unit", "make test-php-unit", [DEFAULT_PHP_VERSION], True, True)
     testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
-    testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2], False, True)
-    testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2], False)
+    testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2, 8.3], False, True)
+    testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2, 8.3], False)
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
     afterPipelines = codeStylePipeline + phpStanPipeline + phanPipeline + testsPipelinesWithCoverage + testsPipelinesWithoutCoverage
