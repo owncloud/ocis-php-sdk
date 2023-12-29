@@ -61,15 +61,26 @@ class ShareTestGetSharedWithMeTest extends OcisPhpSdkTestCase
 
     }
 
-    public function testGetShareWithMe(): void
+    public function testGetAttributesOfReceivedShare(): void
     {
-        $this->folderToShare->invite($this->einstein, $this->editorRole);
-        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
-        $this->assertInstanceOf(ShareReceived::class, $receivedShare[0]);
-        $this->assertEquals($this->folderToShare->getName(), $receivedShare[0]->getName());
-        $this->assertSame($this->folderToShare->getId(), $receivedShare[0]->getRemoteItemId());
-        //The step will only work after this bug is solved https://github.com/owncloud/ocis/issues/8000
-        //$this->assertSame($this->personalDrive->getId(), $receivedShare[0]->getDriveId());
+        $this->fileToShare->invite($this->einstein, $this->editorRole);
+        /**
+         * @var ShareReceived $receivedShare
+         */
+        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
+        $this->assertInstanceOf(ShareReceived::class, $receivedShare);
+        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getRemoteItemId());
+        $this->assertMatchesRegularExpression('/' . $this->getFileIdRegex() . '/', $receivedShare->getId());
+        $this->assertSame($this->fileToShare->getName(), $receivedShare->getName());
+        $this->assertStringContainsString($this->personalDrive->getId(), $receivedShare->getParentDriveId());
+        $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
+        $this->assertSame($this->fileToShare->getEtag(), $receivedShare->getEtag());
+        $this->assertSame($this->fileToShare->getId(), $receivedShare->getRemoteItemId());
+        $this->assertSame($this->fileToShare->getName(), $receivedShare->getRemoteItemName());
+        $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());
+        $this->assertEqualsWithDelta(time(), $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(), 120);
+        $this->assertStringContainsString('Admin', $receivedShare->getOwnerName());
+        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getOwnerId());
     }
 
     public function testGetMultipleShareWithMe(): void

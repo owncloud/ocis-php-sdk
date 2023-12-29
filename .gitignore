@@ -4,6 +4,7 @@ composer.lock
 .phpunit.cache
 .phpunit.result.cache
 /tests/output/
+/tests/integration/ocis/
 # phpDocumentor
 /cache/
 

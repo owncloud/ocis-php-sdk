@@ -30,11 +30,11 @@ class ShareReceived
     /**
      *
      * @return string
-     * @throws InvalidResponseException
+     * @throws TooEarlyException
      */
     public function getId(): string
     {
-        return empty($this->shareReceived->getId())
+        return ($this->shareReceived->getId() === null)
             ? throw new TooEarlyException()
             : $this->shareReceived->getId();
     }
@@ -54,14 +54,12 @@ class ShareReceived
 
     /**
      * @return string
-     * @throws InvalidResponseException
+     * @throws TooEarlyException
      */
     public function getEtag(): string
     {
-        return empty($this->shareReceived->getETag())
-            ? throw new InvalidResponseException(
-                "Invalid etag '" . print_r($this->shareReceived->getETag(), true) . "'"
-            )
+        return ($this->shareReceived->getETag() === null)
+            ? throw new TooEarlyException()
             : $this->shareReceived->getETag();
     }
 

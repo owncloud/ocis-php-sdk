@@ -203,4 +203,32 @@ class OcisPhpSdkTestCase extends TestCase
         }
         return $receivedShares;
     }
+    private static function getWrapperGuzzleClient(): Client
+    {
+        $ociswrapperUrl = getenv('OCISWRAPPER_URL') ?: 'http://ociswrapper.owncloud.test';
+        return new Client(['base_uri' => $ociswrapperUrl]);
+    }
+
+    protected static function setOcisSetting(string $key, string $value): void
+    {
+        $response = self::getWrapperGuzzleClient()->request(
+            'PUT',
+            '/config',
+            ['body' => '{"'. $key . '": "' . $value . '"}']
+        );
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception('Failed to set OCIS setting');
+        }
+    }
+
+    protected static function resetOcisSettings(): void
+    {
+        $response = self::getWrapperGuzzleClient()->request(
+            'DELETE',
+            '/rollback'
+        );
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception('Failed to reset OCIS settings');
+        }
+    }
 }

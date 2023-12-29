@@ -1,6 +1,7 @@
 <?php
 $finder = PhpCsFixer\Finder::create()
-	->in(__DIR__);
+    ->in(__DIR__)
+    ->exclude('tests/integration/ocis');
 
 $config = new PhpCsFixer\Config();
 $config->setFinder($finder);

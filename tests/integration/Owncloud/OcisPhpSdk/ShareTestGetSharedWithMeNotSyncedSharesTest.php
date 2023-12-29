@@ -15,7 +15,7 @@ use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnrefe
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
-class ShareReceivedTest extends OcisPhpSdkTestCase
+class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
 {
     private User $einstein;
     private SharingRole $viewerRole;
@@ -50,20 +50,29 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         }
     }
 
-    public function testGetAttributesOfReceivedShare(): void
+    public static function setUpBeforeClass(): void
+    {
+        self::setOcisSetting('FRONTEND_AUTO_ACCEPT_SHARES', 'false');
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        self::resetOcisSettings();
+    }
+
+
+    public function testGetAttributesOfReceivedButNotAcceptedShare(): void
     {
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
         /**
          * @var ShareReceived $receivedShare
          */
-        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
+        $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
         $this->assertInstanceOf(ShareReceived::class, $receivedShare);
         $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getRemoteItemId());
-        $this->assertMatchesRegularExpression('/' . $this->getFileIdRegex() . '/', $receivedShare->getId());
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getName());
         $this->assertStringContainsString($this->personalDrive->getId(), $receivedShare->getParentDriveId());
         $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
-        $this->assertSame($this->fileToShare->getEtag(), $receivedShare->getEtag());
         $this->assertSame($this->fileToShare->getId(), $receivedShare->getRemoteItemId());
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getRemoteItemName());
         $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());
@@ -71,4 +80,31 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         $this->assertStringContainsString('Admin', $receivedShare->getOwnerName());
         $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getOwnerId());
     }
+
+    /**
+     * @return array<array<string>>
+     */
+    public static function functionsWithNotExistingProperties(): array
+    {
+        return [
+            ['$receivedShare->getId();'],
+            ['$receivedShare->getEtag();'],
+        ];
+    }
+
+    /**
+     * @dataProvider functionsWithNotExistingProperties
+     */
+    public function testGetIdOfNotAcceptedShare(string $function): void
+    {
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        /**
+         * @var ShareReceived $receivedShare
+         */
+        $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
+        $this->expectException(TooEarlyException::class);
+        eval($function);
+    }
+
+
 }
