@@ -166,10 +166,10 @@ class Ocis
             'headers' => 'is_array',
             'verify' => 'is_bool',
             'webfinger' => 'is_bool',
-            'guzzle' => 'self::isGuzzleClient',
-            'drivesPermissionsApi' => 'self::isDrivesPermissionsApi',
-            'drivesApi' => 'self::isDrivesApi',
-            'drivesGetDrivesApi' => 'self::isDrivesGetDrivesApi',
+            'guzzle' => self::class . '::isGuzzleClient',
+            'drivesPermissionsApi' => self::class . '::isDrivesPermissionsApi',
+            'drivesApi' => self::class . '::isDrivesApi',
+            'drivesGetDrivesApi' => self::class . '::isDrivesGetDrivesApi',
             'proxy' => 'is_array',
         ];
         foreach ($connectionConfig as $key => $check) {
@@ -177,8 +177,6 @@ class Ocis
                 return false;
             }
 
-            // phpstan does not understand that the `$validConnectionConfigKeys` array has values that are callable
-            // @phpstan-ignore-next-line
             if (!\call_user_func($validConnectionConfigKeys[$key], $check)) {
                 return false;
             }
@@ -244,6 +242,9 @@ class Ocis
         }
         $tokenPayload = json_decode($plainPayload, true);
         if (!is_array($tokenPayload) || !array_key_exists('iss', $tokenPayload)) {
+            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
+        }
+        if (!is_string($tokenPayload['iss'])) {
             throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
         }
         $iss = parse_url($tokenPayload['iss']);
