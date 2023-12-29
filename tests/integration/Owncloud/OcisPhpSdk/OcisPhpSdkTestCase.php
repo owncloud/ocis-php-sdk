@@ -11,6 +11,7 @@ use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
+use Owncloud\OcisPhpSdk\ShareReceived;
 use Owncloud\OcisPhpSdk\SharingRole;
 use PHPUnit\Framework\TestCase;
 
@@ -184,5 +185,60 @@ class OcisPhpSdkTestCase extends TestCase
             OrderDirection::ASC,
             DriveType::PERSONAL
         )[0];
+    }
+
+    /**
+     * wrapper around `getSharedWithMe()` that makes sure the share is auto-accepted
+     * the auto-accepting happens async, so calling getSharedWithMe() directly might be too early.
+     * @param Ocis $ocis
+     * @return array<ShareReceived>
+     */
+    protected function getSharedWithMeWaitTillShareIsAccepted(Ocis $ocis): array
+    {
+        $receivedShares = [];
+        $timeout = time() + 10;
+        while (time() < $timeout) {
+            $receivedShares = $ocis->getSharedWithMe();
+            $allSharesAccepted = true;
+            foreach ($receivedShares as $share) {
+                if ($share->isClientSyncronize() === false) {
+                    $allSharesAccepted = false;
+                    sleep(1);
+                    break;
+                }
+            }
+            if ($allSharesAccepted === true) {
+                break;
+            }
+        }
+        return $receivedShares;
+    }
+    private static function getWrapperGuzzleClient(): Client
+    {
+        $ociswrapperUrl = getenv('OCISWRAPPER_URL') ?: 'http://ociswrapper.owncloud.test';
+        return new Client(['base_uri' => $ociswrapperUrl]);
+    }
+
+    protected static function setOcisSetting(string $key, string $value): void
+    {
+        $response = self::getWrapperGuzzleClient()->request(
+            'PUT',
+            '/config',
+            ['body' => '{"'. $key . '": "' . $value . '"}']
+        );
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception('Failed to set OCIS setting');
+        }
+    }
+
+    protected static function resetOcisSettings(): void
+    {
+        $response = self::getWrapperGuzzleClient()->request(
+            'DELETE',
+            '/rollback'
+        );
+        if ($response->getStatusCode() !== 200) {
+            throw new \Exception('Failed to reset OCIS settings');
+        }
     }
 }

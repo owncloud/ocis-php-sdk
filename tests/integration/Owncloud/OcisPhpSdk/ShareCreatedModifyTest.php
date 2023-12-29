@@ -73,12 +73,12 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         );
         $this->assertCount(
             0,
-            $this->einsteinOcis->getSharedWithMe(),
+            $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis),
             "Failed to unshare resource to Einstein"
         );
         $this->assertCount(
             1,
-            $this->marieOcis->getSharedWithMe(),
+            $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis),
             "Expected shared resource for marie be 1 but found " . count($this->marieOcis->getSharedWithMe())
         );
     }
@@ -115,12 +115,12 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         );
         $this->assertCount(
             1,
-            $this->einsteinOcis->getSharedWithMe(),
+            $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis),
             "Shared resources was unshared to the group"
         );
         $this->assertCount(
             1,
-            $this->marieOcis->getSharedWithMe(),
+            $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis),
             "Expected shared resource count to be 1 but found " . count($this->marieOcis->getSharedWithMe())
         );
     }

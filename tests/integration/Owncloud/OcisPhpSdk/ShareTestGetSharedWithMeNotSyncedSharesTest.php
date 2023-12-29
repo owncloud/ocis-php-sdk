@@ -11,7 +11,7 @@ use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnrefe
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
-class ShareReceivedTest extends OcisPhpSdkTestCase
+class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
 {
     private User $einstein;
     private SharingRole $viewerRole;
@@ -41,7 +41,18 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         }
     }
 
-    public function testGetAttributesOfReceivedShare(): void
+    public static function setUpBeforeClass(): void
+    {
+        self::setOcisSetting('FRONTEND_AUTO_ACCEPT_SHARES', 'false');
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        self::resetOcisSettings();
+    }
+
+
+    public function testGetAttributesOfReceivedButNotAcceptedShare(): void
     {
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
         /**
@@ -49,35 +60,34 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
          */
         $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
         $this->assertInstanceOf(ShareReceived::class, $receivedShare);
-        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getId());
+        $this->assertGreaterThanOrEqual(1, strlen($receivedShare->getRemoteItemId()));
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getName());
-        // multiple issues with id in getSharedWithMe, see https://github.com/owncloud/ocis/issues/8000
-        // $this->assertSame($this->personalDrive->getId(), $receivedShare->getParentDriveId());
-        // shareWithMe does not return a drive type for parentReference, see https://github.com/owncloud/ocis/issues/8029
-        // $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
-        // etags returned by sharedWithMe is not quoted, see https://github.com/owncloud/ocis/issues/8045
-        // $this->assertSame($this->fileToShare->getEtag(), $receivedShare->getEtag());
+        $this->assertFalse($receivedShare->isUiHidden());
+        $this->assertFalse($receivedShare->isClientSyncronize());
+        $this->assertNull($receivedShare->getId());
+        $this->assertNull($receivedShare->getEtag());
+        $this->assertNull($receivedShare->getParentDriveId());
+        $this->assertNull($receivedShare->getParentDriveType());
         $this->assertSame(
             $this->fileToShare->getId(),
             $receivedShare->getRemoteItemId(),
-            "Expected Shared Resource Id doesn't match with Resource Id"
+            "The file-id of the remote item in the receive share is different to the id of the shared file"
         );
         $this->assertSame(
             $this->fileToShare->getName(),
             $receivedShare->getRemoteItemName(),
-            "Expected Shared Resource Name be " . $this->fileToShare->getName()
-            ." but found " . $receivedShare->getRemoteItemName()
+            "The item-name of the remote item in the receive share is different to the name of the shared file"
         );
         $this->assertSame(
             $this->fileToShare->getSize(),
             $receivedShare->getRemoteItemSize(),
-            "Expected Shared Resource File Size doesn't match with Resource Size"
+            "The item-size of the remote item in the receive share is different to the size of the shared file"
         );
         $this->assertEqualsWithDelta(
             time(),
             $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(),
             120,
-            "Expected Shared resource wasn't modified within 120 seconds of the current time "
+            "Expected Shared resource was shared within 120 seconds of the current time"
         );
         $this->assertStringContainsString(
             'Admin',
@@ -87,7 +97,7 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         $this->assertMatchesRegularExpression(
             '/' . $this->getUUIDv4Regex() . '/',
             $receivedShare->getOwnerId(),
-            "OwnerId doesn't match the expected format"
+            "OwnerId of the received share doesn't match the expected format"
         );
     }
 }
