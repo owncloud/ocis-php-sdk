@@ -201,10 +201,9 @@ def buildOcis():
             "image": OC_CI_GOLANG,
             "commands": [
                 ". ./.drone.env",
-                "cd ocis/ocis/",
-                "make -C tests/ociswrapper build",
+                "make -C ocis/tests/ociswrapper build",
                 "mkdir -p %s/$OCIS_COMMITID" % dir["base"],
-                "cp tests/ociswrapper/bin/ociswrapper %s/$OCIS_COMMITID/" % dir["base"],
+                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/$OCIS_COMMITID/" % dir["base"],
             ],
             "environment": {
                 "HTTP_PROXY": {
