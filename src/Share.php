@@ -53,11 +53,6 @@ class Share
     ) {
         $this->apiPermission = $apiPermission;
         $this->driveId = $driveId;
-        if (!is_string($apiPermission->getId())) {
-            throw new InvalidResponseException(
-                "Invalid id returned for permission '" . print_r($apiPermission->getId(), true) . "'"
-            );
-        }
 
         $this->resourceId = $resourceId;
         $this->accessToken = &$accessToken;
@@ -88,9 +83,13 @@ class Share
 
     public function getPermissionId(): string
     {
-        // in the constructor the value is checked for being the right type, but phan does not know
-        // so simply cast to string
-        return (string)$this->apiPermission->getId();
+        $id = $this->apiPermission->getId();
+        if ($id === null || $id === '') {
+            throw new InvalidResponseException(
+                "Invalid id returned for permission '" . print_r($id, true) . "'"
+            );
+        }
+        return (string)$id;
     }
 
     public function getExpiration(): ?\DateTimeImmutable

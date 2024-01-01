@@ -130,7 +130,8 @@ class ResourceLinkTest extends TestCase
         $permissionMock = $this->createMock(Permission::class);
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link->getPermissionId();
     }
 
     public function testInvalidLinkResponse(): void
