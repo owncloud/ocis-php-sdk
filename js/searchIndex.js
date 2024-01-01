@@ -656,9 +656,14 @@ Search.appendIndex(
             "summary": "Class\u0020representing\u0020a\u0020public\u0020link\u0020to\u0020a\u0020resource",
             "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetSharingLink\u0028\u0029",
+            "name": "getSharingLink",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getSharingLink"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetType\u0028\u0029",
             "name": "getType",
-            "summary": "phan\u002Dsuppress\u002Dnext\u002Dline\u0020PhanTypeMismatchReturnNullable",
+            "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getType"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetWebUrl\u0028\u0029",

@@ -4,7 +4,6 @@ namespace Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Model\OdataError;
-use OpenAPI\Client\Model\Permission as ApiPermission;
 use OpenAPI\Client\Model\SharingLinkPassword;
 use OpenAPI\Client\Model\SharingLinkType;
 use OpenAPI\Client\Model\SharingLink as ApiSharingLink;
@@ -24,82 +23,47 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
  */
 class ShareLink extends Share
 {
-    private ApiSharingLink $sharingLink;
-
-    /**
-     * @throws InvalidResponseException
-     * @phpstan-param ConnectionConfig $connectionConfig
-     * @ignore The developer using the SDK does not need to create ShareLink objects manually,
-     *         but should use the OcisResource class to share resources using a link
-     *         and that will create ShareLink objects
-     */
-    public function __construct(
-        ApiPermission $apiPermission,
-        string        $resourceId,
-        string        $driveId,
-        array         $connectionConfig,
-        string        $serviceUrl,
-        string        &$accessToken
-    ) {
-        parent::__construct(
-            $apiPermission,
-            $resourceId,
-            $driveId,
-            $connectionConfig,
-            $serviceUrl,
-            $accessToken
-        );
-
-        if (!($apiPermission->getLink() instanceof ApiSharingLink)) {
+    public function getSharingLink(): ApiSharingLink
+    {
+        $sharingLink = $this->apiPermission->getLink();
+        if (!$sharingLink instanceof ApiSharingLink) {
             throw new InvalidResponseException(
                 "Invalid link returned for permission '" .
-                print_r($apiPermission->getLink(), true) .
+                print_r($sharingLink, true) .
                 "'"
             );
         }
-        /**
-         * The check above ensures that the type is correct, but phan does not know
-         * @phan-suppress-next-next-line PhanPossiblyNullTypeMismatchProperty
-         */
-        $this->sharingLink = $apiPermission->getLink();
-
-        if (!is_string($apiPermission->getLink()->getWebUrl())) {
-            throw new InvalidResponseException(
-                "Invalid webUrl returned for sharing link '" .
-                print_r($apiPermission->getLink()->getWebUrl(), true) .
-                "'"
-            );
-        }
-
-        if (!($apiPermission->getLink()->getType() instanceof SharingLinkType)) {
-            throw new InvalidResponseException(
-                "Invalid type returned for sharing link '" .
-                print_r($apiPermission->getLink()->getType(), true) .
-                "'"
-            );
-        }
+        return $sharingLink;
     }
 
-
-    /**  phan-suppress-next-line PhanTypeMismatchReturnNullable */
     public function getType(): SharingLinkType
     {
-        // in the constructor the value is checked for being the right type, but phan & phpstan does not know
-        /** @phan-suppress-next-next-line PhanTypeMismatchReturnNullable */
-        /** @phpstan-ignore-next-line */
-        return $this->sharingLink->getType();
+        $type = $this->getSharingLink()->getType();
+        if (!$type instanceof SharingLinkType) {
+            throw new InvalidResponseException(
+                "Invalid type returned for sharing link '" .
+                print_r($type, true) .
+                "'"
+            );
+        }
+        return $type;
     }
 
     public function getWebUrl(): string
     {
-        // in the constructor the value is checked for being the right type, but phan does not know
-        // so simply cast to string
-        return (string)$this->sharingLink->getWebUrl();
+        if (!is_string($this->getSharingLink()->getWebUrl())) {
+            throw new InvalidResponseException(
+                "Invalid webUrl returned for sharing link '" .
+                print_r($this->getSharingLink()->getWebUrl(), true) .
+                "'"
+            );
+        }
+        return (string)$this->getSharingLink()->getWebUrl();
     }
 
     public function getDisplayName(): ?string
     {
-        return $this->sharingLink->getAtLibreGraphDisplayName();
+        return (string)$this->getSharingLink()->getAtLibreGraphDisplayName();
     }
 
     /**
@@ -113,7 +77,7 @@ class ShareLink extends Share
      */
     public function setDisplayName(string $displayName): bool
     {
-        $this->sharingLink->setAtLibreGraphDisplayName($displayName);
+        $this->getSharingLink()->setAtLibreGraphDisplayName($displayName);
         return $this->updateLinkOfPermission();
     }
 
@@ -131,7 +95,7 @@ class ShareLink extends Share
      */
     public function setType(SharingLinkType $linkType): bool
     {
-        $this->sharingLink->setType($linkType);
+        $this->getSharingLink()->setType($linkType);
         return $this->updateLinkOfPermission();
     }
 
@@ -183,7 +147,7 @@ class ShareLink extends Share
      */
     public function updateLinkOfPermission(): bool
     {
-        $this->apiPermission->setLink($this->sharingLink);
+        $this->apiPermission->setLink($this->getSharingLink());
 
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
