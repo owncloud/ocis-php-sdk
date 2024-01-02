@@ -766,6 +766,11 @@ Search.appendIndex(
             "summary": "class\u0020to\u0020define\u0020a\u0020role\u0020of\u0020a\u0020user\u0020or\u0020group\u0020in\u0020a\u0020share\nevery\u0020role\u0020contains\u0020specific\u0020permissions",
             "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003AvalidateData\u0028\u0029",
+            "name": "validateData",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-SharingRole.html#method_validateData"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole\u003A\u003AgetId\u0028\u0029",
             "name": "getId",
             "summary": "",
