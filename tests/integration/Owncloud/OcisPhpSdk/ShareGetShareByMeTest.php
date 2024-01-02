@@ -74,7 +74,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
     {
         $this->sharedResource->createSharingLink(
             SharingLinkType::VIEW,
-            new \DateTimeImmutable('2024-12-31 01:02:03.456789'),
+            new \DateTimeImmutable(date('Y', strtotime('+1 year'))),
             self::VALID_LINK_PASSWORD,
             ''
         );
@@ -89,7 +89,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         $this->sharedResource->invite($this->einstein, $this->editorRole);
         $this->sharedResource->createSharingLink(
             SharingLinkType::VIEW,
-            new \DateTimeImmutable('2024-12-31 01:02:03.456789'),
+            new \DateTimeImmutable(date('Y', strtotime('+1 year'))),
             self::VALID_LINK_PASSWORD,
             ''
         );

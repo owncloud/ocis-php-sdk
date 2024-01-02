@@ -11,10 +11,10 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
  */
 class SharingRole
 {
-    private string $id;
-    private string $displayName;
-    private string $description;
-    private int $weight;
+    private ?string $id;
+    private ?string $displayName;
+    private ?string $description;
+    private ?int $weight;
 
     /**
      * @ignore The developer using the SDK does not need to create SharingRole objects manually,
@@ -22,20 +22,24 @@ class SharingRole
      */
     public function __construct(UnifiedRoleDefinition $apiRole)
     {
-        $this->id = !is_string($apiRole->getId()) ?
-            throw new InvalidResponseException(
-                "Invalid id returned for sharing role '" . print_r($apiRole->getId(), true) . "'"
-            )
-            : (string)$apiRole->getId();
-        $this->displayName = !is_string($apiRole->getDisplayName()) ?
-            throw new InvalidResponseException(
-                "Invalid display name returned for sharing role '" .
-                print_r($apiRole->getId(), true) .
-                "'"
-            )
-            : (string)$apiRole->getDisplayName();
-        $this->description = !is_string($apiRole->getDescription()) ? "" : $apiRole->getDescription();
-        $this->weight = (int)$apiRole->getAtLibreGraphWeight();
+        $this->id = $apiRole->getId();
+        $this->displayName = $apiRole->getDisplayName();
+        $this->description = $apiRole->getDescription();
+        $this->weight = $apiRole->getAtLibreGraphWeight();
+    }
+    /**
+     * @param string|null|int $data
+     * @param string $dataKey
+     *
+     * @throws InvalidResponseException
+     * @return string
+     */
+    public function validateData($data, $dataKey): string
+    {
+        return ($data === null || $data === '') ?
+        throw new InvalidResponseException(
+            "Invalid $dataKey returned for user '" . print_r($data, true) . "'"
+        ) : (string)$data;
     }
 
     /**
@@ -43,7 +47,7 @@ class SharingRole
      */
     public function getId(): string
     {
-        return $this->id;
+        return $this->validateData($this->id, "id");
     }
 
     /**
@@ -51,7 +55,7 @@ class SharingRole
      */
     public function getDisplayName(): string
     {
-        return $this->displayName;
+        return $this->validateData($this->displayName, "display name");
     }
 
     /**
@@ -59,7 +63,7 @@ class SharingRole
      */
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->validateData($this->description, "description");
     }
 
     /**
@@ -67,7 +71,7 @@ class SharingRole
      */
     public function getWeight(): int
     {
-        return $this->weight;
+        return (int)$this->validateData($this->weight, "weight");
     }
 
 

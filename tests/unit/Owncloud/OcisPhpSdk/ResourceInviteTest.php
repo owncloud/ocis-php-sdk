@@ -10,6 +10,7 @@ use OpenAPI\Client\Model\Group as OpenAPIGroup;
 use OpenAPI\Client\Model\User as OpenAPIUser;
 use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\UnifiedRoleDefinition;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\ShareCreated;
@@ -148,5 +149,99 @@ class ResourceInviteTest extends TestCase
 
         $result = $resource->invite($recipient, $role, $expiration);
         $this->assertInstanceOf(ShareCreated::class, $result);
+    }
+
+    /**
+     * @return array<int, array<int, array<string, int|string|null>|string>>
+     */
+    public static function invalidShareRoleData(): array
+    {
+        return [
+            [
+                [
+                    'id' => '',
+                    'display_name' => 'Manager',
+                    'description' => 'description',
+                    'weight' => 'at_libre_graph_weight',
+                ],"Invalid id returned for user ''"
+            ],
+            [
+                [
+                    'id' => null,
+                    'display_name' => 'Manager',
+                    'description' => 'description',
+                    'weight' => 2,
+                ],"Invalid id returned for user ''"
+            ],
+            [
+                [
+                    'id' => 'uuid-of-the-role',
+                    'display_name' => '',
+                    'description' => 'description',
+                    'weight' => 4,
+                ],"Invalid display name returned for user ''"
+            ],
+            [
+                [
+                    'id' => 'uuid-of-the-role',
+                    'display_name' => null,
+                    'description' => 'description',
+                    'weight' => 6,
+                ],"Invalid display name returned for user ''"
+            ],
+            [
+                [
+                    'id' => 'uuid-of-the-role',
+                    'display_name' => 'Manager',
+                    'description' => '',
+                    'weight' => 5,
+                ],"Invalid description returned for user ''"
+            ],
+            [
+                [
+                    'id' => 'uuid-of-the-role',
+                    'display_name' => 'Manager',
+                    'description' => null,
+                    'weight' => 24,
+                ],"Invalid description returned for user ''"
+            ],
+            [
+                [
+                    'id' => 'uuid-of-the-role',
+                    'display_name' => 'Manager',
+                    'description' => 'description',
+                    'weight' => '',
+                ],"Invalid weight returned for user ''"
+            ],
+            [
+                [
+                    'id' => 'uuid-of-the-role',
+                    'display_name' => 'Manager',
+                    'description' => 'description',
+                    'weight' => null,
+                ],"Invalid weight returned for user ''"
+            ],
+        ];
+    }
+
+    /**
+     * @param array<int, array<string, int|string|null>|string> $shareRoleData
+     * @param string $errorMessage
+     *
+     * @dataProvider invalidShareRoleData
+     *
+     * @return void
+     */
+    public function testShareRoleClass($shareRoleData, $errorMessage): void
+    {
+        $openAPIRole = new UnifiedRoleDefinition($shareRoleData);
+        $role = new SharingRole($openAPIRole);
+
+        $this->expectException(InvalidResponseException::class);
+        $this->expectExceptionMessage($errorMessage);
+        $role->getId();
+        $role->getDisplayName();
+        $role->getDescription();
+        $role->getWeight();
     }
 }
