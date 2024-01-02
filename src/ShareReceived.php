@@ -7,6 +7,7 @@ use OpenAPI\Client\Model\Identity;
 use OpenAPI\Client\Model\ItemReference;
 use OpenAPI\Client\Model\RemoteItem;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 
 /**
  * Ensures that the return type is correct, but Phan does not recognize it.
@@ -29,14 +30,12 @@ class ShareReceived
     /**
      *
      * @return string
-     * @throws InvalidResponseException
+     * @throws TooEarlyException
      */
     public function getId(): string
     {
-        return empty($this->shareReceived->getId())
-            ? throw new InvalidResponseException(
-                "Invalid Id '" . print_r($this->shareReceived->getId(), true) . "'"
-            )
+        return ($this->shareReceived->getId() === null)
+            ? throw new TooEarlyException()
             : $this->shareReceived->getId();
     }
 
@@ -55,14 +54,12 @@ class ShareReceived
 
     /**
      * @return string
-     * @throws InvalidResponseException
+     * @throws TooEarlyException
      */
     public function getEtag(): string
     {
-        return empty($this->shareReceived->getETag())
-            ? throw new InvalidResponseException(
-                "Invalid etag '" . print_r($this->shareReceived->getETag(), true) . "'"
-            )
+        return ($this->shareReceived->getETag() === null)
+            ? throw new TooEarlyException()
             : $this->shareReceived->getETag();
     }
 

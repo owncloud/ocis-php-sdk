@@ -8,6 +8,7 @@ services:
         aliases:
           - ${OCIS_DOMAIN:-ocis.owncloud.test}
           - ${KEYCLOAK_DOMAIN:-keycloak.owncloud.test}
+          - ${OCISWRAPPER_DOMAIN:-ociswrapper.owncloud.test}
     command:
       - "--log.level=${TRAEFIK_LOG_LEVEL:-ERROR}"
       # letsencrypt configuration
@@ -18,8 +19,6 @@ services:
       - "--api.dashboard=true"
       # define entrypoints
       - "--entryPoints.http.address=:80"
-      - "--entryPoints.http.http.redirections.entryPoint.to=https"
-      - "--entryPoints.http.http.redirections.entryPoint.scheme=https"
       - "--entryPoints.https.address=:443"
       # docker provider (get configuration from container labels)
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
@@ -52,13 +51,16 @@ services:
 
 
   ocis:
-    image: owncloud/ocis:${OCIS_VERSION:-latest}
+    build:
+      dockerfile: docker/ocis/Dockerfile
+      context: ./
+      args:
+        OCIS_IMAGE: ${OCIS_IMAGE:-owncloud/ocis:latest}
     networks:
       ocis-net:
-    entrypoint: /bin/sh
-    command: [ "-c", "ocis init || true; ocis server" ]
     environment:
       OCIS_URL: https://${OCIS_DOMAIN:-ocis.owncloud.test}
+      WITH_WRAPPER: $WITH_WRAPPER
       OCIS_INSECURE: true
       IDM_ADMIN_PASSWORD: admin
       PROXY_AUTOPROVISION_ACCOUNTS: true
@@ -82,11 +84,17 @@ services:
       - "traefik.http.routers.ocis.tls.certresolver=http"
       - "traefik.http.routers.ocis.service=ocis"
       - "traefik.http.services.ocis.loadbalancer.server.port=9200"
+      - "traefik.http.routers.ociswrapper.entrypoints=http"
+      - "traefik.http.routers.ociswrapper.rule=Host(`${OCISWRAPPER_DOMAIN:-ociswrapper.owncloud.test}`)"
+      - "traefik.http.routers.ociswrapper.service=ociswrapper"
+      - "traefik.http.services.ociswrapper.loadbalancer.server.port=5200"
     healthcheck:
       test: ["CMD-SHELL", "curl http://localhost:9200/.well-known/openid-configuration | grep authorization_endpoint"]
       interval: 1s
       retries: 120
       start_period: 20s
+    volumes:
+      - ./ocis/tests/ociswrapper/bin/ociswrapper:/usr/bin/ociswrapper
 
   postgres:
     image: postgres:alpine

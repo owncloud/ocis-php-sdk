@@ -7,6 +7,7 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
@@ -14,7 +15,7 @@ use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnrefe
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
-class ShareReceivedTest extends OcisPhpSdkTestCase
+class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
 {
     private User $einstein;
     private SharingRole $viewerRole;
@@ -49,7 +50,18 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         }
     }
 
-    public function testGetAttributesOfReceivedShare(): void
+    public static function setUpBeforeClass(): void
+    {
+        self::setOcisSetting('FRONTEND_AUTO_ACCEPT_SHARES', 'false');
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        self::resetOcisSettings();
+    }
+
+
+    public function testGetAttributesOfReceivedButNotAcceptedShare(): void
     {
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
         /**
@@ -57,14 +69,10 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
          */
         $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
         $this->assertInstanceOf(ShareReceived::class, $receivedShare);
-        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getId());
+        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getRemoteItemId());
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getName());
-        // multiple issues with id in getSharedWithMe, see https://github.com/owncloud/ocis/issues/8000
-        // $this->assertSame($this->personalDrive->getId(), $receivedShare->getParentDriveId());
-        // shareWithMe does not return a drive type for parentReference, see https://github.com/owncloud/ocis/issues/8029
-        // $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
-        // etags returned by sharedWithMe is not quoted, see https://github.com/owncloud/ocis/issues/8045
-        // $this->assertSame($this->fileToShare->getEtag(), $receivedShare->getEtag());
+        $this->assertStringContainsString($this->personalDrive->getId(), $receivedShare->getParentDriveId());
+        $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
         $this->assertSame($this->fileToShare->getId(), $receivedShare->getRemoteItemId());
         $this->assertSame($this->fileToShare->getName(), $receivedShare->getRemoteItemName());
         $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());
@@ -72,4 +80,31 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         $this->assertStringContainsString('Admin', $receivedShare->getOwnerName());
         $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getOwnerId());
     }
+
+    /**
+     * @return array<array<string>>
+     */
+    public static function functionsWithNotExistingProperties(): array
+    {
+        return [
+            ['$receivedShare->getId();'],
+            ['$receivedShare->getEtag();'],
+        ];
+    }
+
+    /**
+     * @dataProvider functionsWithNotExistingProperties
+     */
+    public function testGetIdOfNotAcceptedShare(string $function): void
+    {
+        $this->fileToShare->invite($this->einstein, $this->viewerRole);
+        /**
+         * @var ShareReceived $receivedShare
+         */
+        $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
+        $this->expectException(TooEarlyException::class);
+        eval($function);
+    }
+
+
 }
