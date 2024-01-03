@@ -50,8 +50,7 @@ class OcisPhpSdkTestCase extends TestCase
 
     public function tearDown(): void
     {
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         foreach ($this->createdDrives as $driveId) {
             try {
                 $drive = $ocis->getDriveById($driveId);
@@ -140,8 +139,7 @@ class OcisPhpSdkTestCase extends TestCase
      */
     protected function initUser(string $name, string $password): Ocis
     {
-        $token = $this->getAccessToken($name, $password);
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis($name, $password);
         $ocis->getMyDrives();
         return $ocis;
     }

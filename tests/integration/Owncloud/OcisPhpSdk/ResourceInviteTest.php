@@ -34,8 +34,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         parent::setUp();
         $this->einsteinOcis = $this->initUser('einstein', 'relativity');
         $this->marieOcis = $this->initUser('marie', 'radioactivity');
-        $token = $this->getAccessToken('admin', 'admin');
-        $this->ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $this->ocis = $this->getOcis('admin', 'admin');
         $this->personalDrive = $this->ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
