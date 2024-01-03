@@ -5,7 +5,6 @@ namespace integration\Owncloud\OcisPhpSdk;
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
-use Owncloud\OcisPhpSdk\Ocis;
 
 class UsersTest extends OcisPhpSdkTestCase
 {
@@ -13,9 +12,7 @@ class UsersTest extends OcisPhpSdkTestCase
     {
         $this->initUser('einstein', 'relativity');
         $this->initUser('marie', 'radioactivity');
-        $token = $this->getAccessToken('admin', 'admin');
-
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $users = $ocis->getUsers();
         $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
         $this->assertGreaterThanOrEqual(3, $users);
@@ -25,9 +22,7 @@ class UsersTest extends OcisPhpSdkTestCase
     {
         $this->initUser('einstein', 'relativity');
         $this->initUser('marie', 'radioactivity');
-        $token = $this->getAccessToken('marie', 'radioactivity');
-
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('marie', 'radioactivity');
         $users = $ocis->getUsers("mar");
         $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
         $this->assertGreaterThanOrEqual(1, $users);
@@ -40,8 +35,7 @@ class UsersTest extends OcisPhpSdkTestCase
         $this->initUser('einstein', 'relativity');
         $this->initUser('moss', 'vista');
         $this->initUser('katherine', 'gemini');
-        $token = $this->getAccessToken('admin', 'admin');
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $users = $ocis->getUsers('Albert');
         $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
         $this->assertCount(1, $users);
@@ -51,9 +45,7 @@ class UsersTest extends OcisPhpSdkTestCase
     public function testGetAllUsersAsUnprivilegedUser(): void
     {
         $this->initUser('marie', 'radioactivity');
-        $token = $this->getAccessToken('einstein', 'relativity');
-
-        $ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $ocis = $this->getOcis('einstein', 'relativity');
         $this->expectException(ForbiddenException::class);
         $ocis->getUsers();
     }

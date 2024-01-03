@@ -6,7 +6,6 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use OpenAPI\Client\Model\User;
 use Owncloud\OcisPhpSdk\Group;
-use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
@@ -147,8 +146,8 @@ class GroupsTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup("philosophyhaters", "philosophy haters group");
         $this->createdGroups = [$philosophyHatersGroup];
-        $ocis = $this->getOcis('marie', 'radioactivity');
-        $groups = $ocis->getGroups("philosophyhaters");
+        $marieOcis = $this->getOcis('marie', 'radioactivity');
+        $groups = $marieOcis->getGroups("philosophyhaters");
         $this->assertCount(1, $groups);
         foreach ($groups as $group) {
             $this->assertInstanceOf(Group::class, $group);
@@ -164,22 +163,19 @@ class GroupsTest extends OcisPhpSdkTestCase
      */
     public function testDeleteGroupByIdNoPermission(): void
     {
-        $token = $this->getAccessToken("admin", "admin");
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup = $ocis->createGroup("philosophyhaters", "philosophy haters group");
         $this->createdGroups = [$philosophyHatersGroup];
-        $token = $this->getAccessToken('einstein', 'relativity');
-        $ocisEinstein = new Ocis($this->ocisUrl, $token, ["verify" => false]);
-        $philosophyHatersGroupEinestine = $ocisEinstein->getGroups("philosophy");
+        $einsteinOcis = $this->getOcis('einstein', 'relativity');
+        $philosophyHatersGroupEinestine = $einsteinOcis->getGroups("philosophy");
         $groupId = $philosophyHatersGroupEinestine[0]->getId();
         $this->expectException(UnauthorizedException::class);
-        $ocisEinstein->deleteGroupByID($groupId);
+        $einsteinOcis->deleteGroupByID($groupId);
     }
 
     public function testDeleteNonExistingGroup(): void
     {
-        $token = $this->getAccessToken("admin", "admin");
-        $ocis = new Ocis($this->ocisUrl, $token, ["verify" => false]);
+        $ocis = $this->getOcis('admin', 'admin');
         $this->expectException(NotFoundException::class);
         $ocis->deleteGroupByID("thisgroupdosenotexist");
     }

@@ -27,8 +27,7 @@ class ShareTestGetSharedWithMeTest extends OcisPhpSdkTestCase
     {
         parent::setUp();
         $this->einsteinOcis = $this->initUser('einstein', 'relativity');
-        $token = $this->getAccessToken('admin', 'admin');
-        $this->ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $this->ocis = $this->getOcis('admin', 'admin');
         $this->einstein = $this->ocis->getUsers('einstein')[0];
         $this->personalDrive = $this->ocis->getMyDrives(
             DriveOrder::NAME,

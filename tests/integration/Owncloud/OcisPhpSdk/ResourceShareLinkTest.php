@@ -20,8 +20,7 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
     public function setUp(): void
     {
         parent::setUp();
-        $token = $this->getAccessToken('admin', 'admin');
-        $this->ocis = new Ocis($this->ocisUrl, $token, ['verify' => false]);
+        $this->ocis = $this->getOcis('admin', 'admin');
         $personalDrive = $this->ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
