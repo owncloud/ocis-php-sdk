@@ -11,6 +11,7 @@ use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
+use phpDocumentor\Reflection\Types\True_;
 
 class ResourceShareLinkTest extends OcisPhpSdkTestCase
 {
@@ -133,5 +134,20 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $linkFromSharedByMe = $this->ocis->getSharedByMe()[0];
         $this->assertEquals($expectedExpirationDate, $link->getExpiration());
         $this->assertEquals($expectedExpirationDate, $linkFromSharedByMe->getExpiration());
+    }
+
+    public function testSetPassword(): void
+    {
+        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, null, "p@$\$w0rD");
+        $resetPassword = $link->setPassword("pp@$\$w0rD");
+        $this->assertTrue($resetPassword);
+    }
+
+    public function testDeleteShareLink(): void
+    {
+        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, null, "p@$\$w0rD");
+        $link->delete();
+        $linkFromSharedByMe = $this->ocis->getSharedByMe();
+        $this->assertCount(0, $linkFromSharedByMe);
     }
 }
