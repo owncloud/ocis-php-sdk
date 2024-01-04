@@ -37,7 +37,7 @@ class GroupsTest extends OcisPhpSdkTestCase
     public function testRemoveExistingUserFromGroup(): void
     {
         $ocis = $this->getOcis('admin', 'admin');
-        $einsteinUserOcis = $this->initUser('einstein', 'relativity');
+        $this->initUser('einstein', 'relativity');
         $users = $ocis->getUsers();
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
@@ -57,6 +57,31 @@ class GroupsTest extends OcisPhpSdkTestCase
         $createdGroup = $ocis->getGroups(expandMembers: true);
         $this->assertEquals($initialMemberCount - 1, count($createdGroup[0]->getMembers()));
         $this->assertEquals($adminUserName, $createdGroup[0]->getMembers()[0]->getDisplayName());
+    }
+
+    /**
+     * @return void
+     */
+    public function testNormalUserRemoveExistingUserFromGroup(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $einsteinUserOcis = $this->initUser('einstein', 'relativity');
+        $users = $ocis->getUsers();
+        $philosophyHatersGroup =  $ocis->createGroup(
+            "philosophyhaters",
+            "philosophy haters group"
+        );
+        $this->createdGroups = [$philosophyHatersGroup];
+        foreach($users as $user) {
+            $philosophyHatersGroup->addUser($user);
+        }
+        $einsteinPholosophyHatersGroup = $einsteinUserOcis->getGroups("philosophyhaters")[0];
+        $this->expectException(UnauthorizedException::class);
+        foreach ($users as $user) {
+            if($user->getDisplayName() === "Admin") {
+                $einsteinPholosophyHatersGroup->removeUser($user);
+            }
+        }
     }
 
     /**
