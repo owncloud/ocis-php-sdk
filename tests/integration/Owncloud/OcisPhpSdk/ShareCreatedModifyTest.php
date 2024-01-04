@@ -11,7 +11,6 @@ use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\ShareCreated;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
-use OpenAPI\Client\Model\SharingLinkType;
 
 class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 {
@@ -147,11 +146,30 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiration()->getTimestamp());
     }
 
-    public function testDeleteShareLink(): void
+    public function testUpdateExpirationDate(): void
     {
-        $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, null, "p@$\$w0rD");
-        $link->delete();
-        $linkFromSharedByMe = $this->ocis->getSharedByMe();
-        $this->assertCount(0, $linkFromSharedByMe);
+        $tomorrow = new \DateTimeImmutable('tomorrow');
+        $shareFromInvite = $this->fileToShare->invite($this->einstein, $this->viewerRole, $tomorrow);
+
+        $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
+        $shareFromInvite->setExpiration($oneYearTime);
+
+        $sharedByMeShares = $this->ocis->getSharedByMe();
+        $this->assertEquals($shareFromInvite->getExpiration(), $sharedByMeShares[0]->getExpiration());
     }
+
+    public function testSetRole(): void
+    {
+        $shareFromInvite = $this->fileToShare->invite($this->einstein, $this->viewerRole);
+
+        $isRoleEditor = null;
+        foreach ($this->fileToShare->getRoles() as $role) {
+            if ($role->getDisplayName() === 'Editor') {
+                $isRoleEditor = $shareFromInvite->setRole($role);
+                break;
+            }
+        }
+        $this->assertTrue($isRoleEditor);
+    }
+
 }
