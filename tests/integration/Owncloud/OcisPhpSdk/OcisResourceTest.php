@@ -24,11 +24,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         parent::setUp();
         $this->ocis = $this->getOcis('admin', 'admin');
-        $this->personalDrive = $this->ocis->getMyDrives(
-            DriveOrder::NAME,
-            OrderDirection::ASC,
-            DriveType::PERSONAL
-        )[0];
+        $this->personalDrive = $this->getPersonalDrive($this->ocis);
         $this->personalDrive->uploadFile('somefile.txt', 'some content');
         $this->personalDrive->uploadFile('secondfile.txt', 'some other content');
         $this->personalDrive->createFolder('subfolder');
