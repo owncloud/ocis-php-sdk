@@ -773,15 +773,7 @@ class Ocis
         }
         $notifications = [];
         foreach ($ocsResponse['ocs']['data'] as $ocsData) {
-            if (
-                !isset($ocsData["notification_id"]) ||
-                !is_string($ocsData["notification_id"]) ||
-                $ocsData["notification_id"] === "") {
-                throw new InvalidResponseException(
-                    'Id is invalid or missing in notification response. Content: "' . $content . '"'
-                );
-            }
-            $id = $ocsData["notification_id"];
+            $id = $ocsData["notification_id"] ?? '';
             /**
              * @phpstan-var object{
              *    app: string,

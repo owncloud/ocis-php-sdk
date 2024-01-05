@@ -235,10 +235,11 @@ class OcisTest extends TestCase
     ): void {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
-            'Id is invalid or missing in notification response. Content: "' . $responseContent . '"'
+            'Id is invalid or missing in notification response'
         );
         $ocis = $this->setupMocksForNotificationTests($responseContent);
-        $ocis->getNotifications();
+        $notifications = $ocis->getNotifications();
+        $notifications[0]->getId();
     }
 
     public function testGetNotificationMissingDataInResponse(): void

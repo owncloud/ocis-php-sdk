@@ -10,6 +10,7 @@ use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
 /**
  * Class representing a single notification emitted in ownCloud Infinite Scale
@@ -19,7 +20,7 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 class Notification
 {
     private string $accessToken;
-    private string $id;
+    private mixed $id;
     private string $app;
     private string $user;
     private string $datetime;
@@ -63,7 +64,7 @@ class Notification
         string &$accessToken,
         array $connectionConfig,
         string $serviceUrl,
-        string $id,
+        mixed $id,
         $notificationContent
     ) {
         $this->id = $id;
@@ -95,6 +96,14 @@ class Notification
 
     public function getId(): string
     {
+        if (
+            !isset($this->id) ||
+            !is_string($this->id) ||
+            $this->id === "") {
+            throw new InvalidResponseException(
+                'Id is invalid or missing in notification response.'
+            );
+        }
         return $this->id;
     }
 
