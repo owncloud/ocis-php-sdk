@@ -45,6 +45,7 @@ config = {
     "phpstan": True,
     "phan": True,
     "php-unit": True,
+    "ocisVersions":["master","stable"]
 }
 
 trigger = {
@@ -60,9 +61,11 @@ def main(ctx):
     phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan", [DEFAULT_PHP_VERSION], False)
     phanPipeline = tests(ctx, "phan", "make test-php-phan", [DEFAULT_PHP_VERSION], False)
     testsPipelinesWithCoverage = tests(ctx, "php-unit", "make test-php-unit", [DEFAULT_PHP_VERSION], True, True)
-    testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
+    # testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], "master",True)
+    testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], "stable",True)
     testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2, 8.3], False, True)
-    testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2, 8.3], False)
+    # testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2, 8.3],"master",False)
+    testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2, 8.3],"stable",False)
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
     afterPipelines = codeStylePipeline + phpStanPipeline + phanPipeline + testsPipelinesWithCoverage + testsPipelinesWithoutCoverage
@@ -71,7 +74,7 @@ def main(ctx):
     dependsOn(cacheDependencies(), docsPipeline)
     return (
         cacheDependencies() +
-        cacheOcisPipeline(ctx) +
+        cacheOcisPipeline(ctx,"stable") +
         codeStylePipeline +
         phpStanPipeline +
         phanPipeline +
@@ -81,11 +84,11 @@ def main(ctx):
         docsPipeline
     )
 
-def phpIntegrationTest(ctx, phpversions, coverage):
+def phpIntegrationTest(ctx, phpversions,version, coverage):
     pipelines = []
     for php in phpversions:
-        steps = keycloakService() + restoreOcisCache() + ocisService() + cacheRestore()
-        name = "php-integration-%s" % php
+        steps = keycloakService() + restoreOcisCache(version) + ocisService() + cacheRestore()
+        name = "php-integration-%s-%s" % (php,version)
         steps.append(
             {
                 "name": "php-integration",
@@ -154,21 +157,23 @@ def ocisService():
         },
     ]
 
-def buildOcis():
+def buildOcis(version):
+    ocisCommitId = "$OCIS_COMMITID" if version == "master" else "$OCIS_STABLE_COMMITID"
+    ocisBranch = "$OCIS_STABLE_BRANCH" if version == "stable" else version
     ocis_repo_url = "https://github.com/owncloud/ocis.git"
     return [
         {
-            "name": "clone-ocis",
+            "name": "clone-ocis %s" %ocisBranch,
             "image": OC_CI_GOLANG,
             "commands": [
                 "source .drone.env",
-                "git clone -b $OCIS_BRANCH --single-branch %s" % ocis_repo_url,
+                "git clone -b %s --single-branch %s" % (ocisBranch,ocis_repo_url),
                 "cd ocis",
-                "git checkout $OCIS_COMMITID",
+                "git checkout %s" % ocisCommitId,
             ],
         },
         {
-            "name": "generate-ocis",
+            "name": "generate-ocis%s" % ocisBranch,
             "image": OC_CI_NODEJS,
             "commands": [
                 # we cannot use the $GOPATH here because of different base image
@@ -177,14 +182,14 @@ def buildOcis():
             ],
         },
         {
-            "name": "build-ocis",
+            "name": "build-ocis%s" % ocisBranch,
             "image": OC_CI_GOLANG,
             "commands": [
                 ". ./.drone.env",
                 "cd ocis/ocis",
                 "retry -t 3 'make build'",
-                "mkdir -p %s/$OCIS_COMMITID" % dir["base"],
-                "cp bin/ocis %s/$OCIS_COMMITID/" % dir["base"],
+                "mkdir -p %s/%s" % (dir["base"],ocisCommitId),
+                "cp bin/ocis %s/%s/" % (dir["base"],ocisCommitId),
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -197,17 +202,17 @@ def buildOcis():
         },
     ]
 
-def cacheOcisPipeline(ctx):
+def cacheOcisPipeline(ctx,version):
     return [{
         "kind": "pipeline",
         "type": "docker",
-        "name": "cache-ocis",
+        "name": "cache-ocis%s" % version,
         "clone": {
             "disable": True,
         },
         "steps": checkForExistingOcisCache(ctx) +
-                 buildOcis() +
-                 cacheOcis(),
+                 buildOcis(version) +
+                 cacheOcis(version),
         "volumes": [{
             "name": "gopath",
             "temp": {},
@@ -239,29 +244,31 @@ def checkForExistingOcisCache(ctx):
         },
     ]
 
-def cacheOcis():
+def cacheOcis(version):
+    ocisCommitId = "$OCIS_COMMITID" if version == "master" else "$OCIS_STABLE_COMMITID"
     return [{
-        "name": "upload-ocis-cache",
+        "name": "upload-ocis-cache%s" %version,
         "image": MINIO_MC,
         "environment": MINIO_MC_ENV,
         "commands": [
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
-            "mc cp -r -a %s/$OCIS_COMMITID/ocis s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID" % dir["base"],
+            "mc cp -r -a %s/%s/ocis s3/$CACHE_BUCKET/ocis-build/ %s" % (dir["base"],ocisCommitId,ocisCommitId),
             "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
         ],
     }]
 
-def restoreOcisCache():
+def restoreOcisCache(version):
+    ocisCommitId = "$OCIS_COMMITID" if version == "master" else "$OCIS_STABLE_COMMITID"
     return [{
-        "name": "restore-ocis-cache",
+        "name": "restore-ocis-cache%s" %version,
         "image": MINIO_MC,
         "environment": MINIO_MC_ENV,
         "commands": [
             "mkdir -p %s" % dir["ocis_bin"],
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
-            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/$OCIS_COMMITID/ocis %s" % dir["ocis_bin"],
+            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ocis %s" % (ocisCommitId, dir["ocis_bin"]),
         ],
     }]
 
