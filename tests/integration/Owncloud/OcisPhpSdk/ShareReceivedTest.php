@@ -5,11 +5,8 @@ namespace integration\Owncloud\OcisPhpSdk;
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use Owncloud\OcisPhpSdk\Drive;
-use Owncloud\OcisPhpSdk\DriveOrder;
-use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
-use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
@@ -27,11 +24,7 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         parent::setUp();
         $this->einsteinOcis = $this->initUser('einstein', 'relativity');
         $this->ocis = $this->getOcis('admin', 'admin');
-        $this->personalDrive = $this->ocis->getMyDrives(
-            DriveOrder::NAME,
-            OrderDirection::ASC,
-            DriveType::PERSONAL
-        )[0];
+        $this->personalDrive = $this->getPersonalDrive($this->ocis);
 
         $this->personalDrive->uploadFile('to-share-test.txt', 'some content');
         $this->createdResources[$this->personalDrive->getId()][] = 'to-share-test.txt';

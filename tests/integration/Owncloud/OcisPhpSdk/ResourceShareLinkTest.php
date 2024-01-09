@@ -5,12 +5,9 @@ namespace integration\Owncloud\OcisPhpSdk;
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use OpenAPI\Client\Model\SharingLinkType;
-use Owncloud\OcisPhpSdk\DriveOrder;
-use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
-use Owncloud\OcisPhpSdk\OrderDirection;
 
 class ResourceShareLinkTest extends OcisPhpSdkTestCase
 {
@@ -21,11 +18,7 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
     {
         parent::setUp();
         $this->ocis = $this->getOcis('admin', 'admin');
-        $personalDrive = $this->ocis->getMyDrives(
-            DriveOrder::NAME,
-            OrderDirection::ASC,
-            DriveType::PERSONAL
-        )[0];
+        $personalDrive = $this->getPersonalDrive($this->ocis);
 
 
         $personalDrive->uploadFile('to-share-test.txt', 'some content');

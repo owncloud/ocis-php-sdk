@@ -9,7 +9,6 @@ use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Group;
-use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 
@@ -29,13 +28,7 @@ class OcisTest extends OcisPhpSdkTestCase
 
         $adminDrive = $adminOcis->createDrive('Admin Project Drive');
         $this->createdDrives[] = $adminDrive->getId();
-
-        $adminPersonalDrive = $adminOcis->getMyDrives(
-            DriveOrder::NAME,
-            OrderDirection::ASC,
-            DriveType::PERSONAL
-        )[0];
-
+        $adminPersonalDrive = $this->getPersonalDrive($adminOcis);
         $adminPersonalDrive->createFolder('sharedAdminFolder');
         $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
         $resources = $adminPersonalDrive->getResources();
@@ -90,11 +83,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $managementDrive = $adminOcis->createDrive('Management Project Drive');
         $this->createdDrives[] = $managementDrive->getId();
 
-        $adminPersonalDrive = $adminOcis->getMyDrives(
-            DriveOrder::NAME,
-            OrderDirection::ASC,
-            DriveType::PERSONAL
-        )[0];
+        $adminPersonalDrive = $this->getPersonalDrive($adminOcis) ;
 
         $adminPersonalDrive->createFolder('sharedAdminFolder');
         $this->createdResources[$adminPersonalDrive->getId()][] = '/sharedAdminFolder';
@@ -450,15 +439,6 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertCount(1, $ocis->getGroups());
         $this->assertEquals("physicslovers", $ocis->getGroups()[0]->getDisplayName());
         $this->createdGroups = [$physicsLoversGroup];
-    }
-
-    private function getPersonalDrive(Ocis $ocis): Drive
-    {
-        return $ocis->getMyDrives(
-            DriveOrder::NAME,
-            OrderDirection::ASC,
-            DriveType::PERSONAL
-        )[0];
     }
 
     public function testGetResourceById(): void

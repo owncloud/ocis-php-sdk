@@ -3,10 +3,14 @@
 namespace integration\Owncloud\OcisPhpSdk;
 
 use GuzzleHttp\Client;
+use Owncloud\OcisPhpSdk\Drive;
+use Owncloud\OcisPhpSdk\DriveOrder;
+use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
+use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\SharingRole;
 use PHPUnit\Framework\TestCase;
 
@@ -171,5 +175,14 @@ class OcisPhpSdkTestCase extends TestCase
         // check for null is done above
         // @phan-suppress-next-line PhanTypeMismatchReturnNullable
         return $content;
+    }
+
+    protected function getPersonalDrive(Ocis $ocis): Drive
+    {
+        return $ocis->getMyDrives(
+            DriveOrder::NAME,
+            OrderDirection::ASC,
+            DriveType::PERSONAL
+        )[0];
     }
 }

@@ -4,11 +4,8 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Model\SharingLinkType;
 use Owncloud\OcisPhpSdk\Drive;
-use Owncloud\OcisPhpSdk\DriveOrder;
-use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
-use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\ShareCreated;
 use Owncloud\OcisPhpSdk\ShareLink;
 use Owncloud\OcisPhpSdk\SharingRole;
@@ -27,11 +24,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
     {
         parent::setUp();
         $this->ocis = $this->getOcis('admin', 'admin');
-        $this->personalDrive = $this->ocis->getMyDrives(
-            DriveOrder::NAME,
-            OrderDirection::ASC,
-            DriveType::PERSONAL
-        )[0];
+        $this->personalDrive = $this->getPersonalDrive($this->ocis);
         $this->einstein = $this->ocis->getUsers('einstein')[0];
         $this->personalDrive->createFolder('newFolder');
         $this->createdResources[$this->personalDrive->getId()][] = '/newFolder';
