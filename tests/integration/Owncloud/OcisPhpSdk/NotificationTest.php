@@ -50,12 +50,26 @@ class NotificationTest extends OcisPhpSdkTestCase
         $sharerUser = $this->ocis->getUsers('Admin');
 
         $notifications = $this->einsteinOcis->getNotifications();
-        $this->assertContainsOnlyInstancesOf(Notification::class, $notifications);
-        $this->assertCount(1, $notifications);
-        $this->assertSame($sharerUser[0]->getDisplayName(). " shared to-share-test.txt with you", $notifications[0]->getMessage());
+        $this->assertContainsOnlyInstancesOf(
+            Notification::class,
+            $notifications,
+            "Array is not instance of ".Notification::class
+        );
+        $this->assertCount(
+            1,
+            $notifications,
+            "Expected one notification but received ". count($notifications)
+        );
+        $this->assertSame(
+            $sharerUser[0]->getDisplayName().
+            " shared to-share-test.txt with you",
+            $notifications[0]->getMessage(),
+            "Wrong Notification received"
+        );
         $this->assertMatchesRegularExpression(
             '/' . $this->getUUIDv4Regex() . '/i',
-            $notifications[0]->getId()
+            $notifications[0]->getId(),
+            "Incorrect Format of Notifications received"
         );
     }
 
@@ -64,7 +78,11 @@ class NotificationTest extends OcisPhpSdkTestCase
         $notifications = $this->einsteinOcis->getNotifications();
         $notifications[0]->delete();
         $notificationsAfterDeletion = $this->einsteinOcis->getNotifications();
-        $this->assertCount(count($notifications) - 1, $notificationsAfterDeletion);
+        $this->assertCount(
+            count($notifications) - 1,
+            $notificationsAfterDeletion,
+            "Notification should be deleted but exists"
+        );
         $this->assertNotEquals($notifications, $notificationsAfterDeletion, "Deleted notification still exists");
     }
 }
