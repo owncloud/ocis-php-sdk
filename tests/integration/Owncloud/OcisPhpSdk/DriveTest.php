@@ -23,16 +23,16 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testDisableDrive(): void
     {
-        $this->assertFalse($this->drive->isDisabled());
+        $this->assertFalse($this->drive->isDisabled(), $this->drive->getName(). " drive is expected to be enabled initially");
         $this->drive->disable();
-        $this->assertTrue($this->drive->isDisabled());
+        $this->assertTrue($this->drive->isDisabled(), "Failed to disable ".$this->drive->getName());
     }
 
     public function testEnableDrive(): void
     {
         $this->drive->disable();
         $this->drive->enable();
-        $this->assertFalse($this->drive->isDisabled());
+        $this->assertFalse($this->drive->isDisabled(), "Failed to enable ".$this->drive->getName());
     }
 
     public function testEnableNotExistingDrive(): void
@@ -40,6 +40,7 @@ class DriveTest extends OcisPhpSdkTestCase
         $this->drive->disable();
         $this->drive->delete();
         $this->expectException(NotFoundException::class);
+        $this->expectExceptionMessage('itemNotFound - drive not found');
         $this->drive->enable();
     }
 
