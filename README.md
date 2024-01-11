@@ -18,8 +18,6 @@ docker run --rm -v ${PWD}:/data phpdoc/phpdoc:3
 
 After that you will find the documentation inside the `docs` folder.
 
-:exclamation: This SDK is still under heavy development and is not yet ready for production use, the API might change!
-
 ## Getting started
 Create an Ocis object using the service Url and an access token:
 ```php
@@ -86,14 +84,14 @@ $roles = $resources[0]->getRoles();
 
 // find the role that is allowed to read and write the shared file or folder 
 for ($roles as $role) {
-    if ($role->getDisplayName() === 'Editor') {
+    if ($role->getDisplayName() === 'Can edit') {
         $editorRole = $role;
         break;
     }
 }
 
 // find all users with a specific surname
-$users = $ocis->getUsers("gurung");
+$users = $ocis->getUsers("einstein")[0];
 
 // share the resource with the users
 $resources[0]->invite($users, $editorRole);
@@ -220,15 +218,29 @@ To test, simply open a browser and head to http://url-of-this-file.
 ## Development
 
 ### Integration tests
-The integration tests start a full oCIS server with keycloak and other services using docker.
 To run the tests locally
 1. Install and setup `docker` (min version 24) and `docker compose` (min version 2.21).
-2. add these lines to your `/etc/hosts` file:
+2. Ensure that the following php dependencies are installed for executing the integration tests:
+   ```
+   - php-curl
+   - php-dom
+   - php-phpdbg
+   - php-mbstring
+   - php-ast
+   ``` 
+3. add these lines to your `/etc/hosts` file:
    ```
    127.0.0.1	ocis.owncloud.test
    127.0.0.1	keycloak.owncloud.test
    ```
-3. run `make test-php-integration`
+4. run whole tests 
+   ```
+   make test-php-integration        // start a full oCIS server with keycloak and other services using docker before running tests
+   ```
+5. run single test 
+   ```
+   make test-php-integration testGetResources   // start a full oCIS server with keycloak and other services using docker before running single test
+   ```
 
-If something goes wrong, use `make clean` to clean the created containers and volumes. 
+   If something goes wrong, use `make clean` to clean the created containers and volumes. 
 
