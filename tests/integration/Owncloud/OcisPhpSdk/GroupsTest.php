@@ -36,7 +36,7 @@ class GroupsTest extends OcisPhpSdkTestCase
             $this->assertEquals(
                 $userName,
                 $group->getMembers()[0]->getDisplayName(),
-                $userName . " user should exist in ". $group->getDisplayName() . " group but found "
+                $userName . " user be the first member". $group->getDisplayName() . " group but found "
                 . $group->getMembers()[0]->getDisplayName()
             );
         }
