@@ -469,7 +469,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             $this->assertContainsOnlyInstancesOf(
                 SharingRole::class,
                 $role,
-                "Array is not instance of ".SharingRole::class
+                "Array contains not only 'SharingRole' items"
             );
         }
     }
