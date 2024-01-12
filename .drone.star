@@ -128,7 +128,6 @@ def phpIntegrationTest(ctx, phpversions, coverage):
     return pipelines
 
 def ocisService():
-    ocis_bin = "ocis/ocis/bin/ocis"
     environment = {
         "OCIS_URL": "https://ocis:9200",
         "OCIS_LOG_LEVEL": "error",
