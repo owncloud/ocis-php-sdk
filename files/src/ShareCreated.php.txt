@@ -3,6 +3,7 @@
 namespace Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\ApiException;
+use OpenAPI\Client\Model\Permission as ApiPermission;
 use OpenAPI\Client\Model\OdataError;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
@@ -37,14 +38,14 @@ class ShareCreated extends Share
      */
     public function setRole(SharingRole $role): bool
     {
-        $this->apiPermission->setRoles([$role->getId()]);
-
+        $apiPermission = new ApiPermission();
+        $apiPermission->setRoles([$role->getId()]);
         try {
             $apiPermission = $this->getDrivesPermissionsApi()->updatePermission(
                 $this->driveId,
                 $this->resourceId,
                 $this->getPermissionId(),
-                $this->apiPermission
+                $apiPermission
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
