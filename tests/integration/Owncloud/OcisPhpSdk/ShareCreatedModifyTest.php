@@ -54,16 +54,33 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite($this->marie, $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
-            $this->assertInstanceOf(ShareCreated::class, $share);
+            $this->assertInstanceOf(
+                ShareCreated::class,
+                $share,
+                "Expected class to be 'ShareCreated' but found "
+                . get_class($share)
+            );
             if ($share->getReceiver()->getDisplayName() === 'Albert Einstein') {
                 $share->delete();
                 break;
 
             }
         }
-        $this->assertCount(1, $this->ocis->getSharedByMe());
-        $this->assertCount(0, $this->einsteinOcis->getSharedWithMe());
-        $this->assertCount(1, $this->marieOcis->getSharedWithMe());
+        $this->assertCount(
+            1,
+            $this->ocis->getSharedByMe(),
+            "Expected count of Shared resource doesn't match"
+        );
+        $this->assertCount(
+            0,
+            $this->einsteinOcis->getSharedWithMe(),
+            "Failed to unshare resource to Einstein"
+        );
+        $this->assertCount(
+            1,
+            $this->marieOcis->getSharedWithMe(),
+            "Expected shared resource for marie be 1 but found " . count($this->marieOcis->getSharedWithMe())
+        );
     }
 
     public function testDeleteGroupShare(): void
@@ -80,15 +97,32 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite($this->marie, $this->viewerRole);
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
-            $this->assertInstanceOf(ShareCreated::class, $share);
+            $this->assertInstanceOf(
+                ShareCreated::class,
+                $share,
+                "Expected class to be 'ShareCreated' but found "
+                . get_class($share)
+            );
             if ($share->getReceiver()->getDisplayName() === 'philosophyhaters') {
                 $share->delete();
                 break;
             }
         }
-        $this->assertCount(2, $this->ocis->getSharedByMe());
-        $this->assertCount(1, $this->einsteinOcis->getSharedWithMe());
-        $this->assertCount(1, $this->marieOcis->getSharedWithMe());
+        $this->assertCount(
+            2,
+            $this->ocis->getSharedByMe(),
+            "Expected shared resource count to be 2 but found " . count($this->ocis->getSharedByMe())
+        );
+        $this->assertCount(
+            1,
+            $this->einsteinOcis->getSharedWithMe(),
+            "Shared resources was unshared to the group"
+        );
+        $this->assertCount(
+            1,
+            $this->marieOcis->getSharedWithMe(),
+            "Expected shared resource count to be 1 but found " . count($this->marieOcis->getSharedWithMe())
+        );
     }
 
     public function testDeleteAnAlreadyDeletedShare(): void
@@ -128,11 +162,19 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $shareFromInvite = $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $tomorrow = new \DateTimeImmutable('tomorrow');
         $shareFromInvite->setExpiration($tomorrow);
-
-        $this->assertInstanceOf(\DateTimeImmutable::class, $shareFromInvite->getExpiration());
-        $this->assertSame($tomorrow->getTimestamp(), $shareFromInvite->getExpiration()->getTimestamp());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $shareFromInvite->getExpiration());
-        $this->assertSame($tomorrow->getTimestamp(), $shareFromInvite->getExpiration()->getTimestamp());
+        $expirationDateTime = $shareFromInvite->getExpiration();
+        $this->assertInstanceOf(
+            \DateTimeImmutable::class,
+            $expirationDateTime,
+            "Expected class to be 'DateTimeImmutable' but found "
+            . print_r($expirationDateTime, true)
+        );
+        $this->assertSame(
+            $tomorrow->getTimestamp(),
+            $expirationDateTime->getTimestamp(),
+            "Expected timestamp of shared resource to be " . $tomorrow->getTimestamp() . " but found "
+            . $expirationDateTime->getTimestamp()
+        );
     }
 
     public function testSetExpirationDateOnObjectFromSharedByMe(): void
@@ -141,9 +183,19 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $tomorrow = new \DateTimeImmutable('tomorrow');
         $sharedByMeShares = $this->ocis->getSharedByMe();
         $sharedByMeShares[0]->setExpiration($tomorrow);
-
-        $this->assertInstanceOf(\DateTimeImmutable::class, $sharedByMeShares[0]->getExpiration());
-        $this->assertSame($tomorrow->getTimestamp(), $sharedByMeShares[0]->getExpiration()->getTimestamp());
+        $expirationDateTime = $sharedByMeShares[0]->getExpiration();
+        $this->assertInstanceOf(
+            \DateTimeImmutable::class,
+            $expirationDateTime,
+            "Expected class to be 'DateTimeImmutable' but found "
+            . print_r($expirationDateTime, true)
+        );
+        $this->assertSame(
+            $tomorrow->getTimestamp(),
+            $expirationDateTime->getTimestamp(),
+            "Expected timestamp of shared resource to be " . $tomorrow->getTimestamp() . " but found "
+            . $expirationDateTime->getTimestamp()
+        );
     }
 
     public function testUpdateExpirationDate(): void
@@ -153,9 +205,12 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 
         $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
         $shareFromInvite->setExpiration($oneYearTime);
-
         $sharedByMeShares = $this->ocis->getSharedByMe();
-        $this->assertEquals($shareFromInvite->getExpiration(), $sharedByMeShares[0]->getExpiration());
+        $this->assertEquals(
+            $shareFromInvite->getExpiration(),
+            $sharedByMeShares[0]->getExpiration(),
+            "Expected DateTime of shared resources from Sharer and Receiver doesn't match"
+        );
     }
 
     public function testSetRole(): void
@@ -169,7 +224,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
                 break;
             }
         }
-        $this->assertTrue($isRoleEditor);
+        $this->assertTrue($isRoleEditor, "Failed to set role");
     }
 
 }
