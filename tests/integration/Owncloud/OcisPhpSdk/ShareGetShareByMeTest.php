@@ -56,10 +56,27 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
     {
         $this->sharedResource->invite($this->einstein, $this->editorRole);
         $myShare = $this->ocis->getSharedByMe();
-        $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
-        $this->assertEquals('Albert Einstein', $myShare[0]->getReceiver()->getDisplayName());
-        $this->assertSame($this->sharedResource->getId(), $myShare[0]->getResourceId());
-        $this->assertSame($this->personalDrive->getId(), $myShare[0]->getDriveId());
+        $this->assertInstanceOf(
+            ShareCreated::class,
+            $myShare[0],
+            "Expected class " . ShareCreated::class
+                . " but got " . get_class($myShare[0])
+        );
+        $this->assertEquals(
+            'Albert Einstein',
+            $myShare[0]->getReceiver()->getDisplayName(),
+            "Expected receiver display name to be 'Albert Einstein' but found " . $myShare[0]->getReceiver()->getDisplayName()
+        );
+        $this->assertSame(
+            $this->sharedResource->getId(),
+            $myShare[0]->getResourceId(),
+            "ResourceId doesn't match with Shared ResourceId"
+        );
+        $this->assertSame(
+            $this->personalDrive->getId(),
+            $myShare[0]->getDriveId(),
+            "Drive Id doesn't match"
+        );
     }
 
     public function testGetShareLinkByMe(): void
@@ -71,9 +88,22 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
             ''
         );
         $myShare = $this->ocis->getSharedByMe();
-        $this->assertInstanceOf(ShareLink::class, $myShare[0]);
-        $this->assertSame($this->sharedResource->getId(), $myShare[0]->getResourceId());
-        $this->assertSame($this->personalDrive->getId(), $myShare[0]->getDriveId());
+        $this->assertInstanceOf(
+            ShareLink::class,
+            $myShare[0],
+            "Expected class " . ShareLink::class
+            . " but got " . get_class($myShare[0])
+        );
+        $this->assertSame(
+            $this->sharedResource->getId(),
+            $myShare[0]->getResourceId(),
+            "ResourceId doesn't match with Shared ResourceId"
+        );
+        $this->assertSame(
+            $this->personalDrive->getId(),
+            $myShare[0]->getDriveId(),
+            "DriveId doesn't match"
+        );
     }
 
     public function testGetShareAndShareLinkByMe(): void
@@ -85,12 +115,30 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
             self::VALID_LINK_PASSWORD,
             ''
         );
-        $myShare = $this->ocis->getSharedByMe();
-        $this->assertInstanceOf(ShareCreated::class, $myShare[0]);
-        $this->assertInstanceOf(ShareLink::class, $myShare[1]);
-        $this->assertEquals($this->sharedResource->getId(), $myShare[0]->getResourceId());
-        $this->assertEquals($this->sharedResource->getId(), $myShare[1]->getResourceId());
-        $this->assertSame($this->personalDrive->getId(), $myShare[0]->getDriveId());
-        $this->assertSame($this->personalDrive->getId(), $myShare[1]->getDriveId());
+        $myShares = $this->ocis->getSharedByMe();
+        $this->assertInstanceOf(
+            ShareCreated::class,
+            $myShares[0],
+            "Expected class ".ShareCreated::class
+            . " but got " . get_class($myShares[0])
+        );
+        $this->assertInstanceOf(
+            ShareLink::class,
+            $myShares[1],
+            "Expected class ".ShareLink::class
+            . " but got " . get_class($myShares[1])
+        );
+        foreach($myShares as $myshare) {
+            $this->assertEquals(
+                $this->sharedResource->getId(),
+                $myshare->getResourceId(),
+                "ResourceId doesn't match with shared resourceId"
+            );
+            $this->assertSame(
+                $this->personalDrive->getId(),
+                $myshare->getDriveId(),
+                "DriveId doesn't match"
+            );
+        }
     }
 }
