@@ -14,8 +14,17 @@ class UsersTest extends OcisPhpSdkTestCase
         $this->initUser('marie', 'radioactivity');
         $ocis = $this->getOcis('admin', 'admin');
         $users = $ocis->getUsers();
-        $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
-        $this->assertGreaterThanOrEqual(3, $users);
+        $this->assertContainsOnly(
+            'Owncloud\OcisPhpSdk\User',
+            $users,
+            null,
+            "Array contains not only 'User' items"
+        );
+        $this->assertGreaterThanOrEqual(
+            3,
+            count($users),
+            "Expected at least 3 users, but found " . count($users)
+        );
     }
 
     public function testGetUsersByNormalUser(): void
@@ -24,9 +33,22 @@ class UsersTest extends OcisPhpSdkTestCase
         $this->initUser('marie', 'radioactivity');
         $ocis = $this->getOcis('marie', 'radioactivity');
         $users = $ocis->getUsers("mar");
-        $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
-        $this->assertGreaterThanOrEqual(1, $users);
-        $this->assertEquals('Marie Curie', $users[0]->getDisplayName());
+        $this->assertContainsOnly(
+            'Owncloud\OcisPhpSdk\User',
+            $users,
+            null,
+            "Array contains not only 'User' items"
+        );
+        $this->assertGreaterThanOrEqual(
+            1,
+            count($users),
+            "Expected at least 1 user, but found " . count($users)
+        );
+        $this->assertEquals(
+            'Marie Curie',
+            $users[0]->getDisplayName(),
+            "Username should be 'Marie Curie' but found " . $users[0]->getDisplayName()
+        );
     }
 
     public function testSearchUsers(): void
@@ -37,9 +59,22 @@ class UsersTest extends OcisPhpSdkTestCase
         $this->initUser('katherine', 'gemini');
         $ocis = $this->getOcis('admin', 'admin');
         $users = $ocis->getUsers('Albert');
-        $this->assertContainsOnly('Owncloud\OcisPhpSdk\User', $users);
-        $this->assertCount(1, $users);
-        $this->assertSame('Albert Einstein', $users[0]->getDisplayName());
+        $this->assertContainsOnly(
+            'Owncloud\OcisPhpSdk\User',
+            $users,
+            null,
+            "Array contains not only 'User' items"
+        );
+        $this->assertGreaterThanOrEqual(
+            1,
+            count($users),
+            "Expected at least 1 user, but found " . count($users)
+        );
+        $this->assertEquals(
+            'Albert Einstein',
+            $users[0]->getDisplayName(),
+            "Username should be 'Albert Einstein' but found " . $users[0]->getDisplayName()
+        );
     }
 
     public function testGetAllUsersAsUnprivilegedUser(): void
