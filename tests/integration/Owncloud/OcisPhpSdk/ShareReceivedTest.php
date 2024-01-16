@@ -57,11 +57,37 @@ class ShareReceivedTest extends OcisPhpSdkTestCase
         // $this->assertSame($this->personalDrive->getType(), $receivedShare->getParentDriveType());
         // etags returned by sharedWithMe is not quoted, see https://github.com/owncloud/ocis/issues/8045
         // $this->assertSame($this->fileToShare->getEtag(), $receivedShare->getEtag());
-        $this->assertSame($this->fileToShare->getId(), $receivedShare->getRemoteItemId());
-        $this->assertSame($this->fileToShare->getName(), $receivedShare->getRemoteItemName());
-        $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());
-        $this->assertEqualsWithDelta(time(), $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(), 120);
-        $this->assertStringContainsString('Admin', $receivedShare->getOwnerName());
-        $this->assertMatchesRegularExpression('/' . $this->getUUIDv4Regex() . '/', $receivedShare->getOwnerId());
+        $this->assertSame(
+            $this->fileToShare->getId(),
+            $receivedShare->getRemoteItemId(),
+            "Expected Shared Resource Id doesn't match with Resource Id"
+        );
+        $this->assertSame(
+            $this->fileToShare->getName(),
+            $receivedShare->getRemoteItemName(),
+            "Expected Shared Resource Name be " . $this->fileToShare->getName()
+            ." but found " . $receivedShare->getRemoteItemName()
+        );
+        $this->assertSame(
+            $this->fileToShare->getSize(),
+            $receivedShare->getRemoteItemSize(),
+            "Expected Shared Resource File Size doesn't match with Resource Size"
+        );
+        $this->assertEqualsWithDelta(
+            time(),
+            $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(),
+            120,
+            "Expected Shared resource wasn't modified within 120 seconds of the current time "
+        );
+        $this->assertStringContainsString(
+            'Admin',
+            $receivedShare->getOwnerName(),
+            "Expected owner name to be 'Admin' but found " . $receivedShare->getOwnerName()
+        );
+        $this->assertMatchesRegularExpression(
+            '/' . $this->getUUIDv4Regex() . '/',
+            $receivedShare->getOwnerId(),
+            "OwnerId doesn't match the expected format"
+        );
     }
 }
