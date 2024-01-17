@@ -18,7 +18,11 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $ocis = $this->getOcis('admin', 'admin');
         $drives = $ocis->getMyDrives();
-        $this->assertTrue((is_array($drives) && count($drives) > 1));
+        $this->assertTrue(
+            (is_array($drives) && count($drives) > 1),
+            "Drives variable is expected to be an array but found to be " . gettype($drives) .
+        " and to have more than one element but found " . count($drives)
+        );
     }
 
     public function testGetMyDrives(): void
@@ -62,11 +66,23 @@ class OcisTest extends OcisPhpSdkTestCase
         $sharedResource->invite($marie, $managerRole);
 
         $marieDrive = $marieOcis->getMyDrives();
-        $this->assertContainsOnlyInstancesOf(Drive::class, $marieDrive);
+        $this->assertContainsOnlyInstancesOf(
+            Drive::class,
+            $marieDrive,
+            "Expected Array to be an instance of " . Drive::class
+        );
         foreach ($marieDrive as $drive) {
-            $this->assertNotSame('Admin Project Drive', $drive->getName());
+            $this->assertNotSame(
+                'Admin Project Drive',
+                $drive->getName(),
+                $drive->getName() . " drive of Marie matches with admin drive "
+            );
             if ($drive->getType() === DriveType::MOUNTPOINT) {
-                $this->assertEquals('sharedAdminFolder', $drive->getName());
+                $this->assertEquals(
+                    'sharedAdminFolder',
+                    $drive->getName(),
+                    "Expected foldername to be 'sharedAdminFolder' but found " . $drive->getName()
+                );
             }
         }
     }
@@ -118,14 +134,20 @@ class OcisTest extends OcisPhpSdkTestCase
 
         $drives = $adminOcis->getAllDrives();
         foreach ($drives as $drive) {
-            $this->assertInstanceOf(Drive::class, $drive);
+            $this->assertInstanceOf(
+                Drive::class,
+                $drive,
+                "Expected class to be 'Drive' but found " . get_class($drive)
+            );
             $this->assertThat(
                 $drive->getType(),
                 $this->logicalOr(
                     $this->equalTo(DriveType::PROJECT),
                     $this->equalTo(DriveType::PERSONAL),
                     $this->equalTo(DriveType::VIRTUAL),
-                )
+                ),
+                "Expected drivetype to be either 'PROJECT' or 'PERSONAL' or 'VIRTUAL' but found "
+                . print_r($drive->getType(), true)
             );
             if($drive->getType() === DriveType::PROJECT) {
                 $this->assertThat(
@@ -134,11 +156,18 @@ class OcisTest extends OcisPhpSdkTestCase
                         $this->equalTo('katherine Project Drive'),
                         $this->equalTo('Sport Project Drive'),
                         $this->equalTo('Management Project Drive'),
-                    )
+                    ),
+                    "Expected drivename to be either:"
+                    . "'katherine Project Drive' or 'Sport Project Drive' or 'Management Project Drive' but found "
+                    . $drive->getName()
                 );
             }
             if($drive->getType() === DriveType::MOUNTPOINT) {
-                $this->assertEquals('sharedAdminFolder', $drive->getName());
+                $this->assertEquals(
+                    'sharedAdminFolder',
+                    $drive->getName(),
+                    "Expected foldername to be 'sharedAdminFolder' but found " . $drive->getName()
+                );
             }
         }
     }
@@ -217,9 +246,17 @@ class OcisTest extends OcisPhpSdkTestCase
             OrderDirection::ASC,
             $driveType
         );
-        $this->assertContainsOnlyInstancesOf(Drive::class, $drives);
+        $this->assertContainsOnlyInstancesOf(
+            Drive::class,
+            $drives,
+            "Expected Array to be an instance of " . Drive::class
+        );
         foreach ($drives as $drive) {
-            $this->assertEquals($drive->getType(), $driveType);
+            $this->assertEquals(
+                $drive->getType(),
+                $driveType,
+                "Drivetype mismatch"
+            );
             if ($drive->getType() === DriveType::PROJECT) {
                 $this->assertThat(
                     $drive->getName(),
@@ -228,14 +265,24 @@ class OcisTest extends OcisPhpSdkTestCase
                         $this->equalTo($managementDrive->getName()),
                         // @phpstan-ignore-next-line because the test is skipped
                         $this->equalTo($sportDrive->getName())
-                    )
+                    ),
+                    "Expected drivename to be either 'Management Project Drive' or 'Sport Project Drive' but found "
+                    . $drive->getName()
                 );
             }
             if ($drive->getType() === DriveType::MOUNTPOINT) {
-                $this->assertEquals('sharedAdminFolder', $drive->getName());
+                $this->assertEquals(
+                    'sharedAdminFolder',
+                    $drive->getName(),
+                    "Expected drivename to be 'sharedAdminFolder' but found " . $drive->getName()
+                );
             }
             if ($drive->getType() === DriveType::VIRTUAL) {
-                $this->assertEquals('Shares', $drive->getName());
+                $this->assertEquals(
+                    'Shares',
+                    $drive->getName(),
+                    "Expected drivename to be 'Shares' but found " . $drive->getName()
+                );
             }
         }
     }
@@ -246,11 +293,33 @@ class OcisTest extends OcisPhpSdkTestCase
         $sportDrive = $ocis->createDrive('Sport Project Drive');
         $this->createdDrives[] = $sportDrive->getId();
         $drive = $ocis->getDriveById($sportDrive->getId());
-        $this->assertInstanceOf(Drive::class, $drive);
-        $this->assertEquals($drive->getId(), $sportDrive->getId());
-        $this->assertEquals($drive->getName(), $sportDrive->getName());
-        $this->assertEquals($drive->getType(), $sportDrive->getType());
-        $this->assertEquals($drive->getRoot(), $sportDrive->getRoot());
+        $this->assertInstanceOf(
+            Drive::class,
+            $drive,
+            "Expected class to be 'Drive' but found " . get_class($drive)
+        );
+        $this->assertEquals(
+            $drive->getId(),
+            $sportDrive->getId(),
+            "Expected driveid to be " . $drive->getId()
+            . " but found " . $sportDrive->getId()
+        );
+        $this->assertEquals(
+            $drive->getName(),
+            $sportDrive->getName(),
+            "Expect drivename to be " . $drive->getName() .  " but found " . $sportDrive->getName()
+        );
+        $this->assertEquals(
+            $drive->getType(),
+            $sportDrive->getType(),
+            "Drivetype mismatch"
+        );
+        $this->assertEquals(
+            $drive->getRoot(),
+            $sportDrive->getRoot(),
+            "Expected drive root to be " . $drive->getRoot()
+            . " but found " . $sportDrive->getRoot()
+        );
         $this->markTestIncomplete(
             'libre graph issue-149 sends broken quota object while creating drive'
         );
@@ -267,10 +336,16 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->createdDrives[] = $drive->getId();
         $this->assertMatchesRegularExpression(
             "/^" . $this->getUUIDv4Regex() . '\$' . $this->getUUIDv4Regex() . "$/i",
-            $drive->getId()
+            $drive->getId(),
+            "Driveid doesn't match the expected format"
         );
         // there should be one more drive
-        $this->assertCount($countDrivesAtStart + 1, $ocis->getMyDrives());
+        $this->assertCount(
+            $countDrivesAtStart + 1,
+            $ocis->getMyDrives(),
+            "Expected drive count to be " . ($countDrivesAtStart + 1)
+            . " but found " . count($ocis->getMyDrives())
+        );
     }
 
     public function testCreateDriveNoPermissions(): void
@@ -330,16 +405,40 @@ class OcisTest extends OcisPhpSdkTestCase
         $physicsLoversGroup = $ocis->createGroup($groupName[1], "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups();
-        $this->assertCount(2, $groups);
+        $this->assertCount(
+            2,
+            $groups,
+            "Expected group to be 2 but found " . count($groups)
+        );
         foreach ($groups as $group) {
-            $this->assertInstanceOf(Group::class, $group);
-            $this->assertIsString($group->getId());
-            $this->assertIsString($group->getDisplayName());
-            $this->assertIsArray($group->getGroupTypes());
-            $this->assertIsArray($group->getMembers());
+            $this->assertInstanceOf(
+                Group::class,
+                $group,
+                "Expected class to be 'Group' but found " . get_class($group)
+            );
+            $this->assertIsString(
+                $group->getId(),
+                "Expected groupId to be string but found " . gettype($group->getId())
+            );
+            $this->assertIsString(
+                $group->getDisplayName(),
+                "Expected groupname type to be string but found " . gettype($group->getDisplayName())
+            );
+            $this->assertIsArray(
+                $group->getGroupTypes(),
+                "Expected grouptype to be Array but found " . gettype($group->getGroupTypes())
+            );
+            $this->assertIsArray(
+                $group->getMembers(),
+                "Expected group members type to be Array but found " . gettype($group->getMembers())
+            );
         }
         $groupDisplayName = [$philosophyHatersGroup->getDisplayName(),$physicsLoversGroup->getDisplayName()];
-        $this->assertTrue($groupDisplayName === [$groupName[0],$groupName[1]]);
+        $this->assertTrue(
+            $groupDisplayName === [$groupName[0],$groupName[1]],
+            "Expected group displayname to be {$groupName[0]} and {$groupName[1]} but found "
+            . implode(' and ', $groupDisplayName)
+        );
     }
 
     /**
@@ -352,9 +451,17 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->createdGroups = [$physicsLoversGroup];
         $physicsLoversGroup->addUser($ocis->getUsers()[0]);
         $groups = $ocis->getGroups(expandMembers: true);
-        $this->assertCount(1, $groups);
+        $this->assertCount(
+            1,
+            $groups,
+            "Expected group count to be 1 but found " . count($groups)
+        );
         foreach ($groups as $group) {
-            $this->assertGreaterThan(0, count($group->getMembers()));
+            $this->assertGreaterThan(
+                0,
+                count($group->getMembers()),
+                "Expected member count to be greater than 0 but found " . count($group->getMembers())
+            );
         }
     }
 
@@ -382,9 +489,18 @@ class OcisTest extends OcisPhpSdkTestCase
         $physicsLoversGroup = $ocis->createGroup("physicslovers", "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups(search: $searchText);
-        $this->assertCount(count($groupDisplayName), $groups);
+        $this->assertCount(
+            count($groupDisplayName),
+            $groups,
+            "Group count doens't match "
+        );
         for ($i = 0; $i < count($groups); $i++) {
-            $this->assertEquals($groups[$i]->getDisplayName(), $groupDisplayName[$i]);
+            $this->assertEquals(
+                $groupDisplayName[$i],
+                $groups[$i]->getDisplayName(),
+                "Expected group display name to be " . $groupDisplayName[$i]
+                . " but found " . $groups[$i]->getDisplayName()
+            );
         }
     }
 
@@ -417,9 +533,18 @@ class OcisTest extends OcisPhpSdkTestCase
         if(count($groups) <= 0) {
             $this->markTestSkipped("no groups created");
         }
-        $this->assertCount(count($resultGroups), $groups);
+        $this->assertCount(
+            count($resultGroups),
+            $groups,
+            "Expected group count to be " . count($resultGroups) . " but found " . count($groups)
+        );
         for ($i = 0; $i < count($groups); $i++) {
-            $this->assertEquals($resultGroups[$i], $groups[$i]->getDisplayName());
+            $this->assertEquals(
+                $resultGroups[$i],
+                $groups[$i]->getDisplayName(),
+                "Expected group display name to be " . $resultGroups[$i]
+                . " but found " . $groups[$i]->getDisplayName()
+            );
         }
     }
 
@@ -436,8 +561,16 @@ class OcisTest extends OcisPhpSdkTestCase
                 $ocis->deleteGroupByID($group->getId());
             }
         }
-        $this->assertCount(1, $ocis->getGroups());
-        $this->assertEquals("physicslovers", $ocis->getGroups()[0]->getDisplayName());
+        $this->assertCount(
+            1,
+            $ocis->getGroups(),
+            "Expected group count to be 1 but found " . count($ocis->getGroups())
+        );
+        $this->assertEquals(
+            "physicslovers",
+            $ocis->getGroups()[0]->getDisplayName(),
+            "Expected group display name to be 'physicslovers' but found " . $ocis->getGroups()[0]->getDisplayName()
+        );
         $this->createdGroups = [$physicsLoversGroup];
     }
 
@@ -449,13 +582,34 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->createdResources[$personalDrive->getId()][] = '/somefile.txt';
         $expectedResource = $personalDrive->getResources()[0];
         $resource = $ocis->getResourceById($expectedResource->getId());
-        $this->assertSame($expectedResource->getId(), $resource->getId());
-        $this->assertSame('somefile.txt', $resource->getName());
-        $this->assertSame('file', $resource->getType());
-        $this->assertSame(12, $resource->getSize());
+        $this->assertSame(
+            $expectedResource->getId(),
+            $resource->getId(),
+            "Expected resource id to be " . $expectedResource->getId()
+            . " but found " . $resource->getId()
+        );
+        $this->assertSame(
+            'somefile.txt',
+            $resource->getName(),
+            "Expected resource name to be 'somefile.txt' but found " . $resource->getName()
+        );
+        $this->assertSame(
+            'file',
+            $resource->getType(),
+            "Expected resource type to be 'file' but found " . $resource->getType()
+        );
+        $this->assertSame(
+            12,
+            $resource->getSize(),
+            "Expected resource size to be 12 but found " . $resource->getSize()
+        );
         $content = $this->getContentOfResource425Save($resource);
-        $this->assertSame('some content', $content);
-        $this->assertSame($personalDrive->getId(), $resource->getSpaceId());
+        $this->assertSame('some content', $content, "File content doesn't match");
+        $this->assertSame(
+            $personalDrive->getId(),
+            $resource->getSpaceId(),
+            "Drive id doesn't match with the space id of the resource"
+        );
     }
 
     public function testGetResourceByIdEmptyFolder(): void
@@ -466,12 +620,37 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->createdResources[$personalDrive->getId()][] = '/myfolder';
         $expectedResource = $personalDrive->getResources()[0];
         $resource = $ocis->getResourceById($expectedResource->getId());
-        $this->assertSame($expectedResource->getId(), $resource->getId());
-        $this->assertSame('myfolder', $resource->getName());
-        $this->assertSame('folder', $resource->getType());
-        $this->assertSame(0, $resource->getSize());
-        $this->assertSame('', $resource->getContent()); // getting a folder does not return any content
-        $this->assertSame($personalDrive->getId(), $resource->getSpaceId());
+        $this->assertSame(
+            $expectedResource->getId(),
+            $resource->getId(),
+            "Expected resource id to be " . $expectedResource->getId() . " but found "
+            . $resource->getId()
+        );
+        $this->assertSame(
+            'myfolder',
+            $resource->getName(),
+            "Expected resource name to be 'myfolder' but found " . $resource->getName()
+        );
+        $this->assertSame(
+            'folder',
+            $resource->getType(),
+            "Expected resource type to be 'folder' but found " . $resource->getType()
+        );
+        $this->assertSame(
+            0,
+            $resource->getSize(),
+            "Expected resource size to be 0 but found " . $resource->getSize()
+        );
+        $this->assertSame(
+            '',
+            $resource->getContent(),
+            "Expected resource isn't a folder"
+        ); // getting a folder does not return any content
+        $this->assertSame(
+            $personalDrive->getId(),
+            $resource->getSpaceId(),
+            "Drive id doesn't match with the space id of the resource"
+        );
     }
 
     public function testGetResourceByIdFolderWithContent(): void
@@ -483,12 +662,37 @@ class OcisTest extends OcisPhpSdkTestCase
         $personalDrive->uploadFile('myfolder/somefile.txt', 'some content');
         $expectedResource = $personalDrive->getResources()[0];
         $resource = $ocis->getResourceById($expectedResource->getId());
-        $this->assertSame($expectedResource->getId(), $resource->getId());
-        $this->assertSame('myfolder', $resource->getName());
-        $this->assertSame('folder', $resource->getType());
-        $this->assertSame(12, $resource->getSize());
-        $this->assertSame('', $resource->getContent()); // getting a folder does not return any content
-        $this->assertSame($personalDrive->getId(), $resource->getSpaceId());
+        $this->assertSame(
+            $expectedResource->getId(),
+            $resource->getId(),
+            "Expected resource id to be " . $expectedResource->getId() . " but found "
+            . $resource->getId()
+        );
+        $this->assertSame(
+            'myfolder',
+            $resource->getName(),
+            "Expected resource name to be 'myfolder' but found " . $resource->getName()
+        );
+        $this->assertSame(
+            'folder',
+            $resource->getType(),
+            "Expected resource type to be 'folder' but found " . $resource->getType()
+        );
+        $this->assertSame(
+            12,
+            $resource->getSize(),
+            "Expected resource size to be 12 but found " . $resource->getSize()
+        );
+        $this->assertSame(
+            '',
+            $resource->getContent(),
+            "Expected resource isn't a folder"
+        ); // getting a folder does not return any content
+        $this->assertSame(
+            $personalDrive->getId(),
+            $resource->getSpaceId(),
+            "Drive id doesn't match with the space id of the resource"
+        );
     }
 
     public function testGetResourceByIdFileInAFolder(): void
@@ -500,13 +704,37 @@ class OcisTest extends OcisPhpSdkTestCase
         $personalDrive->uploadFile('myfolder/somefile.txt', 'some content');
         $expectedResource = $personalDrive->getResources('/myfolder')[0];
         $resource = $ocis->getResourceById($expectedResource->getId());
-        $this->assertSame($expectedResource->getId(), $resource->getId());
-        $this->assertSame('somefile.txt', $resource->getName());
-        $this->assertSame('file', $resource->getType());
-        $this->assertSame(12, $resource->getSize());
+
+        $this->assertSame(
+            $expectedResource->getId(),
+            $resource->getId(),
+            "Expected resource id to be " . $expectedResource->getId() . " but found "
+            . $resource->getId()
+        );
+
+        $this->assertSame(
+            'somefile.txt',
+            $resource->getName(),
+            "Expected resource name to be 'somefile.txt' but found " . $resource->getName()
+        );
+        $this->assertSame(
+            'file',
+            $resource->getType(),
+            "Expected resource type to be 'file' but found " . $resource->getType()
+        );
+        $this->assertSame(
+            12,
+            $resource->getSize(),
+            "Expected resource size to be 12 but found " . $resource->getSize()
+        );
         $content = $this->getContentOfResource425Save($resource);
-        $this->assertSame('some content', $content);
-        $this->assertSame($personalDrive->getId(), $resource->getSpaceId());
+
+        $this->assertSame('some content', $content, "File content doesn't match");
+        $this->assertSame(
+            $personalDrive->getId(),
+            $resource->getSpaceId(),
+            "Drive id doesn't match with the space id of the resource"
+        );
     }
 
     public function testGetResourceInvalidId(): void
