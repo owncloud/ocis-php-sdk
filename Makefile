@@ -1,8 +1,17 @@
+SHELL := bash
+
 # docker compose command, defaults to v3
 # for v2: set this as docker-compose using the environment variable
 DCO:=docker compose
 PHPUNIT=php -d memory_limit=4096M -d zend.enable_gc=0 -d xdebug.mode=coverage "vendor/bin/phpunit"
 run-with-cleanup = $(1) && $(2) || (ret=$$?; $(2) && exit $$ret)
+
+# run tests with ociswrapper by default
+WITH_WRAPPER ?= true
+OCIS_IMAGE ?= owncloud/ocis:latest
+OCIS_CLONE := tests/integration/ocis
+OCIS_WRAPPER := ../$(OCIS_CLONE)/tests/ociswrapper/bin/ociswrapper
+
 
 #
 # Catch-all rules
@@ -56,16 +65,25 @@ test-php-phpstan:          ## Run phpstan
 test-php-phpstan: vendor/bin/phpstan
 	vendor/bin/phpstan analyse --memory-limit=4G --configuration=./phpstan.neon --no-progress src tests
 
+$(OCIS_WRAPPER):
+	@if [ "$(WITH_WRAPPER)" == "true" ]; then \
+		git clone --single-branch --branch master --depth 1 https://github.com/owncloud/ocis ./$(OCIS_CLONE); \
+		$(MAKE) --no-print-directory -C ./$(OCIS_CLONE)/tests/ociswrapper build \
+	; fi;
+
 .PHONY: run-ocis-with-keycloak
-run-ocis-with-keycloak:
-	cd tests/integration && $(DCO) up -d --wait
+run-ocis-with-keycloak: $(OCIS_WRAPPER)
+	docker pull $(OCIS_IMAGE)
+	cd tests/integration && WITH_WRAPPER=$(WITH_WRAPPER) $(DCO) up --wait
 
 .PHONY: docker-clean
 docker-clean:
+	rm -rf ./$(OCIS_CLONE)
 	cd tests/integration && $(DCO) down -v --remove-orphans
 
 .PHONY: clean
 clean:
+	rm -rf ./$(OCIS_CLONE)
 	rm -f composer.lock .php-cs-fixer.cache .phpunit.result.cache
 	rm -Rf vendor
 	cd tests/integration && $(DCO) down -v --remove-orphans --rmi local

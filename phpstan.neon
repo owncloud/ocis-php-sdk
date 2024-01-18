@@ -3,3 +3,5 @@ parameters:
   bootstrapFiles:
     - tests/unit/bootstrap.php
   ignoreErrors:
+  excludePaths:
+     - */tests/integration/ocis/*

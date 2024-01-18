@@ -5,6 +5,7 @@ namespace Owncloud\OcisPhpSdk;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Identity;
 use OpenAPI\Client\Model\ItemReference;
+use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\RemoteItem;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
@@ -27,17 +28,19 @@ class ShareReceived
     }
 
     /**
-     *
-     * @return string
      * @throws InvalidResponseException
      */
-    public function getId(): string
+    public function getId(): ?string
     {
-        return empty($this->shareReceived->getId())
-            ? throw new InvalidResponseException(
+        if (empty($this->shareReceived->getId()) && $this->isClientSyncronize() === false) {
+            return  null;
+        }
+        if (empty($this->shareReceived->getId()) && $this->isClientSyncronize() === true) {
+            throw new InvalidResponseException(
                 "Invalid Id '" . print_r($this->shareReceived->getId(), true) . "'"
-            )
-            : $this->shareReceived->getId();
+            );
+        }
+        return $this->shareReceived->getId();
     }
 
     /**
@@ -54,57 +57,77 @@ class ShareReceived
     }
 
     /**
-     * @return string
      * @throws InvalidResponseException
      */
-    public function getEtag(): string
+    public function getEtag(): ?string
     {
-        return empty($this->shareReceived->getETag())
-            ? throw new InvalidResponseException(
-                "Invalid etag '" . print_r($this->shareReceived->getETag(), true) . "'"
-            )
-            : $this->shareReceived->getETag();
-    }
-
-    /**
-     * @throws InvalidResponseException
-     */
-    private function getParentReference(): ItemReference
-    {
-        return empty($this->shareReceived->getParentReference()) ?
+        if (empty($this->shareReceived->getETag()) && $this->isClientSyncronize() === false) {
+            return  null;
+        }
+        if (empty($this->shareReceived->getETag()) && $this->isClientSyncronize() === true) {
             throw new InvalidResponseException(
-                "Invalid parentReference returned for received share  '" .
-                print_r($this->shareReceived->getParentReference(), true) . "'"
-            )
-            : $this->shareReceived->getParentReference();
-
+                "Invalid Etag '" . print_r($this->shareReceived->getETag(), true) . "'"
+            );
+        }
+        return $this->shareReceived->getETag();
     }
 
     /**
-     * @return string
      * @throws InvalidResponseException
      */
-    public function getParentDriveId(): string
+    private function getParentReference(): ?ItemReference
+    {
+        if (empty($this->shareReceived->getParentReference()) && $this->isClientSyncronize() === false) {
+            return  null;
+        }
+        if (empty($this->shareReceived->getParentReference()) && $this->isClientSyncronize() === true) {
+            throw new InvalidResponseException(
+                "Invalid parentReference of received share '" .
+                print_r($this->shareReceived->getParentReference(), true) . "'"
+            );
+        }
+        return $this->shareReceived->getParentReference();
+    }
+
+    /**
+     * @throws InvalidResponseException
+     */
+    public function getParentDriveId(): ?string
     {
         $parentReference = $this->getParentReference();
-        return empty($parentReference->getDriveId()) ?
-           throw new InvalidResponseException(
-               "Invalid driveId returned in parentReference of received share '" .
-               print_r($parentReference->getDriveId(), true) . "'"
-           )
-           : $parentReference->getDriveId();
+        if ($parentReference === null) {
+            return  null;
+        }
+        if (empty($parentReference->getDriveId()) && $this->isClientSyncronize() === false) {
+            return  null;
+        }
+        if (empty($parentReference->getDriveId()) && $this->isClientSyncronize() === true) {
+            throw new InvalidResponseException(
+                "Invalid driveId returned in parentReference of received share '" .
+                print_r($parentReference->getDriveId(), true) . "'"
+            );
+        }
+        return $parentReference->getDriveId();
     }
 
     /**
      * @throws InvalidResponseException
      */
-    public function getParentDriveType(): DriveType
+    public function getParentDriveType(): ?DriveType
     {
-        $driveTypeString = (string)$this->getParentReference()->getDriveType();
+        $parentReference = $this->getParentReference();
+        if ($parentReference === null) {
+            return  null;
+        }
+        if (empty($parentReference->getDriveType()) && $this->isClientSyncronize() === false) {
+            return  null;
+        }
+        $driveTypeString = (string)$parentReference->getDriveType();
         $driveType = DriveType::tryFrom($driveTypeString);
         if ($driveType instanceof DriveType) {
             return $driveType;
         }
+
         throw new InvalidResponseException(
             'Invalid driveType returned in parentReference of received share: "' .
             print_r($driveTypeString, true) . '"'
@@ -227,5 +250,45 @@ class ShareReceived
         return empty($ownerUser->getId()) ? throw new InvalidResponseException(
             "Invalid share owner id '" . print_r($ownerUser->getId(), true) . "'"
         ) : $ownerUser->getId();
+    }
+
+    /**
+     * gets the first permission of the remote item
+     * in theory there might be more that one permission, but currently there is no such case in ocis
+     * @return Permission
+     * @throws InvalidResponseException
+     */
+    private function getRemoteItemPermission()
+    {
+        $remoteItem = $this->getRemoteItem();
+        $permissions = $remoteItem->getPermissions();
+        if ($permissions === null || sizeof($permissions) !== 1) {
+            throw new InvalidResponseException('Invalid permissions in remoteItem');
+        }
+        return $permissions[0];
+    }
+
+    /**
+     * @throws InvalidResponseException
+     */
+    public function isUiHidden(): bool
+    {
+        $uiHidden = $this->getRemoteItemPermission()->getAtUiHidden();
+        if ($uiHidden === null) {
+            throw new InvalidResponseException('Invalid "@ui.hidden" parameter in permission');
+        }
+        return $uiHidden;
+    }
+
+    /**
+     * @throws InvalidResponseException
+     */
+    public function isClientSyncronize(): bool
+    {
+        $clientSyncronize = $this->getRemoteItemPermission()->getAtClientSynchronize();
+        if ($clientSyncronize === null) {
+            throw new InvalidResponseException('Invalid "@client.synchronize" parameter in permission');
+        }
+        return $clientSyncronize;
     }
 }
