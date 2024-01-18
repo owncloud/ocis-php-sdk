@@ -96,7 +96,7 @@ def getBranchName(branch):
 def phpIntegrationTest(ctx, phpversions, coverage):
     pipelines = []
     for php in phpversions:
-        for branch in config["ocisBranches"]:
+        for index, branch in enumerate(config["ocisBranches"]):
             steps = keycloakService() + restoreOcisCache(branch) + ocisService() + cacheRestore()
             name = "php-integration-%s-%s" % (php,branch)
             steps.append(
@@ -114,8 +114,9 @@ def phpIntegrationTest(ctx, phpversions, coverage):
                     ],
                 },
             )
-            if coverage:
-                steps += coverageSteps(ctx, name)
+            if coverage and index == 0:
+                coverageName = "php-integration-%s" % php
+                steps += coverageSteps(ctx, coverageName)
             pipelines += [
                 {
                     "kind": "pipeline",
