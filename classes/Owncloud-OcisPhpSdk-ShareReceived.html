@@ -138,9 +138,9 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">16</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.15" class="phpdocumentor-element-found-in__source" data-line="15" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.16" class="phpdocumentor-element-found-in__source" data-line="16" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
             <p class="phpdocumentor-summary">Ensures that the return type is correct, but Phan does not recognize it.</p>
@@ -196,13 +196,13 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getEtag">getEtag()</a>
     <span>
-                                &nbsp;: string    </span>
+                                &nbsp;: string|null    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getId">getId()</a>
     <span>
-                                &nbsp;: string    </span>
+                                &nbsp;: string|null    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
@@ -226,13 +226,13 @@
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getParentDriveId">getParentDriveId()</a>
     <span>
-                                &nbsp;: string    </span>
+                                &nbsp;: string|null    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getParentDriveType">getParentDriveType()</a>
     <span>
-                                &nbsp;: <a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>    </span>
+                                &nbsp;: <a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>|null    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
@@ -257,6 +257,18 @@
     <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemSize">getRemoteItemSize()</a>
     <span>
                                 &nbsp;: int    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isClientSyncronize">isClientSyncronize()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isUiHidden">isUiHidden()</a>
+    <span>
+                                &nbsp;: bool    </span>
 </dt>
 
     </dl>
@@ -290,9 +302,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">23</span>
+    <span class="phpdocumentor-element-found-in__line">24</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.23" class="phpdocumentor-element-found-in__source" data-line="23" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.24" class="phpdocumentor-element-found-in__source" data-line="24" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -332,15 +344,15 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">60</span>
+    <span class="phpdocumentor-element-found-in__line">62</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.60" class="phpdocumentor-element-found-in__source" data-line="60" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.62" class="phpdocumentor-element-found-in__source" data-line="62" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getEtag</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">getEtag</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -365,7 +377,7 @@
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
+        <span class="phpdocumentor-signature__response_type">string|null</span>
             </section>
 
 </article>
@@ -383,15 +395,15 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">34</span>
+    <span class="phpdocumentor-element-found-in__line">33</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.34" class="phpdocumentor-element-found-in__source" data-line="34" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.33" class="phpdocumentor-element-found-in__source" data-line="33" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getId</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">getId</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -416,7 +428,7 @@
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
+        <span class="phpdocumentor-signature__response_type">string|null</span>
             </section>
 
 </article>
@@ -434,9 +446,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">47</span>
+    <span class="phpdocumentor-element-found-in__line">50</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.47" class="phpdocumentor-element-found-in__source" data-line="47" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.50" class="phpdocumentor-element-found-in__source" data-line="50" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -485,9 +497,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">224</span>
+    <span class="phpdocumentor-element-found-in__line">247</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.224" class="phpdocumentor-element-found-in__source" data-line="224" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.247" class="phpdocumentor-element-found-in__source" data-line="247" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -536,9 +548,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">211</span>
+    <span class="phpdocumentor-element-found-in__line">234</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.211" class="phpdocumentor-element-found-in__source" data-line="211" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.234" class="phpdocumentor-element-found-in__source" data-line="234" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -587,15 +599,15 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">87</span>
+    <span class="phpdocumentor-element-found-in__line">95</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.87" class="phpdocumentor-element-found-in__source" data-line="87" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.95" class="phpdocumentor-element-found-in__source" data-line="95" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getParentDriveId</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">getParentDriveId</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string|null</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -620,7 +632,7 @@
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
+        <span class="phpdocumentor-signature__response_type">string|null</span>
             </section>
 
 </article>
@@ -638,15 +650,15 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">101</span>
+    <span class="phpdocumentor-element-found-in__line">116</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.101" class="phpdocumentor-element-found-in__source" data-line="101" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.116" class="phpdocumentor-element-found-in__source" data-line="116" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getParentDriveType</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a></span></code>
+                    <span class="phpdocumentor-signature__name">getParentDriveType</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>|null</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -671,7 +683,7 @@
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a></span>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/Owncloud-OcisPhpSdk-DriveType.html"><abbr title="\Owncloud\OcisPhpSdk\DriveType">DriveType</abbr></a>|null</span>
             </section>
 
 </article>
@@ -689,9 +701,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">129</span>
+    <span class="phpdocumentor-element-found-in__line">152</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.129" class="phpdocumentor-element-found-in__source" data-line="129" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.152" class="phpdocumentor-element-found-in__source" data-line="152" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -740,9 +752,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">143</span>
+    <span class="phpdocumentor-element-found-in__line">166</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.143" class="phpdocumentor-element-found-in__source" data-line="143" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.166" class="phpdocumentor-element-found-in__source" data-line="166" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -791,9 +803,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">184</span>
+    <span class="phpdocumentor-element-found-in__line">207</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.184" class="phpdocumentor-element-found-in__source" data-line="184" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.207" class="phpdocumentor-element-found-in__source" data-line="207" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -842,9 +854,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">157</span>
+    <span class="phpdocumentor-element-found-in__line">180</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.157" class="phpdocumentor-element-found-in__source" data-line="157" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.180" class="phpdocumentor-element-found-in__source" data-line="180" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
     </aside>
 
     
@@ -876,6 +888,108 @@
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_isClientSyncronize">
+        isClientSyncronize()
+        <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isClientSyncronize" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">286</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.286" class="phpdocumentor-element-found-in__source" data-line="286" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">isClientSyncronize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isClientSyncronize#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_isUiHidden">
+        isUiHidden()
+        <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isUiHidden" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/ShareReceived.php"><a href="files/src-sharereceived.html"><abbr title="src/ShareReceived.php">ShareReceived.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">274</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#source-view.274" class="phpdocumentor-element-found-in__source" data-line="274" data-modal="source-view" data-src="files/src/ShareReceived.php.txt"></a>
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">isUiHidden</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isUiHidden#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
             </section>
 
 </article>
@@ -1004,6 +1118,8 @@
                                             <li><a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemName">getRemoteItemName()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemSharedDateTime">getRemoteItemSharedDateTime()</a></li>
                                             <li><a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemSize">getRemoteItemSize()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isClientSyncronize">isClientSyncronize()</a></li>
+                                            <li><a href="classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isUiHidden">isUiHidden()</a></li>
                                     </ul>
             </li>
                     </ul>

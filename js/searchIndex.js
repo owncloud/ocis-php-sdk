@@ -761,6 +761,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getOwnerId"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AisUiHidden\u0028\u0029",
+            "name": "isUiHidden",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isUiHidden"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AisClientSyncronize\u0028\u0029",
+            "name": "isClientSyncronize",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isClientSyncronize"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole",
             "name": "SharingRole",
             "summary": "class\u0020to\u0020define\u0020a\u0020role\u0020of\u0020a\u0020user\u0020or\u0020group\u0020in\u0020a\u0020share\nevery\u0020role\u0020contains\u0020specific\u0020permissions",
