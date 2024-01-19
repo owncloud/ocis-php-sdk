@@ -72,28 +72,25 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         $this->assertGreaterThanOrEqual(
             1,
             strlen($receivedShare->getRemoteItemId()),
-            "Exoected the length of remote item id to be greater than 1 but found "
-            . strlen($receivedShare->getRemoteItemId())
+            "Expected the length of remote item id to be greater than 1"
         );
         $this->assertNotNull($receivedShare->getId(), "Expected received share id to not be null");
         $this->assertGreaterThanOrEqual(
             1,
             strlen((string)$receivedShare->getId()),
-        "Exoected the length of received share id to be greater than 1 but found "
-            . strlen($receivedShare->getId())
+            " The length of received share id to be greater than 1 "
         );
-        $this->assertNotNull($receivedShare->getParentDriveId(),"Expected Parent drive id to not be null");
+        $this->assertNotNull($receivedShare->getParentDriveId(), "Expected Parent drive id to not be null");
         $this->assertGreaterThanOrEqual(
             1,
             strlen((string)$receivedShare->getParentDriveId()),
-            "Exoected the length of parent drive id to be greater than 1 but found "
-            . strlen($receivedShare->getParentDriveId())
+            "Expected the length of parent drive id to be greater than 1"
         );
-        $this->assertNotNull($receivedShare->getParentDriveType(),"Expected Parent drive type to not be null");
+        $this->assertNotNull($receivedShare->getParentDriveType(), "Expected Parent drive type to not be null");
         $this->assertSame(
-            DriveType::PERSONAL,
+            DriveType::VIRTUAL,
             $receivedShare->getParentDriveType(),
-        "Parent drive type isn't found to be 'PERSONAL'"
+            "Parent drive type isn't found to be 'VIRTUAL'"
         );
         $this->assertEquals(
             $this->fileToShare->getName(),
@@ -102,30 +99,46 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         );
         $this->assertSame(
             $this->fileToShare->getEtag(),
-            $receivedShare->getEtag());
-        $this->assertSame($this->fileToShare->getId(), $receivedShare->getRemoteItemId());
-        $this->assertSame($this->fileToShare->getName(), $receivedShare->getRemoteItemName());
-        $this->assertSame($this->fileToShare->getSize(), $receivedShare->getRemoteItemSize());
-        $this->assertFalse($receivedShare->isUiHidden());
-        $this->assertTrue($receivedShare->isClientSyncronize());
-        $this->assertEqualsWithDelta(time(), $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(), 120);
-        $this->assertStringContainsString('Admin', $receivedShare->getOwnerName());
-        $this->assertGreaterThanOrEqual(1, strlen($receivedShare->getOwnerId()));
-        $this->folderToShare->invite($this->einstein, $this->editorRole);
-        $receivedShare = $this->einsteinOcis->getSharedWithMe();
-        $this->assertEquals(
-            $this->folderToShare->getName(),
-            $receivedShare[0]->getName(),
-            "Expected shared folder to be " . $this->folderToShare->getName() . " but found " . $receivedShare[0]->getName()
+            $receivedShare->getEtag(),
+            "Resource Etag of shared resource doesn't match"
         );
-//        $this->assertSame(
-//            $this->folderToShare->getId(),
-//            $receivedShare[0]->getRemoteItemId(),
-//            "Expected shared resource Id to be " . $this->folderToShare->getId() . " but found "
-//            . $receivedShare[0]->getRemoteItemId()
-//        );
-        //The step will only work after this bug is solved https://github.com/owncloud/ocis/issues/8000
-        //$this->assertSame($this->personalDrive->getId(), $receivedShare[0]->getDriveId());
+        $this->assertSame(
+            $this->fileToShare->getId(),
+            $receivedShare->getRemoteItemId(),
+            "The file-id of the remote item in the receive share is different to the id of the shared file"
+        );
+        $this->assertSame(
+            $this->fileToShare->getName(),
+            $receivedShare->getRemoteItemName(),
+            "Expected receive share receiver name to be " .  $this->fileToShare->getName()
+            . " but found " . $receivedShare->getRemoteItemName()
+        );
+        $this->assertSame(
+            $this->fileToShare->getSize(),
+            $receivedShare->getRemoteItemSize(),
+            "The item-size of the remote item in the receive share is different to the size of the shared file"
+        );
+        $this->assertFalse($receivedShare->isUiHidden(), "Expected receive share to be hidden");
+        $this->assertTrue(
+            $receivedShare->isClientSyncronize(),
+            "Expected received share to be client synchronized, but found not synced"
+        );
+        $this->assertEqualsWithDelta(
+            time(),
+            $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(),
+            120,
+            "Expected Shared resource was shared within 120 seconds of the current time"
+        );
+        $this->assertStringContainsString(
+            'Admin',
+            $receivedShare->getOwnerName(),
+            "Expected owner name to be 'Admin' but found " . $receivedShare->getOwnerName()
+        );
+        $this->assertGreaterThanOrEqual(
+            1,
+            strlen($receivedShare->getOwnerId()),
+            "Expected the length of ownerId of receive share to be greater than 1"
+        );
     }
 
     public function testReceiveMultipleShares(): void
@@ -138,11 +151,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         $philosophyHatersGroup->addUser($this->einstein);
         $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
         $this->folderToShare->invite($this->einstein, $this->editorRole);
-        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
-        $this->assertInstanceOf(ShareReceived::class, $receivedShare[0]);
-        $this->assertInstanceOf(ShareReceived::class, $receivedShare[1]);
-        $this->assertCount(2, $receivedShare);
-        $receivedShares = $this->einsteinOcis->getSharedWithMe();
+        $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
         foreach($receivedShares as $receivedShare) {
             $this->assertInstanceOf(
                 ShareReceived::class,
@@ -189,18 +198,32 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         $philosophyHatersGroup->addUser($this->einstein);
         $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
         $this->fileToShare->invite($this->einstein, $this->editorRole);
-        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
-        $this->assertInstanceOf(ShareReceived::class, $receivedShare[0]);
-        $this->assertInstanceOf(ShareReceived::class, $receivedShare[1]);
-        $this->assertCount(2, $receivedShare);
+        $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
+        foreach($receivedShares as $receivedShare) {
+            $this->assertInstanceOf(
+                ShareReceived::class,
+                $receivedShare,
+                "Expected class to be 'ShareReceived' but found "
+                . get_class($receivedShare)
+            );
+        }
+        $this->assertCount(
+            2,
+            $receivedShares,
+            "Expected two shares but found " . count($receivedShares)
+        );
         for($i = 0; $i < 2; $i++) {
             $this->assertSame(
-                $receivedShare[$i]->getName(),
+                $receivedShares[$i]->getName(),
                 $this->fileToShare->getName(),
+                "Expected resource name to be " .  $receivedShares[$i]->getName()
+                . " but found " . $this->fileToShare->getName()
             );
             $this->assertSame(
-                $receivedShare[$i]->getRemoteItemId(),
+                $receivedShares[$i]->getRemoteItemId(),
                 $this->fileToShare->getId(),
+                "Expected resource id to be " .  $receivedShares[$i]->getRemoteItemId()
+                . " but found " . $this->fileToShare->getId()
             );
         }
     }
@@ -228,9 +251,17 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             DriveType::VIRTUAL
         )[0];
         $resourcesInShareJail = $shareDrive->getResources();
-        $this->assertCount(3, $receivedShares);
+        $this->assertCount(
+            3,
+            $receivedShares,
+            "Expected three receive shares but found " . count($receivedShares)
+        );
         // the resources in the share-jail are merged if received by different ways
-        $this->assertCount(2, $resourcesInShareJail);
+        $this->assertCount(
+            2,
+            $resourcesInShareJail,
+            "Expected two receive shares but found " . count($resourcesInShareJail)
+        );
         /**
          * @var OcisResource $resource
          */
@@ -247,7 +278,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
                     $foundMatchingShare = true;
                 }
             }
-            $this->assertTrue($foundMatchingShare);
+            $this->assertTrue($foundMatchingShare, "No matching share found");
         }
     }
 }
