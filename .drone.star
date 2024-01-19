@@ -376,7 +376,7 @@ def tests(ctx, name, command, phpversions, coverage, xdebugNeeded = False):
                     ],
                 },
             ]
-            if coverage:
+            if coverage and config["ocisBranches"][0] == "master":
                 steps += coverageSteps(ctx, fullname)
             pipelines += [
                 {
