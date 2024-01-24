@@ -46,7 +46,7 @@ config = {
     "phpstan": True,
     "phan": True,
     "php-unit": True,
-    "ocisBranches":["master", "stable"]
+    "ocisBranches": ["master", "stable"],
 }
 
 trigger = {
@@ -93,29 +93,29 @@ def getBranchName(branch):
         return "$OCIS_BRANCH"
     return "$OCIS_STABLE_BRANCH"
 
-def phpIntegrationTest(ctx, phpversions, coverage):
+def phpIntegrationTest(ctx, phpVersions, coverage):
     pipelines = []
-    for php in phpversions:
+    for phpVersion in phpVersions:
         for index, branch in enumerate(config["ocisBranches"]):
             steps = keycloakService() + restoreOcisCache(branch) + ocisService() + cacheRestore()
-            name = "php-integration-%s-%s" % (php,branch)
+            name = "php-integration-%s-%s" % (phpVersion, branch)
             steps.append(
                 {
                     "name": "php-integration",
-                    "image": OC_CI_PHP % php,
+                    "image": OC_CI_PHP % phpVersion,
                     "environment": {
                         "OCIS_URL": "https://ocis:9200",
                         "OCISWRAPPER_URL": "http://ocis:5200",
                         "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
                     },
                     "commands": [
-                        installPhpXdebugCommand(php),
+                        installPhpXdebugCommand(phpVersion),
                         "make test-php-integration-ci",
                     ],
                 },
             )
             if coverage and index == 0:
-                coverageName = "php-integration-%s" % php
+                coverageName = "php-integration-%s" % phpVersion
                 steps += coverageSteps(ctx, coverageName)
             pipelines += [
                 {
@@ -123,7 +123,7 @@ def phpIntegrationTest(ctx, phpversions, coverage):
                     "name": name,
                     "steps": steps,
                     "services": postgresService(),
-                    "depends_on": ["cache-ocis-"+branch],
+                    "depends_on": ["cache-ocis-" + branch],
                     "trigger": trigger,
                 },
             ]
@@ -169,8 +169,8 @@ def ocisService():
     ]
 
 def buildOcis(branch):
-    ocisCommitId = getCommitId(branch)
-    ocisBranch = getBranchName(branch)
+    ocis_commit_id = getCommitId(branch)
+    ocis_branch = getBranchName(branch)
     ocis_repo_url = "https://github.com/owncloud/ocis.git"
     return [
         {
@@ -178,9 +178,9 @@ def buildOcis(branch):
             "image": OC_CI_GOLANG,
             "commands": [
                 "source .drone.env",
-                "git clone -b %s --single-branch %s" % (ocisBranch, ocis_repo_url),
+                "git clone -b %s --single-branch %s" % (ocis_branch, ocis_repo_url),
                 "cd ocis",
-                "git checkout %s" % ocisCommitId,
+                "git checkout %s" % ocis_commit_id,
             ],
         },
         {
@@ -199,8 +199,8 @@ def buildOcis(branch):
                 ". ./.drone.env",
                 "cd ocis/ocis",
                 "retry -t 3 'make build'",
-                "mkdir -p %s/%s" % (dir["base"], ocisCommitId),
-                "cp bin/ocis %s/%s" % (dir["base"], ocisCommitId),
+                "mkdir -p %s/%s" % (dir["base"], ocis_commit_id),
+                "cp bin/ocis %s/%s" % (dir["base"], ocis_commit_id),
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -217,8 +217,8 @@ def buildOcis(branch):
             "commands": [
                 ". ./.drone.env",
                 "make -C ocis/tests/ociswrapper build",
-                "mkdir -p %s/%s" % (dir["base"], ocisCommitId),
-                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/%s/" % (dir["base"], ocisCommitId),
+                "mkdir -p %s/%s" % (dir["base"], ocis_commit_id),
+                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/%s/" % (dir["base"], ocis_commit_id),
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -276,22 +276,22 @@ def checkForExistingOcisCache(ctx):
     ]
 
 def cacheOcis(branch):
-    ocisCommitId = getCommitId(branch)
+    ocis_commit_id = getCommitId(branch)
     return [{
-        "name": "upload-ocis-cache-%s" %branch,
+        "name": "upload-ocis-cache-%s" % branch,
         "image": MINIO_MC,
         "environment": MINIO_MC_ENV,
         "commands": [
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
-            "mc cp -r -a %s/%s/ocis s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocisCommitId, ocisCommitId),
-            "mc cp -r -a %s/%s/ociswrapper s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocisCommitId, ocisCommitId),
+            "mc cp -r -a %s/%s/ocis s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocis_commit_id, ocis_commit_id),
+            "mc cp -r -a %s/%s/ociswrapper s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocis_commit_id, ocis_commit_id),
             "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
         ],
     }]
 
 def restoreOcisCache(branch):
-    ocisCommitId = "$OCIS_COMMITID" if branch == "master" else "$OCIS_STABLE_COMMITID"
+    ocis_commit_id = "$OCIS_COMMITID" if branch == "master" else "$OCIS_STABLE_COMMITID"
     return [{
         "name": "restore-ocis-cache",
         "image": MINIO_MC,
@@ -301,8 +301,8 @@ def restoreOcisCache(branch):
             "mkdir -p %s" % dir["ociswrapper_bin"],
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
-            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ocis %s" % (ocisCommitId, dir["ocis_bin"]),
-            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ociswrapper %s" % (ocisCommitId, dir["ociswrapper_bin"]),
+            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ocis %s" % (ocis_commit_id, dir["ocis_bin"]),
+            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ociswrapper %s" % (ocis_commit_id, dir["ociswrapper_bin"]),
         ],
     }]
 
@@ -358,19 +358,19 @@ def keycloakService():
         },
     ]
 
-def tests(ctx, name, command, phpversions, coverage, xdebugNeeded = False):
+def tests(ctx, name, command, phpVersions, coverage, xdebugNeeded = False):
     pipelines = []
     if name in config and config[name]:
-        for php in phpversions:
-            fullname = "%s-%s" % (name, php)
+        for phpVersion in phpVersions:
+            fullname = "%s-%s" % (name, phpVersion)
             steps = cacheRestore() + [
                 {
                     "name": fullname,
-                    "image": OC_CI_PHP % php,
+                    "image": OC_CI_PHP % phpVersion,
                     "environment": {
                         "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
                     },
-                    "commands": ([installPhpXdebugCommand(php)] if xdebugNeeded else []) + [
+                    "commands": ([installPhpXdebugCommand(phpVersion)] if xdebugNeeded else []) + [
                         "composer install",
                         command,
                     ],
@@ -707,5 +707,5 @@ def cacheRebuildOnEventPush():
         },
     }]
 
-def installPhpXdebugCommand(php):
-    return "add-apt-repository ppa:ondrej/php && apt-get install -y php%s-xdebug" % php
+def installPhpXdebugCommand(phpVersion):
+    return "add-apt-repository ppa:ondrej/php && apt-get install -y php%s-xdebug" % phpVersion
