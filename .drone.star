@@ -234,7 +234,7 @@ def buildOcis(branch):
 def cacheOcisPipeline(ctx):
     pipelines = []
     for branch in config["ocisBranches"]:
-        steps = checkForExistingOcisCache(ctx) + buildOcis(branch) + cacheOcis(branch)
+        steps = checkForExistingOcisCache(ctx, branch) + buildOcis(branch) + cacheOcis(branch)
         pipelines += [{
             "kind": "pipeline",
             "type": "docker",
@@ -257,7 +257,7 @@ def cacheOcisPipeline(ctx):
         }]
     return pipelines
 
-def checkForExistingOcisCache(ctx):
+def checkForExistingOcisCache(ctx, branch):
     repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
     return [
         {
@@ -270,7 +270,7 @@ def checkForExistingOcisCache(ctx):
                 ". ./.drone.env",
                 "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
                 "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
-                "bash check-oCIS-cache.sh",
+                "bash check-oCIS-cache.sh %s" % getCommitId(branch),
             ],
         },
     ]
@@ -291,7 +291,7 @@ def cacheOcis(branch):
     }]
 
 def restoreOcisCache(branch):
-    ocis_commit_id = "$OCIS_COMMITID" if branch == "master" else "$OCIS_STABLE_COMMITID"
+    ocis_commit_id = getCommitId(branch)
     return [{
         "name": "restore-ocis-cache",
         "image": MINIO_MC,
