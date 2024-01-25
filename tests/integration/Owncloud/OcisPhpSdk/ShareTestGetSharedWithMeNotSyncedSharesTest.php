@@ -59,15 +59,31 @@ class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
          * @var ShareReceived $receivedShare
          */
         $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
-        $this->assertInstanceOf(ShareReceived::class, $receivedShare);
-        $this->assertGreaterThanOrEqual(1, strlen($receivedShare->getRemoteItemId()));
-        $this->assertSame($this->fileToShare->getName(), $receivedShare->getName());
-        $this->assertFalse($receivedShare->isUiHidden());
-        $this->assertFalse($receivedShare->isClientSyncronize());
-        $this->assertNull($receivedShare->getId());
-        $this->assertNull($receivedShare->getEtag());
-        $this->assertNull($receivedShare->getParentDriveId());
-        $this->assertNull($receivedShare->getParentDriveType());
+        $this->assertInstanceOf(
+            ShareReceived::class,
+            $receivedShare,
+            "Expected class to be 'ShareReceived' but found "
+            . get_class($receivedShare)
+        );
+        $this->assertGreaterThanOrEqual(
+            1,
+            strlen($receivedShare->getRemoteItemId()),
+            "Expected the length of remote item id to be greater than 1"
+        );
+        $this->assertSame(
+            $this->fileToShare->getName(),
+            $receivedShare->getName(),
+            "Expected shared file to be " . $this->fileToShare->getName() . " but found " . $receivedShare->getName()
+        );
+        $this->assertFalse($receivedShare->isUiHidden(), "Expected receive share to be hidden");
+        $this->assertFalse(
+            $receivedShare->isClientSyncronize(),
+            "Expected received share to be client synchronized, but found not synced"
+        );
+        $this->assertNull($receivedShare->getId(), "Expected received share id to not be null");
+        $this->assertNull($receivedShare->getEtag(), "Expected Etag to not be null");
+        $this->assertNull($receivedShare->getParentDriveId(), "Expected Parent drive id to not be null");
+        $this->assertNull($receivedShare->getParentDriveType(), "Expected Parent drive type to not be null");
         $this->assertSame(
             $this->fileToShare->getId(),
             $receivedShare->getRemoteItemId(),
