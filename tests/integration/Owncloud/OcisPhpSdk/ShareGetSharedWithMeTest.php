@@ -120,7 +120,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         );
         $this->assertFalse($receivedShare->isUiHidden(), "Expected receive share to be hidden");
         $this->assertTrue(
-            $receivedShare->isClientSyncronize(),
+            $receivedShare->isClientSynchronized(),
             "Expected received share to be client synchronized, but found not synced"
         );
         $this->assertEqualsWithDelta(
