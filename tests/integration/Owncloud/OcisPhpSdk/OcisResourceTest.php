@@ -111,7 +111,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             );
 
             $this->assertMatchesRegularExpression(
-                "/^" . $this->getspaceIdRegex() . "$/i",
+                "/^" . $this->getSpaceIdRegex() . "$/i",
                 $resource->getSpaceId(),
                 "SpaceId doesn't match the expected format"
             );
@@ -429,7 +429,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         );
 
         foreach ($rootResourcesAfterMove as $resource) {
-            $this->assertNotEquals($resourceName, $resource->getName(), "Resource $resourceName should not exist at root afte move");
+            $this->assertNotEquals($resourceName, $resource->getName(), "Resource $resourceName should not exist at root after move");
         }
 
         if ($type === 'file') {

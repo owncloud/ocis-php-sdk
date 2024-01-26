@@ -97,11 +97,11 @@ class GroupsTest extends OcisPhpSdkTestCase
         foreach($users as $user) {
             $philosophyHatersGroup->addUser($user);
         }
-        $einsteinPholosophyHatersGroup = $einsteinUserOcis->getGroups("philosophyhaters")[0];
+        $einsteinPhilosophyHatersGroup = $einsteinUserOcis->getGroups("philosophyhaters")[0];
         $this->expectException(UnauthorizedException::class);
         foreach ($users as $user) {
             if($user->getDisplayName() === "Admin") {
-                $einsteinPholosophyHatersGroup->removeUser($user);
+                $einsteinPhilosophyHatersGroup->removeUser($user);
             }
         }
     }
@@ -233,8 +233,8 @@ class GroupsTest extends OcisPhpSdkTestCase
         $philosophyHatersGroup = $ocis->createGroup("philosophyhaters", "philosophy haters group");
         $this->createdGroups = [$philosophyHatersGroup];
         $einsteinOcis = $this->getOcis('einstein', 'relativity');
-        $philosophyHatersGroupEinestine = $einsteinOcis->getGroups("philosophy");
-        $groupId = $philosophyHatersGroupEinestine[0]->getId();
+        $philosophyHatersGroupEinstein = $einsteinOcis->getGroups("philosophy");
+        $groupId = $philosophyHatersGroupEinstein[0]->getId();
         $this->expectException(UnauthorizedException::class);
         $einsteinOcis->deleteGroupByID($groupId);
     }
@@ -243,7 +243,7 @@ class GroupsTest extends OcisPhpSdkTestCase
     {
         $ocis = $this->getOcis('admin', 'admin');
         $this->expectException(NotFoundException::class);
-        $ocis->deleteGroupByID("thisgroupdosenotexist");
+        $ocis->deleteGroupByID("thisgroupdoesnotexist");
     }
 
 }
