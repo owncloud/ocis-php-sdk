@@ -116,7 +116,7 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $this->assertSame("Z", $createdShares[0]->getExpiration()->getTimezone()->getName());
     }
 
-    public function testSetExperation(): void
+    public function testSetExpiration(): void
     {
         $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, null, "p@$\$w0rD");
         $tomorrow = new \DateTimeImmutable('tomorrow');

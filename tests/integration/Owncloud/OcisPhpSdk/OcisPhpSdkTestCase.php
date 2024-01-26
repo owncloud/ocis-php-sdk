@@ -134,7 +134,7 @@ class OcisPhpSdkTestCase extends TestCase
     }
 
 
-    protected function getspaceIdRegex(): string
+    protected function getSpaceIdRegex(): string
     {
         return $this->getUUIDv4Regex() . '\\$' . $this->getUUIDv4Regex();
     }

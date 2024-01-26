@@ -492,7 +492,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->assertCount(
             count($groupDisplayName),
             $groups,
-            "Group count doens't match "
+            "Group count doesn't match "
         );
         for ($i = 0; $i < count($groups); $i++) {
             $this->assertEquals(
