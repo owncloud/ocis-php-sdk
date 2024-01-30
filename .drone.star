@@ -134,7 +134,7 @@ def phpIntegrationTest(ctx, phpVersions, coverage):
     pipelines = []
     for phpVersion in phpVersions:
         for index, branch in enumerate(config["ocisBranches"]):
-            steps = keycloakService() + restoreOcisCache(branch) + ocisService() + cacheRestore()
+            steps = keycloakService() + getOcislatestCommitId(ctx, branch) + restoreOcisCache(ctx, branch) + ocisService() + cacheRestore()
             name = "php-integration-%s-%s" % (phpVersion, branch)
             steps.append(
                 {
@@ -271,7 +271,7 @@ def buildOcis(branch):
 def cacheOcisPipeline(ctx):
     pipelines = []
     for branch in config["ocisBranches"]:
-        steps = checkForExistingOcisCache(ctx, branch) + buildOcis(branch) + cacheOcis(branch)
+        steps = getOcislatestCommitId(ctx, branch) + checkForExistingOcisCache(ctx, branch) + buildOcis(branch) + cacheOcis(branch)
         pipelines += [{
             "kind": "pipeline",
             "type": "docker",
@@ -294,21 +294,48 @@ def cacheOcisPipeline(ctx):
         }]
     return pipelines
 
-def checkForExistingOcisCache(ctx, branch):
+def getOcislatestCommitId(ctx, branch):
     repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
+    return [
+        {
+            "name": "get-ocis-%s-latest-commit-id" % branch,
+            "image": OC_CI_ALPINE,
+            "commands": [
+                "curl -o .drone.env %s/.drone.env" % repo_path,
+                "curl -o check-oCIS-cache.sh %s/tests/check-oCIS-cache.sh" % repo_path,
+                "curl -o get-latest-ocis-commit-id.sh %s/tests/get-latest-ocis-commit-id.sh" % repo_path,
+                ". ./.drone.env",
+                "bash get-latest-ocis-commit-id.sh %s" % getBranchName(branch),
+            ],
+            "when": {
+                "event": [
+                    "cron",
+                ],
+            },
+        },
+    ]
+
+def checkForExistingOcisCache(ctx, branch):
+    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit  #% ctx.build.commit
+    commands = [
+        ". ./.drone.env",
+        "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
+        "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
+        "bash check-oCIS-cache.sh %s" % getCommitId(branch),
+    ]
+
+    if ctx.build.event != "cron":
+        commands = [
+            "curl -o .drone.env %s/.drone.env" % repo_path,
+            "curl -o check-oCIS-cache.sh %s/tests/check-oCIS-cache.sh" % repo_path,
+        ] + commands
+
     return [
         {
             "name": "check-for-existing-cache",
             "image": MINIO_MC,
             "environment": MINIO_MC_ENV,
-            "commands": [
-                "curl -o .drone.env %s/.drone.env" % repo_path,
-                "curl -o check-oCIS-cache.sh %s/tests/check-oCIS-cache.sh" % repo_path,
-                ". ./.drone.env",
-                "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
-                "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
-                "bash check-oCIS-cache.sh %s" % getCommitId(branch),
-            ],
+            "commands": commands,
         },
     ]
 
@@ -327,21 +354,25 @@ def cacheOcis(branch):
         ],
     }]
 
-def restoreOcisCache(branch):
+def restoreOcisCache(ctx, branch):
+    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
     ocis_commit_id = getCommitId(branch)
-    return [{
-        "name": "restore-ocis-cache",
-        "image": MINIO_MC,
-        "environment": MINIO_MC_ENV,
-        "commands": [
-            "mkdir -p %s" % dir["ocis_bin"],
-            "mkdir -p %s" % dir["ociswrapper_bin"],
-            ". ./.drone.env",
-            "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
-            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ocis %s" % (ocis_commit_id, dir["ocis_bin"]),
-            "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ociswrapper %s" % (ocis_commit_id, dir["ociswrapper_bin"]),
-        ],
-    }]
+
+    return [
+        {
+            "name": "restore-ocis-cache",
+            "image": MINIO_MC,
+            "environment": MINIO_MC_ENV,
+            "commands": [
+                "mkdir -p %s" % dir["ocis_bin"],
+                "mkdir -p %s" % dir["ociswrapper_bin"],
+                ". ./.drone.env",
+                "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
+                "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ocis %s" % (ocis_commit_id, dir["ocis_bin"]),
+                "mc cp -r -a s3/$CACHE_BUCKET/ocis-build/%s/ociswrapper %s" % (ocis_commit_id, dir["ociswrapper_bin"]),
+            ],
+        },
+    ]
 
 def postgresService():
     return [
