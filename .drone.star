@@ -14,6 +14,7 @@ PLUGINS_S3 = "plugins/s3"
 PLUGINS_S3_CACHE = "plugins/s3-cache:1"
 POSTGRES_ALPINE = "postgres:alpine3.18"
 SONARSOURCE_SONAR_SCANNER_CLI = "sonarsource/sonar-scanner-cli"
+OC_CI_BUILDIFIER = "owncloudci/bazel-buildifier:latest"
 
 DEFAULT_PHP_VERSION = "8.1"
 dir = {
@@ -72,6 +73,7 @@ def main(ctx):
     docsPipeline = docs()
     dependsOn(cacheDependencies(), docsPipeline)
     return (
+        checkStarlark() +
         cacheDependencies() +
         cacheOcisPipeline(ctx) +
         codeStylePipeline +
@@ -82,6 +84,41 @@ def main(ctx):
         sonarPipeline +
         docsPipeline
     )
+
+def checkStarlark():
+    return [{
+        "kind": "pipeline",
+        "type": "docker",
+        "name": "check-starlark",
+        "steps": [
+            {
+                "name": "format-check-starlark",
+                "image": OC_CI_BUILDIFIER,
+                "commands": [
+                    "buildifier --mode=check .drone.star",
+                ],
+            },
+            {
+                "name": "show-diff",
+                "image": OC_CI_BUILDIFIER,
+                "commands": [
+                    "buildifier --mode=fix .drone.star",
+                    "git diff",
+                ],
+                "when": {
+                    "status": [
+                        "failure",
+                    ],
+                },
+            },
+        ],
+        "depends_on": [],
+        "trigger": {
+            "ref": [
+                "refs/pull/**",
+            ],
+        },
+    }]
 
 def getCommitId(branch):
     if branch == "master":
