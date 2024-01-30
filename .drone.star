@@ -97,7 +97,7 @@ def phpIntegrationTest(ctx, phpVersions, coverage):
     pipelines = []
     for phpVersion in phpVersions:
         for index, branch in enumerate(config["ocisBranches"]):
-            steps = keycloakService() + restoreOcisCache(ctx, branch) + ocisService() + cacheRestore()
+            steps = keycloakService() + getOcislatestCommitId(ctx, branch) + restoreOcisCache(ctx, branch) + ocisService() + cacheRestore()
             name = "php-integration-%s-%s" % (phpVersion, branch)
             steps.append(
                 {
@@ -234,7 +234,7 @@ def buildOcis(branch):
 def cacheOcisPipeline(ctx):
     pipelines = []
     for branch in config["ocisBranches"]:
-        steps = get0cislatestCommitId(ctx, branch) + checkForExistingOcisCache(ctx, branch) + buildOcis(branch) + cacheOcis(branch)
+        steps = getOcislatestCommitId(ctx, branch) + checkForExistingOcisCache(ctx, branch) + buildOcis(branch) + cacheOcis(branch)
         pipelines += [{
             "kind": "pipeline",
             "type": "docker",
@@ -257,39 +257,37 @@ def cacheOcisPipeline(ctx):
         }]
     return pipelines
 
-def get0cislatestCommitId(ctx, branch):
-    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/cd13425c0fd057d9dee79f07f3beb76329a75319"  #% ctx.build.commit
+def getOcislatestCommitId(ctx, branch):
+    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
     return [
         {
-            "name": "get-ocis-%s-latest-commitId" % branch,
-            "image": OC_UBUNTU,
+            "name": "get-ocis-%s-latest-commit-id" % branch,
+            "image": OC_CI_ALPINE,
             "commands": [
                 "curl -o .drone.env %s/.drone.env" % repo_path,
                 "curl -o check-oCIS-cache.sh %s/tests/check-oCIS-cache.sh" % repo_path,
-                "ls -al",
                 "curl -o get-latest-ocis-commit-id.sh %s/tests/get-latest-ocis-commit-id.sh" % repo_path,
-                "apt-get update && apt-get install git -y",
                 ". ./.drone.env",
                 "bash get-latest-ocis-commit-id.sh %s" % getBranchName(branch),
-                "cat .drone.env",
             ],
             "when": {
                 "event": [
-                    "pull_request",
+                    "cron",
                 ],
             },
         },
     ]
 
 def checkForExistingOcisCache(ctx, branch):
-    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/cd13425c0fd057d9dee79f07f3beb76329a75319"  #% ctx.build.commit
+    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit  #% ctx.build.commit
     commands = [
-        "ls -al",
+        ". ./.drone.env",
         "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
         "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
         "bash check-oCIS-cache.sh %s" % getCommitId(branch),
     ]
-    if ctx.build.event == "cron":
+
+    if ctx.build.event != "cron":
         commands = [
             "curl -o .drone.env %s/.drone.env" % repo_path,
             "curl -o check-oCIS-cache.sh %s/tests/check-oCIS-cache.sh" % repo_path,
@@ -311,7 +309,6 @@ def cacheOcis(branch):
         "image": MINIO_MC,
         "environment": MINIO_MC_ENV,
         "commands": [
-            "cat .drone.env",
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
             "mc cp -r -a %s/%s/ocis s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocis_commit_id, ocis_commit_id),
@@ -322,28 +319,9 @@ def cacheOcis(branch):
 
 def restoreOcisCache(ctx, branch):
     repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
-
     ocis_commit_id = getCommitId(branch)
 
     return [
-        {
-            "name": "get-ocis-%s-latest-commitId" % branch,
-            "image": OC_UBUNTU,
-            "commands": [
-                "ls -al",
-                ". ./.drone.env",
-                "curl -o get-latest-ocis-commit-id.sh %s/tests/get-latest-ocis-commit-id.sh" % repo_path,
-                "apt-get update && apt-get install git -y",
-                "bash get-latest-ocis-commit-id.sh %s" % getBranchName(branch),
-                "cat .drone.env",
-            ],
-            "when": {
-                "event": [
-                    "pull_request",
-                    "cron",
-                ],
-            },
-        },
         {
             "name": "restore-ocis-cache",
             "image": MINIO_MC,
