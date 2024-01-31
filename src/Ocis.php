@@ -320,10 +320,7 @@ class Ocis
             throw ExceptionHelper::getHttpErrorException($e);
         }
         if ($allDrivesList instanceof OdataError) {
-            // ToDo: understand how this can happen, and what to do about it.
-            throw new InvalidResponseException(
-                "listAllDrives returned an OdataError - " . $allDrivesList->getError()
-            );
+            throw ExceptionHelper::getExceptionFromOdataError($allDrivesList, "listAllDrives");
         }
         $apiDrives = $allDrivesList->getValue();
         $apiDrives = $apiDrives ?? [];
@@ -380,10 +377,7 @@ class Ocis
         }
 
         if ($allDrivesList instanceof OdataError) {
-            // ToDo: understand how this can happen, and what to do about it.
-            throw new InvalidResponseException(
-                "listMyDrives returned an OdataError - " . $allDrivesList->getError()
-            );
+            throw ExceptionHelper::getExceptionFromOdataError($allDrivesList, "listMyDrives");
         }
         $apiDrives = $allDrivesList->getValue();
         $apiDrives = $apiDrives ?? [];
