@@ -32,10 +32,10 @@ class ShareReceived
      */
     public function getId(): ?string
     {
-        if (empty($this->shareReceived->getId()) && $this->isClientSyncronize() === false) {
+        if (empty($this->shareReceived->getId()) && $this->isClientSynchronized() === false) {
             return  null;
         }
-        if (empty($this->shareReceived->getId()) && $this->isClientSyncronize() === true) {
+        if (empty($this->shareReceived->getId()) && $this->isClientSynchronized() === true) {
             throw new InvalidResponseException(
                 "Invalid Id '" . print_r($this->shareReceived->getId(), true) . "'"
             );
@@ -61,10 +61,10 @@ class ShareReceived
      */
     public function getEtag(): ?string
     {
-        if (empty($this->shareReceived->getETag()) && $this->isClientSyncronize() === false) {
+        if (empty($this->shareReceived->getETag()) && $this->isClientSynchronized() === false) {
             return  null;
         }
-        if (empty($this->shareReceived->getETag()) && $this->isClientSyncronize() === true) {
+        if (empty($this->shareReceived->getETag()) && $this->isClientSynchronized() === true) {
             throw new InvalidResponseException(
                 "Invalid Etag '" . print_r($this->shareReceived->getETag(), true) . "'"
             );
@@ -77,10 +77,10 @@ class ShareReceived
      */
     private function getParentReference(): ?ItemReference
     {
-        if (empty($this->shareReceived->getParentReference()) && $this->isClientSyncronize() === false) {
+        if (empty($this->shareReceived->getParentReference()) && $this->isClientSynchronized() === false) {
             return  null;
         }
-        if (empty($this->shareReceived->getParentReference()) && $this->isClientSyncronize() === true) {
+        if (empty($this->shareReceived->getParentReference()) && $this->isClientSynchronized() === true) {
             throw new InvalidResponseException(
                 "Invalid parentReference of received share '" .
                 print_r($this->shareReceived->getParentReference(), true) . "'"
@@ -98,10 +98,10 @@ class ShareReceived
         if ($parentReference === null) {
             return  null;
         }
-        if (empty($parentReference->getDriveId()) && $this->isClientSyncronize() === false) {
+        if (empty($parentReference->getDriveId()) && $this->isClientSynchronized() === false) {
             return  null;
         }
-        if (empty($parentReference->getDriveId()) && $this->isClientSyncronize() === true) {
+        if (empty($parentReference->getDriveId()) && $this->isClientSynchronized() === true) {
             throw new InvalidResponseException(
                 "Invalid driveId returned in parentReference of received share '" .
                 print_r($parentReference->getDriveId(), true) . "'"
@@ -119,7 +119,7 @@ class ShareReceived
         if ($parentReference === null) {
             return  null;
         }
-        if (empty($parentReference->getDriveType()) && $this->isClientSyncronize() === false) {
+        if (empty($parentReference->getDriveType()) && $this->isClientSynchronized() === false) {
             return  null;
         }
         $driveTypeString = (string)$parentReference->getDriveType();
@@ -283,7 +283,7 @@ class ShareReceived
     /**
      * @throws InvalidResponseException
      */
-    public function isClientSyncronize(): bool
+    public function isClientSynchronized(): bool
     {
         $clientSyncronize = $this->getRemoteItemPermission()->getAtClientSynchronize();
         if ($clientSyncronize === null) {

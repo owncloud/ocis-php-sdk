@@ -201,7 +201,7 @@ class OcisPhpSdkTestCase extends TestCase
             $receivedShares = $ocis->getSharedWithMe();
             $allSharesAccepted = true;
             foreach ($receivedShares as $share) {
-                if ($share->isClientSyncronize() === false) {
+                if ($share->isClientSynchronized() === false) {
                     $allSharesAccepted = false;
                     sleep(1);
                     break;
