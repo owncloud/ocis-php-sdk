@@ -766,10 +766,10 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isUiHidden"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AisClientSyncronize\u0028\u0029",
-            "name": "isClientSyncronize",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AisClientSynchronized\u0028\u0029",
+            "name": "isClientSynchronized",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isClientSyncronize"
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_isClientSynchronized"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\SharingRole",
             "name": "SharingRole",
