@@ -51,19 +51,20 @@ class OcisTest extends OcisPhpSdkTestCase
         }
         $marie = $adminOcis->getUsers('marie')[0];
 
-        $managerRole = null;
+        $viewerRole = null;
+        $viewerRoleId = self::getPermissionsRoleIdByName('Viewer');
         foreach($sharedResource->getRoles() as $role) {
-            if($role->getDisplayName() === 'Manager') {
-                $managerRole = $role;
+            if($role->getId() === $viewerRoleId) {
+                $viewerRole = $role;
             }
         }
 
-        if(empty($managerRole)) {
+        if(empty($viewerRole)) {
             throw new \Error(
-                "manager role not found "
+                "viewer role not found "
             );
         }
-        $sharedResource->invite($marie, $managerRole);
+        $sharedResource->invite($marie, $viewerRole);
 
         $marieDrive = $marieOcis->getMyDrives();
         $this->assertContainsOnlyInstancesOf(
@@ -119,18 +120,20 @@ class OcisTest extends OcisPhpSdkTestCase
 
         $katherine = $adminOcis->getUsers('katherine')[0];
 
-        $managerRole = null;
+        $viewerRole = null;
+        $viewerRoleId = self::getPermissionsRoleIdByName('Viewer');
         foreach($sharedResource->getRoles() as $role) {
-            if ($role->getDisplayName() === 'Manager') {
-                $managerRole = $role;
+            if($role->getId() === $viewerRoleId) {
+                $viewerRole = $role;
             }
         }
-        if(empty($managerRole)) {
+
+        if(empty($viewerRole)) {
             throw new \Error(
-                "manager role not found "
+                "viewer role not found "
             );
         }
-        $sharedResource->invite($katherine, $managerRole);
+        $sharedResource->invite($katherine, $viewerRole);
 
         $drives = $adminOcis->getAllDrives();
         foreach ($drives as $drive) {
@@ -225,20 +228,21 @@ class OcisTest extends OcisPhpSdkTestCase
 
             $katherine = $adminOcis->getUsers('katherine')[0];
 
-            $managerRole = null;
-            foreach ($sharedResource->getRoles() as $role) {
-                if ($role->getDisplayName() === 'Manager') {
-                    $managerRole = $role;
+            $viewerRole = null;
+            $viewerRoleId = self::getPermissionsRoleIdByName('Viewer');
+            foreach($sharedResource->getRoles() as $role) {
+                if($role->getId() === $viewerRoleId) {
+                    $viewerRole = $role;
                 }
             }
 
-            if(empty($managerRole)) {
+            if(empty($viewerRole)) {
                 throw new \Error(
-                    "manager role not found "
+                    "viewer role not found "
                 );
             }
 
-            $sharedResource->invite($katherine, $managerRole);
+            $sharedResource->invite($katherine, $viewerRole);
         }
 
         $drives = $adminOcis->getAllDrives(

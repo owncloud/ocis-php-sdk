@@ -45,7 +45,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         }
         $editorRole = null;
         foreach ($this->fileToShare->getRoles() as $role) {
-            if ($role->getDisplayName() === 'Editor') {
+            if ($role->getId() === self::getPermissionsRoleIdByName('File Editor')) {
                 $editorRole = $role;
             }
         }
@@ -80,18 +80,6 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             strlen((string)$receivedShare->getId()),
             " The length of received share id to be greater than 1 "
         );
-        $this->assertNotNull($receivedShare->getParentDriveId(), "Expected Parent drive id to not be null");
-        $this->assertGreaterThanOrEqual(
-            1,
-            strlen((string)$receivedShare->getParentDriveId()),
-            "Expected the length of parent drive id to be greater than 1"
-        );
-        $this->assertNotNull($receivedShare->getParentDriveType(), "Expected Parent drive type to not be null");
-        $this->assertSame(
-            DriveType::VIRTUAL,
-            $receivedShare->getParentDriveType(),
-            "Parent drive type isn't found to be 'VIRTUAL'"
-        );
         $this->assertEquals(
             $this->fileToShare->getName(),
             $receivedShare->getName(),
@@ -107,17 +95,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             $receivedShare->getRemoteItemId(),
             "The file-id of the remote item in the receive share is different to the id of the shared file"
         );
-        $this->assertSame(
-            $this->fileToShare->getName(),
-            $receivedShare->getRemoteItemName(),
-            "Expected receive share receiver name to be " .  $this->fileToShare->getName()
-            . " but found " . $receivedShare->getRemoteItemName()
-        );
-        $this->assertSame(
-            $this->fileToShare->getSize(),
-            $receivedShare->getRemoteItemSize(),
-            "The item-size of the remote item in the receive share is different to the size of the shared file"
-        );
+
         $this->assertFalse($receivedShare->isUiHidden(), "Expected receive share to be hidden");
         $this->assertTrue(
             $receivedShare->isClientSynchronized(),
@@ -125,18 +103,18 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         );
         $this->assertEqualsWithDelta(
             time(),
-            $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(),
+            $receivedShare->getLastModifiedDateTime()->getTimestamp(),
             120,
-            "Expected Shared resource was shared within 120 seconds of the current time"
+            "Expected Shared resource was last modified within 120 seconds of the current time"
         );
         $this->assertStringContainsString(
             'Admin',
-            $receivedShare->getOwnerName(),
-            "Expected owner name to be 'Admin' but found " . $receivedShare->getOwnerName()
+            $receivedShare->getCreatedByDisplayName(),
+            "Expected owner name to be 'Admin' but found " . $receivedShare->getCreatedByDisplayName()
         );
         $this->assertGreaterThanOrEqual(
             1,
-            strlen($receivedShare->getOwnerId()),
+            strlen($receivedShare->getCreatedByUserId()),
             "Expected the length of ownerId of receive share to be greater than 1"
         );
     }
@@ -206,26 +184,26 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
                 "Expected class to be 'ShareReceived' but found "
                 . get_class($receivedShare)
             );
+            $permissions = $receivedShare->getRemoteItem()->getPermissions() ?? [];
+            $this->assertCount(
+                2,
+                $permissions,
+                "Expected two shares but found " . count($receivedShares)
+            );
         }
-        $this->assertCount(
-            2,
-            $receivedShares,
-            "Expected two shares but found " . count($receivedShares)
+
+        $this->assertSame(
+            $receivedShares[0]->getName(),
+            $this->fileToShare->getName(),
+            "Expected resource name to be " .  $receivedShares[0]->getName()
+            . " but found " . $this->fileToShare->getName()
         );
-        for($i = 0; $i < 2; $i++) {
-            $this->assertSame(
-                $receivedShares[$i]->getName(),
-                $this->fileToShare->getName(),
-                "Expected resource name to be " .  $receivedShares[$i]->getName()
-                . " but found " . $this->fileToShare->getName()
-            );
-            $this->assertSame(
-                $receivedShares[$i]->getRemoteItemId(),
-                $this->fileToShare->getId(),
-                "Expected resource id to be " .  $receivedShares[$i]->getRemoteItemId()
-                . " but found " . $this->fileToShare->getId()
-            );
-        }
+        $this->assertSame(
+            $receivedShares[0]->getRemoteItemId(),
+            $this->fileToShare->getId(),
+            "Expected resource id to be " .  $receivedShares[0]->getRemoteItemId()
+            . " but found " . $this->fileToShare->getId()
+        );
     }
 
     public function testCompareSharedWithMeAndShareDrive(): void
@@ -252,9 +230,9 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         )[0];
         $resourcesInShareJail = $shareDrive->getResources();
         $this->assertCount(
-            3,
+            2,
             $receivedShares,
-            "Expected three receive shares but found " . count($receivedShares)
+            "Expected two receive shares but found " . count($receivedShares)
         );
         // the resources in the share-jail are merged if received by different ways
         $this->assertCount(
@@ -272,7 +250,6 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
              */
             foreach ($receivedShares as $share) {
                 if (
-                    $share->getId() === $resource->getId() &&
                     $share->getName() === $resource->getName()
                 ) {
                     $foundMatchingShare = true;

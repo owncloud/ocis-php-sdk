@@ -241,4 +241,38 @@ class OcisPhpSdkTestCase extends TestCase
             throw new \Exception('Failed to reset OCIS settings');
         }
     }
+
+    /**
+     * Get the role id by name
+     *
+     * @param string $permissionsRole
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    protected static function getPermissionsRoleIdByName(
+        string $permissionsRole
+    ): string {
+        switch ($permissionsRole) {
+            case 'Viewer':
+                return 'b1e2218d-eef8-4d4c-b82d-0f1a1b48f3b5';
+            case 'Space Viewer':
+                return 'a8d5fe5e-96e3-418d-825b-534dbdf22b99';
+            case 'Editor':
+                return 'fb6c3e19-e378-47e5-b277-9732f9de6e21';
+            case 'Space Editor':
+                return '58c63c02-1d89-4572-916a-870abc5a1b7d';
+            case 'File Editor':
+                return '2d00ce52-1fc2-4dbc-8b95-a73b73395f5a';
+            case 'Co Owner':
+                return '3a4ba8e9-6a0d-4235-9140-0e7a34007abe';
+            case 'Uploader':
+                return '1c996275-f1c9-4e71-abdf-a42f6495e960';
+            case 'Manager':
+                return '312c0871-5ef7-4b3a-85b6-0e4074c64049';
+            default:
+                throw new \Exception('Role ' . $permissionsRole . ' not found');
+        }
+    }
 }

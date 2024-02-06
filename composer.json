@@ -16,7 +16,7 @@
     "require": {
         "php": "^8.1",
         "sabre/dav": "^4.6",
-        "owncloud/libre-graph-api-php": "dev-main#cb414b614a1dc9dee1a320ea3862f56b11c3d70c",
+        "owncloud/libre-graph-api-php": "dev-main#c728b27030e08689768562ea3b79694f9e5b09aa",
         "ext-json": "*",
         "ext-curl": "*"
     },
