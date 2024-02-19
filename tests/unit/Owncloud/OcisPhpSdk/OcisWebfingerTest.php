@@ -79,38 +79,40 @@ class OcisWebfingerTest extends TestCase
     public static function invalidTokenProvider(): array
     {
         return [
-            ["onlyHeaderNoPayload"],
-            ["header.butPäylöädNötBäs€64"],
+            ["onlyHeaderNoPayload", "No payload found."],
+            ["header.butPäylöädNötBäs€64", "Payload not base64 encoded."],
 
             // payload is not JSON
-            ["header.cGF5bG9hZElzTm90SlNPTgo="],
+            ["header.cGF5bG9hZElzTm90SlNPTgo=", "Payload not valid JSON."],
 
             // payload is not an JSON object
-            ["header.InBheWxvYWRJc05vdEFuT2JqZWN0Igo="],
+            ["header.InBheWxvYWRJc05vdEFuT2JqZWN0Igo=", "Payload not valid JSON."],
 
             // payload is a JSON object, but does not contain 'iss' key
-            ["header.eyJrZXkiOiAidmFsdWUifQo="],
+            ["header.eyJrZXkiOiAidmFsdWUifQo=", "Payload does not contain 'iss' key."],
 
             // payload contains 'iss' key but the value is null
-            ["header.eyJpc3MiOiBudWxsfQo="],
+            ["header.eyJpc3MiOiBudWxsfQo=", "'iss' key is not a string."],
 
             // payload contains 'iss' key but the value is 'https://'
-            ["header.eyJpc3MiOiAiaHR0cHM6Ly8ifQo="],
+            ["header.eyJpc3MiOiAiaHR0cHM6Ly8ifQo=", "Content of 'iss' has no 'host' part."],
 
             // payload contains 'iss' key but the value is 'host'
-            ["header.eyJpc3MiOiAiaG9zdCJ9Cg=="],
+            ["header.eyJpc3MiOiAiaG9zdCJ9Cg==", "Content of 'iss' has no 'host' part."],
 
             // payload contains 'iss' key but the value is 'https://:9000'
-            ["header.eyJpc3MiOiAiaHR0cHM6Ly86OTAwMCJ9Cg=="],
+            ["header.eyJpc3MiOiAiaHR0cHM6Ly86OTAwMCJ9Cg==", "Content of 'iss' has no 'host' part."],
         ];
     }
     /**
      * @dataProvider invalidTokenProvider
      */
-    public function testWebfingerInvalidToken(string $token): void
+    public function testWebfingerInvalidToken(string $token, string $expectedExceptionMessage): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage("could not decode token");
+        $this->expectExceptionMessage(
+            'Could not decode token. ' . $expectedExceptionMessage
+        );
         $ocis = new Ocis(
             'https://webfinger.example.com',
             $token,

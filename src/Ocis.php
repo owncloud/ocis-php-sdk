@@ -48,7 +48,7 @@ use OpenAPI\Client\Model\Group as OpenAPIGroup;
  */
 class Ocis
 {
-    private const DECODE_TOKEN_ERROR_MESSAGE = 'could not decode token';
+    private const DECODE_TOKEN_ERROR_MESSAGE = 'Could not decode token.';
     public const FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE =
         'This function is not implemented yet! Place, name and signature of the function might change!';
     private string $serviceUrl;
@@ -234,22 +234,43 @@ class Ocis
     {
         $tokenDataArray = explode(".", $this->accessToken);
         if (!array_key_exists(1, $tokenDataArray)) {
-            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
+            throw new \InvalidArgumentException(
+                self::DECODE_TOKEN_ERROR_MESSAGE .
+                " No payload found."
+            );
         }
         $plainPayload = base64_decode($tokenDataArray[1], true);
         if (!$plainPayload) {
-            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
+            throw new \InvalidArgumentException(
+                self::DECODE_TOKEN_ERROR_MESSAGE .
+                " Payload not base64 encoded."
+            );
         }
         $tokenPayload = json_decode($plainPayload, true);
-        if (!is_array($tokenPayload) || !array_key_exists('iss', $tokenPayload)) {
-            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
+        if (!is_array($tokenPayload)) {
+            throw new \InvalidArgumentException(
+                self::DECODE_TOKEN_ERROR_MESSAGE .
+                " Payload not valid JSON."
+            );
+        }
+        if (!array_key_exists('iss', $tokenPayload)) {
+            throw new \InvalidArgumentException(
+                self::DECODE_TOKEN_ERROR_MESSAGE .
+                " Payload does not contain 'iss' key."
+            );
         }
         if (!is_string($tokenPayload['iss'])) {
-            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
+            throw new \InvalidArgumentException(
+                self::DECODE_TOKEN_ERROR_MESSAGE .
+                " 'iss' key is not a string."
+            );
         }
         $iss = parse_url($tokenPayload['iss']);
         if (!is_array($iss) || !array_key_exists('host', $iss)) {
-            throw new \InvalidArgumentException(self::DECODE_TOKEN_ERROR_MESSAGE);
+            throw new \InvalidArgumentException(
+                self::DECODE_TOKEN_ERROR_MESSAGE .
+                " Content of 'iss' has no 'host' part."
+            );
         }
         try {
             $webfingerResponse = $this->guzzle->get($webfingerUrl . '?resource=acct:me@' . $iss['host']);
