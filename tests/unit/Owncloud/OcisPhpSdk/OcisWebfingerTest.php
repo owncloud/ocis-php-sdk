@@ -111,7 +111,7 @@ class OcisWebfingerTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Could not decode token. ' . $expectedExceptionMessage . ' Token: \'' . $token . '\''
+            'Could not decode token. ' . $expectedExceptionMessage
         );
         $ocis = new Ocis(
             'https://webfinger.example.com',

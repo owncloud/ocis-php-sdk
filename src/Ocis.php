@@ -236,52 +236,40 @@ class Ocis
         if (!array_key_exists(1, $tokenDataArray)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " No payload found. Token: '" .
-                $this->accessToken .
-                "'"
+                " No payload found."
             );
         }
         $plainPayload = base64_decode($tokenDataArray[1], true);
         if (!$plainPayload) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Payload not base64 encoded. Token: '" .
-                $this->accessToken .
-                "'"
+                " Payload not base64 encoded."
             );
         }
         $tokenPayload = json_decode($plainPayload, true);
         if (!is_array($tokenPayload)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Payload not valid JSON. Token: '" .
-                $this->accessToken .
-                "'"
+                " Payload not valid JSON."
             );
         }
         if (!array_key_exists('iss', $tokenPayload)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Payload does not contain 'iss' key. Token: '" .
-                $this->accessToken .
-                "'"
+                " Payload does not contain 'iss' key."
             );
         }
         if (!is_string($tokenPayload['iss'])) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " 'iss' key is not a string. Token: '" .
-                $this->accessToken .
-                "'"
+                " 'iss' key is not a string."
             );
         }
         $iss = parse_url($tokenPayload['iss']);
         if (!is_array($iss) || !array_key_exists('host', $iss)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Content of 'iss' has no 'host' part. Token: '" .
-                $this->accessToken .
-                "'"
+                " Content of 'iss' has no 'host' part."
             );
         }
         try {
