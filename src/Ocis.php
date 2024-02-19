@@ -239,11 +239,11 @@ class Ocis
                 " No payload found."
             );
         }
-        $plainPayload = base64_decode($tokenDataArray[1], true);
+        $plainPayload = base64_decode(\strtr($tokenDataArray[1], '-_', '+/'), true);
         if (!$plainPayload) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Payload not base64 encoded."
+                " Payload not Base64Url encoded."
             );
         }
         $tokenPayload = json_decode($plainPayload, true);

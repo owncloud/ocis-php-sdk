@@ -21,10 +21,16 @@ class OcisWebfingerTest extends TestCase
         ];
         $tokenPayload = [
             "iss" => "https://sso.example.com",
+            // this will generate a token that will contain `-` and `_` after base64Url encoding
+            "special" => "????>>>????>>>"
         ];
-        return base64_encode((string)json_encode($tokenHeader)) . "." .
-            base64_encode((string)json_encode($tokenPayload)) .
+
+        $base64EncodedToken = base64_encode((string)json_encode($tokenHeader)) . "." .
+            base64_encode((string)json_encode($tokenPayload, JSON_UNESCAPED_UNICODE)) .
             ".signatureDoesNotMatter";
+        // the token needs to be base64Url encoded not just base64
+        // see  https://jwt.io/introduction/
+        return rtrim(\strtr($base64EncodedToken, '+/', '-_'), '=');
     }
     private function getGuzzleMock(?string $responseContent = null): MockObject
     {
@@ -80,7 +86,7 @@ class OcisWebfingerTest extends TestCase
     {
         return [
             ["onlyHeaderNoPayload", "No payload found."],
-            ["header.butPäylöädNötBäs€64", "Payload not base64 encoded."],
+            ["header.butPäylöädNötBäs€64", "Payload not Base64Url encoded."],
 
             // payload is not JSON
             ["header.cGF5bG9hZElzTm90SlNPTgo=", "Payload not valid JSON."],
