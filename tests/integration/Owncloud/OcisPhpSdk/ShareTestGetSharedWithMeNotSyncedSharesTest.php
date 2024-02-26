@@ -80,39 +80,35 @@ class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
             $receivedShare->isClientSynchronized(),
             "Expected received share to be client synchronized, but found not synced"
         );
-        $this->assertNull($receivedShare->getId(), "Expected received share id to not be null");
-        $this->assertNull($receivedShare->getEtag(), "Expected Etag to not be null");
-        $this->assertNull($receivedShare->getParentDriveId(), "Expected Parent drive id to not be null");
-        $this->assertNull($receivedShare->getParentDriveType(), "Expected Parent drive type to not be null");
+        $this->assertMatchesRegularExpression(
+            '/^' . $this->getUUIDv4Regex() . '\$' . $this->getUUIDv4Regex(). '!' . $this->getUUIDv4Regex() . ':' . $this->getUUIDv4Regex() .':' . $this->getUUIDv4Regex(). '$/i',
+            $receivedShare->getId(),
+            "Shareid doesn't match the expected format"
+        );
         $this->assertSame(
             $this->fileToShare->getId(),
             $receivedShare->getRemoteItemId(),
             "The file-id of the remote item in the receive share is different to the id of the shared file"
         );
-        $this->assertSame(
-            $this->fileToShare->getName(),
-            $receivedShare->getRemoteItemName(),
-            "The item-name of the remote item in the receive share is different to the name of the shared file"
-        );
-        $this->assertSame(
-            $this->fileToShare->getSize(),
-            $receivedShare->getRemoteItemSize(),
-            "The item-size of the remote item in the receive share is different to the size of the shared file"
+        $this->assertMatchesRegularExpression(
+            "/^\"[a-f0-9:\.]{1,32}\"$/",
+            $receivedShare->getEtag(),
+            "Resource Etag doesn't match the expected format"
         );
         $this->assertEqualsWithDelta(
             time(),
-            $receivedShare->getRemoteItemSharedDateTime()->getTimestamp(),
+            $receivedShare->getLastModifiedDateTime()->getTimestamp(),
             120,
-            "Expected Shared resource was shared within 120 seconds of the current time"
+            "Expected Shared resource was last modified within 120 seconds of the current time"
         );
         $this->assertStringContainsString(
             'Admin',
-            $receivedShare->getOwnerName(),
-            "Expected owner name to be 'Admin' but found " . $receivedShare->getOwnerName()
+            $receivedShare->getCreatedByDisplayName(),
+            "Expected owner name to be 'Admin' but found " . $receivedShare->getCreatedByDisplayName()
         );
         $this->assertMatchesRegularExpression(
             '/' . $this->getUUIDv4Regex() . '/',
-            $receivedShare->getOwnerId(),
+            $receivedShare->getCreatedByUserId(),
             "OwnerId of the received share doesn't match the expected format"
         );
     }

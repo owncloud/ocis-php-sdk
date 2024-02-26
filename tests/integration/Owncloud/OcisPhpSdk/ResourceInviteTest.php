@@ -19,7 +19,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     private User $einstein;
     private User $marie;
     private SharingRole $viewerRole;
-    private SharingRole $managerRole;
+    private SharingRole $editorRole;
     private OcisResource $fileToShare;
     private OcisResource $folderToShare;
     private Drive $personalDrive;
@@ -58,11 +58,11 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
          * @var SharingRole $role
          */
         foreach ($this->fileToShare->getRoles() as $role) {
-            if ($role->getDisplayName() === 'Viewer') {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Viewer')) {
                 $this->viewerRole = $role;
             }
-            if ($role->getDisplayName() === 'Manager') {
-                $this->managerRole = $role;
+            if ($role->getId() === self::getPermissionsRoleIdByName('File Editor')) {
+                $this->editorRole = $role;
             }
         }
     }
@@ -155,7 +155,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(ForbiddenException::class);
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
-        $this->fileToShare->invite($this->einstein, $this->managerRole);
+        $this->fileToShare->invite($this->einstein, $this->editorRole);
     }
 
     public function testInviteWithExpiry(): void
@@ -336,7 +336,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
     public function testInviteUserToAReceivedShare(): void
     {
-        $this->fileToShare->invite($this->einstein, $this->managerRole);
+        $this->fileToShare->invite($this->einstein, $this->editorRole);
         /**
          * @var ShareReceived $receivedShare
          */
