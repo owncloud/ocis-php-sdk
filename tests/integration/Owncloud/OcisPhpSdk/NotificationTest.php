@@ -32,9 +32,6 @@ class NotificationTest extends OcisPhpSdkTestCase
 
         $this->einstein = $this->ocis->getUsers('einstein')[0];
 
-        /**
-         * @var SharingRole $role
-         */
         foreach ($this->fileToShare->getRoles() as $role) {
             if ($role->getDisplayName() === 'Viewer') {
                 $this->viewerRole = $role;
@@ -53,15 +50,15 @@ class NotificationTest extends OcisPhpSdkTestCase
         $this->assertContainsOnlyInstancesOf(
             Notification::class,
             $notifications,
-            "Array is not instance of ".Notification::class
+            "Array is not instance of " . Notification::class
         );
         $this->assertCount(
             1,
             $notifications,
-            "Expected one notification but received ". count($notifications)
+            "Expected one notification but received " . count($notifications)
         );
         $this->assertSame(
-            $sharerUser[0]->getDisplayName().
+            $sharerUser[0]->getDisplayName() .
             " shared to-share-test.txt with you",
             $notifications[0]->getMessage(),
             "Wrong Notification received"

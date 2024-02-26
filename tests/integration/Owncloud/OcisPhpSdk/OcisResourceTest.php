@@ -79,12 +79,9 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->assertCount(
             4,
             $resources,
-            "Expected 4 resources but found ". count($resources)
+            "Expected 4 resources but found " . count($resources)
         );
 
-        /**
-         * @var OcisResource $resource
-         */
         foreach ($resources as $resource) {
             $this->assertMatchesRegularExpression(
                 "/^" . $this->getFileIdRegex() . "$/i",
@@ -92,12 +89,12 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                 "ResourceId doesn't match the expected format"
             );
             $this->assertMatchesRegularExpression(
-                "/^\"[a-f0-9:\.]{1,32}\"$/",
+                "/^\"[a-f0-9:.]{1,32}\"$/",
                 $resource->getEtag(),
                 "Resource Etag doesn't match the expected format"
             );
             $this->assertMatchesRegularExpression(
-                "?^" . $this->ocisUrl . '/f/'. $this->getFileIdRegex() . "$?i",
+                "?^" . $this->ocisUrl . '/f/' . $this->getFileIdRegex() . "$?i",
                 $resource->getPrivatelink(),
                 "Private Link of resource doesn't match the expected format"
             );
@@ -107,7 +104,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                     $this->equalTo("file"),
                     $this->equalTo("folder")
                 ),
-                "Expected resource type be either file or folder but found ".$resource->getType()
+                "Expected resource type be either file or folder but found " . $resource->getType()
             );
 
             $this->assertMatchesRegularExpression(
@@ -136,32 +133,31 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                 "Resources wasn't modified within 60 seconds"
             );
             if ($resource->getType() === 'folder') {
-                $this->assertEquals(
+                $this->assertSame(
                     '',
                     $resource->getContentType(),
-                    "Expected content type be empty but found ".$resource->getContentType()
+                    "Expected content type be empty but found " . $resource->getContentType()
                 );
             } else {
-                $this->assertEquals(
+                $this->assertSame(
                     'text/plain',
                     $resource->getContentType(),
-                    "Expected content type be text/plain but found ".$resource->getContentType()
+                    "Expected content type be text/plain but found " . $resource->getContentType()
                 );
             }
 
-            $this->assertEquals(
-                false,
+            $this->assertFalse(
                 $resource->isFavorited(),
                 "Resource is not expected to be favorited"
             );
-            $this->assertEquals(
+            $this->assertSame(
                 [],
                 $resource->getTags(),
-                "Expected resource tag be empty array but found ". count($resource->getTags())." elements"
+                "Expected resource tag be empty array but found " . count($resource->getTags()) . " elements"
             );
             $this->assertIsInt(
                 $resource->getSize(),
-                "Expected resource size be of type integer but found ".getType($resource->getSize())
+                "Expected resource size be of type integer but found " . getType($resource->getSize())
             );
             if ($resource->getType() === 'folder') {
                 $this->assertThat(
@@ -170,7 +166,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                         $this->equalTo("subfolder"),
                         $this->equalTo("secondfolder")
                     ),
-                    "Expected resource name be subfolder or secondfolder but found ".$resource->getName()
+                    "Expected resource name be subfolder or secondfolder but found " . $resource->getName()
                 );
             } else {
                 $this->assertStringContainsString('file.txt', $resource->getName());
@@ -189,24 +185,24 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             $content = $this->getContentOfResource425Save($resource);
             switch ($resource->getName()) {
                 case 'somefile.txt':
-                    $this->assertEquals(
+                    $this->assertSame(
                         'some content',
                         $content,
                         "File content doesn't match"
                     );
                     break;
                 case 'secondfile.txt':
-                    $this->assertEquals(
+                    $this->assertSame(
                         'some other content',
                         $content,
                         "File content doesn't match"
                     );
                     break;
                 case 'subfolder':
-                    $this->assertEquals(
+                    $this->assertSame(
                         '',
                         $content,
-                        "Expected folder be empty but found ".$content
+                        "Expected folder be empty but found " . $content
                     );
                     break;
             }
@@ -240,24 +236,24 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             $content = fread($stream, 1024);
             switch ($resource->getName()) {
                 case 'somefile.txt':
-                    $this->assertEquals(
+                    $this->assertSame(
                         'some content',
                         $content,
                         "File content doesn't match"
                     );
                     break;
                 case 'secondfile.txt':
-                    $this->assertEquals(
+                    $this->assertSame(
                         'some other content',
                         $content,
                         "File content doesn't match"
                     );
                     break;
                 case 'subfolder':
-                    $this->assertEquals(
+                    $this->assertSame(
                         '',
                         $content,
-                        "Expected folder be empty but found ".$content
+                        "Expected folder be empty but found " . $content
                     );
                     break;
             }
@@ -271,15 +267,15 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $resources,
-            "Expected one resource but found ".count($resources)
+            "Expected one resource but found " . count($resources)
         );
-        $this->assertEquals(
+        $this->assertSame(
             'uploaded.txt',
             $resources[0]->getName(),
-            "Expected 'uploaded.txt' file but found ".$resources[0]->getName()
+            "Expected 'uploaded.txt' file but found " . $resources[0]->getName()
         );
         $content = $this->getContentOfResource425Save($resources[0]);
-        $this->assertEquals(
+        $this->assertSame(
             'some content',
             $content,
             "File content doesn't match"
@@ -294,15 +290,15 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $resources,
-            "Expected one resource but found ".count($resources)
+            "Expected one resource but found " . count($resources)
         );
-        $this->assertEquals(
+        $this->assertSame(
             'uploaded.txt',
             $resources[0]->getName(),
-            "Expected 'uploaded.txt' file but found ".$resources[0]->getName()
+            "Expected 'uploaded.txt' file but found " . $resources[0]->getName()
         );
         $content = $this->getContentOfResource425Save($resources[0]);
-        $this->assertEquals(
+        $this->assertSame(
             'new content',
             $content,
             "File content doesn't match"
@@ -328,15 +324,15 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $resources,
-            "Expected one resource but found ".count($resources)
+            "Expected one resource but found " . count($resources)
         );
-        $this->assertEquals(
+        $this->assertSame(
             'uploaded.txt',
             $resources[0]->getName(),
-            "Expected 'uploaded.txt' file but found ".$resources[0]->getName()
+            "Expected 'uploaded.txt' file but found " . $resources[0]->getName()
         );
         $content = $this->getContentOfResource425Save($resources[0]);
-        $this->assertEquals(
+        $this->assertSame(
             'some content',
             $content,
             "File content doesn't match"
@@ -378,15 +374,15 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $resources,
-            "Expected one resource but found ".count($resources)
+            "Expected one resource but found " . count($resources)
         );
-        $this->assertEquals(
+        $this->assertSame(
             'uploaded.txt',
             $resources[0]->getName(),
-            "Expected 'uploaded.txt' file but found ".$resources[0]->getName()
+            "Expected 'uploaded.txt' file but found " . $resources[0]->getName()
         );
         $content = $this->getContentOfResource425Save($resources[0]);
-        $this->assertEquals(
+        $this->assertSame(
             'some content',
             $content,
             "File content doesn't match"
@@ -397,7 +393,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, string>>
      */
-    public static function resources()
+    public static function resources(): array
     {
         return [
             ['somefile.txt','file'],
@@ -411,14 +407,14 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $rootResources = $this->personalDrive->getResources();
 
-        $isResourceMoved = $this->personalDrive->moveResource($resourceName, 'subfolder/'.$resourceName);
+        $isResourceMoved = $this->personalDrive->moveResource($resourceName, 'subfolder/' . $resourceName);
         $this->assertTrue($isResourceMoved, "couldn't move the resource");
 
         $resourceInsideFolder = $this->personalDrive->getResources('/subfolder');
         $this->assertCount(
             1,
             $resourceInsideFolder,
-            "Expected one resources but found ".count($resourceInsideFolder)
+            "Expected one resources but found " . count($resourceInsideFolder)
         );
 
         $rootResourcesAfterMove = $this->personalDrive->getResources();
@@ -433,8 +429,8 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         }
 
         if ($type === 'file') {
-            $fileContent = $this->personalDrive->getFile('subfolder/'.$resourceName);
-            $this->assertEquals(
+            $fileContent = $this->personalDrive->getFile('subfolder/' . $resourceName);
+            $this->assertSame(
                 'some content',
                 $fileContent,
                 "File content doesn't match"
@@ -445,7 +441,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, string>>
      */
-    public static function invalidResources()
+    public static function invalidResources(): array
     {
         return [
             ['nonExistentFile.txt'],
@@ -458,7 +454,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     public function testMoveNonExistentResource(string $invalidResources): void
     {
         $this->expectException(NotFoundException::class);
-        $this->personalDrive->moveResource($invalidResources, 'subfolder/'. $invalidResources);
+        $this->personalDrive->moveResource($invalidResources, 'subfolder/' . $invalidResources);
     }
 
     public function testGetRoles(): void
@@ -480,13 +476,13 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $resources = $this->personalDrive->getResources();
         $newResource = null;
         foreach ($resources as $resource) {
-            if($resource->getName() === 'newResource.txt') {
+            if ($resource->getName() === 'newResource.txt') {
                 $newResource = $resource;
             }
         }
         $this->personalDrive->deleteResource('/newResource.txt');
         $this->expectException(NotFoundException::class);
-        if($newResource !== null) {
+        if ($newResource !== null) {
             $newResource->getRoles();
         }
     }
