@@ -4,8 +4,6 @@ namespace Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\Identity;
-use OpenAPI\Client\Model\ItemReference;
-use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\RemoteItem;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
@@ -30,17 +28,13 @@ class ShareReceived
     /**
      * @throws InvalidResponseException
      */
-    public function getId(): ?string
+    public function getId(): string
     {
-        if (empty($this->shareReceived->getId()) && $this->isClientSynchronized() === false) {
-            return  null;
-        }
-        if (empty($this->shareReceived->getId()) && $this->isClientSynchronized() === true) {
-            throw new InvalidResponseException(
+        return empty($this->shareReceived->getId())
+            ? throw new InvalidResponseException(
                 "Invalid Id '" . print_r($this->shareReceived->getId(), true) . "'"
-            );
-        }
-        return $this->shareReceived->getId();
+            )
+            : $this->shareReceived->getId();
     }
 
     /**
@@ -59,89 +53,38 @@ class ShareReceived
     /**
      * @throws InvalidResponseException
      */
-    public function getEtag(): ?string
+    public function getEtag(): string
     {
-        if (empty($this->shareReceived->getETag()) && $this->isClientSynchronized() === false) {
-            return  null;
-        }
-        if (empty($this->shareReceived->getETag()) && $this->isClientSynchronized() === true) {
-            throw new InvalidResponseException(
-                "Invalid Etag '" . print_r($this->shareReceived->getETag(), true) . "'"
-            );
-        }
-        return $this->shareReceived->getETag();
-    }
-
-    /**
-     * @throws InvalidResponseException
-     */
-    private function getParentReference(): ?ItemReference
-    {
-        if (empty($this->shareReceived->getParentReference()) && $this->isClientSynchronized() === false) {
-            return  null;
-        }
-        if (empty($this->shareReceived->getParentReference()) && $this->isClientSynchronized() === true) {
-            throw new InvalidResponseException(
-                "Invalid parentReference of received share '" .
-                print_r($this->shareReceived->getParentReference(), true) . "'"
-            );
-        }
-        return $this->shareReceived->getParentReference();
-    }
-
-    /**
-     * @throws InvalidResponseException
-     */
-    public function getParentDriveId(): ?string
-    {
-        $parentReference = $this->getParentReference();
-        if ($parentReference === null) {
-            return  null;
-        }
-        if (empty($parentReference->getDriveId()) && $this->isClientSynchronized() === false) {
-            return  null;
-        }
-        if (empty($parentReference->getDriveId()) && $this->isClientSynchronized() === true) {
-            throw new InvalidResponseException(
-                "Invalid driveId returned in parentReference of received share '" .
-                print_r($parentReference->getDriveId(), true) . "'"
-            );
-        }
-        return $parentReference->getDriveId();
-    }
-
-    /**
-     * @throws InvalidResponseException
-     */
-    public function getParentDriveType(): ?DriveType
-    {
-        $parentReference = $this->getParentReference();
-        if ($parentReference === null) {
-            return  null;
-        }
-        if (empty($parentReference->getDriveType()) && $this->isClientSynchronized() === false) {
-            return  null;
-        }
-        $driveTypeString = (string)$parentReference->getDriveType();
-        $driveType = DriveType::tryFrom($driveTypeString);
-        if ($driveType instanceof DriveType) {
-            return $driveType;
-        }
-
-        throw new InvalidResponseException(
-            'Invalid driveType returned in parentReference of received share: "' .
-            print_r($driveTypeString, true) . '"'
-        );
-    }
-
-    /**
-     * @throws InvalidResponseException
-     */
-    private function getRemoteItem(): RemoteItem
-    {
-        return empty($this -> shareReceived -> getRemoteItem())
+        return empty($this->shareReceived->getETag())
             ? throw new InvalidResponseException(
-                "Invalid remote item '" . print_r($this -> shareReceived -> getParentReference(), true) . "'"
+                "Invalid Etag '" . print_r($this->shareReceived->getETag(), true) . "'"
+            )
+        : $this->shareReceived->getETag();
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     * @throws InvalidResponseException
+     */
+    public function getLastModifiedDateTime(): \DateTimeImmutable
+    {
+        $time = $this->shareReceived->getLastModifiedDateTime();
+        if (empty($time)) {
+            throw new InvalidResponseException(
+                "Invalid last modified DateTime'" . print_r($time, true) . "'"
+            );
+        }
+        return \DateTimeImmutable::createFromMutable($time);
+    }
+
+    /**
+     * @throws InvalidResponseException
+     */
+    public function getRemoteItem(): RemoteItem
+    {
+        return empty($this->shareReceived->getRemoteItem())
+            ? throw new InvalidResponseException(
+                "Invalid remote item '" . print_r($this->shareReceived->getParentReference(), true) . "'"
             ) : $this->shareReceived->getRemoteItem();
     }
 
@@ -160,112 +103,39 @@ class ShareReceived
     }
 
     /**
-     * @return string
      * @throws InvalidResponseException
      */
-    public function getRemoteItemName(): string
+    private function getCreatedByUser(): Identity
     {
-        $remoteItem = $this->getRemoteItem();
-        return empty($remoteItem->getName())
-            ? throw new InvalidResponseException(
-                "Invalid remote item name '" . print_r($remoteItem, true) . "'"
-            )
-            : $remoteItem->getName();
-    }
-
-    /**
-     * @return int
-     * @throws InvalidResponseException
-     */
-    public function getRemoteItemSize(): int
-    {
-        $remoteItem = $this->getRemoteItem();
-        return empty($remoteItem->getSize())
-            ? throw new InvalidResponseException(
-                "Invalid remote item size '" . print_r($remoteItem, true) . "'"
-            )
-            : $remoteItem->getSize();
-    }
-
-    /**
-     * @throws InvalidResponseException
-     */
-    private function getShared(): \OpenAPI\Client\Model\Shared
-    {
-        $remoteItem = $this->getRemoteItem();
-
-        return empty($remoteItem->getShared()) ?
+        return empty($this->shareReceived->getCreatedBy())
+        || empty($this->shareReceived->getCreatedBy()->getUser()) ?
             throw new InvalidResponseException(
-                "Invalid shared '" . print_r($remoteItem, true) . "'"
-            ) : $remoteItem->getShared();
-    }
-
-    /**
-     * @return \DateTimeImmutable
-     * @throws InvalidResponseException
-     */
-    public function getRemoteItemSharedDateTime(): \DateTimeImmutable
-    {
-        $sharedInfo = $this->getShared();
-        $time = $sharedInfo->getSharedDateTime();
-        if (empty($time)) {
-            throw new InvalidResponseException(
-                "Invalid shared DateTime'" . print_r($sharedInfo->getSharedDateTime(), true) . "'"
-            );
-        }
-        return \DateTimeImmutable::createFromMutable($time);
+                "Invalid share createdBy information '" . print_r($this->shareReceived->getCreatedBy(), true) . "'"
+            ) : $this->shareReceived->getCreatedBy()->getUser();
     }
 
     /**
      * @throws InvalidResponseException
      */
-    private function getOwnerUser(): Identity
+    public function getCreatedByDisplayName(): string
     {
-        return empty($this->getShared()->getOwner())
-        || empty($this->getShared()->getOwner()->getUser()) ?
-            throw new InvalidResponseException(
-                "Invalid owner information '" . print_r($this->getShared()->getOwner(), true) . "'"
-            ) : $this->getShared()->getOwner()->getUser();
-    }
-
-    /**
-     * @throws InvalidResponseException
-     */
-    public function getOwnerName(): string
-    {
-        $ownerUser = $this->getOwnerUser();
-        return empty($ownerUser->getDisplayName())
+        $createdByUser = $this->getCreatedByUser();
+        return empty($createdByUser->getDisplayName())
             ? throw new InvalidResponseException(
-                "Invalid share owner name '" . print_r($ownerUser, true) . "'"
+                "Invalid share owner name '" . print_r($createdByUser, true) . "'"
             )
-            : $ownerUser->getDisplayName();
+            : $createdByUser->getDisplayName();
     }
 
     /**
      * @throws InvalidResponseException
      */
-    public function getOwnerId(): string
+    public function getCreatedByUserId(): string
     {
-        $ownerUser = $this->getOwnerUser();
-        return empty($ownerUser->getId()) ? throw new InvalidResponseException(
-            "Invalid share owner id '" . print_r($ownerUser->getId(), true) . "'"
-        ) : $ownerUser->getId();
-    }
-
-    /**
-     * gets the first permission of the remote item
-     * in theory there might be more that one permission, but currently there is no such case in ocis
-     * @return Permission
-     * @throws InvalidResponseException
-     */
-    private function getRemoteItemPermission()
-    {
-        $remoteItem = $this->getRemoteItem();
-        $permissions = $remoteItem->getPermissions();
-        if ($permissions === null || sizeof($permissions) !== 1) {
-            throw new InvalidResponseException('Invalid permissions in remoteItem');
-        }
-        return $permissions[0];
+        $createdByUser = $this->getCreatedByUser();
+        return empty($createdByUser->getId()) ? throw new InvalidResponseException(
+            "Invalid share owner id '" . print_r($createdByUser->getId(), true) . "'"
+        ) : $createdByUser->getId();
     }
 
     /**
@@ -273,11 +143,11 @@ class ShareReceived
      */
     public function isUiHidden(): bool
     {
-        $uiHidden = $this->getRemoteItemPermission()->getAtUiHidden();
-        if ($uiHidden === null) {
-            throw new InvalidResponseException('Invalid "@ui.hidden" parameter in permission');
+        $uiHidden = $this->shareReceived->getAtUiHidden();
+        if (is_bool($uiHidden)) {
+            return $uiHidden;
         }
-        return $uiHidden;
+        throw new InvalidResponseException('Invalid "@ui.hidden" parameter in permission');
     }
 
     /**
@@ -285,10 +155,11 @@ class ShareReceived
      */
     public function isClientSynchronized(): bool
     {
-        $clientSyncronize = $this->getRemoteItemPermission()->getAtClientSynchronize();
-        if ($clientSyncronize === null) {
-            throw new InvalidResponseException('Invalid "@client.synchronize" parameter in permission');
+        $clientSyncronize = $this->shareReceived->getAtClientSynchronize();
+        if (is_bool($clientSyncronize)) {
+            return $clientSyncronize;
         }
-        return $clientSyncronize;
+        throw new InvalidResponseException('Invalid "@client.synchronize" parameter in permission');
+
     }
 }

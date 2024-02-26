@@ -721,45 +721,30 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getEtag"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetParentDriveId\u0028\u0029",
-            "name": "getParentDriveId",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetLastModifiedDateTime\u0028\u0029",
+            "name": "getLastModifiedDateTime",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getParentDriveId"
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getLastModifiedDateTime"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetParentDriveType\u0028\u0029",
-            "name": "getParentDriveType",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetRemoteItem\u0028\u0029",
+            "name": "getRemoteItem",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getParentDriveType"
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItem"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetRemoteItemId\u0028\u0029",
             "name": "getRemoteItemId",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemId"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetRemoteItemName\u0028\u0029",
-            "name": "getRemoteItemName",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetCreatedByDisplayName\u0028\u0029",
+            "name": "getCreatedByDisplayName",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemName"
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getCreatedByDisplayName"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetRemoteItemSize\u0028\u0029",
-            "name": "getRemoteItemSize",
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetCreatedByUserId\u0028\u0029",
+            "name": "getCreatedByUserId",
             "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemSize"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetRemoteItemSharedDateTime\u0028\u0029",
-            "name": "getRemoteItemSharedDateTime",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getRemoteItemSharedDateTime"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetOwnerName\u0028\u0029",
-            "name": "getOwnerName",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getOwnerName"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AgetOwnerId\u0028\u0029",
-            "name": "getOwnerId",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getOwnerId"
+            "url": "classes/Owncloud-OcisPhpSdk-ShareReceived.html#method_getCreatedByUserId"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived\u003A\u003AisUiHidden\u0028\u0029",
             "name": "isUiHidden",
