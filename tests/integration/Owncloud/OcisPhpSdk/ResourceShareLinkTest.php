@@ -26,9 +26,6 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $personalDrive->createFolder('folder-to-share');
         $this->createdResources[$personalDrive->getId()][] = 'folder-to-share';
         $resources = $personalDrive->getResources();
-        /**
-         * @var OcisResource $resource
-         */
         foreach ($resources as $resource) {
             if ($resource->getName() === 'to-share-test.txt') {
                 $this->fileToShare = $resource;

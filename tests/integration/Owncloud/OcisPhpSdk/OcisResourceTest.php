@@ -82,9 +82,6 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             "Expected 4 resources but found ". count($resources)
         );
 
-        /**
-         * @var OcisResource $resource
-         */
         foreach ($resources as $resource) {
             $this->assertMatchesRegularExpression(
                 "/^" . $this->getFileIdRegex() . "$/i",
@@ -149,12 +146,11 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                 );
             }
 
-            $this->assertEquals(
-                false,
+            $this->assertFalse(
                 $resource->isFavorited(),
                 "Resource is not expected to be favorited"
             );
-            $this->assertEquals(
+            $this->assertSame(
                 [],
                 $resource->getTags(),
                 "Expected resource tag be empty array but found ". count($resource->getTags())." elements"
@@ -397,7 +393,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, string>>
      */
-    public static function resources()
+    public static function resources(): array
     {
         return [
             ['somefile.txt','file'],
@@ -445,7 +441,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, string>>
      */
-    public static function invalidResources()
+    public static function invalidResources(): array
     {
         return [
             ['nonExistentFile.txt'],
@@ -480,13 +476,13 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $resources = $this->personalDrive->getResources();
         $newResource = null;
         foreach ($resources as $resource) {
-            if($resource->getName() === 'newResource.txt') {
+            if ($resource->getName() === 'newResource.txt') {
                 $newResource = $resource;
             }
         }
         $this->personalDrive->deleteResource('/newResource.txt');
         $this->expectException(NotFoundException::class);
-        if($newResource !== null) {
+        if ($newResource !== null) {
             $newResource->getRoles();
         }
     }

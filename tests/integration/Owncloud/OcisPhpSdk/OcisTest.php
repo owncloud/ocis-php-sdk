@@ -44,7 +44,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 $sharedResource = $resource;
             }
         }
-        if(empty($sharedResource)) {
+        if (empty($sharedResource)) {
             throw new \Error(
                 "resource not found "
             );
@@ -53,13 +53,13 @@ class OcisTest extends OcisPhpSdkTestCase
 
         $viewerRole = null;
         $viewerRoleId = self::getPermissionsRoleIdByName('Viewer');
-        foreach($sharedResource->getRoles() as $role) {
-            if($role->getId() === $viewerRoleId) {
+        foreach ($sharedResource->getRoles() as $role) {
+            if ($role->getId() === $viewerRoleId) {
                 $viewerRole = $role;
             }
         }
 
-        if(empty($viewerRole)) {
+        if (empty($viewerRole)) {
             throw new \Error(
                 "viewer role not found "
             );
@@ -112,7 +112,7 @@ class OcisTest extends OcisPhpSdkTestCase
             }
         }
 
-        if(empty($sharedResource)) {
+        if (empty($sharedResource)) {
             throw new \Error(
                 "resource not found "
             );
@@ -122,13 +122,13 @@ class OcisTest extends OcisPhpSdkTestCase
 
         $viewerRole = null;
         $viewerRoleId = self::getPermissionsRoleIdByName('Viewer');
-        foreach($sharedResource->getRoles() as $role) {
-            if($role->getId() === $viewerRoleId) {
+        foreach ($sharedResource->getRoles() as $role) {
+            if ($role->getId() === $viewerRoleId) {
                 $viewerRole = $role;
             }
         }
 
-        if(empty($viewerRole)) {
+        if (empty($viewerRole)) {
             throw new \Error(
                 "viewer role not found "
             );
@@ -152,7 +152,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 "Expected drivetype to be either 'PROJECT' or 'PERSONAL' or 'VIRTUAL' but found "
                 . print_r($drive->getType(), true)
             );
-            if($drive->getType() === DriveType::PROJECT) {
+            if ($drive->getType() === DriveType::PROJECT) {
                 $this->assertThat(
                     $drive->getName(),
                     $this->logicalOr(
@@ -165,7 +165,7 @@ class OcisTest extends OcisPhpSdkTestCase
                     . $drive->getName()
                 );
             }
-            if($drive->getType() === DriveType::MOUNTPOINT) {
+            if ($drive->getType() === DriveType::MOUNTPOINT) {
                 $this->assertEquals(
                     'sharedAdminFolder',
                     $drive->getName(),
@@ -178,7 +178,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return array<int, array<int, int|DriveType>>
      */
-    public static function drivesType()
+    public static function drivesType(): array
     {
         return [
             [DriveType::PROJECT],
@@ -197,14 +197,14 @@ class OcisTest extends OcisPhpSdkTestCase
 
         $managementDrive = null;
         $sportDrive = null;
-        if($driveType === DriveType::PROJECT) {
+        if ($driveType === DriveType::PROJECT) {
             $sportDrive = $adminOcis->createDrive('Sport Project Drive');
             $this->createdDrives[] = $sportDrive->getId();
             $managementDrive = $adminOcis->createDrive('Management Project Drive');
             $this->createdDrives[] = $managementDrive->getId();
         }
 
-        if($driveType === DriveType::MOUNTPOINT) {
+        if ($driveType === DriveType::MOUNTPOINT) {
             $adminPersonalDrive = $adminOcis -> getMyDrives(
                 DriveOrder::NAME,
                 OrderDirection::ASC,
@@ -220,7 +220,7 @@ class OcisTest extends OcisPhpSdkTestCase
                     $sharedResource = $resource;
                 }
             }
-            if(empty($sharedResource)) {
+            if (empty($sharedResource)) {
                 throw new \Error(
                     "resource not found "
                 );
@@ -230,13 +230,13 @@ class OcisTest extends OcisPhpSdkTestCase
 
             $viewerRole = null;
             $viewerRoleId = self::getPermissionsRoleIdByName('Viewer');
-            foreach($sharedResource->getRoles() as $role) {
-                if($role->getId() === $viewerRoleId) {
+            foreach ($sharedResource->getRoles() as $role) {
+                if ($role->getId() === $viewerRoleId) {
                     $viewerRole = $role;
                 }
             }
 
-            if(empty($viewerRole)) {
+            if (empty($viewerRole)) {
                 throw new \Error(
                     "viewer role not found "
                 );
@@ -365,7 +365,7 @@ class OcisTest extends OcisPhpSdkTestCase
     /**
      * @return array<int,array<int,int>>
      */
-    public static function invalidQuotaProvider()
+    public static function invalidQuotaProvider(): array
     {
         return [
             [-1],
@@ -440,7 +440,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $groupDisplayName = [$philosophyHatersGroup->getDisplayName(),$physicsLoversGroup->getDisplayName()];
         $this->assertTrue(
             $groupDisplayName === [$groupName[0],$groupName[1]],
-            "Expected group displayname to be {$groupName[0]} and {$groupName[1]} but found "
+            "Expected group displayname to be $groupName[0] and $groupName[1] but found "
             . implode(' and ', $groupDisplayName)
         );
     }
@@ -557,8 +557,8 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $ocis->createGroup("philosophyhaters", "philosophy haters group");
         $physicsLoversGroup = $ocis->createGroup("physicslovers", "physics lover group");
-        foreach($ocis->getGroups() as $group) {
-            if($group->getDisplayName() === "philosophyhaters") {
+        foreach ($ocis->getGroups() as $group) {
+            if ($group->getDisplayName() === "philosophyhaters") {
                 $ocis->deleteGroupByID($group->getId());
             }
         }

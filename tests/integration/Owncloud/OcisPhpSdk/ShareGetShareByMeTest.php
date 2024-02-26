@@ -128,7 +128,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
             "Expected class ".ShareLink::class
             . " but got " . get_class($myShares[1])
         );
-        foreach($myShares as $myshare) {
+        foreach ($myShares as $myshare) {
             $this->assertEquals(
                 $this->sharedResource->getId(),
                 $myshare->getResourceId(),

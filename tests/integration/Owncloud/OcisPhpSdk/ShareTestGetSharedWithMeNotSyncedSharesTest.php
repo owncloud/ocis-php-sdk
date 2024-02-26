@@ -31,9 +31,6 @@ class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
         $this->fileToShare = $this->personalDrive->getResources()[0];
         $this->einstein = $this->ocis->getUsers('einstein')[0];
 
-        /**
-         * @var SharingRole $role
-         */
         foreach ($this->fileToShare->getRoles() as $role) {
             if ($role->getDisplayName() === 'Viewer') {
                 $this->viewerRole = $role;
@@ -55,9 +52,6 @@ class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
     public function testGetAttributesOfReceivedButNotAcceptedShare(): void
     {
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
-        /**
-         * @var ShareReceived $receivedShare
-         */
         $receivedShare = $this->einsteinOcis->getSharedWithMe()[0];
         $this->assertInstanceOf(
             ShareReceived::class,
