@@ -127,8 +127,6 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 
     public function testDeleteAnAlreadyDeletedShare(): void
     {
-        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7872');
-        // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(NotFoundException::class);
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $this->fileToShare->invite($this->marie, $this->viewerRole);
@@ -139,8 +137,6 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 
     public function testDeleteANotExistingShare(): void
     {
-        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7872');
-        // @phpstan-ignore-next-line because the test is skipped
         $this->expectException(NotFoundException::class);
         $permission = new Permission([
             'id' => 'does not exist'

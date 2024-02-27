@@ -6,7 +6,7 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
-use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
@@ -142,18 +142,14 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
 
     public function testInviteSameUserAgain(): void
     {
-        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7842');
-        // @phpstan-ignore-next-line because the test is skipped
-        $this->expectException(ForbiddenException::class);
+        $this->expectException(ConflictException::class);
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
     }
 
     public function testInviteSameUserAgainWithDifferentRole(): void
     {
-        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/7842');
-        // @phpstan-ignore-next-line because the test is skipped
-        $this->expectException(ForbiddenException::class);
+        $this->expectException(ConflictException::class);
         $this->fileToShare->invite($this->einstein, $this->viewerRole);
         $this->fileToShare->invite($this->einstein, $this->editorRole);
     }

@@ -534,9 +534,6 @@ class OcisTest extends OcisPhpSdkTestCase
         $physicsLoversGroup = $ocis->createGroup("physicslovers", "physics lover group");
         $this->createdGroups = [$philosophyHatersGroup,$physicsLoversGroup];
         $groups = $ocis->getGroups(search: $searchText, orderBy: $orderDirection);
-        if(count($groups) <= 0) {
-            $this->markTestSkipped("no groups created");
-        }
         $this->assertCount(
             count($resultGroups),
             $groups,
