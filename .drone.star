@@ -284,13 +284,7 @@ def cacheOcisPipeline(ctx):
                 "name": "gopath",
                 "temp": {},
             }],
-            "trigger": {
-                "ref": [
-                    "refs/heads/master",
-                    "refs/tags/**",
-                    "refs/pull/**",
-                ],
-            },
+            "trigger": trigger,
         }]
     return pipelines
 
@@ -662,12 +656,7 @@ def cacheDependencies():
                      cacheRebuildOnEventPush() +
                      cacheFlushOnEventPush(),
             "depends_on": [],
-            "trigger": {
-                "ref": [
-                    "refs/heads/main",
-                    "refs/pull/**",
-                ],
-            },
+            "trigger": trigger,
         },
     ]
 
