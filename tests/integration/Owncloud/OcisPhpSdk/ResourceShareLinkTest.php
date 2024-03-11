@@ -179,12 +179,12 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $this->assertEquals(
             $expectedExpirationDate,
             $link->getExpiration(),
-            "Expiration DateTime mismatch"
+            "Expiration DateTime mismatch with original sharing link"
         );
         $this->assertEquals(
             $expectedExpirationDate,
             $linkFromSharedByMe->getExpiration(),
-            "Expiration DateTime mismatch"
+            "Expiration DateTime mismatch with link from shared-by-me"
         );
     }
 

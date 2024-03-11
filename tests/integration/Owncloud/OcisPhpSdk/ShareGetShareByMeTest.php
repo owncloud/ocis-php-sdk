@@ -62,7 +62,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
             "Expected class " . ShareCreated::class
                 . " but got " . get_class($myShare[0])
         );
-        $this->assertEquals(
+        $this->assertSame(
             'Albert Einstein',
             $myShare[0]->getReceiver()->getDisplayName(),
             "Expected receiver display name to be 'Albert Einstein' but found " . $myShare[0]->getReceiver()->getDisplayName()
@@ -129,7 +129,7 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
             . " but got " . get_class($myShares[1])
         );
         foreach ($myShares as $myshare) {
-            $this->assertEquals(
+            $this->assertSame(
                 $this->sharedResource->getId(),
                 $myshare->getResourceId(),
                 "ResourceId doesn't match with shared resourceId"

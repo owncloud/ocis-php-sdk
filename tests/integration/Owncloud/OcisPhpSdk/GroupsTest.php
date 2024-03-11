@@ -33,7 +33,7 @@ class GroupsTest extends OcisPhpSdkTestCase
                 . " should have 1 member but found "
                 . count($group->getMembers()) . " members"
             );
-            $this->assertEquals(
+            $this->assertSame(
                 $userName,
                 $group->getMembers()[0]->getDisplayName(),
                 $userName . " user be the first member" . $group->getDisplayName() . " group but found "
@@ -66,14 +66,14 @@ class GroupsTest extends OcisPhpSdkTestCase
         }
         $adminUserName = $users[0]->getDisplayName();
         $createdGroup = $ocis->getGroups(expandMembers: true);
-        $this->assertEquals(
+        $this->assertSame(
             $initialMemberCount - 1,
             count($createdGroup[0]->getMembers()),
             "Expected " . ($initialMemberCount - 1)
             . " group member(s) but got "
             . count($createdGroup[0]->getMembers())
         );
-        $this->assertEquals(
+        $this->assertSame(
             $adminUserName,
             $createdGroup[0]->getMembers()[0]->getDisplayName(),
             "Username of group member should be "
@@ -186,7 +186,7 @@ class GroupsTest extends OcisPhpSdkTestCase
             $ocis->getGroups(),
             "Expected one group but found " . count($ocis->getGroups())
         );
-        $this->assertEquals(
+        $this->assertSame(
             "physicslovers",
             $ocis->getGroups()[0]->getDisplayName(),
             "Group should be deleted but exists "

@@ -44,7 +44,7 @@ class UsersTest extends OcisPhpSdkTestCase
             count($users),
             "Expected at least 1 user, but found " . count($users)
         );
-        $this->assertEquals(
+        $this->assertSame(
             'Marie Curie',
             $users[0]->getDisplayName(),
             "Username should be 'Marie Curie' but found " . $users[0]->getDisplayName()
@@ -70,7 +70,7 @@ class UsersTest extends OcisPhpSdkTestCase
             count($users),
             "Expected at least 1 user, but found " . count($users)
         );
-        $this->assertEquals(
+        $this->assertSame(
             'Albert Einstein',
             $users[0]->getDisplayName(),
             "Username should be 'Albert Einstein' but found " . $users[0]->getDisplayName()

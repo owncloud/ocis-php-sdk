@@ -79,7 +79,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 $drive->getName() . " drive of Marie matches with admin drive "
             );
             if ($drive->getType() === DriveType::MOUNTPOINT) {
-                $this->assertEquals(
+                $this->assertSame(
                     'sharedAdminFolder',
                     $drive->getName(),
                     "Expected foldername to be 'sharedAdminFolder' but found " . $drive->getName()
@@ -166,7 +166,7 @@ class OcisTest extends OcisPhpSdkTestCase
                 );
             }
             if ($drive->getType() === DriveType::MOUNTPOINT) {
-                $this->assertEquals(
+                $this->assertSame(
                     'sharedAdminFolder',
                     $drive->getName(),
                     "Expected foldername to be 'sharedAdminFolder' but found " . $drive->getName()
@@ -256,7 +256,7 @@ class OcisTest extends OcisPhpSdkTestCase
             "Expected Array to be an instance of " . Drive::class
         );
         foreach ($drives as $drive) {
-            $this->assertEquals(
+            $this->assertSame(
                 $drive->getType(),
                 $driveType,
                 "Drivetype mismatch"
@@ -275,14 +275,14 @@ class OcisTest extends OcisPhpSdkTestCase
                 );
             }
             if ($drive->getType() === DriveType::MOUNTPOINT) {
-                $this->assertEquals(
+                $this->assertSame(
                     'sharedAdminFolder',
                     $drive->getName(),
                     "Expected drivename to be 'sharedAdminFolder' but found " . $drive->getName()
                 );
             }
             if ($drive->getType() === DriveType::VIRTUAL) {
-                $this->assertEquals(
+                $this->assertSame(
                     'Shares',
                     $drive->getName(),
                     "Expected drivename to be 'Shares' but found " . $drive->getName()
@@ -302,18 +302,18 @@ class OcisTest extends OcisPhpSdkTestCase
             $drive,
             "Expected class to be 'Drive' but found " . get_class($drive)
         );
-        $this->assertEquals(
+        $this->assertSame(
             $drive->getId(),
             $sportDrive->getId(),
             "Expected driveid to be " . $drive->getId()
             . " but found " . $sportDrive->getId()
         );
-        $this->assertEquals(
+        $this->assertSame(
             $drive->getName(),
             $sportDrive->getName(),
             "Expect drivename to be " . $drive->getName() .  " but found " . $sportDrive->getName()
         );
-        $this->assertEquals(
+        $this->assertSame(
             $drive->getType(),
             $sportDrive->getType(),
             "Drivetype mismatch"
@@ -327,7 +327,7 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->markTestIncomplete(
             'libre graph issue-149 sends broken quota object while creating drive'
         );
-        //  $this->assertEquals($sportDrive, $drive);
+        //  $this->assertSame($sportDrive, $drive);
     }
 
     public function testCreateDrive(): void
@@ -499,7 +499,7 @@ class OcisTest extends OcisPhpSdkTestCase
             "Group count doesn't match "
         );
         for ($i = 0; $i < count($groups); $i++) {
-            $this->assertEquals(
+            $this->assertSame(
                 $groupDisplayName[$i],
                 $groups[$i]->getDisplayName(),
                 "Expected group display name to be " . $groupDisplayName[$i]
@@ -540,7 +540,7 @@ class OcisTest extends OcisPhpSdkTestCase
             "Expected group count to be " . count($resultGroups) . " but found " . count($groups)
         );
         for ($i = 0; $i < count($groups); $i++) {
-            $this->assertEquals(
+            $this->assertSame(
                 $resultGroups[$i],
                 $groups[$i]->getDisplayName(),
                 "Expected group display name to be " . $resultGroups[$i]
@@ -567,7 +567,7 @@ class OcisTest extends OcisPhpSdkTestCase
             $ocis->getGroups(),
             "Expected group count to be 1 but found " . count($ocis->getGroups())
         );
-        $this->assertEquals(
+        $this->assertSame(
             "physicslovers",
             $ocis->getGroups()[0]->getDisplayName(),
             "Expected group display name to be 'physicslovers' but found " . $ocis->getGroups()[0]->getDisplayName()

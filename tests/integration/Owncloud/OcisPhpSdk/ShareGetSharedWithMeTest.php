@@ -77,7 +77,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             strlen($receivedShare->getId()),
             " The length of received share id to be greater than 1 "
         );
-        $this->assertEquals(
+        $this->assertSame(
             $this->fileToShare->getName(),
             $receivedShare->getName(),
             "Expected shared file to be " . $this->fileToShare->getName() . " but found " . $receivedShare->getName()
