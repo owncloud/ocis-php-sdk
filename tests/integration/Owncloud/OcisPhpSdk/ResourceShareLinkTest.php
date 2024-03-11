@@ -26,9 +26,6 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $personalDrive->createFolder('folder-to-share');
         $this->createdResources[$personalDrive->getId()][] = 'folder-to-share';
         $resources = $personalDrive->getResources();
-        /**
-         * @var OcisResource $resource
-         */
         foreach ($resources as $resource) {
             if ($resource->getName() === 'to-share-test.txt') {
                 $this->fileToShare = $resource;
@@ -182,12 +179,12 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $this->assertEquals(
             $expectedExpirationDate,
             $link->getExpiration(),
-            "Expiration DateTime mismatch"
+            "Expiration DateTime mismatch with original sharing link"
         );
         $this->assertEquals(
             $expectedExpirationDate,
             $linkFromSharedByMe->getExpiration(),
-            "Expiration DateTime mismatch"
+            "Expiration DateTime mismatch with link from shared-by-me"
         );
     }
 

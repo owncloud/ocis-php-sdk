@@ -24,20 +24,20 @@ class OcisPhpSdkTestCase extends TestCase
     private ?string $tokenUrl = null;
     private ?Client $guzzleClient = null;
     /**
-     * @var array <string>
+     * @var array<string>
      */
-    protected $createdDrives = [];
+    protected array $createdDrives = [];
     /**
      * list of files and folders that were created during the tests
      * currently only for the personal drive
-     * @var array <string, array<string>> driveId[] => resourcePath
+     * @var array<string, array<string>> driveId[] => resourcePath
      */
-    protected $createdResources = [];
+    protected array $createdResources = [];
 
     /**
-     * @var array <\Owncloud\OcisPhpSdk\Group>
+     * @var array<\Owncloud\OcisPhpSdk\Group>
      */
-    protected $createdGroups = [];
+    protected array $createdGroups = [];
 
     public function setUp(): void
     {
@@ -61,7 +61,7 @@ class OcisPhpSdkTestCase extends TestCase
                 $drive = $ocis->getDriveById($driveId);
                 $drive->disable();
                 $drive->delete();
-            } catch (NotFoundException $e) {
+            } catch (NotFoundException) {
                 // ignore, we don't care if the drive was already deleted
             }
 
@@ -76,7 +76,7 @@ class OcisPhpSdkTestCase extends TestCase
             foreach ($resources as $resource) {
                 try {
                     $drive->deleteResource($resource);
-                } catch (NotFoundException $e) {
+                } catch (NotFoundException) {
                     // ignore, we don't care if the resource was already deleted
                 }
             }
