@@ -215,8 +215,8 @@ def buildOcis(branch):
             "image": OC_CI_GOLANG,
             "commands": [
                 "source .drone.env",
-                "git clone -b %s --single-branch %s" % (ocis_branch, ocis_repo_url),
-                "cd ocis",
+                "git clone -b %s --single-branch %s repo_ocis" % (ocis_branch, ocis_repo_url),
+                "cd repo_ocis",
                 "git checkout %s" % ocis_commit_id,
             ],
         },
@@ -225,7 +225,7 @@ def buildOcis(branch):
             "image": OC_CI_NODEJS,
             "commands": [
                 # we cannot use the $GOPATH here because of different base image
-                "cd ocis",
+                "cd repo_ocis",
                 "retry -t 3 'make ci-node-generate'",
             ],
         },
@@ -234,11 +234,14 @@ def buildOcis(branch):
             "image": OC_CI_GOLANG,
             "commands": [
                 ". ./.drone.env",
-                "cd ocis/ocis",
+                "cd repo_ocis/ocis",
                 "retry -t 3 'make build'",
                 "mkdir -p %s/%s" % (dir["base"], branch),
                 "cp bin/ocis %s/%s" % (dir["base"], branch),
+                "pwd",
+                "cd ../..",
                 "ls -al",
+                "ls -al %s/%s" % (dir["base"], branch),
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -254,9 +257,9 @@ def buildOcis(branch):
             "image": OC_CI_GOLANG,
             "commands": [
                 ". ./.drone.env",
-                "make -C ocis/tests/ociswrapper build",
+                "make -C repo_ocis/tests/ociswrapper build",
                 "mkdir -p %s/%s" % (dir["base"], branch),
-                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/%s/" % (dir["base"], branch),
+                "cp repo_ocis/tests/ociswrapper/bin/ociswrapper %s/%s/" % (dir["base"], branch),
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -774,7 +777,7 @@ def genericBuildArtifactCache(ctx, name, action, path, branch):
         return genericCache(name, action, [path], cache_path)
 
     if action == "purge":
-        flush_path = "%s/%s" % ("cache", ctx.repo.slug)
+        flush_path = "%s/%s/%s" % ("cache", ctx.repo.slug, ctx.build.commit + "-${DRONE_BUILD_NUMBER}")
         return genericCachePurge(flush_path)
     return []
 
