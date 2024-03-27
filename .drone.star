@@ -71,15 +71,11 @@ def main(ctx):
     testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
     testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2, 8.3], False, True)
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2, 8.3], False)
-    stagePipelines = testsPipelinesWithCoverage + testsPipelinesWithoutCoverage
+    stagePipelines = testsPipelinesWithCoverage
     dependsOn(initialPipelines, stagePipelines)
 
-    sonarPipeline = sonarAnalysis(ctx)
-    dependsOn(testsPipelinesWithCoverage, sonarPipeline)
-    docsPipeline = docs()
-    dependsOn(beforePipelines, docsPipeline)
-    purgePipeline = purgeBuildArtifactCache(ctx)
-    afterPipelines = sonarPipeline + docsPipeline + purgePipeline
+    afterPipelines = sonarAnalysis(ctx) + docs() + purgeBuildArtifactCache(ctx)
+    dependsOn(stagePipelines, afterPipelines)
 
     return initialPipelines + beforePipelines + stagePipelines + afterPipelines
 
@@ -133,9 +129,9 @@ def phpIntegrationTest(ctx, phpVersions, coverage):
     for phpVersion in phpVersions:
         for index, branch in enumerate(config["ocisBranches"]):
             steps = []
-            if ctx.build.event == "cron":
-                steps += restoreBuildArtifactCache(ctx, "ocis", "ocis")
-                steps += restoreBuildArtifactCache(ctx, "ociswrapper", "ociswrapper")
+            if ctx.build.event != "cron":
+                steps += restoreBuildArtifactCache(ctx, "ocis", "ocis", branch)
+                steps += restoreBuildArtifactCache(ctx, "ociswrapper", "ociswrapper", branch)
             else:
                 steps += restoreOcisCache(ctx, branch)
             steps += keycloakService() + ocisService() + cacheRestore()
@@ -240,8 +236,9 @@ def buildOcis(branch):
                 ". ./.drone.env",
                 "cd ocis/ocis",
                 "retry -t 3 'make build'",
-                "mkdir -p %s/" % dir["base"],
-                "cp bin/ocis %s" % dir["base"],
+                "mkdir -p %s/%s" % (dir["base"], branch),
+                "cp bin/ocis %s/%s" % (dir["base"], branch),
+                "ls -al",
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -258,8 +255,8 @@ def buildOcis(branch):
             "commands": [
                 ". ./.drone.env",
                 "make -C ocis/tests/ociswrapper build",
-                "mkdir -p %s" % dir["base"],
-                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/" % dir["base"],
+                "mkdir -p %s/%s" % (dir["base"], branch),
+                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/%s/" % (dir["base"], branch),
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -277,11 +274,11 @@ def cacheOcisPipeline(ctx):
     for branch in config["ocisBranches"]:
         steps = []
 
-        if ctx.build.event == "cron":
-            steps = getOcislatestCommitId(ctx) + \
+        if ctx.build.event != "cron":
+            steps = getOcislatestCommitId(ctx, branch) + \
                     buildOcis(branch) + \
-                    rebuildBuildArtifactCache(ctx, "ocis", "ocis") + \
-                    rebuildBuildArtifactCache(ctx, "ocis-wrapper", "ocis")
+                    rebuildBuildArtifactCache(ctx, "ocis", "ocis", branch) + \
+                    rebuildBuildArtifactCache(ctx, "ociswrapper", "ociswrapper", branch)
         else:
             steps = checkForExistingOcisCache(ctx, branch) + \
                     buildOcis(branch) + \
@@ -754,7 +751,7 @@ def cacheRebuildOnEventPush():
 def installPhpXdebugCommand(phpVersion):
     return "add-apt-repository ppa:ondrej/php && apt-get install -y php%s-xdebug" % phpVersion
 
-def getOcislatestCommitId(ctx):
+def getOcislatestCommitId(ctx, branch):
     repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
     return [
         {
@@ -764,15 +761,16 @@ def getOcislatestCommitId(ctx):
                 "curl -o .drone.env %s/.drone.env" % repo_path,
                 "curl -o get-latest-ocis-commit-id.sh %s/tests/scripts/get-latest-ocis-commit-id.sh" % repo_path,
                 ". ./.drone.env",
-                "bash get-latest-ocis-commit-id.sh",
+                "bash get-latest-ocis-commit-id.sh %s" % getBranchName(branch),
             ],
         },
     ]
 
-def genericBuildArtifactCache(ctx, name, action, path):
+def genericBuildArtifactCache(ctx, name, action, path, branch):
     if action == "rebuild" or action == "restore":
-        cache_path = "%s/%s/%s" % ("cache", ctx.repo.slug, ctx.build.commit + "-${DRONE_BUILD_NUMBER}")
+        cache_path = "%s/%s/%s/%s" % ("cache", ctx.repo.slug, ctx.build.commit + "-${DRONE_BUILD_NUMBER}", branch)
         name = "%s_build_artifact_cache" % (name)
+        path = "%s/%s/%s" % (dir["base"], branch, path)
         return genericCache(name, action, [path], cache_path)
 
     if action == "purge":
@@ -780,14 +778,14 @@ def genericBuildArtifactCache(ctx, name, action, path):
         return genericCachePurge(flush_path)
     return []
 
-def restoreBuildArtifactCache(ctx, name, path):
-    return [genericBuildArtifactCache(ctx, name, "restore", path)]
+def restoreBuildArtifactCache(ctx, name, path, branch):
+    return [genericBuildArtifactCache(ctx, name, "restore", path, branch)]
 
-def rebuildBuildArtifactCache(ctx, name, path):
-    return [genericBuildArtifactCache(ctx, name, "rebuild", path)]
+def rebuildBuildArtifactCache(ctx, name, path, branch):
+    return [genericBuildArtifactCache(ctx, name, "rebuild", path, branch)]
 
 def purgeBuildArtifactCache(ctx):
-    return [genericBuildArtifactCache(ctx, "", "purge", [])]
+    return [genericBuildArtifactCache(ctx, "", "purge", [], "")]
 
 def genericCachePurge(flush_path):
     return {
@@ -821,6 +819,7 @@ def genericCachePurge(flush_path):
                 },
             },
         ],
+        "depends_on": [],
         "trigger": {
             "ref": [
                 "refs/heads/master",
