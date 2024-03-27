@@ -59,31 +59,29 @@ trigger = {
 }
 
 def main(ctx):
+    initialPipelines = checkStarlark() + cacheDependencies() + cacheOcisPipeline(ctx)
+
     codeStylePipeline = tests(ctx, "codestyle", "make test-php-style", [DEFAULT_PHP_VERSION], False)
     phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan", [DEFAULT_PHP_VERSION], False)
     phanPipeline = tests(ctx, "phan", "make test-php-phan", [DEFAULT_PHP_VERSION], False)
+    beforePipelines = codeStylePipeline + phanPipeline + phpStanPipeline
+    dependsOn(cacheDependencies(), beforePipelines)
+
     testsPipelinesWithCoverage = tests(ctx, "php-unit", "make test-php-unit", [DEFAULT_PHP_VERSION], True, True)
     testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
     testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2, 8.3], False, True)
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2, 8.3], False)
+    stagePipelines = testsPipelinesWithCoverage + testsPipelinesWithoutCoverage
+    dependsOn(initialPipelines, stagePipelines)
+
     sonarPipeline = sonarAnalysis(ctx)
     dependsOn(testsPipelinesWithCoverage, sonarPipeline)
-    afterPipelines = codeStylePipeline + phpStanPipeline + phanPipeline + testsPipelinesWithCoverage + testsPipelinesWithoutCoverage
-    dependsOn(cacheDependencies(), afterPipelines)
     docsPipeline = docs()
-    dependsOn(cacheDependencies(), docsPipeline)
-    return (
-        checkStarlark() +
-        cacheDependencies() +
-        cacheOcisPipeline(ctx) +
-        codeStylePipeline +
-        phpStanPipeline +
-        phanPipeline +
-        testsPipelinesWithCoverage +
-        testsPipelinesWithoutCoverage +
-        sonarPipeline +
-        docsPipeline
-    )
+    dependsOn(beforePipelines, docsPipeline)
+    purgePipeline = purgeBuildArtifactCache(ctx)
+    afterPipelines = sonarPipeline + docsPipeline + purgePipeline
+
+    return initialPipelines + beforePipelines + stagePipelines + afterPipelines
 
 def checkStarlark():
     return [{
@@ -134,7 +132,13 @@ def phpIntegrationTest(ctx, phpVersions, coverage):
     pipelines = []
     for phpVersion in phpVersions:
         for index, branch in enumerate(config["ocisBranches"]):
-            steps = keycloakService() + restoreOcisCache(ctx, branch) + ocisService() + cacheRestore()
+            steps = []
+            if ctx.build.event == "cron":
+                steps += restoreBuildArtifactCache(ctx, "ocis", "ocis")
+                steps += restoreBuildArtifactCache(ctx, "ociswrapper", "ociswrapper")
+            else:
+                steps += restoreOcisCache(ctx, branch)
+            steps += keycloakService() + ocisService() + cacheRestore()
             name = "php-integration-%s-%s" % (phpVersion, branch)
             steps.append(
                 {
@@ -236,8 +240,8 @@ def buildOcis(branch):
                 ". ./.drone.env",
                 "cd ocis/ocis",
                 "retry -t 3 'make build'",
-                "mkdir -p %s/%s" % (dir["base"], ocis_commit_id),
-                "cp bin/ocis %s/%s" % (dir["base"], ocis_commit_id),
+                "mkdir -p %s/" % dir["base"],
+                "cp bin/ocis %s" % dir["base"],
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -254,8 +258,8 @@ def buildOcis(branch):
             "commands": [
                 ". ./.drone.env",
                 "make -C ocis/tests/ociswrapper build",
-                "mkdir -p %s/%s" % (dir["base"], ocis_commit_id),
-                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/%s/" % (dir["base"], ocis_commit_id),
+                "mkdir -p %s" % dir["base"],
+                "cp ocis/tests/ociswrapper/bin/ociswrapper %s/" % dir["base"],
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -271,7 +275,18 @@ def buildOcis(branch):
 def cacheOcisPipeline(ctx):
     pipelines = []
     for branch in config["ocisBranches"]:
-        steps = checkForExistingOcisCache(ctx, branch) + buildOcis(branch) + cacheOcis(branch)
+        steps = []
+
+        if ctx.build.event == "cron":
+            steps = getOcislatestCommitId(ctx) + \
+                    buildOcis(branch) + \
+                    rebuildBuildArtifactCache(ctx, "ocis", "ocis") + \
+                    rebuildBuildArtifactCache(ctx, "ocis-wrapper", "ocis")
+        else:
+            steps = checkForExistingOcisCache(ctx, branch) + \
+                    buildOcis(branch) + \
+                    cacheOcis(branch)
+
         pipelines += [{
             "kind": "pipeline",
             "type": "docker",
@@ -297,7 +312,7 @@ def checkForExistingOcisCache(ctx, branch):
             "environment": MINIO_MC_ENV,
             "commands": [
                 "curl -o .drone.env %s/.drone.env" % repo_path,
-                "curl -o check-oCIS-cache.sh %s/tests/check-oCIS-cache.sh" % repo_path,
+                "curl -o check-oCIS-cache.sh %s/tests/scripts/check-oCIS-cache.sh" % repo_path,
                 ". ./.drone.env",
                 "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
                 "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
@@ -315,8 +330,8 @@ def cacheOcis(branch):
         "commands": [
             ". ./.drone.env",
             "mc alias set s3 $MC_HOST $AWS_ACCESS_KEY_ID $AWS_SECRET_ACCESS_KEY",
-            "mc cp -r -a %s/%s/ocis s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocis_commit_id, ocis_commit_id),
-            "mc cp -r -a %s/%s/ociswrapper s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocis_commit_id, ocis_commit_id),
+            "mc cp -r -a %s/ocis s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocis_commit_id),
+            "mc cp -r -a %s/ociswrapper s3/$CACHE_BUCKET/ocis-build/%s" % (dir["base"], ocis_commit_id),
             "mc ls --recursive s3/$CACHE_BUCKET/ocis-build",
         ],
     }]
@@ -738,3 +753,117 @@ def cacheRebuildOnEventPush():
 
 def installPhpXdebugCommand(phpVersion):
     return "add-apt-repository ppa:ondrej/php && apt-get install -y php%s-xdebug" % phpVersion
+
+def getOcislatestCommitId(ctx):
+    repo_path = "https://raw.githubusercontent.com/owncloud/ocis-php-sdk/%s" % ctx.build.commit
+    return [
+        {
+            "name": "get-ocis-latest-commit-id",
+            "image": OC_CI_ALPINE,
+            "commands": [
+                "curl -o .drone.env %s/.drone.env" % repo_path,
+                "curl -o get-latest-ocis-commit-id.sh %s/tests/scripts/get-latest-ocis-commit-id.sh" % repo_path,
+                ". ./.drone.env",
+                "bash get-latest-ocis-commit-id.sh",
+            ],
+        },
+    ]
+
+def genericBuildArtifactCache(ctx, name, action, path):
+    if action == "rebuild" or action == "restore":
+        cache_path = "%s/%s/%s" % ("cache", ctx.repo.slug, ctx.build.commit + "-${DRONE_BUILD_NUMBER}")
+        name = "%s_build_artifact_cache" % (name)
+        return genericCache(name, action, [path], cache_path)
+
+    if action == "purge":
+        flush_path = "%s/%s" % ("cache", ctx.repo.slug)
+        return genericCachePurge(flush_path)
+    return []
+
+def restoreBuildArtifactCache(ctx, name, path):
+    return [genericBuildArtifactCache(ctx, name, "restore", path)]
+
+def rebuildBuildArtifactCache(ctx, name, path):
+    return [genericBuildArtifactCache(ctx, name, "rebuild", path)]
+
+def purgeBuildArtifactCache(ctx):
+    return [genericBuildArtifactCache(ctx, "", "purge", [])]
+
+def genericCachePurge(flush_path):
+    return {
+        "kind": "pipeline",
+        "type": "docker",
+        "name": "purge_build_artifact_cache",
+        "clone": {
+            "disable": True,
+        },
+        "platform": {
+            "os": "linux",
+            "arch": "amd64",
+        },
+        "steps": [
+            {
+                "name": "purge-cache",
+                "image": PLUGINS_S3_CACHE,
+                "settings": {
+                    "access_key": {
+                        "from_secret": "cache_s3_access_key",
+                    },
+                    "endpoint": {
+                        "from_secret": "cache_s3_server",
+                    },
+                    "secret_key": {
+                        "from_secret": "cache_s3_secret_key",
+                    },
+                    "flush": True,
+                    "flush_age": 1,
+                    "flush_path": flush_path,
+                },
+            },
+        ],
+        "trigger": {
+            "ref": [
+                "refs/heads/master",
+                "refs/heads/stable-*",
+                "refs/tags/**",
+                "refs/pull/**",
+            ],
+            "status": [
+                "success",
+                "failure",
+            ],
+        },
+    }
+
+def genericCache(name, action, mounts, cache_path):
+    rebuild = "false"
+    restore = "false"
+    if action == "rebuild":
+        rebuild = "true"
+        action = "rebuild"
+    else:
+        restore = "true"
+        action = "restore"
+
+    step = {
+        "name": "%s_%s" % (action, name),
+        "image": PLUGINS_S3_CACHE,
+        "settings": {
+            "endpoint": {
+                "from_secret": "cache_s3_server",
+            },
+            "rebuild": rebuild,
+            "restore": restore,
+            "mount": mounts,
+            "access_key": {
+                "from_secret": "cache_s3_access_key",
+            },
+            "secret_key": {
+                "from_secret": "cache_s3_secret_key",
+            },
+            "filename": "%s.tar" % (name),
+            "path": cache_path,
+            "fallback_path": cache_path,
+        },
+    }
+    return step
