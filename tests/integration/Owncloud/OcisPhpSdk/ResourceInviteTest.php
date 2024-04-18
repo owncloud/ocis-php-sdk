@@ -39,9 +39,6 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->personalDrive->createFolder('folder-to-share');
         $this->createdResources[$this->personalDrive->getId()][] = 'folder-to-share';
         $resources = $this->personalDrive->getResources();
-        /**
-         * @var OcisResource $resource
-         */
         foreach ($resources as $resource) {
             if ($resource->getName() === 'to-share-test.txt') {
                 $this->fileToShare = $resource;
@@ -54,9 +51,6 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         $this->einstein = $this->ocis->getUsers('einstein')[0];
         $this->marie = $this->ocis->getUsers('marie')[0];
 
-        /**
-         * @var SharingRole $role
-         */
         foreach ($this->fileToShare->getRoles() as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('Viewer')) {
                 $this->viewerRole = $role;
@@ -333,16 +327,10 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
     public function testInviteUserToAReceivedShare(): void
     {
         $this->fileToShare->invite($this->einstein, $this->editorRole);
-        /**
-         * @var ShareReceived $receivedShare
-         */
         $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
 
         $resource = $this->einsteinOcis->getResourceById($receivedShare->getRemoteItemId());
         $resource->invite($this->marie, $this->viewerRole);
-        /**
-         * @var ShareReceived $receivedShare
-         */
         $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis)[0];
         $this->assertSame(
             'to-share-test.txt',

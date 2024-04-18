@@ -37,9 +37,6 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->einstein = $this->ocis->getUsers('einstein')[0];
         $this->marie = $this->ocis->getUsers('marie')[0];
 
-        /**
-         * @var SharingRole $role
-         */
         foreach ($this->fileToShare->getRoles() as $role) {
             if ($role->getDisplayName() === 'Viewer') {
                 $this->viewerRole = $role;

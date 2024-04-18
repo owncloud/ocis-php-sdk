@@ -29,14 +29,14 @@ class GroupsTest extends OcisPhpSdkTestCase
             $this->assertCount(
                 1,
                 $group->getMembers(),
-                "The group ".$group->getDisplayName()
+                "The group " . $group->getDisplayName()
                 . " should have 1 member but found "
-                .count($group->getMembers())." members"
+                . count($group->getMembers()) . " members"
             );
-            $this->assertEquals(
+            $this->assertSame(
                 $userName,
                 $group->getMembers()[0]->getDisplayName(),
-                $userName . " user be the first member". $group->getDisplayName() . " group but found "
+                $userName . " user be the first member" . $group->getDisplayName() . " group but found "
                 . $group->getMembers()[0]->getDisplayName()
             );
         }
@@ -55,29 +55,29 @@ class GroupsTest extends OcisPhpSdkTestCase
             "philosophy haters group"
         );
         $this->createdGroups = [$philosophyHatersGroup];
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $philosophyHatersGroup->addUser($user);
         }
         $initialMemberCount = count($philosophyHatersGroup->getMembers());
         foreach ($users as $user) {
-            if($user->getDisplayName() === "Albert Einstein") {
+            if ($user->getDisplayName() === "Albert Einstein") {
                 $philosophyHatersGroup->removeUser($user);
             }
         }
         $adminUserName = $users[0]->getDisplayName();
         $createdGroup = $ocis->getGroups(expandMembers: true);
-        $this->assertEquals(
+        $this->assertSame(
             $initialMemberCount - 1,
             count($createdGroup[0]->getMembers()),
-            "Expected " .($initialMemberCount - 1)
+            "Expected " . ($initialMemberCount - 1)
             . " group member(s) but got "
             . count($createdGroup[0]->getMembers())
         );
-        $this->assertEquals(
+        $this->assertSame(
             $adminUserName,
             $createdGroup[0]->getMembers()[0]->getDisplayName(),
             "Username of group member should be "
-            . $adminUserName . " but found ".$createdGroup[0]->getMembers()[0]->getDisplayName()
+            . $adminUserName . " but found " . $createdGroup[0]->getMembers()[0]->getDisplayName()
         );
     }
 
@@ -94,13 +94,13 @@ class GroupsTest extends OcisPhpSdkTestCase
             "philosophy haters group"
         );
         $this->createdGroups = [$philosophyHatersGroup];
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $philosophyHatersGroup->addUser($user);
         }
         $einsteinPhilosophyHatersGroup = $einsteinUserOcis->getGroups("philosophyhaters")[0];
         $this->expectException(UnauthorizedException::class);
         foreach ($users as $user) {
-            if($user->getDisplayName() === "Admin") {
+            if ($user->getDisplayName() === "Admin") {
                 $einsteinPhilosophyHatersGroup->removeUser($user);
             }
         }
@@ -184,13 +184,13 @@ class GroupsTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $ocis->getGroups(),
-            "Expected one group but found ". count($ocis->getGroups())
+            "Expected one group but found " . count($ocis->getGroups())
         );
-        $this->assertEquals(
+        $this->assertSame(
             "physicslovers",
             $ocis->getGroups()[0]->getDisplayName(),
             "Group should be deleted but exists "
-            .$ocis->getGroups()[0]->getDisplayName()
+            . $ocis->getGroups()[0]->getDisplayName()
         );
 
     }
@@ -208,13 +208,13 @@ class GroupsTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $groups,
-            "Expected one group but found ". count($groups)
+            "Expected one group but found " . count($groups)
         );
         foreach ($groups as $group) {
             $this->assertInstanceOf(
                 Group::class,
                 $group,
-                "Expected class ".Group::class
+                "Expected class " . Group::class
                 . " but got " . get_class($group)
             );
             $this->assertIsString($group->getId());

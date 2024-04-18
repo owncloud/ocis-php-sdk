@@ -59,9 +59,6 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
     public function testGetAttributesOfReceivedShare(): void
     {
         $this->fileToShare->invite($this->einstein, $this->editorRole);
-        /**
-         * @var ShareReceived $receivedShare
-         */
         $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
         $this->assertInstanceOf(
             ShareReceived::class,
@@ -77,10 +74,10 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         $this->assertNotNull($receivedShare->getId(), "Expected received share id to not be null");
         $this->assertGreaterThanOrEqual(
             1,
-            strlen((string)$receivedShare->getId()),
+            strlen($receivedShare->getId()),
             " The length of received share id to be greater than 1 "
         );
-        $this->assertEquals(
+        $this->assertSame(
             $this->fileToShare->getName(),
             $receivedShare->getName(),
             "Expected shared file to be " . $this->fileToShare->getName() . " but found " . $receivedShare->getName()
@@ -107,7 +104,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             120,
             "Expected Shared resource was last modified within 120 seconds of the current time"
         );
-        $this->assertStringContainsString(
+        $this->assertSame(
             'Admin',
             $receivedShare->getCreatedByDisplayName(),
             "Expected owner name to be 'Admin' but found " . $receivedShare->getCreatedByDisplayName()
@@ -115,7 +112,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         $this->assertGreaterThanOrEqual(
             1,
             strlen($receivedShare->getCreatedByUserId()),
-            "Expected the length of ownerId of receive share to be greater than 1"
+            "Expected the length of ownerId of receive share to be greater than or equal to 1"
         );
     }
 
@@ -130,7 +127,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
         $this->folderToShare->invite($this->einstein, $this->editorRole);
         $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
-        foreach($receivedShares as $receivedShare) {
+        foreach ($receivedShares as $receivedShare) {
             $this->assertInstanceOf(
                 ShareReceived::class,
                 $receivedShare,
@@ -150,7 +147,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
                     $this->equalTo($this->fileToShare->getName()),
                     $this->equalTo($this->folderToShare->getName())
                 ),
-                "Expected shared resource name to be " . $this->fileToShare->getName() . " or " . $this->folderToShare->getName().
+                "Expected shared resource name to be " . $this->fileToShare->getName() . " or " . $this->folderToShare->getName() .
                 " but found " . $receivedShares[$i]->getName()
             );
             $this->assertThat(
@@ -159,8 +156,8 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
                     $this->equalTo($this->fileToShare->getId()),
                     $this->equalTo($this->folderToShare->getId())
                 ),
-                "Expected shared resource Id to be " . $this->fileToShare->getId() . " or " . $this->folderToShare->getId()
-                . " but found " . $receivedShares[$i]->getRemoteItemId()
+                "Expected shared resource Id to be " . $this->fileToShare->getId() . " or " . $this->folderToShare->getId() .
+                " but found " . $receivedShares[$i]->getRemoteItemId()
             );
         }
 
@@ -177,7 +174,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
         $this->fileToShare->invite($this->einstein, $this->editorRole);
         $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
-        foreach($receivedShares as $receivedShare) {
+        foreach ($receivedShares as $receivedShare) {
             $this->assertInstanceOf(
                 ShareReceived::class,
                 $receivedShare,
@@ -220,9 +217,6 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
 
         $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
 
-        /**
-         * @var Drive $shareDrive
-         */
         $shareDrive = $this->einsteinOcis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
@@ -240,14 +234,8 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             $resourcesInShareJail,
             "Expected two receive shares but found " . count($resourcesInShareJail)
         );
-        /**
-         * @var OcisResource $resource
-         */
         foreach ($resourcesInShareJail as $resource) {
             $foundMatchingShare = false;
-            /**
-             * @var ShareReceived $share
-             */
             foreach ($receivedShares as $share) {
                 if (
                     $share->getName() === $resource->getName()
