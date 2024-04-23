@@ -35,10 +35,10 @@ test-php-unit: vendor/bin/phpunit
 	$(PHPUNIT) --configuration ./phpunit.xml --testsuite unit
 
 .PHONY: test-php-integration
-test-php-integration:             ## Run php integration tests
+test-php-integration:             ## Run single or whole php integration tests
 test-php-integration: run-ocis-with-keycloak
 	composer install
-	$(call run-with-cleanup, $(PHPUNIT) --configuration ./phpunit.xml --testsuite integration, $(MAKE) docker-clean)
+	$(call run-with-cleanup, $(PHPUNIT) --configuration ./phpunit.xml --testsuite integration $(if $(filter-out $@,$(MAKECMDGOALS)),--filter $(filter-out $@,$(MAKECMDGOALS)),), $(MAKE) docker-clean)
 
 .PHONY: test-php-integration-ci
 test-php-integration-ci:            ## Run php integration tests in CI
