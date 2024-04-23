@@ -18,6 +18,27 @@ docker run --rm -v ${PWD}:/data phpdoc/phpdoc:3
 
 After that you will find the documentation inside the `docs` folder.
 
+## Installation via Composer
+Add "owncloud/ocis-php-sdk" to the `require` block in your composer.json and then run composer install.
+> [!WARNING]  
+> The ocis-php-sdk currently relies on a development version of the "owncloud/libre-graph-api-php" package. To ensure proper dependency resolution, it is necessary to set "minimum-stability": "dev" and "prefer-stable": true in your composer.json file.
+
+```json
+{
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "owncloud/ocis-php-sdk": "^1.0"
+    }
+}
+```
+Alternatively, you can simply run the following from the command line:
+```bash
+composer config minimum-stability dev
+composer config prefer-stable true
+composer require owncloud/ocis-php-sdk
+```
+
 ## Getting started
 Create an Ocis object using the service Url and an access token:
 ```php
