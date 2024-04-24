@@ -119,6 +119,7 @@ class OcisWebfingerTest extends TestCase
         $this->expectExceptionMessage(
             'Could not decode token. ' . $expectedExceptionMessage
         );
+        /** @phan-suppress-next-line PhanNoopNew we expect an exception, so do not assign the result */
         new Ocis(
             'https://webfinger.example.com',
             $token,
@@ -162,6 +163,7 @@ class OcisWebfingerTest extends TestCase
     {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("invalid webfinger response");
+        /** @phan-suppress-next-line PhanNoopNew we expect an exception, so do not assign the result */
         new Ocis(
             'https://webfinger.example.com',
             $this->getValidToken(),

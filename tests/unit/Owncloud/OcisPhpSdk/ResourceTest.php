@@ -84,6 +84,7 @@ class ResourceTest extends TestCase
         $metadata = [];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Received invalid data for the key \"resourcetype\" in the response array");
+        /* @phpstan-ignore-next-line because some test case(s) purposely pass an int */
         $metadata[200]['{DAV:}resourcetype'] = new ResourceType($resourceType);
         $resource = $this->createOcisResource($metadata);
         $resource->getType();
