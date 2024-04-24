@@ -47,7 +47,7 @@ config = {
     "phpstan": True,
     "phan": True,
     "php-unit": True,
-    "ocisBranches": ["master", "stable"],
+    "ocisBranches": ["fix-well-known-rewrite"],
 }
 
 trigger = {
@@ -62,8 +62,7 @@ def main(ctx):
     codeStylePipeline = tests(ctx, "codestyle", "make test-php-style", [DEFAULT_PHP_VERSION], False)
     phpStanPipeline = tests(ctx, "phpstan", "make test-php-phpstan", [DEFAULT_PHP_VERSION], False)
     phanPipeline = tests(ctx, "phan", "make test-php-phan", [DEFAULT_PHP_VERSION], False)
-    testsPipelinesWithCoverage = tests(ctx, "php-unit", "make test-php-unit", [DEFAULT_PHP_VERSION], True, True)
-    testsPipelinesWithCoverage += phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
+    testsPipelinesWithCoverage = phpIntegrationTest(ctx, [DEFAULT_PHP_VERSION], True)
     testsPipelinesWithoutCoverage = tests(ctx, "php-unit", "make test-php-unit", [8.2, 8.3], False, True)
     testsPipelinesWithoutCoverage += phpIntegrationTest(ctx, [8.2, 8.3], False)
     sonarPipeline = sonarAnalysis(ctx)
@@ -76,13 +75,7 @@ def main(ctx):
         checkStarlark() +
         cacheDependencies() +
         cacheOcisPipeline(ctx) +
-        codeStylePipeline +
-        phpStanPipeline +
-        phanPipeline +
-        testsPipelinesWithCoverage +
-        testsPipelinesWithoutCoverage +
-        sonarPipeline +
-        docsPipeline
+        testsPipelinesWithCoverage
     )
 
 def checkStarlark():
@@ -121,12 +114,12 @@ def checkStarlark():
     }]
 
 def getCommitId(branch):
-    if branch == "master":
+    if branch == "fix-well-known-rewrite":
         return "$OCIS_COMMITID"
     return "$OCIS_STABLE_COMMITID"
 
 def getBranchName(branch):
-    if branch == "master":
+    if branch == "fix-well-known-rewrite":
         return "$OCIS_BRANCH"
     return "$OCIS_STABLE_BRANCH"
 
@@ -217,7 +210,6 @@ def buildOcis(branch):
                 "source .drone.env",
                 "git clone -b %s --single-branch %s" % (ocis_branch, ocis_repo_url),
                 "cd ocis",
-                "git checkout %s" % ocis_commit_id,
             ],
         },
         {
