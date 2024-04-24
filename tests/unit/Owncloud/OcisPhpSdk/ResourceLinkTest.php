@@ -26,7 +26,7 @@ class ResourceLinkTest extends TestCase
                 SharingLinkType::VIEW,
                 null,
                 self::PASSWORD,
-                null,
+                "",
                 new DriveItemCreateLink(
                     [
                         'type' => SharingLinkType::VIEW,
@@ -56,7 +56,7 @@ class ResourceLinkTest extends TestCase
                 SharingLinkType::EDIT,
                 new \DateTimeImmutable('2021-01-01 04:45:43.123456', new \DateTimeZone('Asia/Kathmandu')),
                 self::PASSWORD,
-                null,
+                "",
                 new DriveItemCreateLink(
                     [
                         'type' => SharingLinkType::EDIT,
