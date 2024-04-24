@@ -45,9 +45,9 @@ class GroupTest extends TestCase
         $accessToken = "acstok";
         $group = new SdkGroup($libGroup, "url", [], $accessToken);
         $this->assertInstanceOf(SdkGroup::class, $group);
-        $this->assertEquals($data["id"], $group->getId());
-        $this->assertEquals($data["description"], $group->getDescription());
-        $this->assertEquals($data["display_name"], $group->getDisplayName());
+        $this->assertSame($data["id"], $group->getId());
+        $this->assertSame($data["description"], $group->getDescription());
+        $this->assertSame($data["display_name"], $group->getDisplayName());
         $this->assertSame($data["group_types"], $group->getGroupTypes());
         $this->assertSame($data["members"], $group->getMembers());
     }

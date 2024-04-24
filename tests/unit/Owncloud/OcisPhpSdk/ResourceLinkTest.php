@@ -117,10 +117,10 @@ class ResourceLinkTest extends TestCase
         $resource = $this->createResource($drivesPermissionsApi);
 
         $result = $resource->createSharingLink($type, $expiration, $password, $displayName);
-        $this->assertEquals('https://ocis.example.com/s/uuid-of-the-link', $result->getWebUrl());
-        $this->assertEquals('uuid-of-the-permission', $result->getPermissionId());
+        $this->assertSame('https://ocis.example.com/s/uuid-of-the-link', $result->getWebUrl());
+        $this->assertSame('uuid-of-the-permission', $result->getPermissionId());
         $this->assertEquals($type, $result->getType());
-        $this->assertEquals($displayName, $result->getDisplayName());
+        $this->assertSame($displayName, $result->getDisplayName());
     }
 
     public function testInvalidIdResponse(): void

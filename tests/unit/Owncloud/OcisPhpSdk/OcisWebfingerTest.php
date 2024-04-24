@@ -29,7 +29,7 @@ class OcisWebfingerTest extends TestCase
             base64_encode((string)json_encode($tokenPayload, JSON_UNESCAPED_UNICODE)) .
             ".signatureDoesNotMatter";
         // the token needs to be base64Url encoded not just base64
-        // see  https://jwt.io/introduction/
+        // see https://jwt.io/introduction/
         return rtrim(\strtr($base64EncodedToken, '+/', '-_'), '=');
     }
     private function getGuzzleMock(?string $responseContent = null): MockObject
@@ -119,7 +119,7 @@ class OcisWebfingerTest extends TestCase
         $this->expectExceptionMessage(
             'Could not decode token. ' . $expectedExceptionMessage
         );
-        $ocis = new Ocis(
+        new Ocis(
             'https://webfinger.example.com',
             $token,
             /* @phpstan-ignore-next-line because receiving a MockObject */
@@ -141,7 +141,7 @@ class OcisWebfingerTest extends TestCase
             // no links
             ['{"subject": "acct:einstein@drive.ocis.test"}'],
 
-            // links is not array
+            // links is not an array
             ['{"links": "string"}'],
 
             // links is an empty array
@@ -162,7 +162,7 @@ class OcisWebfingerTest extends TestCase
     {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("invalid webfinger response");
-        $ocis = new Ocis(
+        new Ocis(
             'https://webfinger.example.com',
             $this->getValidToken(),
             /* @phpstan-ignore-next-line because receiving a MockObject */
