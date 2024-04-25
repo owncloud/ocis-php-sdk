@@ -61,7 +61,7 @@ class ShareLink extends Share
         return (string)$this->getSharingLink()->getWebUrl();
     }
 
-    public function getDisplayName(): ?string
+    public function getDisplayName(): string
     {
         return (string)$this->getSharingLink()->getAtLibreGraphDisplayName();
     }
