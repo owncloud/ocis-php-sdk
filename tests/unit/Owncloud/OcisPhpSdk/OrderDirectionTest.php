@@ -23,6 +23,6 @@ class OrderDirectionTest extends TestCase
      */
     public function testOrderDirectionString(OrderDirection $direction, string $directionString): void
     {
-        $this->assertEquals($directionString, $direction->value);
+        $this->assertSame($directionString, $direction->value);
     }
 }

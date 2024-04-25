@@ -22,7 +22,7 @@ class OcisTest extends TestCase
 {
     public function testCreateGuzzleConfigDefaultValues(): void
     {
-        $this->assertEquals(
+        $this->assertSame(
             [
                 'headers' => ['Authorization' => 'Bearer token']
             ],
@@ -83,8 +83,8 @@ class OcisTest extends TestCase
     {
         $this->expectException(HttpException::class);
         $this->expectExceptionMessage(
-            "[0] cURL error 6: Could not resolve host: localhost-does-not-exist ".
-            "(see https://curl.haxx.se/libcurl/c/libcurl-errors.html) ".
+            "[0] cURL error 6: Could not resolve host: localhost-does-not-exist " .
+            "(see https://curl.haxx.se/libcurl/c/libcurl-errors.html) " .
             "for https://localhost-does-not-exist:9200/graph/v1.0/drives"
         );
         $ocis = new Ocis('https://localhost-does-not-exist:9200', 'doesNotMatter');
@@ -108,7 +108,6 @@ class OcisTest extends TestCase
 
     public function testSetAccessTokenPropagatesToDrives(): void
     {
-        $ocis = new Ocis('https://localhost:9200', 'tokenWhenCreated');
         $driveMock = [];
         $driveMock[] = $this->createMock(Drive::class);
         $driveMock[] = $this->createMock(Drive::class);
@@ -126,11 +125,11 @@ class OcisTest extends TestCase
         );
         $drives = $ocis->getAllDrives();
         foreach ($drives as $drive) {
-            $this->assertEquals('tokenWhenCreated', $drive->getAccessToken());
+            $this->assertSame('tokenWhenCreated', $drive->getAccessToken());
         }
         $ocis->setAccessToken('changedToken');
         foreach ($drives as $drive) {
-            $this->assertEquals('changedToken', $drive->getAccessToken());
+            $this->assertSame('changedToken', $drive->getAccessToken());
         }
     }
 
@@ -141,13 +140,13 @@ class OcisTest extends TestCase
             'tokenWhenCreated'
         );
         $notifications = $ocis->getNotifications();
-        $this->assertEquals('tokenWhenCreated', $notifications[0]->getAccessToken());
-        $this->assertEquals('123', $notifications[0]->getId());
-        $this->assertEquals('tokenWhenCreated', $notifications[1]->getAccessToken());
-        $this->assertEquals('456', $notifications[1]->getId());
+        $this->assertSame('tokenWhenCreated', $notifications[0]->getAccessToken());
+        $this->assertSame('123', $notifications[0]->getId());
+        $this->assertSame('tokenWhenCreated', $notifications[1]->getAccessToken());
+        $this->assertSame('456', $notifications[1]->getId());
         $ocis->setAccessToken('changedToken');
-        $this->assertEquals('changedToken', $notifications[0]->getAccessToken());
-        $this->assertEquals('changedToken', $notifications[1]->getAccessToken());
+        $this->assertSame('changedToken', $notifications[0]->getAccessToken());
+        $this->assertSame('changedToken', $notifications[1]->getAccessToken());
     }
 
     private function setupMocksForNotificationTests(
@@ -158,7 +157,7 @@ class OcisTest extends TestCase
         $streamMock->method('getContents')->willReturn($responseContent);
         $responseMock = $this->createMock(ResponseInterface::class);
         $responseMock->method('getBody')->willReturn($streamMock);
-        $guzzleMock = $this->createMock(\GuzzleHttp\Client::class);
+        $guzzleMock = $this->createMock(Client::class);
         $guzzleMock->method('get')->willReturn($responseMock);
         return new Ocis('https://localhost:9200', $token, ['guzzle' => $guzzleMock]);
     }
@@ -390,6 +389,6 @@ class OcisTest extends TestCase
     {
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $notifications = $ocis->getNotifications();
-        $this->assertEquals([], $notifications);
+        $this->assertSame([], $notifications);
     }
 }

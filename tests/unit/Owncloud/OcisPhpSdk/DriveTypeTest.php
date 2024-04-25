@@ -23,6 +23,6 @@ class DriveTypeTest extends TestCase
      */
     public function testDriveTypeString(DriveType $type, string $driveTypeString): void
     {
-        $this->assertEquals($driveTypeString, $type->value);
+        $this->assertSame($driveTypeString, $type->value);
     }
 }

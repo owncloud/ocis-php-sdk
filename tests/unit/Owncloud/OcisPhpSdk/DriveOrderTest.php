@@ -23,6 +23,6 @@ class DriveOrderTest extends TestCase
      */
     public function testDriveOrderString(DriveOrder $order, string $driveOrderString): void
     {
-        $this->assertEquals($driveOrderString, $order->value);
+        $this->assertSame($driveOrderString, $order->value);
     }
 }

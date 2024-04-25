@@ -86,7 +86,7 @@ class ExceptionHelperTest extends TestCase
         }
         $newException = ExceptionHelper::getHttpErrorException($originalException);
         $this->assertInstanceOf($expectedExceptionClass, $newException);
-        $this->assertEquals($expectedExceptionMessage, $newException->getMessage());
-        $this->assertEquals($exceptionStatusCode, $newException->getCode());
+        $this->assertSame($expectedExceptionMessage, $newException->getMessage());
+        $this->assertSame($exceptionStatusCode, $newException->getCode());
     }
 }

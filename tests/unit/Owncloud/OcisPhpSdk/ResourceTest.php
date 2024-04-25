@@ -75,18 +75,19 @@ class ResourceTest extends TestCase
 
     /**
      * @dataProvider dataProviderInvalidFileType
-     * @param array<int,string|int>|string|null $resourceType
+     * @param int|string $resourceType
      *
      * @return void
      */
-    public function testGetFileTypeInvalidResource($resourceType): void
+    public function testGetFileTypeInvalidResource(int|string $resourceType): void
     {
         $metadata = [];
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Received invalid data for the key \"resourcetype\" in the response array");
+        /* @phpstan-ignore-next-line because some test case(s) purposely pass an int */
         $metadata[200]['{DAV:}resourcetype'] = new ResourceType($resourceType);
         $resource = $this->createOcisResource($metadata);
-        $result = $resource->getType();
+        $resource->getType();
     }
 
     /**
@@ -153,7 +154,7 @@ class ResourceTest extends TestCase
         $metadata[200]['{DAV:}resourcetype'] = new ResourceType($data);
         $metadata[200][$sizeKey] = $actualSize;
         $resource = $this->createOcisResource($metadata);
-        $result = $resource->getSize();
+        $resource->getSize();
     }
 
     /**
@@ -280,7 +281,7 @@ class ResourceTest extends TestCase
         $metadata[200]['{http://owncloud.org/ns}checksums'] = $value;
         $resource = $this->createOcisResource($metadata);
         $result = $resource->getCheckSums();
-        $this->assertEquals($value, $result);
+        $this->assertSame($value, $result);
     }
 
     /**

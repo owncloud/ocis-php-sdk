@@ -44,8 +44,8 @@ class UserTest extends TestCase
         $libUser = new User($data);
         $user = new SdkUser($libUser);
         $this->assertInstanceOf(SdkUser::class, $user);
-        $this->assertEquals($data["id"], $user->getId());
-        $this->assertEquals($data["display_name"], $user->getDisplayName());
+        $this->assertSame($data["id"], $user->getId());
+        $this->assertSame($data["display_name"], $user->getDisplayName());
         $this->assertSame($data["mail"], $user->getMail());
         $this->assertSame($data["on_premises_sam_account_name"], $user->getOnPremisesSamAccountName());
     }
