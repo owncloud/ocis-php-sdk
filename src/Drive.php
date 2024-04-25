@@ -336,8 +336,11 @@ class Drive
 
     /**
      * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     *
+     * The type of $image is likely to be \GdImage when implemented.
+     * That would require the php-gd extension to be installed.
      */
-    public function setImage(\GdImage $image): Drive
+    public function setImage(object $image): Drive
     {
         // upload image to dav/spaces/<space-id>/.space/<image-name>
         // PATCH space
