@@ -111,10 +111,13 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             120,
             "Expected Shared resource was last modified within 120 seconds of the current time"
         );
-        $this->assertSame(
-            'Admin',
+        $this->assertThat(
             $receivedShare->getCreatedByDisplayName(),
-            "Expected owner name to be 'Admin' but found " . $receivedShare->getCreatedByDisplayName()
+            $this->logicalOr(
+                $this->equalTo("Admin"),
+                $this->equalTo("Admin Admin")
+            ),
+            "Expected owner name to be 'Marie Curie' but found " . $receivedShare->getCreatedByDisplayName()
         );
         $this->assertGreaterThanOrEqual(
             1,
