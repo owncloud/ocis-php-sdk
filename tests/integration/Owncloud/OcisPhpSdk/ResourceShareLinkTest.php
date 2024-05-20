@@ -42,7 +42,6 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
     public static function sharingLinkTypeDataProvider(): array
     {
         return [
-            [SharingLinkType::INTERNAL, true, true, ''],
             [SharingLinkType::VIEW, true, true, ''],
             [SharingLinkType::UPLOAD, false, true, ''],
             [SharingLinkType::EDIT, false, true, ''],

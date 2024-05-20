@@ -41,9 +41,11 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         $this->sharedResource = $sharedResource;
 
         $editorRole = null;
+        $editorRoleId = self::getPermissionsRoleIdByName('Editor');
         foreach ($this->sharedResource->getRoles() as $role) {
-            if ($role->getDisplayName() === 'Editor') {
+            if ($role->getId() === $editorRoleId) {
                 $editorRole = $role;
+                break;
             }
         }
         if ($editorRole === null) {

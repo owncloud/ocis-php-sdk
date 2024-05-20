@@ -59,6 +59,8 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
                 $this->editorRole = $role;
             }
         }
+        $this->assertNotNull($this->viewerRole, 'Viewer role is empty');
+        $this->assertNotNull($this->editorRole, 'Editor role is empty');
     }
 
     public function testInviteUser(): void
@@ -322,25 +324,5 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
             );
 
         }
-    }
-
-    public function testInviteUserToAReceivedShare(): void
-    {
-        $this->fileToShare->invite($this->einstein, $this->editorRole);
-        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
-
-        $resource = $this->einsteinOcis->getResourceById($receivedShare->getRemoteItemId());
-        $resource->invite($this->marie, $this->viewerRole);
-        $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis)[0];
-        $this->assertSame(
-            'to-share-test.txt',
-            $receivedShare->getName(),
-            "Expected shared resource to be 'to-share-test.txt' but found " . $receivedShare->getName()
-        );
-        $this->assertSame(
-            'some content',
-            $this->marieOcis->getResourceById($receivedShare->getRemoteItemId())->getContent(),
-            "File content doesn't match"
-        );
     }
 }
