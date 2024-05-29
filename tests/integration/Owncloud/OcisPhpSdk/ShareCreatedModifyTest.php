@@ -37,8 +37,9 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->einstein = $this->ocis->getUsers('einstein')[0];
         $this->marie = $this->ocis->getUsers('marie')[0];
 
+        $viewerRoleId = self::getPermissionsRoleIdByName('Viewer');
         foreach ($this->fileToShare->getRoles() as $role) {
-            if ($role->getDisplayName() === 'Viewer') {
+            if ($role->getId() === $viewerRoleId) {
                 $this->viewerRole = $role;
                 break;
             }
@@ -212,7 +213,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
 
         $isRoleEditor = null;
         foreach ($this->fileToShare->getRoles() as $role) {
-            if ($role->getDisplayName() === 'Editor') {
+            if ($role->getId() === self::getPermissionsRoleIdByName('File Editor')) {
                 $isRoleEditor = $shareFromInvite->setRole($role);
                 break;
             }

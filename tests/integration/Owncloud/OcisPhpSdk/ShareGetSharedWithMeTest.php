@@ -22,7 +22,8 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
     private Drive $personalDrive;
     private OcisResource $fileToShare;
     private OcisResource $folderToShare;
-    private SharingRole $editorRole;
+    private SharingRole $fileEditorRole;
+    private SharingRole $folderEditorRole;
     public function setUp(): void
     {
         parent::setUp();
@@ -43,22 +44,28 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
                 $this->folderToShare = $resource;
             }
         }
-        $editorRole = null;
+
         foreach ($this->fileToShare->getRoles() as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('File Editor')) {
-                $editorRole = $role;
+                $this->fileEditorRole = $role;
+                break;
             }
         }
-        if ($editorRole === null) {
-            throw new \Error("Editor role not found");
+
+        foreach ($this->folderToShare->getRoles() as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Editor')) {
+                $this->folderEditorRole = $role;
+                break;
+            }
         }
-        $this->editorRole = $editorRole;
+        $this->assertNotNull($this->fileEditorRole, 'File Editor is not set');
+        $this->assertNotNull($this->folderEditorRole, 'Folder Editor is not set');
 
     }
 
     public function testGetAttributesOfReceivedShare(): void
     {
-        $this->fileToShare->invite($this->einstein, $this->editorRole);
+        $this->fileToShare->invite($this->einstein, $this->fileEditorRole);
         $receivedShare = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis)[0];
         $this->assertInstanceOf(
             ShareReceived::class,
@@ -104,10 +111,13 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             120,
             "Expected Shared resource was last modified within 120 seconds of the current time"
         );
-        $this->assertSame(
-            'Admin',
+        $this->assertThat(
             $receivedShare->getCreatedByDisplayName(),
-            "Expected owner name to be 'Admin' but found " . $receivedShare->getCreatedByDisplayName()
+            $this->logicalOr(
+                $this->equalTo("Admin"),
+                $this->equalTo("Admin Admin")
+            ),
+            "Expected owner name to be 'Marie Curie' but found " . $receivedShare->getCreatedByDisplayName()
         );
         $this->assertGreaterThanOrEqual(
             1,
@@ -124,8 +134,8 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
-        $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
-        $this->folderToShare->invite($this->einstein, $this->editorRole);
+        $this->fileToShare->invite($philosophyHatersGroup, $this->fileEditorRole);
+        $this->folderToShare->invite($this->einstein, $this->folderEditorRole);
         $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
         foreach ($receivedShares as $receivedShare) {
             $this->assertInstanceOf(
@@ -171,8 +181,8 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
-        $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
-        $this->fileToShare->invite($this->einstein, $this->editorRole);
+        $this->fileToShare->invite($philosophyHatersGroup, $this->fileEditorRole);
+        $this->fileToShare->invite($this->einstein, $this->fileEditorRole);
         $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
         foreach ($receivedShares as $receivedShare) {
             $this->assertInstanceOf(
@@ -211,9 +221,9 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
-        $this->fileToShare->invite($philosophyHatersGroup, $this->editorRole);
-        $this->fileToShare->invite($this->einstein, $this->editorRole);
-        $this->folderToShare->invite($this->einstein, $this->editorRole);
+        $this->fileToShare->invite($philosophyHatersGroup, $this->fileEditorRole);
+        $this->fileToShare->invite($this->einstein, $this->fileEditorRole);
+        $this->folderToShare->invite($this->einstein, $this->folderEditorRole);
 
         $receivedShares = $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis);
 

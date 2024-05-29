@@ -64,6 +64,7 @@ class GroupsTest extends OcisPhpSdkTestCase
                 $philosophyHatersGroup->removeUser($user);
             }
         }
+
         $adminUserName = $users[0]->getDisplayName();
         $createdGroup = $ocis->getGroups(expandMembers: true);
         $this->assertSame(
@@ -88,6 +89,7 @@ class GroupsTest extends OcisPhpSdkTestCase
     {
         $ocis = $this->getOcis('admin', 'admin');
         $einsteinUserOcis = $this->initUser('einstein', 'relativity');
+
         $users = $ocis->getUsers();
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
@@ -99,8 +101,9 @@ class GroupsTest extends OcisPhpSdkTestCase
         }
         $einsteinPhilosophyHatersGroup = $einsteinUserOcis->getGroups("philosophyhaters")[0];
         $this->expectException(UnauthorizedException::class);
+
         foreach ($users as $user) {
-            if ($user->getDisplayName() === "Admin") {
+            if ($user->getDisplayName() === "Admin" || $user->getDisplayName() === "Admin Admin") {
                 $einsteinPhilosophyHatersGroup->removeUser($user);
             }
         }
