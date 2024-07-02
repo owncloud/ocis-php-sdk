@@ -91,4 +91,38 @@ class DriveTest extends OcisPhpSdkTestCase
             $this->fail("EndPointNotImplementedException was thrown unexpectedly");
         };
     }
+
+    public function testCreateDriveInvite(): void
+    {
+        $einsteinOcis = $this->initUser('einstein', 'relativity');
+
+        $einstein = $this->ocis->getUsers('einstein')[0];
+
+        $managerRole = null;
+        foreach ($this->drive->getRoles() as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                $managerRole = $role;
+                break;
+            }
+        }
+        if (empty($managerRole)) {
+            throw new \Error(
+                "manager role not found "
+            );
+        }
+        $this->drive->invite($einstein, $managerRole);
+
+        $receivedShareDrive = $einsteinOcis->getDriveById($this->drive->getId());
+        $this->assertSame(
+            $this->drive->getId(),
+            $receivedShareDrive->getId(),
+            "Expected driveId to be " . $this->drive->getId()
+            . " but found " . $receivedShareDrive->getId()
+        );
+        $this->assertSame(
+            $this->drive->getName(),
+            $receivedShareDrive->getName(),
+            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedShareDrive->getName()
+        );
+    }
 }
