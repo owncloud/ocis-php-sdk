@@ -6,6 +6,7 @@ use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
+use Owncloud\OcisPhpSdk\SharingRole;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
@@ -67,5 +68,15 @@ class DriveTest extends OcisPhpSdkTestCase
         $this->expectException(BadRequestException::class);
         $this->expectExceptionMessage('invalidRequest - error: bad request: can\'t purge enabled space');
         $this->drive->delete();
+    }
+
+    public function testGetDriveRole(): void
+    {
+        $role = $this->drive->getRoles();
+        $this->assertContainsOnlyInstancesOf(
+            SharingRole::class,
+            $role,
+            "Array contains not only 'SharingRole' items"
+        );
     }
 }
