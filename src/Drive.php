@@ -8,6 +8,7 @@ use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
+use OpenAPI\Client\Model\DriveUpdate;
 use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Quota;
@@ -304,7 +305,7 @@ class Drive
             $this->graphApiConfig
         );
         try {
-            $apiInstance->updateDrive($this->getId(), new ApiDrive(['name' => $this->getName()]));
+            $apiInstance->updateDrive($this->getId(), new DriveUpdate(['name' => $this->getName()]));
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
