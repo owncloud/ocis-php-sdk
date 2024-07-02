@@ -296,11 +296,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_getMembers"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AsetMembers\u0028\u0029",
-            "name": "setMembers",
-            "summary": "Set\u0020the\u0020value\u0020of\u0020members",
-            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_setMembers"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003AaddUser\u0028\u0029",
             "name": "addUser",
             "summary": "",
