@@ -124,15 +124,6 @@ class Group
     }
 
     /**
-     * Set the value of members
-     * @param User $member
-     */
-    public function setMembers(User $member): void
-    {
-        $this->members[] = $member;
-    }
-
-    /**
      * @param User $user
      *
      * @throws BadRequestException
@@ -158,7 +149,7 @@ class Group
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
-        $this->setMembers($user);
+        $this->members[] = $user;
     }
 
     /**
