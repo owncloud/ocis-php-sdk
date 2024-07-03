@@ -142,6 +142,7 @@ def phpIntegrationTest(ctx, phpVersions, coverage):
                         "OCIS_URL": "https://ocis:9200",
                         "OCISWRAPPER_URL": "http://ocis:5200",
                         "COMPOSER_HOME": "%s/.cache/composer" % dir["base"],
+                        "OCIS_VERSION": branch,
                     },
                     "commands": [
                         installPhpXdebugCommand(phpVersion),

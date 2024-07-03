@@ -72,6 +72,10 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testGetDriveRole(): void
     {
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->markTestSkipped('This test is skipped because root endpoint for drive share is
+             not applicable for the stable version of OCIS.');
+        };
         $role = $this->drive->getRoles();
         $this->assertContainsOnlyInstancesOf(
             SharingRole::class,
