@@ -95,7 +95,8 @@ class DriveTest extends OcisPhpSdkTestCase
     public function testCreateDriveInvite(): void
     {
         if(getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped();
+            $this->markTestSkipped('This test is skipped because root endpoint for drive share is
+             not applicable for the stable version of OCIS.');
         };
         $marieOcis = $this->initUser('marie', 'radioactivity');
 

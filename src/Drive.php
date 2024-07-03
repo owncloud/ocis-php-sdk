@@ -598,19 +598,7 @@ class Drive
      */
     public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): ShareCreated
     {
-        $driveItemInviteData = [];
-        $driveItemInviteData['recipients'] = [];
-        $recipientData = [];
-        $recipientData['object_id'] = $recipient->getId();
-        if ($recipient instanceof Group) {
-            $recipientData['at_libre_graph_recipient_type'] = "group";
-        }
-        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
-        $driveItemInviteData['roles'] = [$role->getId()];
-        if ($expiration !== null) {
-            $expirationMutable = \DateTime::createFromImmutable($expiration);
-            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
-        }
+        $driveItemInviteData = OcisResource::getShareInviteBody($recipient, $role, $expiration);
 
         if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesRootApi'];
