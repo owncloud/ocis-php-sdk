@@ -5,6 +5,7 @@ namespace Owncloud\OcisPhpSdk;
 use DateTime;
 use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesApi;
+use OpenAPI\Client\Api\DrivesRootApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
@@ -570,6 +571,49 @@ class Drive
         $webDavClient = $this->createWebDavClient();
         $webDavClient->sendRequest('DELETE', "/dav/spaces/trash-bin/" . $this->getId());
         return true;
+    }
+
+    /**
+     * Gets all possible roles for the drive
+     * @return array<SharingRole>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws InvalidResponseException
+     * @throws InternalServerErrorException
+     */
+    public function getRoles(): array
+    {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+
+        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesRootApi'];
+        } else {
+            $apiInstance = new DrivesRootApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+        try {
+            $collectionOfPermissions = $apiInstance->listPermissionsSpaceRoot($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($collectionOfPermissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+            );
+        }
+        $apiRoles = $collectionOfPermissions->getAtLibreGraphPermissionsRolesAllowedValues() ?? [];
+        $roles = [];
+        foreach ($apiRoles as $role) {
+            $roles[] = new SharingRole($role);
+        }
+        return $roles;
     }
 
     /**
