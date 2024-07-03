@@ -11,7 +11,12 @@ use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveUpdate;
 use OpenAPI\Client\Model\DriveItem;
+use OpenAPI\Client\Model\DriveItemCreateLink;
+use OpenAPI\Client\Model\SharingLinkType;
+use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
+use OpenAPI\Client\Model\Permission;
+use OpenAPI\Client\Model\SharingLink as ApiSharingLink;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
@@ -614,6 +619,132 @@ class Drive
             $roles[] = new SharingRole($role);
         }
         return $roles;
+    }
+
+    /**
+     * @param User $recipient
+     * @param string $role
+     * @param string|null $password
+     * @param string|null $displayName
+     * @param boolean|null $quickLink
+     * @param \DateTimeImmutable|null $expiration
+     * @return ShareLink
+     */
+    public function createLink($recipient, string $role, ?string $password = null, ?string $displayName = null, ?bool $quickLink = false, ?\DateTimeImmutable $expiration = null): ShareLink
+    {
+        $driveItemCreateLink = [];
+        $recipientData = [];
+
+        $driveItemCreateLink['type'] = SharingLinkType::from($role); // get from enum
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+            $driveItemCreateLink['expiration_date_time'] = $expirationMutable;
+        }
+        if(isset($password)) {
+            $driveItemCreateLink['password'] = $password;
+        }
+        if(isset($displayName)) {
+            $driveItemCreateLink['display_name'] = $displayName;
+        }
+        $driveItemCreateLink['at_libre_graph_quick_link'] = $quickLink;
+
+        $recipientData['object_id'] = $recipient->getId();
+        $driveItemCreateLink['recipients'][] = new DriveRecipient($recipientData);
+
+        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesRootApi'];
+        } else {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+            $apiInstance = new DrivesRootApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+
+        $inviteData = new DriveItemCreateLink($driveItemCreateLink);
+        try {
+            $permissions = $apiInstance->createLinkSpaceRoot($this->getId(), $inviteData);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "invite returned an OdataError - " . $permissions->getError()
+            );
+        }
+        if(isset($password)) {
+            $permissions->setHasPassword(true);
+        } else {
+            $permissions->setHasPassword(false);
+        }
+
+        return new ShareLink(
+            $permissions,
+            $this->getId(),
+            $this->getId(),
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
+        );
+    }
+
+    /**
+     * @param ShareLink $recipient
+     * @param string $role
+     * @param string|null $password
+     * @param string|null $displayName
+     * @param boolean|null $quickLink
+     * @param \DateTimeImmutable|null $expiration
+     * @return ShareLink
+     */
+    public function updateLink($share, string $type, ?string $displayName = null, ?bool $quickLink = false, ?\DateTimeImmutable $expiration = null): ShareLink
+    {
+        $shareLink=new ApiSharingLink();
+        $permissions=new Permission();
+
+        // $permissions->set;
+        $shareLink->setType(SharingLinkType::EDIT);
+
+        $permissions->setLink($shareLink);
+
+        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesRootApi'];
+        } else {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+            $apiInstance = new DrivesRootApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+        
+        var_dump($this->accessToken);
+        try {
+            $permissions = $apiInstance->updatePermissionSpaceRoot($this->getId(), $share->getPermissionId(),$permissions);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "invite returned an OdataError - " . $permissions->getError()
+            );
+        }
+        if(isset($password)) {
+            $permissions->setHasPassword(true);
+        } else {
+            $permissions->setHasPassword(false);
+        }
+        return new ShareLink(
+            $permissions,
+            $this->getId(),
+            $this->getId(),
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
+        );
     }
 
     /**

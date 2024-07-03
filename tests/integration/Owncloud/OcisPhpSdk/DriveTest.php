@@ -6,6 +6,8 @@ use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
+use Owncloud\OcisPhpSdk\ShareCreated;
+use Owncloud\OcisPhpSdk\ShareLink;
 use Owncloud\OcisPhpSdk\SharingRole;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
@@ -86,5 +88,22 @@ class DriveTest extends OcisPhpSdkTestCase
             $role,
             "Array contains not only 'SharingRole' items"
         );
+    }
+
+    public function testbesta(): void
+    {
+        $einsteinOcis = $this->initUser('einstein', 'relativity');
+        $einstein = $einsteinOcis->getUsers('einstein')[0];
+        $share = $this->drive->createLink($einstein, 'view', 'P@$$w0rd', 'user');
+        $this->assertInstanceOf(ShareLink::class, $share);
+    }
+
+    public function testbestb(): void
+    {
+        $einsteinOcis = $this->initUser('einstein', 'relativity');
+        $einstein = $einsteinOcis->getUsers('einstein')[0];
+        $share = $this->drive->createLink($einstein, 'view', 'P@$$w0rd', 'user');
+        $shareU = $this->drive->updateLink($share, 'edit');
+        $this->assertInstanceOf(ShareLink::class, $shareU);
     }
 }

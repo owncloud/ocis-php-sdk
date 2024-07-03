@@ -177,4 +177,8 @@ class Share
         $this->apiPermission = $apiPermission;
         return true;
     }
+
+    function getPermission() : ApiPermission {
+        return $this->apiPermission;        
+    }
 }
