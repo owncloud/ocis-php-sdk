@@ -94,6 +94,9 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testCreateDriveInvite(): void
     {
+        if(getenv('OCIS_VERSION') === "stable") {
+            $this->markTestSkipped();
+        };
         $marieOcis = $this->initUser('marie', 'radioactivity');
 
         $marie = $this->ocis->getUsers('marie')[0];
