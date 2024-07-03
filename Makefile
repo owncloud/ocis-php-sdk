@@ -8,7 +8,7 @@ run-with-cleanup = $(1) && $(2) || (ret=$$?; $(2) && exit $$ret)
 
 # run tests with ociswrapper by default
 WITH_WRAPPER ?= true
-OCIS_IMAGE ?= owncloud/ocis:latest
+OCIS_IMAGE ?= owncloud/ocis-rolling:master
 OCIS_CLONE := tests/integration/ocis
 OCIS_WRAPPER := ../$(OCIS_CLONE)/tests/ociswrapper/bin/ociswrapper
 

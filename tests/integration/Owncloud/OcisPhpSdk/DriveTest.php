@@ -94,9 +94,9 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testCreateDriveInvite(): void
     {
-        $einsteinOcis = $this->initUser('einstein', 'relativity');
+        $marieOcis = $this->initUser('marie', 'radioactivity');
 
-        $einstein = $this->ocis->getUsers('einstein')[0];
+        $marie = $this->ocis->getUsers('marie')[0];
 
         $managerRole = null;
         foreach ($this->drive->getRoles() as $role) {
@@ -110,9 +110,9 @@ class DriveTest extends OcisPhpSdkTestCase
                 "manager role not found "
             );
         }
-        $this->drive->invite($einstein, $managerRole);
+        $this->drive->invite($marie, $managerRole);
 
-        $receivedShareDrive = $einsteinOcis->getDriveById($this->drive->getId());
+        $receivedShareDrive = $marieOcis->getDriveById($this->drive->getId());
         $this->assertSame(
             $this->drive->getId(),
             $receivedShareDrive->getId(),
