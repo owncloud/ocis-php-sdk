@@ -306,6 +306,28 @@ class Ocis
         }
         throw new InvalidResponseException('invalid webfinger response');
     }
+
+    /**
+     * returns current oCIS version in semantic versioning format ( eg "5.0.5" )
+     *
+     * @return string
+     * @throws InvalidResponseException
+     */
+    public function getOcisVersion(): string
+    {
+        $fullUrl = $this->getServiceUrl() . '/ocs/v1.php/cloud/capabilities';
+        $client = new Client($this->createGuzzleConfig($this->connectionConfig, $this->accessToken));
+        $response = $client->request('GET', $fullUrl);
+        $responseContent = $response->getBody()->getContents();
+
+        $body = simplexml_load_string($responseContent);
+        if (!isset($body->data->capabilities->core->status->productversion)) {
+            throw new InvalidResponseException('Missing productversion element in XML response');
+        }
+        $version = explode('+', (string)$body->data->capabilities->core->status->productversion);
+        return $version[0];
+    }
+
     /**
      * Get all available drives
      *
