@@ -53,11 +53,14 @@ class Ocis
     private const DECODE_TOKEN_ERROR_MESSAGE = 'Could not decode token.';
     public const FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE =
         'This function is not implemented yet! Place, name and signature of the function might change!';
+    public const ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE =
+        'This method is not implemented in this ocis verion';
     private string $serviceUrl;
     private string $accessToken;
     private Configuration $graphApiConfig;
     private Client $guzzle;
     private string $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
+    private string $ocisVersion;
 
     /**
      * @phpstan-var ConnectionConfig
@@ -111,7 +114,7 @@ class Ocis
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
             $this->serviceUrl . '/graph'
         );
-
+        $this->getOcisVersion();
     }
 
     public function getServiceUrl(): string
@@ -313,19 +316,20 @@ class Ocis
      * @return string
      * @throws InvalidResponseException
      */
-    public function getOcisVersion(): string
+    private function getOcisVersion(): void
     {
-        $fullUrl = $this->getServiceUrl() . '/ocs/v1.php/cloud/capabilities';
-        $client = new Client($this->createGuzzleConfig($this->connectionConfig, $this->accessToken));
-        $response = $client->request('GET', $fullUrl);
+        $fullUrl = self::getServiceUrl() . '/ocs/v1.php/cloud/capabilities';
+        $response = $this->guzzle->request('GET', $fullUrl);
         $responseContent = $response->getBody()->getContents();
 
         $body = simplexml_load_string($responseContent);
         if (!isset($body->data->capabilities->core->status->productversion)) {
             throw new InvalidResponseException('Missing productversion element in XML response');
         }
-        $version = explode('+', (string)$body->data->capabilities->core->status->productversion);
-        return $version[0];
+        $version = (string)$body->data->capabilities->core->status->productversion;
+        $pattern = '(\d.\d.\d)';
+        preg_match($pattern, $version, $matches);
+        $this->ocisVersion = $matches[0];
     }
 
     /**
@@ -380,7 +384,8 @@ class Ocis
                 $apiDrive,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $this->accessToken
+                $this->accessToken,
+                $this->ocisVersion
             );
             $drives[] = $drive;
         }
@@ -437,7 +442,8 @@ class Ocis
                 $apiDrive,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $this->accessToken
+                $this->accessToken,
+                $this->ocisVersion
             );
             $drives[] = $drive;
         }
@@ -494,7 +500,8 @@ class Ocis
             $apiDrive,
             $this->connectionConfig,
             $this->serviceUrl,
-            $this->accessToken
+            $this->accessToken,
+            $this->ocisVersion
         );
     }
 
@@ -546,7 +553,8 @@ class Ocis
                 $newlyCreatedDrive,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $this->accessToken
+                $this->accessToken,
+                $this->ocisVersion
             );
         }
         throw new InvalidResponseException(
