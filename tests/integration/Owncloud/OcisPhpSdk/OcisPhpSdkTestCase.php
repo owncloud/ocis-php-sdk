@@ -53,35 +53,35 @@ class OcisPhpSdkTestCase extends TestCase
         $this->tokenUrl = $openIdConfiguration['token_endpoint'];
     }
 
-    public function tearDown(): void
-    {
-        $ocis = $this->getOcis('admin', 'admin');
-        foreach ($this->createdDrives as $driveId) {
-            try {
-                $drive = $ocis->getDriveById($driveId);
-                $drive->disable();
-                $drive->delete();
-            } catch (NotFoundException) {
-                // ignore, we don't care if the drive was already deleted
-            }
+    // public function tearDown(): void
+    // {
+    //     $ocis = $this->getOcis('admin', 'admin');
+    //     foreach ($this->createdDrives as $driveId) {
+    //         try {
+    //             $drive = $ocis->getDriveById($driveId);
+    //             $drive->disable();
+    //             $drive->delete();
+    //         } catch (NotFoundException) {
+    //             // ignore, we don't care if the drive was already deleted
+    //         }
 
-        }
-        foreach ($this->createdGroups as $group) {
-            $group->delete();
-        }
-        $this->createdGroups = [];
+    //     }
+    //     foreach ($this->createdGroups as $group) {
+    //         $group->delete();
+    //     }
+    //     $this->createdGroups = [];
 
-        foreach ($this->createdResources as $driveId => $resources) {
-            $drive = $ocis->getDriveById($driveId);
-            foreach ($resources as $resource) {
-                try {
-                    $drive->deleteResource($resource);
-                } catch (NotFoundException) {
-                    // ignore, we don't care if the resource was already deleted
-                }
-            }
-        }
-    }
+    //     foreach ($this->createdResources as $driveId => $resources) {
+    //         $drive = $ocis->getDriveById($driveId);
+    //         foreach ($resources as $resource) {
+    //             try {
+    //                 $drive->deleteResource($resource);
+    //             } catch (NotFoundException) {
+    //                 // ignore, we don't care if the resource was already deleted
+    //             }
+    //         }
+    //     }
+    // }
 
     protected function getGuzzleClient(): Client
     {
