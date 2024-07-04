@@ -156,6 +156,11 @@ Search.appendIndex(
             "summary": "Empty\u0020the\u0020trash\u002Dbin\u0020of\u0020the\u0020current\u0020drive.\u0020ALL\u0020FILES\u0020AND\u0020FOLDERS\u0020IN\u0020THE\u0020TRASH\u002DBIN\u0020WILL\u0020BE\u0020DELETED\u0021\nTHIS\u0020ACTION\u0020CANNOT\u0020BE\u0020REVERTED\u0021",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_emptyTrashbin"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetRoles\u0028\u0029",
+            "name": "getRoles",
+            "summary": "Gets\u0020all\u0020possible\u0020roles\u0020for\u0020the\u0020drive",
+            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_getRoles"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AtagResource\u0028\u0029",
             "name": "tagResource",
             "summary": "",
@@ -395,6 +400,11 @@ Search.appendIndex(
             "name": "isDrivesGetDrivesApi",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_isDrivesGetDrivesApi"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AisDrivesRootApi\u0028\u0029",
+            "name": "isDrivesRootApi",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_isDrivesRootApi"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AsetAccessToken\u0028\u0029",
             "name": "setAccessToken",

@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\Api\DrivesRootApi;
 use OpenAPI\Client\Api\GroupApi;
 use OpenAPI\Client\Api\MeDriveApi;
 use OpenAPI\Client\Api\MeDrivesApi;
@@ -43,7 +44,8 @@ use OpenAPI\Client\Model\Group as OpenAPIGroup;
  *                     'guzzle'?:Client,
  *                     'drivesApi'?:DrivesApi,
  *                     'drivesGetDrivesApi'?:DrivesGetDrivesApi,
- *                     'drivesPermissionsApi'?:DrivesPermissionsApi
+ *                     'drivesPermissionsApi'?:DrivesPermissionsApi,
+ *                     'drivesRootApi'?:DrivesRootApi
  *  }
  */
 class Ocis
@@ -155,6 +157,11 @@ class Ocis
         return $api instanceof DrivesGetDrivesApi;
     }
 
+    public static function isDrivesRootApi(mixed $api): bool
+    {
+        return $api instanceof DrivesRootApi;
+    }
+
     /**
      * @param array<mixed> $connectionConfig
      * @ignore This function is used for internal purposes only and should not be shown in the documentation.
@@ -170,6 +177,7 @@ class Ocis
             'drivesPermissionsApi' => self::class . '::isDrivesPermissionsApi',
             'drivesApi' => self::class . '::isDrivesApi',
             'drivesGetDrivesApi' => self::class . '::isDrivesGetDrivesApi',
+            'drivesRootApi' => self::class . '::isDrivesRootApi',
             'proxy' => 'is_array',
         ];
         foreach ($connectionConfig as $key => $check) {
