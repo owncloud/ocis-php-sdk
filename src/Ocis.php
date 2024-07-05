@@ -54,7 +54,7 @@ class Ocis
     public const FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE =
         'This function is not implemented yet! Place, name and signature of the function might change!';
     public const ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE =
-        'This method is not implemented in this ocis verion';
+        'This method is not implemented in this ocis version';
     private string $serviceUrl;
     private string $accessToken;
     private Configuration $graphApiConfig;
@@ -311,9 +311,9 @@ class Ocis
     }
 
     /**
-     * returns current oCIS version in semantic versioning format ( eg "5.0.5" )
+     * saves current oCIS version in semantic versioning format ( e.g. "5.0.5" )
      *
-     * @return string
+     * @return void
      * @throws InvalidResponseException
      */
     private function getOcisVersion(): void
@@ -327,7 +327,7 @@ class Ocis
             throw new InvalidResponseException('Missing productversion element in XML response');
         }
         $version = (string)$body->data->capabilities->core->status->productversion;
-        $pattern = '(\d.\d.\d)';
+        $pattern = '(\d\.\d\.\d)';
         preg_match($pattern, $version, $matches);
         $this->ocisVersion = $matches[0];
     }

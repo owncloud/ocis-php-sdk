@@ -4,6 +4,7 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\EndPointNotImplementedException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\SharingRole;
@@ -74,7 +75,10 @@ class DriveTest extends OcisPhpSdkTestCase
     {
         try {
             $role = $this->drive->getRoles();
-        } catch(\Exception) {
+        } catch(EndPointNotImplementedException) {
+            if (getenv('OCIS_VERSION') !== "stable") {
+                $this->fail("EndPointNotImplementedException was thrown unexpectedly");
+            }
             $this->markTestSkipped(
                 'This test is skipped because root endpoint for drive share is not applicable for version 5 of OCIS.'
             );
