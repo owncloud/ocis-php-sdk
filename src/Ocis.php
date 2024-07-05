@@ -60,7 +60,6 @@ class Ocis
     private Configuration $graphApiConfig;
     private Client $guzzle;
     private string $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
-    private string $ocisVersion;
 
     /**
      * @phpstan-var ConnectionConfig
@@ -114,7 +113,6 @@ class Ocis
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
             $this->serviceUrl . '/graph'
         );
-        $this->getOcisVersion();
     }
 
     public function getServiceUrl(): string
@@ -313,13 +311,12 @@ class Ocis
     /**
      * saves current oCIS version in semantic versioning format ( e.g. "5.0.5" )
      *
-     * @return void
+     * @return string
      * @throws InvalidResponseException
      */
-    private function getOcisVersion(): void
+    private function getOcisVersion(): string
     {
-        $fullUrl = self::getServiceUrl() . '/ocs/v1.php/cloud/capabilities';
-        $response = $this->guzzle->request('GET', $fullUrl);
+        $response = $this->guzzle->get($this->serviceUrl . '/ocs/v1.php/cloud/capabilities');
         $responseContent = $response->getBody()->getContents();
 
         $body = simplexml_load_string($responseContent);
@@ -329,7 +326,7 @@ class Ocis
         $version = (string)$body->data->capabilities->core->status->productversion;
         $pattern = '(\d\.\d\.\d)';
         preg_match($pattern, $version, $matches);
-        $this->ocisVersion = $matches[0];
+        return $matches[0];
     }
 
     /**
@@ -385,7 +382,7 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken,
-                $this->ocisVersion
+                $this->getOcisVersion()
             );
             $drives[] = $drive;
         }
@@ -443,7 +440,7 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken,
-                $this->ocisVersion
+                $this->getOcisVersion()
             );
             $drives[] = $drive;
         }
@@ -501,7 +498,7 @@ class Ocis
             $this->connectionConfig,
             $this->serviceUrl,
             $this->accessToken,
-            $this->ocisVersion
+            $this->getOcisVersion()
         );
     }
 
@@ -554,7 +551,7 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken,
-                $this->ocisVersion
+                $this->getOcisVersion()
             );
         }
         throw new InvalidResponseException(
