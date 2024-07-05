@@ -73,20 +73,22 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testGetDriveRole(): void
     {
+        //ocis stable doesn't support root endpoint
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(EndPointNotImplementedException::class);
+            $this->expectExceptionMessage("This method is not implemented in this ocis version");
+            $this->drive->getRoles();
+        }
         try {
             $role = $this->drive->getRoles();
-        } catch(EndPointNotImplementedException) {
-            if (getenv('OCIS_VERSION') !== "stable") {
-                $this->fail("EndPointNotImplementedException was thrown unexpectedly");
-            }
-            $this->markTestSkipped(
-                'This test is skipped because root endpoint for drive share is not applicable for version 5 of OCIS.'
+            $this->assertContainsOnlyInstancesOf(
+                SharingRole::class,
+                $role,
+                "Array contains not only 'SharingRole' items"
             );
+        } catch(EndPointNotImplementedException) {
+            //test should fail if ocis version is less than 6.0.0
+            $this->fail("EndPointNotImplementedException was thrown unexpectedly");
         };
-        $this->assertContainsOnlyInstancesOf(
-            SharingRole::class,
-            $role,
-            "Array contains not only 'SharingRole' items"
-        );
     }
 }
