@@ -53,6 +53,8 @@ class Ocis
     private const DECODE_TOKEN_ERROR_MESSAGE = 'Could not decode token.';
     public const FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE =
         'This function is not implemented yet! Place, name and signature of the function might change!';
+    public const ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE =
+        'This method is not implemented in this ocis version';
     private string $serviceUrl;
     private string $accessToken;
     private Configuration $graphApiConfig;
@@ -63,6 +65,7 @@ class Ocis
      * @phpstan-var ConnectionConfig
      */
     private array $connectionConfig;
+    private string $ocisVersion = '';
 
     /**
      * @phpstan-param ConnectionConfig $connectionConfig
@@ -111,7 +114,6 @@ class Ocis
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
             $this->serviceUrl . '/graph'
         );
-
     }
 
     public function getServiceUrl(): string
@@ -306,6 +308,33 @@ class Ocis
         }
         throw new InvalidResponseException('invalid webfinger response');
     }
+
+    /**
+     * returns the current oCIS version in semantic versioning format ( e.g. "5.0.5" )
+     *
+     * @return string
+     * @throws InvalidResponseException
+     */
+    public function getOcisVersion(): string
+    {
+        if(($this->ocisVersion)) {
+            return $this->ocisVersion;
+        } else {
+            $response = $this->guzzle->get($this->serviceUrl . '/ocs/v1.php/cloud/capabilities');
+            $responseContent = $response->getBody()->getContents();
+
+            $body = simplexml_load_string($responseContent);
+            if (!isset($body->data->version->productversion)) {
+                throw new InvalidResponseException('Missing productversion element in XML response');
+            }
+            $version = (string)$body->data->version->productversion;
+            $pattern = '(\d\.\d\.\d)';
+            preg_match($pattern, $version, $matches);
+            $this->ocisVersion = $matches[0];
+            return $this->ocisVersion;
+        }
+    }
+
     /**
      * Get all available drives
      *
@@ -358,7 +387,8 @@ class Ocis
                 $apiDrive,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $this->accessToken
+                $this->accessToken,
+                $this->getOcisVersion()
             );
             $drives[] = $drive;
         }
@@ -415,7 +445,8 @@ class Ocis
                 $apiDrive,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $this->accessToken
+                $this->accessToken,
+                $this->getOcisVersion()
             );
             $drives[] = $drive;
         }
@@ -472,7 +503,8 @@ class Ocis
             $apiDrive,
             $this->connectionConfig,
             $this->serviceUrl,
-            $this->accessToken
+            $this->accessToken,
+            $this->getOcisVersion()
         );
     }
 
@@ -524,7 +556,8 @@ class Ocis
                 $newlyCreatedDrive,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $this->accessToken
+                $this->accessToken,
+                $this->getOcisVersion()
             );
         }
         throw new InvalidResponseException(

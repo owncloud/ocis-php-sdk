@@ -14,6 +14,7 @@ use OpenAPI\Client\Model\DriveItem;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\EndPointNotImplementedException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
@@ -42,6 +43,7 @@ class Drive
     private array $connectionConfig;
     private Configuration $graphApiConfig;
     private string $serviceUrl;
+    private string $ocisVersion;
 
     /**
      * @ignore The developer using the SDK does not need to create drives manually, but should use the Ocis class
@@ -53,11 +55,13 @@ class Drive
         ApiDrive $apiDrive,
         array $connectionConfig,
         string $serviceUrl,
-        string &$accessToken
+        string &$accessToken,
+        string $ocisVersion
     ) {
         $this->apiDrive = $apiDrive;
         $this->accessToken = &$accessToken;
         $this->serviceUrl = $serviceUrl;
+        $this->ocisVersion = $ocisVersion;
         if (!Ocis::isConnectionConfigValid($connectionConfig)) {
             throw new \InvalidArgumentException('connection configuration not valid');
         }
@@ -583,9 +587,13 @@ class Drive
      * @throws UnauthorizedException
      * @throws InvalidResponseException
      * @throws InternalServerErrorException
+     * @throws EndPointNotImplementedException
      */
     public function getRoles(): array
     {
+        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+            throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
+        };
         $guzzle = new Client(
             Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
         );

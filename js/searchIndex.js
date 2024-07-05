@@ -221,6 +221,11 @@ Search.appendIndex(
             "summary": "Exception\u0020for\u0020HTTP\u0020409\u0020errors",
             "url": "classes/Owncloud-OcisPhpSdk-Exception-ConflictException.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\EndPointNotImplementedException",
+            "name": "EndPointNotImplementedException",
+            "summary": "Exception\u0020for\u0020endpoint\u0020that\u0020are\u0020not\u0020available\u0020in\u0020Ocis\u0020version",
+            "url": "classes/Owncloud-OcisPhpSdk-Exception-EndPointNotImplementedException.html"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\ForbiddenException",
             "name": "ForbiddenException",
             "summary": "Exception\u0020for\u0020HTTP\u0020403\u0020errors",
@@ -411,6 +416,11 @@ Search.appendIndex(
             "summary": "Update\u0020the\u0020access\u0020token.\u0020Call\u0020this\u0020function\u0020after\u0020refreshing\u0020the\u0020access\u0020token.",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_setAccessToken"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetOcisVersion\u0028\u0029",
+            "name": "getOcisVersion",
+            "summary": "returns\u0020the\u0020current\u0020oCIS\u0020version\u0020in\u0020semantic\u0020versioning\u0020format\u0020\u0028\u0020e.g.\u0020\u00225.0.5\u0022\u0020\u0029",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getOcisVersion"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetAllDrives\u0028\u0029",
             "name": "getAllDrives",
             "summary": "Get\u0020all\u0020available\u0020drives",
@@ -485,6 +495,11 @@ Search.appendIndex(
             "name": "FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#constant_FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE",
+            "name": "ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#constant_ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource",
             "name": "OcisResource",
