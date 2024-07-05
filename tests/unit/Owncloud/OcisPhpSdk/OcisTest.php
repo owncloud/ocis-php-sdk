@@ -14,6 +14,7 @@ use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Ocis;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
@@ -121,7 +122,8 @@ class OcisTest extends TestCase
         $ocis = new Ocis(
             'https://localhost:9200',
             'tokenWhenCreated',
-            ['drivesGetDrivesApi' => $drivesGetDrivesApi]
+            /* @phpstan-ignore-next-line */
+            [ 'guzzle' => $this->setUpMocksForOcisVersion(), 'drivesGetDrivesApi' => $drivesGetDrivesApi]
         );
         $drives = $ocis->getAllDrives();
         foreach ($drives as $drive) {
@@ -147,6 +149,29 @@ class OcisTest extends TestCase
         $ocis->setAccessToken('changedToken');
         $this->assertSame('changedToken', $notifications[0]->getAccessToken());
         $this->assertSame('changedToken', $notifications[1]->getAccessToken());
+    }
+
+    private function setUpMocksForOcisVersion(?string $responseContent = null): MockObject
+    {
+        if ($responseContent === null) {
+            $responseContent = <<<XML
+                <ocs>
+                  <data>
+                    <version>
+                      <productversion>6.0.0</productversion>
+                    </version>
+                  </data>
+                </ocs>
+                XML;
+        };
+        $streamMock = $this->createMock(StreamInterface::class);
+        $streamMock->method('getContents')->willReturn($responseContent);
+        $responseMock = $this->createMock(ResponseInterface::class);
+        $responseMock->method('getBody')->willReturn($streamMock);
+        $guzzleMock = $this->createMock(Client::class);
+        $guzzleMock->method('get')
+            ->willReturn($responseMock);
+        return $guzzleMock;
     }
 
     private function setupMocksForNotificationTests(

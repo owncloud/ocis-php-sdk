@@ -65,6 +65,7 @@ class Ocis
      * @phpstan-var ConnectionConfig
      */
     private array $connectionConfig;
+    private string $ocisVersion = '';
 
     /**
      * @phpstan-param ConnectionConfig $connectionConfig
@@ -309,24 +310,29 @@ class Ocis
     }
 
     /**
-     * saves current oCIS version in semantic versioning format ( e.g. "5.0.5" )
+     * returns the current oCIS version in semantic versioning format ( e.g. "5.0.5" )
      *
      * @return string
      * @throws InvalidResponseException
      */
-    private function getOcisVersion(): string
+    public function getOcisVersion(): string
     {
-        $response = $this->guzzle->get($this->serviceUrl . '/ocs/v1.php/cloud/capabilities');
-        $responseContent = $response->getBody()->getContents();
+        if(($this->ocisVersion)) {
+            return $this->ocisVersion;
+        } else {
+            $response = $this->guzzle->get($this->serviceUrl . '/ocs/v1.php/cloud/capabilities');
+            $responseContent = $response->getBody()->getContents();
 
-        $body = simplexml_load_string($responseContent);
-        if (!isset($body->data->capabilities->core->status->productversion)) {
-            throw new InvalidResponseException('Missing productversion element in XML response');
+            $body = simplexml_load_string($responseContent);
+            if (!isset($body->data->version->productversion)) {
+                throw new InvalidResponseException('Missing productversion element in XML response');
+            }
+            $version = (string)$body->data->version->productversion;
+            $pattern = '(\d\.\d\.\d)';
+            preg_match($pattern, $version, $matches);
+            $this->ocisVersion = $matches[0];
+            return $this->ocisVersion;
         }
-        $version = (string)$body->data->capabilities->core->status->productversion;
-        $pattern = '(\d\.\d\.\d)';
-        preg_match($pattern, $version, $matches);
-        return $matches[0];
     }
 
     /**
