@@ -121,31 +121,6 @@ class OcisResource
     }
 
     /**
-     * @param $recipient
-     * @param SharingRole $role
-     * @param \DateTimeImmutable|null $expiration
-     *
-     * @return array
-     */
-    public static function getShareInviteBody($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): array
-    {
-        $driveItemInviteData = [];
-        $driveItemInviteData['recipients'] = [];
-        $recipientData = [];
-        $recipientData['object_id'] = $recipient->getId();
-        if ($recipient instanceof Group) {
-            $recipientData['at_libre_graph_recipient_type'] = "group";
-        }
-        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
-        $driveItemInviteData['roles'] = [$role->getId()];
-        if ($expiration !== null) {
-            $expirationMutable = \DateTime::createFromImmutable($expiration);
-            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
-        }
-        return $driveItemInviteData;
-    }
-
-    /**
      * Gets all possible Roles for the resource
      * @return array<SharingRole>
      * @throws BadRequestException
@@ -206,7 +181,19 @@ class OcisResource
      */
     public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): ShareCreated
     {
-        $driveItemInviteData = $this->getShareInviteBody($recipient, $role, $expiration);
+        $driveItemInviteData = [];
+        $driveItemInviteData['recipients'] = [];
+        $recipientData = [];
+        $recipientData['object_id'] = $recipient->getId();
+        if ($recipient instanceof Group) {
+            $recipientData['at_libre_graph_recipient_type'] = "group";
+        }
+        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
+        $driveItemInviteData['roles'] = [$role->getId()];
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
+        }
 
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesPermissionsApi'];

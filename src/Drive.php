@@ -582,12 +582,11 @@ class Drive
 
     /**
      * Invite a user or group to the drive.
-     * Every recipient will result in an own ShareCreated object in the returned array.
      *
      * @param User|Group $recipient
      * @param SharingRole $role
      * @param \DateTimeImmutable|null $expiration
-     * @return ShareCreated
+     * @return DriveShare
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -595,10 +594,27 @@ class Drive
      * @throws NotFoundException
      * @throws UnauthorizedException
      * @throws InternalServerErrorException
+     * @throws EndPointNotImplementedException
      */
-    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): ShareCreated
+    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): DriveShare
     {
-        $driveItemInviteData = OcisResource::getShareInviteBody($recipient, $role, $expiration);
+        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+            throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
+        }
+
+        $driveItemInviteData = [];
+        $driveItemInviteData['recipients'] = [];
+        $recipientData = [];
+        $recipientData['object_id'] = $recipient->getId();
+        if ($recipient instanceof Group) {
+            $recipientData['at_libre_graph_recipient_type'] = "group";
+        }
+        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
+        $driveItemInviteData['roles'] = [$role->getId()];
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
+        }
 
         if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesRootApi'];
@@ -634,13 +650,9 @@ class Drive
             );
         }
 
-        return new ShareCreated(
+        return new DriveShare(
             $permissionsValue[0],
-            $this->getId(),
-            $this->getId(),
-            $this->connectionConfig,
-            $this->serviceUrl,
-            $this->accessToken
+            $this->getId()
         );
     }
 

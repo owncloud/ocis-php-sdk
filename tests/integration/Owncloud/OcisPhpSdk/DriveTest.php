@@ -2,10 +2,16 @@
 
 namespace integration\Owncloud\OcisPhpSdk;
 
+use OpenAPI\Client\Model\UnifiedRoleDefinition;
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\EndPointNotImplementedException;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\SharingRole;
 
@@ -73,7 +79,7 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testGetDriveRole(): void
     {
-        //ocis stable doesn't support root endpoint
+        // ocis stable doesn't support root endpoint
         if (getenv('OCIS_VERSION') === "stable") {
             $this->expectException(EndPointNotImplementedException::class);
             $this->expectExceptionMessage("This method is not implemented in this ocis version");
@@ -87,50 +93,81 @@ class DriveTest extends OcisPhpSdkTestCase
                 "Array contains not only 'SharingRole' items"
             );
         } catch(EndPointNotImplementedException) {
-            //test should fail if ocis version is less than 6.0.0
+            // test should fail if ocis version is less than 6.0.0
             $this->fail("EndPointNotImplementedException was thrown unexpectedly");
-        };
+        }
     }
 
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
     public function testCreateDriveInvite(): void
     {
-        // At the time of writing, "stable" is major version 5 of ocis.
-        // This functionality works with major version 6.
-        // When ocis major version 6 has been released as "stable" then remove this test skip.
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped(
-                'This test is skipped because root endpoint for drive share is not applicable for version 5 of OCIS.'
-            );
-        };
         $marieOcis = $this->initUser('marie', 'radioactivity');
 
         $marie = $this->ocis->getUsers('marie')[0];
 
         $managerRole = null;
-        foreach ($this->drive->getRoles() as $role) {
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
+            $role = [
+                "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
+                "description" => "Allows managing a space",
+                "displayName" => "Manager",
+                "@libre.graph.weight" => 3
+            ];
+
+            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
+        } else {
+            $shareRoles = $this->drive->getRoles();
+        }
+        foreach ($shareRoles as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
                 $managerRole = $role;
                 break;
             }
         }
+
         if (empty($managerRole)) {
             throw new \Error(
                 "manager role not found "
             );
         }
-        $this->drive->invite($marie, $managerRole);
+        // ocis stable doesn't support root endpoint
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(EndPointNotImplementedException::class);
+            $this->expectExceptionMessage("This method is not implemented in this ocis version");
+            $this->drive->invite($marie, $managerRole);
+        }
 
-        $receivedShareDrive = $marieOcis->getDriveById($this->drive->getId());
-        $this->assertSame(
-            $this->drive->getId(),
-            $receivedShareDrive->getId(),
-            "Expected driveId to be " . $this->drive->getId()
-            . " but found " . $receivedShareDrive->getId()
-        );
-        $this->assertSame(
-            $this->drive->getName(),
-            $receivedShareDrive->getName(),
-            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedShareDrive->getName()
-        );
+        try {
+            $driveShare = $this->drive->invite($marie, $managerRole);
+
+            $this->assertNull($driveShare->getExpiration(), "Expiration date for sharing drive wasn't found to be null");
+            $receivedShareDrive = $marieOcis->getDriveById($this->drive->getId());
+            $this->assertSame(
+                $this->drive->getId(),
+                $receivedShareDrive->getId(),
+                "Expected driveId to be " . $this->drive->getId()
+                . " but found " . $receivedShareDrive->getId()
+            );
+            $this->assertSame(
+                $this->drive->getName(),
+                $receivedShareDrive->getName(),
+                "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedShareDrive->getName()
+            );
+        } catch(EndPointNotImplementedException) {
+            // test should fail if ocis version is less than 6.0.0
+            $this->fail("EndPointNotImplementedException was thrown unexpectedly");
+        }
     }
 }
