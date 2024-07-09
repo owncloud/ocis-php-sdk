@@ -6,8 +6,8 @@ use OpenAPI\Client\Model\SharingLinkType;
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
-use Owncloud\OcisPhpSdk\ShareCreated;
-use Owncloud\OcisPhpSdk\ShareLink;
+use Owncloud\OcisPhpSdk\ResourceShareCreated;
+use Owncloud\OcisPhpSdk\ResourceShareLink;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
@@ -59,9 +59,9 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         $this->sharedResource->invite($this->einstein, $this->editorRole);
         $myShare = $this->ocis->getSharedByMe();
         $this->assertInstanceOf(
-            ShareCreated::class,
+            ResourceShareCreated::class,
             $myShare[0],
-            "Expected class " . ShareCreated::class
+            "Expected class " . ResourceShareCreated::class
                 . " but got " . get_class($myShare[0])
         );
         $this->assertSame(
@@ -91,9 +91,9 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         );
         $myShare = $this->ocis->getSharedByMe();
         $this->assertInstanceOf(
-            ShareLink::class,
+            ResourceShareLink::class,
             $myShare[0],
-            "Expected class " . ShareLink::class
+            "Expected class " . ResourceShareLink::class
             . " but got " . get_class($myShare[0])
         );
         $this->assertSame(
@@ -119,15 +119,15 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         );
         $myShares = $this->ocis->getSharedByMe();
         $this->assertInstanceOf(
-            ShareCreated::class,
+            ResourceShareCreated::class,
             $myShares[0],
-            "Expected class " . ShareCreated::class
+            "Expected class " . ResourceShareCreated::class
             . " but got " . get_class($myShares[0])
         );
         $this->assertInstanceOf(
-            ShareLink::class,
+            ResourceShareLink::class,
             $myShares[1],
-            "Expected class " . ShareLink::class
+            "Expected class " . ResourceShareLink::class
             . " but got " . get_class($myShares[1])
         );
         foreach ($myShares as $myshare) {

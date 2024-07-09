@@ -205,12 +205,6 @@ class DriveTest extends OcisPhpSdkTestCase
                     "manager role not found "
                 );
             }
-            // ocis stable doesn't support root endpoint
-            if (getenv('OCIS_VERSION') === "stable") {
-                $this->expectException(EndPointNotImplementedException::class);
-                $this->expectExceptionMessage("This method is not implemented in this ocis version");
-                $this->drive->invite($marie, $managerRole);
-            }
 
             $driveShare = $this->drive->invite($marie, $managerRole);
             $isDriveShareDeleted = $driveShare->delete();

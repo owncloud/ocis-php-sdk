@@ -26,11 +26,10 @@ class Share
 
 
     /**
-     * @throws InvalidResponseException
      * @phpstan-param ConnectionConfig $connectionConfig
      * @ignore The developer using the SDK does not need to create share objects manually,
-     *         but should use the OcisResource class to invite people to a resource and
-     *         that will create ShareCreated objects
+     *         but should use the OcisResource/Drive class to invite people to a resource/drive and
+     *         that will create DriveShare/ResourceShareCreated objects
      */
     public function __construct(
         ApiPermission $apiPermission,

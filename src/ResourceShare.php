@@ -41,7 +41,7 @@ class ResourceShare extends Share
      * @phpstan-param ConnectionConfig $connectionConfig
      * @ignore The developer using the SDK does not need to create share objects manually,
      *         but should use the OcisResource class to invite people to a resource and
-     *         that will create ShareCreated objects
+     *         that will create ResourceShareCreated objects
      */
     public function __construct(
         ApiPermission $apiPermission,

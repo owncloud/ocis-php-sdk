@@ -13,7 +13,7 @@ use OpenAPI\Client\Model\UnifiedRoleDefinition;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\OcisResource;
-use Owncloud\OcisPhpSdk\ShareCreated;
+use Owncloud\OcisPhpSdk\ResourceShareCreated;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 use PHPUnit\Framework\TestCase;
@@ -148,7 +148,7 @@ class ResourceInviteTest extends TestCase
         $role = new SharingRole($openAPIRole);
 
         $result = $resource->invite($recipient, $role, $expiration);
-        $this->assertInstanceOf(ShareCreated::class, $result);
+        $this->assertInstanceOf(ResourceShareCreated::class, $result);
     }
 
     /**

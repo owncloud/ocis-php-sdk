@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesRootApi;
 use OpenAPI\Client\ApiException;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
-use Owncloud\OcisPhpSdk\Exception\EndPointNotImplementedException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
@@ -33,7 +32,7 @@ class DriveShare extends Share
     }
 
     /**
-     * Permanently delete the current share or share link
+     * Permanently delete the current drive share
      *
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -42,7 +41,6 @@ class DriveShare extends Share
      * @throws UnauthorizedException
      * @throws InvalidResponseException
      * @throws InternalServerErrorException
-     * @throws EndPointNotImplementedException
      */
     public function delete(): bool
     {
