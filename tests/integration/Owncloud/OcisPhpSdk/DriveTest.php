@@ -170,4 +170,52 @@ class DriveTest extends OcisPhpSdkTestCase
             $this->fail("EndPointNotImplementedException was thrown unexpectedly");
         }
     }
+
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
+    public function testDeleteDriveInvite(): void
+    {
+        $this->initUser('marie', 'radioactivity');
+
+        $marie = $this->ocis->getUsers('marie')[0];
+
+        $managerRole = null;
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->markTestSkipped('Ocis version < 6.0.0 does not support creation of drive share invite so delete drive share test has been skipped');
+        } else {
+            foreach ($this->drive->getRoles() as $role) {
+                if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                    $managerRole = $role;
+                    break;
+                }
+            }
+
+            if (empty($managerRole)) {
+                throw new \Error(
+                    "manager role not found "
+                );
+            }
+            // ocis stable doesn't support root endpoint
+            if (getenv('OCIS_VERSION') === "stable") {
+                $this->expectException(EndPointNotImplementedException::class);
+                $this->expectExceptionMessage("This method is not implemented in this ocis version");
+                $this->drive->invite($marie, $managerRole);
+            }
+
+            $driveShare = $this->drive->invite($marie, $managerRole);
+            $isDriveShareDeleted = $driveShare->delete();
+            $this->assertTrue($isDriveShareDeleted);
+        }
+
+    }
 }
