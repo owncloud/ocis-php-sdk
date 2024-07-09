@@ -156,6 +156,11 @@ Search.appendIndex(
             "summary": "Empty\u0020the\u0020trash\u002Dbin\u0020of\u0020the\u0020current\u0020drive.\u0020ALL\u0020FILES\u0020AND\u0020FOLDERS\u0020IN\u0020THE\u0020TRASH\u002DBIN\u0020WILL\u0020BE\u0020DELETED\u0021\nTHIS\u0020ACTION\u0020CANNOT\u0020BE\u0020REVERTED\u0021",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_emptyTrashbin"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003Ainvite\u0028\u0029",
+            "name": "invite",
+            "summary": "Invite\u0020a\u0020user\u0020or\u0020group\u0020to\u0020the\u0020drive.",
+            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_invite"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetRoles\u0028\u0029",
             "name": "getRoles",
             "summary": "Gets\u0020all\u0020possible\u0020roles\u0020for\u0020the\u0020drive",
@@ -185,6 +190,26 @@ Search.appendIndex(
             "name": "NAME",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-DriveOrder.html#enumcase_NAME"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare",
+            "name": "DriveShare",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AgetPermissionId\u0028\u0029",
+            "name": "getPermissionId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_getPermissionId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AgetExpiration\u0028\u0029",
+            "name": "getExpiration",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_getExpiration"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AgetDriveId\u0028\u0029",
+            "name": "getDriveId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_getDriveId"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveType",
             "name": "DriveType",
