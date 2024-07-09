@@ -14,7 +14,7 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
-class ShareCreated extends Share
+class ShareCreated extends ResourceShare
 {
     public function getPermissionId(): string
     {

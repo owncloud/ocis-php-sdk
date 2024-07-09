@@ -21,7 +21,7 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
  *
  * @phpstan-import-type ConnectionConfig from Ocis
  */
-class ShareLink extends Share
+class ShareLink extends ResourceShare
 {
     public function getSharingLink(): ApiSharingLink
     {
