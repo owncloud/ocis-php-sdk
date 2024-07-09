@@ -11,7 +11,10 @@ use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveUpdate;
 use OpenAPI\Client\Model\DriveItem;
+use OpenAPI\Client\Model\DriveItemInvite;
+use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
+use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
 use Owncloud\OcisPhpSdk\Exception\EndPointNotImplementedException;
@@ -575,6 +578,82 @@ class Drive
         $webDavClient = $this->createWebDavClient();
         $webDavClient->sendRequest('DELETE', "/dav/spaces/trash-bin/" . $this->getId());
         return true;
+    }
+
+    /**
+     * Invite a user or group to the drive.
+     *
+     * @param User|Group $recipient
+     * @param SharingRole $role
+     * @param \DateTimeImmutable|null $expiration
+     * @return DriveShare
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws InternalServerErrorException
+     * @throws EndPointNotImplementedException
+     */
+    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): DriveShare
+    {
+        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+            throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
+        }
+
+        $driveItemInviteData = [];
+        $driveItemInviteData['recipients'] = [];
+        $recipientData = [];
+        $recipientData['object_id'] = $recipient->getId();
+        if ($recipient instanceof Group) {
+            $recipientData['at_libre_graph_recipient_type'] = "group";
+        }
+        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
+        $driveItemInviteData['roles'] = [$role->getId()];
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
+        }
+
+        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
+            $apiInstance = $this->connectionConfig['drivesRootApi'];
+        } else {
+            $guzzle = new Client(
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            );
+            $apiInstance = new DrivesRootApi(
+                $guzzle,
+                $this->graphApiConfig
+            );
+        }
+
+        $inviteData = new DriveItemInvite($driveItemInviteData);
+        try {
+            $permissions = $apiInstance->inviteSpaceRoot($this->getId(), $inviteData);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "invite returned an OdataError - " . $permissions->getError()
+            );
+        }
+        $permissionsValue = $permissions->getValue();
+        if (
+            $permissionsValue === null ||
+            !array_key_exists(0, $permissionsValue) ||
+            !($permissionsValue[0] instanceof Permission)
+        ) {
+            throw new InvalidResponseException(
+                "invite returned invalid data " . print_r($permissionsValue, true)
+            );
+        }
+
+        return new DriveShare(
+            $permissionsValue[0],
+            $this->getId()
+        );
     }
 
     /**
