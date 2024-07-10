@@ -652,7 +652,10 @@ class Drive
 
         return new DriveShare(
             $permissionsValue[0],
-            $this->getId()
+            $this->getId(),
+            $this->connectionConfig,
+            $this->serviceUrl,
+            $this->accessToken
         );
     }
 

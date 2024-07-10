@@ -193,23 +193,13 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare",
             "name": "DriveShare",
-            "summary": "",
+            "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
             "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AgetPermissionId\u0028\u0029",
-            "name": "getPermissionId",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_getPermissionId"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AgetExpiration\u0028\u0029",
-            "name": "getExpiration",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_getExpiration"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AgetDriveId\u0028\u0029",
-            "name": "getDriveId",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_getDriveId"
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003Adelete\u0028\u0029",
+            "name": "delete",
+            "summary": "Permanently\u0020delete\u0020the\u0020current\u0020drive\u0020share",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_delete"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveType",
             "name": "DriveType",
@@ -641,6 +631,86 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-OrderDirection.html#enumcase_DESC"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShare",
+            "name": "ResourceShare",
+            "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShare.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShare\u003A\u003AgetResourceId\u0028\u0029",
+            "name": "getResourceId",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShare.html#method_getResourceId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShare\u003A\u003Adelete\u0028\u0029",
+            "name": "delete",
+            "summary": "Permanently\u0020delete\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShare.html#method_delete"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShare\u003A\u003AsetExpiration\u0028\u0029",
+            "name": "setExpiration",
+            "summary": "Change\u0020the\u0020Expiration\u0020date\u0020for\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link\nSet\u0020to\u0020null\u0020to\u0020remove\u0020the\u0020expiration\u0020date",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShare.html#method_setExpiration"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareCreated",
+            "name": "ResourceShareCreated",
+            "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareCreated.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareCreated\u003A\u003AsetRole\u0028\u0029",
+            "name": "setRole",
+            "summary": "Change\u0020the\u0020Role\u0020of\u0020the\u0020particular\u0020Share.",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareCreated.html#method_setRole"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareCreated\u003A\u003AgetReceiver\u0028\u0029",
+            "name": "getReceiver",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareCreated.html#method_getReceiver"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink",
+            "name": "ResourceShareLink",
+            "summary": "Class\u0020representing\u0020a\u0020public\u0020link\u0020to\u0020a\u0020resource",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AgetSharingLink\u0028\u0029",
+            "name": "getSharingLink",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_getSharingLink"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AgetType\u0028\u0029",
+            "name": "getType",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_getType"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AgetWebUrl\u0028\u0029",
+            "name": "getWebUrl",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_getWebUrl"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AgetDisplayName\u0028\u0029",
+            "name": "getDisplayName",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_getDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AsetDisplayName\u0028\u0029",
+            "name": "setDisplayName",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_setDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AsetType\u0028\u0029",
+            "name": "setType",
+            "summary": "Change\u0020the\u0020type\u0020of\u0020the\u0020current\u0020ResourceShareLink.",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_setType"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AsetPassword\u0028\u0029",
+            "name": "setPassword",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_setPassword"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\ResourceShareLink\u003A\u003AupdateLinkOfPermission\u0028\u0029",
+            "name": "updateLinkOfPermission",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-ResourceShareLink.html#method_updateLinkOfPermission"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Share",
             "name": "Share",
             "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
@@ -660,86 +730,6 @@ Search.appendIndex(
             "name": "getDriveId",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getDriveId"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AgetResourceId\u0028\u0029",
-            "name": "getResourceId",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_getResourceId"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003Adelete\u0028\u0029",
-            "name": "delete",
-            "summary": "Permanently\u0020delete\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link",
-            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_delete"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Share\u003A\u003AsetExpiration\u0028\u0029",
-            "name": "setExpiration",
-            "summary": "Change\u0020the\u0020Expiration\u0020date\u0020for\u0020the\u0020current\u0020share\u0020or\u0020share\u0020link\nSet\u0020to\u0020null\u0020to\u0020remove\u0020the\u0020expiration\u0020date",
-            "url": "classes/Owncloud-OcisPhpSdk-Share.html#method_setExpiration"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated",
-            "name": "ShareCreated",
-            "summary": "Parent\u0020class\u0020representing\u0020different\u0020types\u0020of\u0020share\u0020objects",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated\u003A\u003AgetPermissionId\u0028\u0029",
-            "name": "getPermissionId",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_getPermissionId"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated\u003A\u003AsetRole\u0028\u0029",
-            "name": "setRole",
-            "summary": "Change\u0020the\u0020Role\u0020of\u0020the\u0020particular\u0020Share.",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_setRole"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareCreated\u003A\u003AgetReceiver\u0028\u0029",
-            "name": "getReceiver",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareCreated.html#method_getReceiver"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink",
-            "name": "ShareLink",
-            "summary": "Class\u0020representing\u0020a\u0020public\u0020link\u0020to\u0020a\u0020resource",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetSharingLink\u0028\u0029",
-            "name": "getSharingLink",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getSharingLink"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetType\u0028\u0029",
-            "name": "getType",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getType"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetWebUrl\u0028\u0029",
-            "name": "getWebUrl",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getWebUrl"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AgetDisplayName\u0028\u0029",
-            "name": "getDisplayName",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_getDisplayName"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetDisplayName\u0028\u0029",
-            "name": "setDisplayName",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setDisplayName"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetType\u0028\u0029",
-            "name": "setType",
-            "summary": "Change\u0020the\u0020type\u0020of\u0020the\u0020current\u0020ShareLink.",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setType"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AsetPassword\u0028\u0029",
-            "name": "setPassword",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_setPassword"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareLink\u003A\u003AupdateLinkOfPermission\u0028\u0029",
-            "name": "updateLinkOfPermission",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-ShareLink.html#method_updateLinkOfPermission"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\ShareReceived",
             "name": "ShareReceived",
