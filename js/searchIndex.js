@@ -201,6 +201,16 @@ Search.appendIndex(
             "summary": "Permanently\u0020delete\u0020the\u0020current\u0020drive\u0020share",
             "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_delete"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AsetRole\u0028\u0029",
+            "name": "setRole",
+            "summary": "Change\u0020the\u0020Role\u0020of\u0020the\u0020particular\u0020Drive\u0020Share.",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setRole"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveShare\u003A\u003AsetExpiration\u0028\u0029",
+            "name": "setExpiration",
+            "summary": "Change\u0020the\u0020Expiration\u0020date\u0020for\u0020the\u0020current\u0020drive\u0020share\nSet\u0020to\u0020null\u0020to\u0020remove\u0020the\u0020expiration\u0020date",
+            "url": "classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setExpiration"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\DriveType",
             "name": "DriveType",
             "summary": "Accepted\u0020drive\u0020types",

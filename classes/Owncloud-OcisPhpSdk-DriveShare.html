@@ -141,9 +141,9 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/DriveShare.php"><a href="files/src-driveshare.html"><abbr title="src/DriveShare.php">DriveShare.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">17</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#source-view.17" class="phpdocumentor-element-found-in__source" data-line="17" data-modal="source-view" data-src="files/src/DriveShare.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#source-view.21" class="phpdocumentor-element-found-in__source" data-line="21" data-modal="source-view" data-src="files/src/DriveShare.php.txt"></a>
     </aside>
 
             <p class="phpdocumentor-summary">Parent class representing different types of share objects</p>
@@ -202,6 +202,21 @@
                                 &nbsp;: string    </span>
 </dt>
 
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setExpiration">setExpiration()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Change the Expiration date for the current drive share
+Set to null to remove the expiration date</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setRole">setRole()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Change the Role of the particular Drive Share.</dd>
+
     </dl>
 
 
@@ -230,9 +245,9 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/DriveShare.php"><a href="files/src-driveshare.html"><abbr title="src/DriveShare.php">DriveShare.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">45</span>
+    <span class="phpdocumentor-element-found-in__line">49</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#source-view.45" class="phpdocumentor-element-found-in__source" data-line="45" data-modal="source-view" data-src="files/src/DriveShare.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#source-view.49" class="phpdocumentor-element-found-in__source" data-line="49" data-modal="source-view" data-src="files/src/DriveShare.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Permanently delete the current drive share</p>
@@ -436,6 +451,244 @@
             </section>
 
 </article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setExpiration">
+        setExpiration()
+        <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setExpiration" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/DriveShare.php"><a href="files/src-driveshare.html"><abbr title="src/DriveShare.php">DriveShare.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">125</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#source-view.125" class="phpdocumentor-element-found-in__source" data-line="125" data-modal="source-view" data-src="files/src/DriveShare.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Change the Expiration date for the current drive share
+Set to null to remove the expiration date</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">setExpiration</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$expiration</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$expiration</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\DateTimeImmutable">DateTimeImmutable</abbr>|null</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setExpiration#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InternalServerErrorException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InternalServerErrorException">InternalServerErrorException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_setRole">
+        setRole()
+        <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setRole" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="src/DriveShare.php"><a href="files/src-driveshare.html"><abbr title="src/DriveShare.php">DriveShare.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">106</span>
+
+            <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#source-view.106" class="phpdocumentor-element-found-in__source" data-line="106" data-modal="source-view" data-src="files/src/DriveShare.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Change the Role of the particular Drive Share.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">setRole</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$role</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>Possible roles are defined by the drive and have to be queried using Drive::getRoles()
+Roles for shares are not to be confused with the types of share links!</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$role</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Owncloud-OcisPhpSdk-SharingRole.html"><abbr title="\Owncloud\OcisPhpSdk\SharingRole">SharingRole</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setRole#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">see</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                                    <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Drive.html#method_getRoles"><abbr title="\Owncloud\OcisPhpSdk\Drive::getRoles()">Drive::getRoles()</abbr></a></span>
+                                        
+                                             
+                                    </dd>
+                                                <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-UnauthorizedException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\UnauthorizedException">UnauthorizedException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-ForbiddenException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\ForbiddenException">ForbiddenException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InvalidResponseException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InvalidResponseException">InvalidResponseException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-BadRequestException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\BadRequestException">BadRequestException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-HttpException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\HttpException">HttpException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-NotFoundException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\NotFoundException">NotFoundException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                            <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><a href="classes/Owncloud-OcisPhpSdk-Exception-InternalServerErrorException.html"><abbr title="\Owncloud\OcisPhpSdk\Exception\InternalServerErrorException">InternalServerErrorException</abbr></a></span>
+                                                            
+                                             
+                                    </dd>
+                                            </dl>
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
             </section>
 
         <div class="phpdocumentor-modal" id="source-view">
@@ -553,6 +806,8 @@
                                             <li class=""><a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getDriveId">getDriveId()</a></li>
                                             <li class=""><a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getExpiration">getExpiration()</a></li>
                                             <li class=""><a href="classes/Owncloud-OcisPhpSdk-Share.html#method_getPermissionId">getPermissionId()</a></li>
+                                            <li class=""><a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setExpiration">setExpiration()</a></li>
+                                            <li class=""><a href="classes/Owncloud-OcisPhpSdk-DriveShare.html#method_setRole">setRole()</a></li>
                                     </ul>
             </li>
                     </ul>
