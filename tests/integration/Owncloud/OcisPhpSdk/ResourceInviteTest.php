@@ -10,7 +10,7 @@ use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\ShareReceived; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
-use Owncloud\OcisPhpSdk\ShareCreated;
+use Owncloud\OcisPhpSdk\ResourceShareCreated;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
@@ -294,9 +294,9 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
         );
         for($i = 0; $i < 6; $i++) {
             $this->assertInstanceOf(
-                ShareCreated::class,
+                ResourceShareCreated::class,
                 $shares[$i],
-                "Expected class to be 'ShareCreated' but found "
+                "Expected class to be 'ResourceShareCreated' but found "
                 . get_class($shares[$i])
             );
             $this->assertSame(

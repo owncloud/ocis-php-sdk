@@ -8,7 +8,7 @@ use OpenAPI\Client\Model\Permission;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource;
-use Owncloud\OcisPhpSdk\ShareCreated;
+use Owncloud\OcisPhpSdk\ResourceShareCreated;
 use Owncloud\OcisPhpSdk\SharingRole;
 use Owncloud\OcisPhpSdk\User;
 
@@ -53,9 +53,9 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
             $this->assertInstanceOf(
-                ShareCreated::class,
+                ResourceShareCreated::class,
                 $share,
-                "Expected class to be 'ShareCreated' but found "
+                "Expected class to be 'ResourceShareCreated' but found "
                 . get_class($share)
             );
             if ($share->getReceiver()->getDisplayName() === 'Albert Einstein') {
@@ -96,9 +96,9 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $shares = $this->ocis->getSharedByMe();
         foreach ($shares as $share) {
             $this->assertInstanceOf(
-                ShareCreated::class,
+                ResourceShareCreated::class,
                 $share,
-                "Expected class to be 'ShareCreated' but found "
+                "Expected class to be 'ResourceShareCreated' but found "
                 . get_class($share)
             );
             if ($share->getReceiver()->getDisplayName() === 'philosophyhaters') {
@@ -140,7 +140,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
             'id' => 'does not exist'
         ]);
         $token = $this->getAccessToken('admin', 'admin');
-        $share = new ShareCreated(
+        $share = new ResourceShareCreated(
             $permission,
             $this->fileToShare->getId(),
             $this->fileToShare->getSpaceId(),
