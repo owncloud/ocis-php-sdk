@@ -210,6 +210,95 @@ class DriveTest extends OcisPhpSdkTestCase
             $isDriveShareDeleted = $driveShare->delete();
             $this->assertTrue($isDriveShareDeleted);
         }
+    }
 
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
+    public function testSetRole(): void
+    {
+        $this->initUser('marie', 'radioactivity');
+
+        $marie = $this->ocis->getUsers('marie')[0];
+
+        $managerRole = null;
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->markTestSkipped('Ocis version < 6.0.0 does not support creation of drive share invite so set role of shared drive test has been skipped');
+        } else {
+            foreach ($this->drive->getRoles() as $role) {
+                if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                    $managerRole = $role;
+                    break;
+                }
+            }
+            if (empty($managerRole)) {
+                throw new \Error(
+                    "manager role not found "
+                );
+            }
+            $driveShare = $this->drive->invite($marie, $managerRole);
+            foreach ($this->drive->getRoles() as $role) {
+                if ($role->getId() !== self::getPermissionsRoleIdByName('Manager')) {
+                    $isRoleSet = $driveShare->setRole($role);
+                    $this->assertTrue($isRoleSet, "Failed to set role");
+                }
+            }
+        }
+    }
+
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
+    public function testSetExpirationDate(): void
+    {
+        $this->initUser('marie', 'radioactivity');
+
+        $marie = $this->ocis->getUsers('marie')[0];
+
+        $managerRole = null;
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->markTestSkipped('Ocis version < 6.0.0 does not support creation of drive share invite so set expiration date of shared drive test has been skipped');
+        } else {
+            foreach ($this->drive->getRoles() as $role) {
+                if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                    $managerRole = $role;
+                    break;
+                }
+            }
+            if (empty($managerRole)) {
+                throw new \Error(
+                    "manager role not found "
+                );
+            }
+            $tomorrow = new \DateTimeImmutable('tomorrow');
+
+            $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
+
+            $driveShare = $this->drive->invite($marie, $managerRole, $tomorrow);
+            $isExpirationDateUpdated = $driveShare->setExpiration($oneYearTime);
+            $this->assertTrue($isExpirationDateUpdated, "Expected expiration date to be updated");
+
+            $expiration = $driveShare->getExpiration();
+            $this->assertNotNull($expiration);
+            $this->assertSame($oneYearTime->getTimestamp(), $expiration->getTimestamp(), "Expected expiration date to be updated");
+        }
     }
 }
