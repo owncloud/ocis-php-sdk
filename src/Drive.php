@@ -17,6 +17,7 @@ use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Exception\EndPointNotImplementedException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
@@ -25,6 +26,7 @@ use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\NotImplementedException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
@@ -173,6 +175,24 @@ class Drive
     public function getRawData(): mixed
     {
         return $this->apiDrive->jsonSerialize();
+    }
+
+    /**
+     * @return DrivesRootApi
+     */
+    private function getDrivesRootApi(): DrivesRootApi
+    {
+        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
+            return $this->connectionConfig['drivesRootApi'];
+        }
+
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+        return new DrivesRootApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
     }
 
     /**
@@ -586,7 +606,7 @@ class Drive
      * @param User|Group $recipient
      * @param SharingRole $role
      * @param \DateTimeImmutable|null $expiration
-     * @return DriveShare
+     * @return Permission
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -596,41 +616,29 @@ class Drive
      * @throws InternalServerErrorException
      * @throws EndPointNotImplementedException
      */
-    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): DriveShare
+    public function invite(User|Group $recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): Permission
     {
         if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
 
-        $driveItemInviteData = [];
-        $driveItemInviteData['recipients'] = [];
+        $driveInviteData = [];
+        $driveInviteData['recipients'] = [];
         $recipientData = [];
         $recipientData['object_id'] = $recipient->getId();
         if ($recipient instanceof Group) {
             $recipientData['at_libre_graph_recipient_type'] = "group";
         }
-        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
-        $driveItemInviteData['roles'] = [$role->getId()];
+        $driveInviteData['recipients'][] = new DriveRecipient($recipientData);
+        $driveInviteData['roles'] = [$role->getId()];
         if ($expiration !== null) {
             $expirationMutable = \DateTime::createFromImmutable($expiration);
-            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
+            $driveInviteData['expiration_date_time'] = $expirationMutable;
         }
 
-        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
-            $apiInstance = $this->connectionConfig['drivesRootApi'];
-        } else {
-            $guzzle = new Client(
-                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-            );
-            $apiInstance = new DrivesRootApi(
-                $guzzle,
-                $this->graphApiConfig
-            );
-        }
-
-        $inviteData = new DriveItemInvite($driveItemInviteData);
+        $inviteData = new DriveItemInvite($driveInviteData);
         try {
-            $permissions = $apiInstance->inviteSpaceRoot($this->getId(), $inviteData);
+            $permissions = $this->getDrivesRootApi()->inviteSpaceRoot($this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -649,18 +657,11 @@ class Drive
                 "invite returned invalid data " . print_r($permissionsValue, true)
             );
         }
-
-        return new DriveShare(
-            $permissionsValue[0],
-            $this->getId(),
-            $this->connectionConfig,
-            $this->serviceUrl,
-            $this->accessToken
-        );
+        return $permissionsValue[0];
     }
 
     /**
-     * Gets all possible roles for the drive
+     * Gets all possible roles for the drive ( Project drive )
      * @return array<SharingRole>
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -675,21 +676,9 @@ class Drive
     {
         if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
-        };
-        $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-        );
-
-        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
-            $apiInstance = $this->connectionConfig['drivesRootApi'];
-        } else {
-            $apiInstance = new DrivesRootApi(
-                $guzzle,
-                $this->graphApiConfig
-            );
         }
         try {
-            $collectionOfPermissions = $apiInstance->listPermissionsSpaceRoot($this->getId());
+            $collectionOfPermissions = $this->getDrivesRootApi()->listPermissionsSpaceRoot($this->getId());
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }

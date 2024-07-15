@@ -14,8 +14,15 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
-class ResourceShareCreated extends ResourceShare
+class ShareCreated extends Share
 {
+    public function getPermissionId(): string
+    {
+        // in the constructor the value is checked for being the right type, but phan does not know
+        // so simply cast to string
+        return (string)$this->apiPermission->getId();
+    }
+
     /**
      * Change the Role of the particular Share.
      * Possible roles are defined by the resource and have to be queried using OcisResource::getRoles()

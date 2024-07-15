@@ -983,7 +983,7 @@ class Ocis
     }
 
     /**
-     * @return array<ResourceShareCreated|ResourceShareLink>
+     * @return array<ShareCreated|ShareLink>
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -1032,7 +1032,7 @@ class Ocis
             }
             foreach ($share->getPermissions() as $apiSharePermission) {
                 if($apiSharePermission->getLink() === null) {
-                    $shares[] = new ResourceShareCreated(
+                    $shares[] = new ShareCreated(
                         $apiSharePermission,
                         $resourceId,
                         $driveId,
@@ -1041,7 +1041,7 @@ class Ocis
                         $this->accessToken
                     );
                 } else {
-                    $shares[] = new ResourceShareLink(
+                    $shares[] = new ShareLink(
                         $apiSharePermission,
                         $resourceId,
                         $driveId,
