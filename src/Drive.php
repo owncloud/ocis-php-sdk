@@ -600,6 +600,30 @@ class Drive
         return true;
     }
 
+    private function updateDriveObject(): void
+    {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+        $apiInstance = new DrivesApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiDrive = $apiInstance->getDrive($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiDrive instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getDrive returned an OdataError - " . $apiDrive->getError()
+            );
+        }
+
+        $this->apiDrive = $apiDrive;
+    }
+
     /**
      * Invite a user or group to the drive.
      *
@@ -607,6 +631,7 @@ class Drive
      * @param SharingRole $role
      * @param \DateTimeImmutable|null $expiration
      * @return Permission
+     *
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -657,6 +682,8 @@ class Drive
                 "invite returned invalid data " . print_r($permissionsValue, true)
             );
         }
+
+        $this->updateDriveObject();
         return $permissionsValue[0];
     }
 
@@ -693,6 +720,144 @@ class Drive
             $roles[] = new SharingRole($role);
         }
         return $roles;
+    }
+
+    /**
+     * Permanently delete the current drive share
+     * $permissionId will be provided by getPermissionId()
+     * @param string $permissionId
+     * todo after delete drive object contain old permissions
+     *
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws InvalidResponseException
+     * @throws InternalServerErrorException
+     */
+    public function deletePermission(string $permissionId): bool
+    {
+        try {
+            $this->getDrivesRootApi()->deletePermissionSpaceRoot(
+                $this->getId(),
+                $permissionId
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        $this->updateDriveObject();
+        return true;
+    }
+
+    /**
+     * get Permission id of specific user
+     *
+     * @throws NotFoundException
+     */
+    public function getPermissionId(string $userId): ?string
+    {
+        try {
+            $collectionOfPermissions = $this->getDrivesRootApi()->listPermissionsSpaceRoot($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($collectionOfPermissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+            );
+        }
+        $permissions = $collectionOfPermissions->getValue();
+        if (empty($permissions)) {
+            throw new InvalidResponseException(
+                "No permission has been given to user " . $userId
+            );
+        }
+
+        foreach ($permissions as $permission) {
+            $grantedToV2 = $permission->getGrantedToV2();
+            if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getId() === $userId) {
+                return $permission->getId();
+            }
+        }
+        return throw new NotFoundException("No permission has been given to user ". $userId);
+
+    }
+
+    /**
+     * @throws TooEarlyException
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws ConflictException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     */
+    private function updatePermission(string $permissionId, Permission $apiPermission): bool
+    {
+        try {
+            $permission = $this->getDrivesRootApi()->updatePermissionSpaceRoot(
+                $this->getId(),
+                $permissionId,
+                $apiPermission
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "updatePermission returned an OdataError - " . $permission->getError()
+            );
+        }
+        $this->updateDriveObject();
+        return true;
+    }
+
+    /**
+     * Change the Role of the particular Drive Share.
+     * Possible roles are defined by the drive and have to be queried using Drive::getRoles()
+     * Roles for shares are not to be confused with the types of share links!
+     * @see Drive::getRoles()
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     */
+    public function setPermissionRole(string $permissionId, SharingRole $role): bool
+    {
+        $apiPermission = new Permission();
+        $apiPermission->setRoles([$role->getId()]);
+        return $this->updatePermission($permissionId, $apiPermission);
+    }
+
+    /**
+     * Change the Expiration date for the current drive share
+     * Set to null to remove the expiration date
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     */
+    public function setPermissionExpiration(string $permissionId, ?\DateTimeImmutable $expiration): bool
+    {
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+        } else {
+            $expirationMutable = null;
+        }
+        $apiPermission = new Permission();
+        $apiPermission->setExpirationDateTime($expirationMutable);
+        return $this->updatePermission($permissionId, $apiPermission);
     }
 
     /**
