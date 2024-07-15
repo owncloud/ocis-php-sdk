@@ -214,9 +214,17 @@ class DriveTest extends OcisPhpSdkTestCase
             }
 
             $this->drive->invite($marie, $managerRole);
-            $permissionId = $this->drive->getPermissionId($marie->getId());
+            $permissions = $this->drive->getPermissions();
+            $permissionId = null;
+            foreach ($permissions as $permission) {
+                $grantedToV2 = $permission->getGrantedToV2();
+                if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                    $permissionId = $permission->getId();
+                }
+            }
+
             if (empty($permissionId)) {
-                throw new \Error(" Permission not found");
+                throw new \Error(" Permission not found of user Marie Curie");
             }
 
             $isDriveShareDeleted = $this->drive->deletePermission($permissionId);
@@ -260,9 +268,17 @@ class DriveTest extends OcisPhpSdkTestCase
             $this->drive->invite($marie, $managerRole);
             foreach ($this->drive->getRoles() as $role) {
                 if ($role->getId() !== self::getPermissionsRoleIdByName('Manager')) {
-                    $permissionId = $this->drive->getPermissionId($marie->getId());
+                    $permissions = $this->drive->getPermissions();
+                    $permissionId = null;
+                    foreach ($permissions as $permission) {
+                        $grantedToV2 = $permission->getGrantedToV2();
+                        if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                            $permissionId = $permission->getId();
+                        }
+                    }
+
                     if (empty($permissionId)) {
-                        throw new \Error(" Permission not found");
+                        throw new \Error(" Permission not found of user Marie Curie");
                     }
                     $isRoleSet = $this->drive->setPermissionRole($permissionId, $role);
 
@@ -310,9 +326,17 @@ class DriveTest extends OcisPhpSdkTestCase
             $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
 
             $this->drive->invite($marie, $managerRole, $tomorrow);
-            $permissionId = $this->drive->getPermissionId($marie->getId());
+            $permissions = $this->drive->getPermissions();
+            $permissionId = null;
+            foreach ($permissions as $permission) {
+                $grantedToV2 = $permission->getGrantedToV2();
+                if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                    $permissionId = $permission->getId();
+                }
+            }
+
             if (empty($permissionId)) {
-                throw new \Error(" Permission not found");
+                throw new \Error(" Permission not found of user Marie Curie");
             }
 
             $isExpirationDateUpdated = $this->drive->setPermissionExpiration($permissionId, $oneYearTime);

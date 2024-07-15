@@ -8,6 +8,7 @@ use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesRootApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\CollectionOfPermissionsWithAllowedValues;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveUpdate;
 use OpenAPI\Client\Model\DriveItem;
@@ -206,27 +207,7 @@ class Drive
      */
     public function isDisabled(): bool
     {
-        $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-        );
-
-        $apiInstance = new DrivesApi(
-            $guzzle,
-            $this->graphApiConfig
-        );
-        // need to re-read the drive data, because it might have changed by now
-        try {
-            $apiDrive = $apiInstance->getDrive($this->getId());
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-
-        if ($apiDrive instanceof OdataError) {
-            throw new InvalidResponseException(
-                "getDrive returned an OdataError - " . $apiDrive->getError()
-            );
-        }
-        $this->apiDrive = $apiDrive;
+        $this->updateDriveObject();
         $root = $this->apiDrive->getRoot();
         if (!($root instanceof DriveItem)) {
             throw new InvalidResponseException(
@@ -704,17 +685,12 @@ class Drive
         if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
-        try {
-            $collectionOfPermissions = $this->getDrivesRootApi()->listPermissionsSpaceRoot($this->getId());
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-        if ($collectionOfPermissions instanceof OdataError) {
+        $apiRoles = $this->sendGetPermissionsRequest()->getAtLibreGraphPermissionsRolesAllowedValues();
+        if (empty($apiRoles)) {
             throw new InvalidResponseException(
-                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+                'Drive has no roles'
             );
         }
-        $apiRoles = $collectionOfPermissions->getAtLibreGraphPermissionsRolesAllowedValues() ?? [];
         $roles = [];
         foreach ($apiRoles as $role) {
             $roles[] = new SharingRole($role);
@@ -726,8 +702,7 @@ class Drive
      * Permanently delete the current drive share
      * $permissionId will be provided by getPermissionId()
      * @param string $permissionId
-     * todo after delete drive object contain old permissions
-     *
+     * @return bool
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -751,11 +726,22 @@ class Drive
     }
 
     /**
-     * get Permission id of specific user
+     * get permissions collection information
+     * @return CollectionOfPermissionsWithAllowedValues
+     * owner/co-owner receives all sharing permissions
+     * non-owner receives only the sharing permissions that apply to the caller
      *
+     * @throws BadRequestException
+     * @throws ConflictException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InternalServerErrorException
+     * @throws InvalidResponseException
      * @throws NotFoundException
+     * @throws TooEarlyException
+     * @throws UnauthorizedException
      */
-    public function getPermissionId(string $userId): ?string
+    private function sendGetPermissionsRequest(): CollectionOfPermissionsWithAllowedValues
     {
         try {
             $collectionOfPermissions = $this->getDrivesRootApi()->listPermissionsSpaceRoot($this->getId());
@@ -768,21 +754,27 @@ class Drive
                 "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
             );
         }
-        $permissions = $collectionOfPermissions->getValue();
+        return $collectionOfPermissions;
+    }
+
+    /**
+     * get all permission assigned on drive
+     * @return array<Permission>
+     * @throws InvalidResponseException
+     * @throws EndPointNotImplementedException
+     */
+    public function getPermissions(): array
+    {
+        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+            throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
+        }
+        $permissions = $this->sendGetPermissionsRequest()->getValue();
         if (empty($permissions)) {
             throw new InvalidResponseException(
-                "No permission has been given to user " . $userId
+                'Expected Collection of Permission but got empty array.'
             );
         }
-
-        foreach ($permissions as $permission) {
-            $grantedToV2 = $permission->getGrantedToV2();
-            if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getId() === $userId) {
-                return $permission->getId();
-            }
-        }
-        return throw new NotFoundException("No permission has been given to user ". $userId);
-
+        return $permissions;
     }
 
     /**
