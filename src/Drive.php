@@ -627,7 +627,7 @@ class Drive
      */
     public function invite(User|Group $recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): Permission
     {
-        if((version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<'))) {
+        if(version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<')) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
 
@@ -685,7 +685,7 @@ class Drive
      */
     public function getRoles(): array
     {
-        if((version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<'))) {
+        if(version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<')) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
         $apiRoles = $this->sendGetPermissionsRequest()->getAtLibreGraphPermissionsRolesAllowedValues();
