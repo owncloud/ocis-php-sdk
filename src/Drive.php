@@ -51,6 +51,9 @@ class Drive
     private string $serviceUrl;
     private string $ocisVersion;
 
+    // inviting users/groups to a drive is only possible starting from oCIS 6.0.0
+    private const MIN_OCIS_VERSION_DRIVE_INVITE = "6.0.0";
+
     /**
      * @ignore The developer using the SDK does not need to create drives manually, but should use the Ocis class
      *         to get or create drives, so this constructor should not be listed in the documentation.
@@ -624,7 +627,7 @@ class Drive
      */
     public function invite(User|Group $recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): Permission
     {
-        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+        if((version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<'))) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
 
@@ -682,7 +685,7 @@ class Drive
      */
     public function getRoles(): array
     {
-        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+        if((version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<'))) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
         $apiRoles = $this->sendGetPermissionsRequest()->getAtLibreGraphPermissionsRolesAllowedValues();
@@ -765,7 +768,7 @@ class Drive
      */
     public function getPermissions(): array
     {
-        if(version_compare($this->ocisVersion, '6.0.0', '<')) {
+        if(version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<')) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
         $permissions = $this->sendGetPermissionsRequest()->getValue();
