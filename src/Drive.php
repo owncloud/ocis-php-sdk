@@ -765,7 +765,7 @@ class Drive
      */
     public function getPermissions(): array
     {
-        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+        if(version_compare($this->ocisVersion, '6.0.0', '<')) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
         $permissions = $this->sendGetPermissionsRequest()->getValue();
