@@ -2,6 +2,7 @@
 
 namespace integration\Owncloud\OcisPhpSdk;
 
+use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\UnifiedRoleDefinition;
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
@@ -150,20 +151,26 @@ class DriveTest extends OcisPhpSdkTestCase
         }
 
         try {
-            $driveShare = $this->drive->invite($marie, $managerRole);
+            $driveInvitation = $this->drive->invite($marie, $managerRole);
 
-            $this->assertNull($driveShare->getExpiration(), "Expiration date for sharing drive wasn't found to be null");
-            $receivedShareDrive = $marieOcis->getDriveById($this->drive->getId());
+            $this->assertInstanceOf(
+                Permission::class,
+                $driveInvitation,
+                "Expected class to be 'Permission' but found "
+                . get_class($driveInvitation)
+            );
+            $this->assertNull($driveInvitation->getExpirationDateTime(), "Expiration date for sharing drive wasn't found to be null");
+            $receivedInvitationDrive = $marieOcis->getDriveById($this->drive->getId());
             $this->assertSame(
                 $this->drive->getId(),
-                $receivedShareDrive->getId(),
+                $receivedInvitationDrive->getId(),
                 "Expected driveId to be " . $this->drive->getId()
-                . " but found " . $receivedShareDrive->getId()
+                . " but found " . $receivedInvitationDrive->getId()
             );
             $this->assertSame(
                 $this->drive->getName(),
-                $receivedShareDrive->getName(),
-                "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedShareDrive->getName()
+                $receivedInvitationDrive->getName(),
+                "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedInvitationDrive->getName()
             );
         } catch(EndPointNotImplementedException) {
             // test should fail if ocis version is less than 6.0.0
@@ -206,8 +213,21 @@ class DriveTest extends OcisPhpSdkTestCase
                 );
             }
 
-            $driveShare = $this->drive->invite($marie, $managerRole);
-            $isDriveShareDeleted = $driveShare->delete();
+            $this->drive->invite($marie, $managerRole);
+            $permissions = $this->drive->getPermissions();
+            $permissionId = null;
+            foreach ($permissions as $permission) {
+                $grantedToV2 = $permission->getGrantedToV2();
+                if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                    $permissionId = $permission->getId();
+                }
+            }
+
+            if (empty($permissionId)) {
+                throw new \Error(" Permission not found of user Marie Curie");
+            }
+
+            $isDriveShareDeleted = $this->drive->deletePermission($permissionId);
             $this->assertTrue($isDriveShareDeleted);
         }
     }
@@ -245,10 +265,23 @@ class DriveTest extends OcisPhpSdkTestCase
                     "manager role not found "
                 );
             }
-            $driveShare = $this->drive->invite($marie, $managerRole);
+            $this->drive->invite($marie, $managerRole);
             foreach ($this->drive->getRoles() as $role) {
                 if ($role->getId() !== self::getPermissionsRoleIdByName('Manager')) {
-                    $isRoleSet = $driveShare->setRole($role);
+                    $permissions = $this->drive->getPermissions();
+                    $permissionId = null;
+                    foreach ($permissions as $permission) {
+                        $grantedToV2 = $permission->getGrantedToV2();
+                        if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                            $permissionId = $permission->getId();
+                        }
+                    }
+
+                    if (empty($permissionId)) {
+                        throw new \Error(" Permission not found of user Marie Curie");
+                    }
+                    $isRoleSet = $this->drive->setPermissionRole($permissionId, $role);
+
                     $this->assertTrue($isRoleSet, "Failed to set role");
                 }
             }
@@ -292,13 +325,22 @@ class DriveTest extends OcisPhpSdkTestCase
 
             $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
 
-            $driveShare = $this->drive->invite($marie, $managerRole, $tomorrow);
-            $isExpirationDateUpdated = $driveShare->setExpiration($oneYearTime);
-            $this->assertTrue($isExpirationDateUpdated, "Expected expiration date to be updated");
+            $this->drive->invite($marie, $managerRole, $tomorrow);
+            $permissions = $this->drive->getPermissions();
+            $permissionId = null;
+            foreach ($permissions as $permission) {
+                $grantedToV2 = $permission->getGrantedToV2();
+                if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                    $permissionId = $permission->getId();
+                }
+            }
 
-            $expiration = $driveShare->getExpiration();
-            $this->assertNotNull($expiration);
-            $this->assertSame($oneYearTime->getTimestamp(), $expiration->getTimestamp(), "Expected expiration date to be updated");
+            if (empty($permissionId)) {
+                throw new \Error(" Permission not found of user Marie Curie");
+            }
+
+            $isExpirationDateUpdated = $this->drive->setPermissionExpiration($permissionId, $oneYearTime);
+            $this->assertTrue($isExpirationDateUpdated, "Expected expiration date to be updated");
         }
     }
 }
