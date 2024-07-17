@@ -21,7 +21,7 @@ use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
  *
  * @phpstan-import-type ConnectionConfig from Ocis
  */
-class ResourceShareLink extends ResourceShare
+class ShareLink extends Share
 {
     public function getSharingLink(): ApiSharingLink
     {
@@ -82,7 +82,7 @@ class ResourceShareLink extends ResourceShare
     }
 
     /**
-     * Change the type of the current ResourceShareLink.
+     * Change the type of the current ShareLink.
      * For details about the possible types see https://owncloud.dev/libre-graph-api/#/drives.permissions/CreateLink
      * Types of share links are not to be confused with roles for shares!
      * @throws UnauthorizedException

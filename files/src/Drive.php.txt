@@ -8,6 +8,7 @@ use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesRootApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
+use OpenAPI\Client\Model\CollectionOfPermissionsWithAllowedValues;
 use OpenAPI\Client\Model\Drive as ApiDrive;
 use OpenAPI\Client\Model\DriveUpdate;
 use OpenAPI\Client\Model\DriveItem;
@@ -17,6 +18,7 @@ use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Exception\EndPointNotImplementedException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
@@ -25,6 +27,7 @@ use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\NotImplementedException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
@@ -47,6 +50,9 @@ class Drive
     private Configuration $graphApiConfig;
     private string $serviceUrl;
     private string $ocisVersion;
+
+    // inviting users/groups to a drive is only possible starting from oCIS 6.0.0
+    private const MIN_OCIS_VERSION_DRIVE_INVITE = "6.0.0";
 
     /**
      * @ignore The developer using the SDK does not need to create drives manually, but should use the Ocis class
@@ -176,6 +182,24 @@ class Drive
     }
 
     /**
+     * @return DrivesRootApi
+     */
+    private function getDrivesRootApi(): DrivesRootApi
+    {
+        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
+            return $this->connectionConfig['drivesRootApi'];
+        }
+
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+        return new DrivesRootApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+    }
+
+    /**
      * @throws UnauthorizedException
      * @throws ForbiddenException
      * @throws BadRequestException
@@ -186,27 +210,7 @@ class Drive
      */
     public function isDisabled(): bool
     {
-        $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-        );
-
-        $apiInstance = new DrivesApi(
-            $guzzle,
-            $this->graphApiConfig
-        );
-        // need to re-read the drive data, because it might have changed by now
-        try {
-            $apiDrive = $apiInstance->getDrive($this->getId());
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-
-        if ($apiDrive instanceof OdataError) {
-            throw new InvalidResponseException(
-                "getDrive returned an OdataError - " . $apiDrive->getError()
-            );
-        }
-        $this->apiDrive = $apiDrive;
+        $this->updateDriveObject();
         $root = $this->apiDrive->getRoot();
         if (!($root instanceof DriveItem)) {
             throw new InvalidResponseException(
@@ -580,13 +584,38 @@ class Drive
         return true;
     }
 
+    private function updateDriveObject(): void
+    {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+        );
+        $apiInstance = new DrivesApi(
+            $guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiDrive = $apiInstance->getDrive($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiDrive instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getDrive returned an OdataError - " . $apiDrive->getError()
+            );
+        }
+
+        $this->apiDrive = $apiDrive;
+    }
+
     /**
      * Invite a user or group to the drive.
      *
      * @param User|Group $recipient
      * @param SharingRole $role
      * @param \DateTimeImmutable|null $expiration
-     * @return DriveShare
+     * @return Permission
+     *
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -596,41 +625,29 @@ class Drive
      * @throws InternalServerErrorException
      * @throws EndPointNotImplementedException
      */
-    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): DriveShare
+    public function invite(User|Group $recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): Permission
     {
-        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+        if(version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<')) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
         }
 
-        $driveItemInviteData = [];
-        $driveItemInviteData['recipients'] = [];
+        $driveInviteData = [];
+        $driveInviteData['recipients'] = [];
         $recipientData = [];
         $recipientData['object_id'] = $recipient->getId();
         if ($recipient instanceof Group) {
             $recipientData['at_libre_graph_recipient_type'] = "group";
         }
-        $driveItemInviteData['recipients'][] = new DriveRecipient($recipientData);
-        $driveItemInviteData['roles'] = [$role->getId()];
+        $driveInviteData['recipients'][] = new DriveRecipient($recipientData);
+        $driveInviteData['roles'] = [$role->getId()];
         if ($expiration !== null) {
             $expirationMutable = \DateTime::createFromImmutable($expiration);
-            $driveItemInviteData['expiration_date_time'] = $expirationMutable;
+            $driveInviteData['expiration_date_time'] = $expirationMutable;
         }
 
-        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
-            $apiInstance = $this->connectionConfig['drivesRootApi'];
-        } else {
-            $guzzle = new Client(
-                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-            );
-            $apiInstance = new DrivesRootApi(
-                $guzzle,
-                $this->graphApiConfig
-            );
-        }
-
-        $inviteData = new DriveItemInvite($driveItemInviteData);
+        $inviteData = new DriveItemInvite($driveInviteData);
         try {
-            $permissions = $apiInstance->inviteSpaceRoot($this->getId(), $inviteData);
+            $permissions = $this->getDrivesRootApi()->inviteSpaceRoot($this->getId(), $inviteData);
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
@@ -650,17 +667,12 @@ class Drive
             );
         }
 
-        return new DriveShare(
-            $permissionsValue[0],
-            $this->getId(),
-            $this->connectionConfig,
-            $this->serviceUrl,
-            $this->accessToken
-        );
+        $this->updateDriveObject();
+        return $permissionsValue[0];
     }
 
     /**
-     * Gets all possible roles for the drive
+     * Gets all possible roles for the drive ( Project drive )
      * @return array<SharingRole>
      * @throws BadRequestException
      * @throws ForbiddenException
@@ -673,37 +685,174 @@ class Drive
      */
     public function getRoles(): array
     {
-        if((version_compare($this->ocisVersion, '6.0.0', '<'))) {
+        if(version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<')) {
             throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
-        };
-        $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
-        );
-
-        if (array_key_exists('drivesRootApi', $this->connectionConfig)) {
-            $apiInstance = $this->connectionConfig['drivesRootApi'];
-        } else {
-            $apiInstance = new DrivesRootApi(
-                $guzzle,
-                $this->graphApiConfig
-            );
         }
-        try {
-            $collectionOfPermissions = $apiInstance->listPermissionsSpaceRoot($this->getId());
-        } catch (ApiException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
-        if ($collectionOfPermissions instanceof OdataError) {
+        $apiRoles = $this->sendGetPermissionsRequest()->getAtLibreGraphPermissionsRolesAllowedValues();
+        if (empty($apiRoles)) {
             throw new InvalidResponseException(
-                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+                'Drive has no roles'
             );
         }
-        $apiRoles = $collectionOfPermissions->getAtLibreGraphPermissionsRolesAllowedValues() ?? [];
         $roles = [];
         foreach ($apiRoles as $role) {
             $roles[] = new SharingRole($role);
         }
         return $roles;
+    }
+
+    /**
+     * Permanently delete the current drive share
+     * $permissionId will be provided by getPermissionId()
+     * @param string $permissionId
+     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws InvalidResponseException
+     * @throws InternalServerErrorException
+     */
+    public function deletePermission(string $permissionId): bool
+    {
+        try {
+            $this->getDrivesRootApi()->deletePermissionSpaceRoot(
+                $this->getId(),
+                $permissionId
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        $this->updateDriveObject();
+        return true;
+    }
+
+    /**
+     * get permissions collection information
+     * @return CollectionOfPermissionsWithAllowedValues
+     * owner/co-owner receives all sharing permissions
+     * non-owner receives only the sharing permissions that apply to the caller
+     *
+     * @throws BadRequestException
+     * @throws ConflictException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InternalServerErrorException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws TooEarlyException
+     * @throws UnauthorizedException
+     */
+    private function sendGetPermissionsRequest(): CollectionOfPermissionsWithAllowedValues
+    {
+        try {
+            $collectionOfPermissions = $this->getDrivesRootApi()->listPermissionsSpaceRoot($this->getId());
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($collectionOfPermissions instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+            );
+        }
+        return $collectionOfPermissions;
+    }
+
+    /**
+     * get all permission assigned on drive
+     * @return array<Permission>
+     * @throws InvalidResponseException
+     * @throws EndPointNotImplementedException
+     */
+    public function getPermissions(): array
+    {
+        if(version_compare($this->ocisVersion, self::MIN_OCIS_VERSION_DRIVE_INVITE, '<')) {
+            throw new EndPointNotImplementedException(Ocis::ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE);
+        }
+        $permissions = $this->sendGetPermissionsRequest()->getValue();
+        if (empty($permissions)) {
+            throw new InvalidResponseException(
+                'Expected Collection of Permission but got empty array.'
+            );
+        }
+        return $permissions;
+    }
+
+    /**
+     * @throws TooEarlyException
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws ConflictException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     */
+    private function updatePermission(string $permissionId, Permission $apiPermission): bool
+    {
+        try {
+            $permission = $this->getDrivesRootApi()->updatePermissionSpaceRoot(
+                $this->getId(),
+                $permissionId,
+                $apiPermission
+            );
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+        if ($permission instanceof OdataError) {
+            throw new InvalidResponseException(
+                "updatePermission returned an OdataError - " . $permission->getError()
+            );
+        }
+        $this->updateDriveObject();
+        return true;
+    }
+
+    /**
+     * Change the Role of the particular Drive Share.
+     * Possible roles are defined by the drive and have to be queried using Drive::getRoles()
+     * Roles for shares are not to be confused with the types of share links!
+     * @see Drive::getRoles()
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     */
+    public function setPermissionRole(string $permissionId, SharingRole $role): bool
+    {
+        $apiPermission = new Permission();
+        $apiPermission->setRoles([$role->getId()]);
+        return $this->updatePermission($permissionId, $apiPermission);
+    }
+
+    /**
+     * Change the Expiration date for the current drive share
+     * Set to null to remove the expiration date
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     */
+    public function setPermissionExpiration(string $permissionId, ?\DateTimeImmutable $expiration): bool
+    {
+        if ($expiration !== null) {
+            $expirationMutable = \DateTime::createFromImmutable($expiration);
+        } else {
+            $expirationMutable = null;
+        }
+        $apiPermission = new Permission();
+        $apiPermission->setExpirationDateTime($expirationMutable);
+        return $this->updatePermission($permissionId, $apiPermission);
     }
 
     /**
