@@ -575,4 +575,297 @@ class DriveTest extends OcisPhpSdkTestCase
         }
     }
 
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
+    public function testReceiverInviteOtherUserToDriveShare(): void
+    {
+        $marieOcis = $this->initUser('marie', 'radioactivity');
+        $katherineOcis = $this->getOcis('katherine', 'gemini');
+        $katherine = $this->ocis->getUsers('katherine')[0];
+
+        $marie = $this->ocis->getUsers('marie')[0];
+
+        $managerRole = null;
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
+            $role = [
+                "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
+                "description" => "Allows managing a space",
+                "displayName" => "Manager",
+                "@libre.graph.weight" => 3
+            ];
+
+            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
+        } else {
+            $shareRoles = $this->drive->getRoles();
+        }
+        foreach ($shareRoles as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                $managerRole = $role;
+                break;
+            }
+        }
+
+        if (empty($managerRole)) {
+            throw new \Error(
+                "manager role not found "
+            );
+        }
+        // ocis stable doesn't support root endpoint
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(EndPointNotImplementedException::class);
+            $this->expectExceptionMessage("This method is not implemented in this ocis version");
+            $this->drive->invite($marie, $managerRole);
+        }
+
+        try {
+            $this->drive->invite($marie, $managerRole);
+            $marieReceivedProjectDrive = $marieOcis->getDriveById($this->drive->getId());
+            $this->assertSame(
+                $this->drive->getId(),
+                $marieReceivedProjectDrive->getId(),
+                "Expected driveId to be " . $this->drive->getId()
+                . " but found " . $marieReceivedProjectDrive->getId()
+            );
+            $driveInvitation = $marieReceivedProjectDrive->invite($katherine, $managerRole);
+            $this->assertInstanceOf(
+                Permission::class,
+                $driveInvitation,
+                "Expected class to be 'Permission' but found "
+                . get_class($driveInvitation)
+            );
+            $katherineReceivedProjectDrive = $katherineOcis->getDriveById($this->drive->getId());
+            $this->assertSame(
+                $this->drive->getName(),
+                $katherineReceivedProjectDrive->getName(),
+                "Expected shared drive name to be " . $this->drive->getName() . " but found " . $katherineReceivedProjectDrive->getName()
+            );
+        } catch(EndPointNotImplementedException) {
+            // test should fail if ocis version is less than 6.0.0
+            $this->fail("EndPointNotImplementedException was thrown unexpectedly");
+        }
+    }
+
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
+    public function testReceiverInviteOtherUserToDriveShareWithNoInvitePermission(): void
+    {
+        $marieOcis = $this->initUser('marie', 'radioactivity');
+        $katherineOcis = $this->initUser('katherine', 'gemini');
+        $katherine = $this->ocis->getUsers('katherine')[0];
+
+        $marie = $this->ocis->getUsers('marie')[0];
+        $viewerRole = null;
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
+            $role = [
+                "id" => "a8d5fe5e-96e3-418d-825b-534dbdf22b99",
+                "description" => "View and download",
+                "displayName" => "Space Viewer",
+                "@libre.graph.weight" => 1
+            ];
+
+            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
+        } else {
+            $shareRoles = $this->drive->getRoles();
+        }
+        foreach ($shareRoles as $role) {
+            //            any permission role other than Manager can't invite other user to the drive'
+            if ($role->getId() === self::getPermissionsRoleIdByName('Space Viewer')) {
+                $viewerRole = $role;
+                break;
+            }
+        }
+
+        if (empty($viewerRole)) {
+            throw new \Error(
+                "Space viewer role not found "
+            );
+        }
+        // ocis stable doesn't support root endpoint
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(EndPointNotImplementedException::class);
+            $this->expectExceptionMessage("This method is not implemented in this ocis version");
+            $this->drive->invite($marie, $viewerRole);
+        }
+
+        try {
+            $this->drive->invite($marie, $viewerRole);
+            $marieReceivedProjectDrive = $marieOcis->getDriveById($this->drive->getId());
+            $this->expectException(ForbiddenException::class);
+            $this->expectExceptionMessage("accessDenied - add grant: error: permission denied:");
+            $marieReceivedProjectDrive->invite($katherine, $viewerRole);
+
+        } catch(EndPointNotImplementedException) {
+            // test should fail if ocis version is less than 6.0.0
+            $this->fail("EndPointNotImplementedException was thrown unexpectedly");
+        }
+    }
+
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
+    public function testReceiverUpdatesDriveShareRole(): void
+    {
+        $marieOcis = $this->initUser('marie', 'radioactivity');
+
+        $marie = $this->ocis->getUsers('marie')[0];
+
+        $managerRole = null;
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
+            $role = [
+                "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
+                "description" => "Allows managing a space",
+                "displayName" => "Manager",
+                "@libre.graph.weight" => 3
+            ];
+
+            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
+        } else {
+            $shareRoles = $this->drive->getRoles();
+        }
+        foreach ($shareRoles as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                $managerRole = $role;
+                break;
+            }
+        }
+
+        if (empty($managerRole)) {
+            throw new \Error(
+                "manager role not found "
+            );
+        }
+        // ocis stable doesn't support root endpoint
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(EndPointNotImplementedException::class);
+            $this->expectExceptionMessage("This method is not implemented in this ocis version");
+            $this->drive->invite($marie, $managerRole);
+        }
+
+        try {
+            $driveInvitation = $this->drive->invite($marie, $managerRole);
+            $permissionId = $driveInvitation->getId();
+            if (empty($permissionId)) {
+                throw new \Error(" Permission not found of user Marie Curie");
+            }
+            $receivedInvitationDrive = $marieOcis->getDriveById($this->drive->getId());
+
+            $shareRoles = $receivedInvitationDrive->getRoles();
+
+            foreach ($shareRoles as $role) {
+                if ($role->getId() === self::getPermissionsRoleIdByName('Space Viewer')) {
+                    $isRoleSet = $receivedInvitationDrive->setPermissionRole($permissionId, $role);
+                    $this->assertTrue($isRoleSet, "Failed to set role id");
+                }
+            }
+        } catch(EndPointNotImplementedException) {
+            // test should fail if ocis version is less than 6.0.0
+            $this->fail("EndPointNotImplementedException was thrown unexpectedly");
+        }
+    }
+
+    /**
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws EndPointNotImplementedException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws \Exception
+     */
+    public function testReceiverUpdatesDriveShareRoleNoEnoughPermission(): void
+    {
+        $marieOcis = $this->initUser('marie', 'radioactivity');
+
+        $marie = $this->ocis->getUsers('marie')[0];
+
+        $viewerRole = null;
+
+        if (getenv('OCIS_VERSION') === "stable") {
+            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
+            $role = [
+                "id" => "a8d5fe5e-96e3-418d-825b-534dbdf22b99",
+                "description" => "View and download",
+                "displayName" => "Space Viewer",
+                "@libre.graph.weight" => 1
+            ];
+
+            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
+        } else {
+            $shareRoles = $this->drive->getRoles();
+        }
+        foreach ($shareRoles as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Space Viewer')) {
+                $viewerRole = $role;
+                break;
+            }
+        }
+
+        if (empty($viewerRole)) {
+            throw new \Error(
+                "manager role not found "
+            );
+        }
+        // ocis stable doesn't support root endpoint
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(EndPointNotImplementedException::class);
+            $this->expectExceptionMessage("This method is not implemented in this ocis version");
+            $this->drive->invite($marie, $viewerRole);
+        }
+
+        try {
+            $driveInvitation = $this->drive->invite($marie, $viewerRole);
+            $permissionId = $driveInvitation->getId();
+
+            if (empty($permissionId)) {
+                throw new \Error(" Permission not found of user Marie Curie");
+            }
+
+            $receivedInvitationDrive = $marieOcis->getDriveById($this->drive->getId());
+
+            $shareRoles = $receivedInvitationDrive->getRoles();
+
+            foreach ($shareRoles as $role) {
+                $this->expectException(InternalServerErrorException::class);
+                $this->expectExceptionMessage("error committing share to storage grant");
+                $receivedInvitationDrive->setPermissionRole($permissionId, $role);
+            }
+        } catch(EndPointNotImplementedException) {
+            // test should fail if ocis version is less than 6.0.0
+            $this->fail("EndPointNotImplementedException was thrown unexpectedly");
+        }
+    }
 }
