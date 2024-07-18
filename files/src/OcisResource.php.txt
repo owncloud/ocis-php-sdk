@@ -165,12 +165,12 @@ class OcisResource
 
     /**
      * Invite a user or group to the resource.
-     * Every recipient will result in an own ResourceShareCreated object in the returned array.
+     * Every recipient will result in an own ShareCreated object in the returned array.
      *
      * @param User|Group $recipient
      * @param SharingRole $role
      * @param \DateTimeImmutable|null $expiration
-     * @return ResourceShareCreated
+     * @return ShareCreated
      * @throws BadRequestException
      * @throws ForbiddenException
      * @throws HttpException
@@ -179,7 +179,7 @@ class OcisResource
      * @throws UnauthorizedException
      * @throws InternalServerErrorException
      */
-    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): ResourceShareCreated
+    public function invite($recipient, SharingRole $role, ?\DateTimeImmutable $expiration = null): ShareCreated
     {
         $driveItemInviteData = [];
         $driveItemInviteData['recipients'] = [];
@@ -229,7 +229,7 @@ class OcisResource
             );
         }
 
-        return new ResourceShareCreated(
+        return new ShareCreated(
             $permissionsValue[0],
             $this->getId(),
             $this->getSpaceId(),
@@ -255,7 +255,7 @@ class OcisResource
         ?\DateTimeImmutable $expiration = null,
         ?string $password = null,
         ?string $displayName = null
-    ): ResourceShareLink {
+    ): ShareLink {
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
         } else {
@@ -290,7 +290,7 @@ class OcisResource
             );
         }
 
-        return new ResourceShareLink(
+        return new ShareLink(
             $permission,
             $this->getId(),
             $this->getSpaceId(),
