@@ -5,6 +5,7 @@ namespace integration\Owncloud\OcisPhpSdk;
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use OpenAPI\Client\Model\User;
+use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Group;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
@@ -100,8 +101,11 @@ class GroupsTest extends OcisPhpSdkTestCase
             $philosophyHatersGroup->addUser($user);
         }
         $einsteinPhilosophyHatersGroup = $einsteinUserOcis->getGroups("philosophyhaters")[0];
-        $this->expectException(UnauthorizedException::class);
-
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(UnauthorizedException::class);
+        } else {
+            $this->expectException(ForbiddenException::class);
+        }
         foreach ($users as $user) {
             if ($user->getDisplayName() === "Admin" || $user->getDisplayName() === "Admin Admin") {
                 $einsteinPhilosophyHatersGroup->removeUser($user);
@@ -163,7 +167,11 @@ class GroupsTest extends OcisPhpSdkTestCase
         $users = $marieOcis->getUsers('marie');
         $groups = $marieOcis->getGroups(search:"physicslovers");
         $this->assertGreaterThanOrEqual(1, $groups);
-        $this->expectException(UnauthorizedException::class);
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(UnauthorizedException::class);
+        } else {
+            $this->expectException(ForbiddenException::class);
+        }
         $groups[0]->addUser($users[0]);
     }
 
@@ -238,7 +246,11 @@ class GroupsTest extends OcisPhpSdkTestCase
         $einsteinOcis = $this->getOcis('einstein', 'relativity');
         $philosophyHatersGroupEinstein = $einsteinOcis->getGroups("philosophy");
         $groupId = $philosophyHatersGroupEinstein[0]->getId();
-        $this->expectException(UnauthorizedException::class);
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->expectException(UnauthorizedException::class);
+        } else {
+            $this->expectException(ForbiddenException::class);
+        }
         $einsteinOcis->deleteGroupByID($groupId);
     }
 
