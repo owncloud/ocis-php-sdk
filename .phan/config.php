@@ -82,4 +82,7 @@ return [
     'parent_constructor_required' => [
     ],
 
+    'plugins' => [
+        'PHPUnitAssertionPlugin'
+    ]
 ];
