@@ -29,29 +29,21 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
         $this->personalDrive->createFolder('newFolder');
         $this->createdResources[$this->personalDrive->getId()][] = '/newFolder';
         $resources = $this->personalDrive->getResources();
-        $sharedResource = null;
         foreach ($resources as $resource) {
             if ($resource->getName() === 'newFolder') {
-                $sharedResource = $resource;
+                $this->sharedResource = $resource;
             }
         }
-        if ($sharedResource === null) {
-            throw new \Error("resource not found ");
-        }
-        $this->sharedResource = $sharedResource;
 
-        $editorRole = null;
         $editorRoleId = self::getPermissionsRoleIdByName('Editor');
         foreach ($this->sharedResource->getRoles() as $role) {
             if ($role->getId() === $editorRoleId) {
-                $editorRole = $role;
+                $this->editorRole = $role;
                 break;
             }
         }
-        if ($editorRole === null) {
-            throw new \Error("Editor role not found");
-        }
-        $this->editorRole = $editorRole;
+        $this->assertNotNull($this->editorRole, 'Editor role is not set');
+        $this->assertNotNull($this->sharedResource, 'Resource is not set');
     }
 
     public function testGetShareByMe(): void
