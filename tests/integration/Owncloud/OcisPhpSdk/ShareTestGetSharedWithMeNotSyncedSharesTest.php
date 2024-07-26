@@ -38,6 +38,7 @@ class ShareTestGetSharedWithMeNotSyncedSharesTest extends OcisPhpSdkTestCase
                 break;
             }
         }
+        $this->assertNotNull($this->viewerRole, 'Viewer role is not set');
     }
 
     public static function setUpBeforeClass(): void
