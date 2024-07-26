@@ -26,6 +26,7 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $personalDrive->createFolder('folder-to-share');
         $this->createdResources[$personalDrive->getId()][] = 'folder-to-share';
         $resources = $personalDrive->getResources();
+        $this->assertGreaterThan(0, count($resources), "Expected at least one resource but found " . count($resources));
         foreach ($resources as $resource) {
             if ($resource->getName() === 'to-share-test.txt') {
                 $this->fileToShare = $resource;
