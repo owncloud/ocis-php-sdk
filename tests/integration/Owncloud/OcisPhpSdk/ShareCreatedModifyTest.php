@@ -44,6 +44,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
                 break;
             }
         }
+        $this->assertNotNull($this->viewerRole, 'Viewer role is not set');
     }
 
     public function testDeleteIndividualShare(): void
