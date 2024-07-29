@@ -63,11 +63,14 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $receiver = $this->ocis->getUsers($receiverName)[0];
         $resources = $this->personalDrive->getResources();
+        $this->assertGreaterThan(0, count($resources), "Expected at least one resource but found " . count($resources));
 
         foreach ($resources as $resource) {
             if ($resource->getName() === $resourceName) {
                 $roleId = self::getPermissionsRoleIdByName($roleName);
-                foreach ($resource->getRoles() as $role) {
+                $roles = $resource->getRoles();
+                $this->assertGreaterThan(0, count($resources), "Expected at least one role but found " . count($resources));
+                foreach ($roles as $role) {
                     if ($role->getId() === $roleId) {
                         $resource->invite($receiver, $role);
                         break;
@@ -185,6 +188,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     public function testGetResourceContent(): void
     {
         $resources = $this->personalDrive->getResources();
+        $this->assertGreaterThan(0, count($resources), "Expected at least one resource but found " . count($resources));
         foreach ($resources as $resource) {
             $content = $this->getContentOfResource425Save($resource);
             switch ($resource->getName()) {
@@ -226,6 +230,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     public function testGetResourceContentStream(): void
     {
         $resources = $this->personalDrive->getResources();
+        $this->assertGreaterThan(0, count($resources), "Expected at least one resource but found " . count($resources));
         foreach ($resources as $resource) {
             $stream = null;
             while ($stream === null) {
@@ -348,7 +353,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         $einsteinOcis = $this->initUser('einstein', 'relativity');
         $einstein = $this->ocis->getUsers('einstein')[0];
         $resources = $this->personalDrive->getResources();
-
+        $this->assertGreaterThan(0, count($resources), "Expected at least one resource but found " . count($resources));
         foreach ($resources as $resource) {
             if ($resource->getName() === 'subfolder') {
                 $roleId = self::getPermissionsRoleIdByName('Viewer');
@@ -468,6 +473,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     public function testGetRoles(): void
     {
         $resources = $this->personalDrive->getResources();
+        $this->assertGreaterThan(0, count($resources), "Expected at least one resource but found " . count($resources));
         foreach ($resources as $resource) {
             $role = $resource->getRoles();
             $this->assertContainsOnlyInstancesOf(
@@ -482,6 +488,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     {
         $this->personalDrive->uploadFile('/newResource.txt', 'new content');
         $resources = $this->personalDrive->getResources();
+        $this->assertGreaterThan(0, count($resources), "Expected at least one resource but found " . count($resources));
         $newResource = null;
         foreach ($resources as $resource) {
             if ($resource->getName() === 'newResource.txt') {
