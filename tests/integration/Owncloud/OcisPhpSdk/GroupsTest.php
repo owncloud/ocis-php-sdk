@@ -26,7 +26,9 @@ class GroupsTest extends OcisPhpSdkTestCase
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($users[0]);
-        foreach ($ocis->getGroups(expandMembers: true) as $group) {
+        $groups = $ocis->getGroups(expandMembers: true);
+        $this->assertGreaterThan(0, count($groups), "Expected at least one group but found " . count($groups));
+        foreach ($groups as $group) {
             $this->assertCount(
                 1,
                 $group->getMembers(),
