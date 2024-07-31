@@ -89,9 +89,9 @@ $resources = $drives[0]->getResources("/documents");
 ```
 
 ### Drive Permission
-Users/Groups can be invited to drives by specifying permissions. Drive class has method to update permission roles and expiration dates, remove users and groups, etc. related to drive invitations.
+Users/Groups can be invited to drives by specifying permissions. The **Drive** class has methods to invite Users/Groups, update permission roles and expiration dates, remove users and groups, etc.
 
-Drive invitations are allowed only on the **project drive**. For drive invitation, **root endpoint** has been used.
+Drive invitations are only possible on **project drives**.
 
 ```php
 // find all users with a specific surname
@@ -104,7 +104,7 @@ $drives = $ocis->getMyDrives(
     DriveType::PROJECT
 );
 
-// get project drive name game
+// get the drive named 'game'
 foreach ($drives as $drive) {
     if ($drive->getName) === 'game' {
         $gameDrive = $drive;
@@ -115,7 +115,7 @@ foreach ($drives as $drive) {
 // get all roles that are possible for that drive
 $driveRoles = $gameDrive->getRoles();
 
-// get role that allowed to view, download, upload, edit, add, delete and manage members
+// get the role that is allowed to view, download, upload, edit, add, delete and manage members
 foreach ($driveRoles as $role) {
     if ($role->getDisplayName() === 'Manager') {
         $managerRole = $role;
