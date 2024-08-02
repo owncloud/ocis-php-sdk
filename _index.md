@@ -98,6 +98,45 @@ $drives[0]->uploadFile("/documents/myfile.txt", "Hello World!");
 $resources = $drives[0]->getResources("/documents");
 ```
 
+### Drive Permission
+Users/Groups can be invited to drives by specifying permissions. The **Drive** class has methods to invite Users/Groups, update permission roles and expiration dates, remove users and groups, etc.
+
+Drive invitations are only possible on **project drives**.
+
+```php
+// find all users with a specific surname
+$users = $ocis->getUsers("einstein")[0];
+
+// get all drives of type project
+$drives = $ocis->getMyDrives(
+    DriveOrder::NAME,
+    OrderDirection::ASC,
+    DriveType::PROJECT
+);
+
+// get the drive named 'game'
+foreach ($drives as $drive) {
+    if ($drive->getName) === 'game' {
+        $gameDrive = $drive;
+        break;
+    }
+}
+
+// get all roles that are possible for that drive
+$driveRoles = $gameDrive->getRoles();
+
+// get the role that is allowed to view, download, upload, edit, add, delete and manage members
+foreach ($driveRoles as $role) {
+    if ($role->getDisplayName() === 'Manager') {
+        $managerRole = $role;
+        break;
+    }
+}
+
+// invite user einstein on project drive 'game' with manager permission
+$gameDrive->invite($users, $managerRole);
+```
+
 ## Notifications
 Notifications can be listed using the `getNotifications` method, which will return an array of `Notification` objects representing all active notifications.
 
