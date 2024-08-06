@@ -14,6 +14,7 @@ use OpenAPI\Client\Api\MeDriveApi;
 use OpenAPI\Client\Api\MeDrivesApi;
 use OpenAPI\Client\Api\UserApi;
 use OpenAPI\Client\Api\UsersApi;
+use OpenAPI\Client\Api\EducationUserApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
@@ -719,6 +720,73 @@ class Ocis
             );
         }
         return new User($apiUser);
+    }
+
+    /**
+     * retrieve education users known by the system
+     *
+     * @param array<string>|null $search
+     * @return array<EducationUser>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws InternalServerErrorException
+     */
+    public function getEducationUsers(?array $search = null): array
+    {
+        $users = [];
+        $apiInstance = new EducationUserApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $collectionOfApiUsers = $apiInstance->listEducationUsers($search);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($collectionOfApiUsers instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listUsers returned an OdataError - " . $collectionOfApiUsers->getError()
+            );
+        }
+        $apiUsers = $collectionOfApiUsers->getValue() ?? [];
+        foreach ($apiUsers as $apiUser) {
+            $users[] = new EducationUser($apiUser);
+        }
+        return $users;
+    }
+
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     */
+    public function getEducationUserById(string $userId): EducationUser
+    {
+        $apiInstance = new EducationUserApi(
+            $this->guzzle,
+            $this->graphApiConfig
+        );
+        try {
+            $apiUser = $apiInstance->getEducationUser($userId);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiUser instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getUser returned an OdataError - " . $apiUser->getError()
+            );
+        }
+        return new EducationUser($apiUser);
     }
 
     /**
