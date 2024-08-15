@@ -30,7 +30,7 @@ class ShareLink extends Share
             throw new InvalidResponseException(
                 "Invalid link returned for permission '" .
                 print_r($sharingLink, true) .
-                "'"
+                "'",
             );
         }
         return $sharingLink;
@@ -43,7 +43,7 @@ class ShareLink extends Share
             throw new InvalidResponseException(
                 "Invalid type returned for sharing link '" .
                 print_r($type, true) .
-                "'"
+                "'",
             );
         }
         return $type;
@@ -55,15 +55,15 @@ class ShareLink extends Share
             throw new InvalidResponseException(
                 "Invalid webUrl returned for sharing link '" .
                 print_r($this->getSharingLink()->getWebUrl(), true) .
-                "'"
+                "'",
             );
         }
-        return (string)$this->getSharingLink()->getWebUrl();
+        return (string) $this->getSharingLink()->getWebUrl();
     }
 
     public function getDisplayName(): string
     {
-        return (string)$this->getSharingLink()->getAtLibreGraphDisplayName();
+        return (string) $this->getSharingLink()->getAtLibreGraphDisplayName();
     }
 
     /**
@@ -113,7 +113,7 @@ class ShareLink extends Share
     public function setPassword(string $password): bool
     {
         $newPassword = new SharingLinkPassword([
-            'password' => $password
+            'password' => $password,
         ]);
 
         try {
@@ -121,14 +121,14 @@ class ShareLink extends Share
                 $this->driveId,
                 $this->resourceId,
                 $this->getPermissionId(),
-                $newPassword
+                $newPassword,
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
         if ($apiPermission instanceof OdataError) {
             throw new InvalidResponseException(
-                "setPassword returned an OdataError - " . $apiPermission->getError()
+                "setPassword returned an OdataError - " . $apiPermission->getError(),
             );
         }
         $this->apiPermission = $apiPermission;
@@ -154,14 +154,14 @@ class ShareLink extends Share
                 $this->driveId,
                 $this->resourceId,
                 $this->getPermissionId(),
-                $this->apiPermission
+                $this->apiPermission,
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
         if ($apiPermission instanceof OdataError) {
             throw new InvalidResponseException(
-                "updatePermission returned an OdataError - " . $apiPermission->getError()
+                "updatePermission returned an OdataError - " . $apiPermission->getError(),
             );
         }
         $this->apiPermission = $apiPermission;

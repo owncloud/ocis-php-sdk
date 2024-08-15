@@ -19,7 +19,7 @@ class BaseUser
      *         but should use the Ocis class to query the server for users
      */
     public function __construct(
-        User|EducationUser $user
+        User|EducationUser $user,
     ) {
         $this->id = $user->getId();
         $this->displayName = $user->getDisplayName();
@@ -34,9 +34,9 @@ class BaseUser
     {
         return (($this->displayName === null) || ($this->displayName === '')) ?
         throw new InvalidResponseException(
-            "Invalid displayName returned for user '" . print_r($this->displayName, true) . "'"
+            "Invalid displayName returned for user '" . print_r($this->displayName, true) . "'",
         )
-        : (string)$this->displayName;
+        : (string) $this->displayName;
     }
 
     /**
@@ -46,8 +46,8 @@ class BaseUser
     {
         return (($this->id === null) || ($this->id === '')) ?
         throw new InvalidResponseException(
-            "Invalid id returned for user '" . print_r($this->id, true) . "'"
-        ) : (string)$this->id;
+            "Invalid id returned for user '" . print_r($this->id, true) . "'",
+        ) : (string) $this->id;
     }
 
     /**
@@ -57,9 +57,9 @@ class BaseUser
     {
         return empty($this->mail) ?
         throw new InvalidResponseException(
-            "Invalid mail returned for user '" . print_r($this->mail, true) . "'"
+            "Invalid mail returned for user '" . print_r($this->mail, true) . "'",
         )
-        : (string)$this->mail;
+        : (string) $this->mail;
     }
 
     /**

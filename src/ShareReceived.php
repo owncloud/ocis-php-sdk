@@ -20,7 +20,7 @@ class ShareReceived
      * @param DriveItem $shareReceived
      */
     public function __construct(
-        DriveItem $shareReceived
+        DriveItem $shareReceived,
     ) {
         $this->shareReceived = $shareReceived;
     }
@@ -32,7 +32,7 @@ class ShareReceived
     {
         return empty($this->shareReceived->getId())
             ? throw new InvalidResponseException(
-                "Invalid Id '" . print_r($this->shareReceived->getId(), true) . "'"
+                "Invalid Id '" . print_r($this->shareReceived->getId(), true) . "'",
             )
             : $this->shareReceived->getId();
     }
@@ -45,7 +45,7 @@ class ShareReceived
     {
         return empty($this->shareReceived->getName())
             ? throw new InvalidResponseException(
-                "Invalid resource name '" . print_r($this->shareReceived->getName(), true) . "'"
+                "Invalid resource name '" . print_r($this->shareReceived->getName(), true) . "'",
             )
             : $this->shareReceived->getName();
     }
@@ -57,7 +57,7 @@ class ShareReceived
     {
         return empty($this->shareReceived->getETag())
             ? throw new InvalidResponseException(
-                "Invalid Etag '" . print_r($this->shareReceived->getETag(), true) . "'"
+                "Invalid Etag '" . print_r($this->shareReceived->getETag(), true) . "'",
             )
         : $this->shareReceived->getETag();
     }
@@ -71,7 +71,7 @@ class ShareReceived
         $time = $this->shareReceived->getLastModifiedDateTime();
         if (empty($time)) {
             throw new InvalidResponseException(
-                "Invalid last modified DateTime'" . print_r($time, true) . "'"
+                "Invalid last modified DateTime'" . print_r($time, true) . "'",
             );
         }
         return \DateTimeImmutable::createFromMutable($time);
@@ -84,7 +84,7 @@ class ShareReceived
     {
         return empty($this->shareReceived->getRemoteItem())
             ? throw new InvalidResponseException(
-                "Invalid remote item '" . print_r($this->shareReceived->getParentReference(), true) . "'"
+                "Invalid remote item '" . print_r($this->shareReceived->getParentReference(), true) . "'",
             ) : $this->shareReceived->getRemoteItem();
     }
 
@@ -97,7 +97,7 @@ class ShareReceived
         $remoteItem = $this->getRemoteItem();
         return empty($remoteItem->getId())
             ? throw new InvalidResponseException(
-                "Invalid remote item id '" . print_r($this->shareReceived->getRemoteItem(), true) . "'"
+                "Invalid remote item id '" . print_r($this->shareReceived->getRemoteItem(), true) . "'",
             )
             : $remoteItem->getId();
     }
@@ -110,7 +110,7 @@ class ShareReceived
         return empty($this->shareReceived->getCreatedBy())
         || empty($this->shareReceived->getCreatedBy()->getUser()) ?
             throw new InvalidResponseException(
-                "Invalid share createdBy information '" . print_r($this->shareReceived->getCreatedBy(), true) . "'"
+                "Invalid share createdBy information '" . print_r($this->shareReceived->getCreatedBy(), true) . "'",
             ) : $this->shareReceived->getCreatedBy()->getUser();
     }
 
@@ -122,7 +122,7 @@ class ShareReceived
         $createdByUser = $this->getCreatedByUser();
         return empty($createdByUser->getDisplayName())
             ? throw new InvalidResponseException(
-                "Invalid share owner name '" . print_r($createdByUser, true) . "'"
+                "Invalid share owner name '" . print_r($createdByUser, true) . "'",
             )
             : $createdByUser->getDisplayName();
     }
@@ -134,7 +134,7 @@ class ShareReceived
     {
         $createdByUser = $this->getCreatedByUser();
         return empty($createdByUser->getId()) ? throw new InvalidResponseException(
-            "Invalid share owner id '" . print_r($createdByUser->getId(), true) . "'"
+            "Invalid share owner id '" . print_r($createdByUser->getId(), true) . "'",
         ) : $createdByUser->getId();
     }
 

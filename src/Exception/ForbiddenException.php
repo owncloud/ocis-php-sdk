@@ -5,6 +5,4 @@ namespace Owncloud\OcisPhpSdk\Exception;
 /**
  * Exception for HTTP 403 errors
  */
-class ForbiddenException extends \Exception
-{
-}
+class ForbiddenException extends \Exception {}

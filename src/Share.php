@@ -49,7 +49,7 @@ class Share
         string        $driveId,
         array         $connectionConfig,
         string        $serviceUrl,
-        string        &$accessToken
+        string        &$accessToken,
     ) {
         $this->apiPermission = $apiPermission;
         $this->driveId = $driveId;
@@ -73,11 +73,11 @@ class Share
             return $this->connectionConfig['drivesPermissionsApi'];
         }
         $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
         );
         return new DrivesPermissionsApi(
             $guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
     }
 
@@ -86,7 +86,7 @@ class Share
         $id = $this->apiPermission->getId();
         if ($id === null || $id === '') {
             throw new InvalidResponseException(
-                "Invalid id returned for permission '" . print_r($id, true) . "'"
+                "Invalid id returned for permission '" . print_r($id, true) . "'",
             );
         }
         return $id;
@@ -128,7 +128,7 @@ class Share
             $this->getDrivesPermissionsApi()->deletePermission(
                 $this->driveId,
                 $this->resourceId,
-                $this->getPermissionId()
+                $this->getPermissionId(),
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
@@ -163,14 +163,14 @@ class Share
                 $this->driveId,
                 $this->resourceId,
                 $this->getPermissionId(),
-                $apiPermission
+                $apiPermission,
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
         if ($apiPermission instanceof OdataError) {
             throw new InvalidResponseException(
-                "updatePermission returned an OdataError - " . $apiPermission->getError()
+                "updatePermission returned an OdataError - " . $apiPermission->getError(),
             );
         }
         $this->apiPermission = $apiPermission;

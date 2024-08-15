@@ -94,7 +94,7 @@ class Ocis
     public function __construct(
         string $serviceUrl,
         string $accessToken,
-        array $connectionConfig = []
+        array $connectionConfig = [],
     ) {
         if (!self::isConnectionConfigValid($connectionConfig)) {
             throw new \InvalidArgumentException('Connection configuration is not valid');
@@ -113,7 +113,7 @@ class Ocis
 
         $this->connectionConfig = $connectionConfig;
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
-            $this->serviceUrl . '/graph'
+            $this->serviceUrl . '/graph',
         );
     }
 
@@ -215,7 +215,7 @@ class Ocis
         }
         $connectionConfig['headers'] = array_merge(
             $connectionConfig['headers'],
-            ['Authorization' => 'Bearer ' . $accessToken]
+            ['Authorization' => 'Bearer ' . $accessToken],
         );
         return $connectionConfig;
     }
@@ -247,40 +247,40 @@ class Ocis
         if (!array_key_exists(1, $tokenDataArray)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " No payload found."
+                " No payload found.",
             );
         }
         $plainPayload = base64_decode(\strtr($tokenDataArray[1], '-_', '+/'), true);
         if (!$plainPayload) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Payload not Base64Url encoded."
+                " Payload not Base64Url encoded.",
             );
         }
         $tokenPayload = json_decode($plainPayload, true);
         if (!is_array($tokenPayload)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Payload not valid JSON."
+                " Payload not valid JSON.",
             );
         }
         if (!array_key_exists('iss', $tokenPayload)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Payload does not contain 'iss' key."
+                " Payload does not contain 'iss' key.",
             );
         }
         if (!is_string($tokenPayload['iss'])) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " 'iss' key is not a string."
+                " 'iss' key is not a string.",
             );
         }
         $iss = parse_url($tokenPayload['iss']);
         if (!is_array($iss) || !array_key_exists('host', $iss)) {
             throw new \InvalidArgumentException(
                 self::DECODE_TOKEN_ERROR_MESSAGE .
-                " Content of 'iss' has no 'host' part."
+                " Content of 'iss' has no 'host' part.",
             );
         }
         try {
@@ -328,7 +328,7 @@ class Ocis
             if (!isset($body->data->version->productversion)) {
                 throw new InvalidResponseException('Missing productversion element in XML response');
             }
-            $version = (string)$body->data->version->productversion;
+            $version = (string) $body->data->version->productversion;
             $pattern = '(\d\.\d\.\d)';
             preg_match($pattern, $version, $matches);
             $this->ocisVersion = $matches[0];
@@ -352,14 +352,14 @@ class Ocis
     public function getAllDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        ?DriveType      $type = null
+        ?DriveType      $type = null,
     ): array {
         if (array_key_exists('drivesGetDrivesApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesGetDrivesApi'];
         } else {
             $apiInstance = new DrivesGetDrivesApi(
                 $this->guzzle,
-                $this->graphApiConfig
+                $this->graphApiConfig,
             );
         }
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
@@ -389,7 +389,7 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken,
-                $this->getOcisVersion()
+                $this->getOcisVersion(),
             );
             $drives[] = $drive;
         }
@@ -413,11 +413,11 @@ class Ocis
     public function getMyDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        ?DriveType      $type = null
+        ?DriveType      $type = null,
     ): array {
         $apiInstance = new MeDrivesApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         $drives = [];
         $order = $this->getListDrivesOrderString($orderBy, $orderDirection);
@@ -447,7 +447,7 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken,
-                $this->getOcisVersion()
+                $this->getOcisVersion(),
             );
             $drives[] = $drive;
         }
@@ -456,13 +456,13 @@ class Ocis
 
     private function getListDrivesOrderString(
         DriveOrder     $orderBy = DriveOrder::NAME,
-        OrderDirection $orderDirection = OrderDirection::ASC
+        OrderDirection $orderDirection = OrderDirection::ASC,
     ): string {
         return $orderBy->value . ' ' . $orderDirection->value;
     }
 
     private function getListDrivesFilterString(
-        ?DriveType $type = null
+        ?DriveType $type = null,
     ): ?string {
         if ($type !== null) {
             $filter = 'driveType eq \'' . $type->value . '\'';
@@ -487,7 +487,7 @@ class Ocis
     {
         $apiInstance = new DrivesApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiDrive = $apiInstance->getDrive($driveId);
@@ -497,7 +497,7 @@ class Ocis
 
         if ($apiDrive instanceof OdataError) {
             throw new InvalidResponseException(
-                "getDrive returned an OdataError - " . $apiDrive->getError()
+                "getDrive returned an OdataError - " . $apiDrive->getError(),
             );
         }
         return new Drive(
@@ -505,7 +505,7 @@ class Ocis
             $this->connectionConfig,
             $this->serviceUrl,
             $this->accessToken,
-            $this->getOcisVersion()
+            $this->getOcisVersion(),
         );
     }
 
@@ -526,7 +526,7 @@ class Ocis
     public function createDrive(
         string $name,
         int $quota = 0,
-        ?string $description = null
+        ?string $description = null,
     ): Drive {
         if ($quota < 0) {
             throw new \InvalidArgumentException('Quota cannot be less than 0');
@@ -536,15 +536,15 @@ class Ocis
         } else {
             $apiInstance = new DrivesApi(
                 $this->guzzle,
-                $this->graphApiConfig
+                $this->graphApiConfig,
             );
         }
         $apiDrive = new ApiDrive(
             [
                 'description' => $description,
                 'name' => $name,
-                'quota' => new Quota(['total' => $quota])
-            ]
+                'quota' => new Quota(['total' => $quota]),
+            ],
         );
         try {
             $newlyCreatedDrive = $apiInstance->createDrive($apiDrive);
@@ -558,13 +558,13 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $this->accessToken,
-                $this->getOcisVersion()
+                $this->getOcisVersion(),
             );
         }
         throw new InvalidResponseException(
             "Drive could not be created. '" .
             $newlyCreatedDrive->getError()->getMessage() .
-            "'"
+            "'",
         );
     }
 
@@ -587,7 +587,7 @@ class Ocis
     public function getGroups(
         string $search = "",
         OrderDirection $orderBy = OrderDirection::ASC,
-        bool $expandMembers = false
+        bool $expandMembers = false,
     ) {
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
         $orderByString = $orderBy->value === OrderDirection::ASC->value ? "displayName" : "displayName desc";
@@ -596,7 +596,7 @@ class Ocis
                 $search,
                 [$orderByString],
                 [],
-                $expandMembers ? ["members"] : null
+                $expandMembers ? ["members"] : null,
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
@@ -604,7 +604,7 @@ class Ocis
 
         if ($allGroupsList instanceof OdataError) {
             throw new InvalidResponseException(
-                "listGroups returned an OdataError - " . $allGroupsList->getError()
+                "listGroups returned an OdataError - " . $allGroupsList->getError(),
             );
         }
         $apiGroups = $allGroupsList->getValue() ?? [];
@@ -614,7 +614,7 @@ class Ocis
                 $group,
                 $this->serviceUrl,
                 $this->connectionConfig,
-                $this->accessToken
+                $this->accessToken,
             );
             $groupList[] = $newGroup;
         }
@@ -644,7 +644,7 @@ class Ocis
                 $responses,
                 $this->connectionConfig,
                 $this->serviceUrl,
-                $this->accessToken
+                $this->accessToken,
             );
         } catch (SabreClientHttpException|SabreClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
@@ -673,7 +673,7 @@ class Ocis
         $users = [];
         $apiInstance = new UsersApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $collectionOfApiUsers = $apiInstance->listUsers($search);
@@ -683,7 +683,7 @@ class Ocis
 
         if ($collectionOfApiUsers instanceof OdataError) {
             throw new InvalidResponseException(
-                "listUsers returned an OdataError - " . $collectionOfApiUsers->getError()
+                "listUsers returned an OdataError - " . $collectionOfApiUsers->getError(),
             );
         }
         $apiUsers = $collectionOfApiUsers->getValue() ?? [];
@@ -706,7 +706,7 @@ class Ocis
     {
         $apiInstance = new UserApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiUser = $apiInstance->getUser($userId);
@@ -716,7 +716,7 @@ class Ocis
 
         if ($apiUser instanceof OdataError) {
             throw new InvalidResponseException(
-                "getUser returned an OdataError - " . $apiUser->getError()
+                "getUser returned an OdataError - " . $apiUser->getError(),
             );
         }
         return new User($apiUser);
@@ -740,7 +740,7 @@ class Ocis
         $users = [];
         $apiInstance = new EducationUserApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $collectionOfApiUsers = $apiInstance->listEducationUsers($search);
@@ -750,7 +750,7 @@ class Ocis
 
         if ($collectionOfApiUsers instanceof OdataError) {
             throw new InvalidResponseException(
-                "listUsers returned an OdataError - " . $collectionOfApiUsers->getError()
+                "listUsers returned an OdataError - " . $collectionOfApiUsers->getError(),
             );
         }
         $apiUsers = $collectionOfApiUsers->getValue() ?? [];
@@ -773,7 +773,7 @@ class Ocis
     {
         $apiInstance = new EducationUserApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiUser = $apiInstance->getEducationUser($userId);
@@ -783,7 +783,7 @@ class Ocis
 
         if ($apiUser instanceof OdataError) {
             throw new InvalidResponseException(
-                "getUser returned an OdataError - " . $apiUser->getError()
+                "getUser returned an OdataError - " . $apiUser->getError(),
             );
         }
         return new EducationUser($apiUser);
@@ -802,7 +802,7 @@ class Ocis
     {
         $apiInstance = new GroupApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiGroup = $apiInstance->getGroup($groupId);
@@ -812,14 +812,14 @@ class Ocis
 
         if ($apiGroup instanceof OdataError) {
             throw new InvalidResponseException(
-                "getGroup returned an OdataError - " . $apiGroup->getError()
+                "getGroup returned an OdataError - " . $apiGroup->getError(),
             );
         }
         return new Group(
             $apiGroup,
             $this->serviceUrl,
             $this->connectionConfig,
-            $this->accessToken
+            $this->accessToken,
         );
     }
 
@@ -856,7 +856,7 @@ class Ocis
     {
         try {
             $response = $this->guzzle->get(
-                $this->serviceUrl . $this->notificationsEndpoint
+                $this->serviceUrl . $this->notificationsEndpoint,
             );
         } catch (GuzzleException|GuzzleClientException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
@@ -884,11 +884,11 @@ class Ocis
          *  }
          *} $ocsResponse
          */
-        $ocsResponse = (array)json_decode($content, true);
+        $ocsResponse = (array) json_decode($content, true);
 
         if (!$this->isNotificationResponseValid($ocsResponse)) {
             throw new InvalidResponseException(
-                'Notification response is invalid. Content: "' .  $content . '"'
+                'Notification response is invalid. Content: "' . $content . '"',
             );
         }
 
@@ -902,7 +902,7 @@ class Ocis
                 !is_string($ocsData["notification_id"]) ||
                 $ocsData["notification_id"] === "") {
                 throw new InvalidResponseException(
-                    'Id is invalid or missing in notification response. Content: "' . $content . '"'
+                    'Id is invalid or missing in notification response. Content: "' . $content . '"',
                 );
             }
             $id = $ocsData["notification_id"];
@@ -948,7 +948,7 @@ class Ocis
                 $this->connectionConfig,
                 $this->serviceUrl,
                 $id,
-                $notificationContent
+                $notificationContent,
             );
         }
         return $notifications;
@@ -980,14 +980,14 @@ class Ocis
         }
         if ($newlyCreatedGroup instanceof OdataError) {
             throw new InvalidResponseException(
-                "createGroup returned an OdataError - " . $newlyCreatedGroup->getError()
+                "createGroup returned an OdataError - " . $newlyCreatedGroup->getError(),
             );
         }
         return new Group(
             $newlyCreatedGroup,
             $this->serviceUrl,
             $this->connectionConfig,
-            $this->accessToken
+            $this->accessToken,
         );
     }
 
@@ -1028,7 +1028,7 @@ class Ocis
     {
         $apiInstance = new MeDriveApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $shareList = $apiInstance->listSharedWithMe();
@@ -1037,14 +1037,14 @@ class Ocis
         }
         if ($shareList instanceof OdataError) {
             throw new InvalidResponseException(
-                "listSharedWithMe returned an OdataError - " . $shareList->getError()
+                "listSharedWithMe returned an OdataError - " . $shareList->getError(),
             );
         }
         $apiShares = $shareList->getValue() ?? [];
         $shares = [];
         foreach ($apiShares as $share) {
             $shares[] = new ShareReceived(
-                $share
+                $share,
             );
         }
         return $shares;
@@ -1064,7 +1064,7 @@ class Ocis
     {
         $apiInstance = new MeDriveApi(
             $this->guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $shareList = $apiInstance->listSharedByMe();
@@ -1073,27 +1073,27 @@ class Ocis
         }
         if ($shareList instanceof OdataError) {
             throw new InvalidResponseException(
-                "listSharedByMe returned an OdataError - " . $shareList->getError()
+                "listSharedByMe returned an OdataError - " . $shareList->getError(),
             );
         }
         if ($shareList->getValue() === null) {
             throw new InvalidResponseException(
-                "listSharedByMe returned 'null' where an array of data were expected"
+                "listSharedByMe returned 'null' where an array of data were expected",
             );
         }
         $shares = [];
         foreach ($shareList->getValue() as $share) {
             $resourceId = empty($share->getId()) ?
                 throw new InvalidResponseException(
-                    "Invalid resource id '" . print_r($share->getId(), true) . "'"
+                    "Invalid resource id '" . print_r($share->getId(), true) . "'",
                 )
-                : (string)$share->getId();
+                : (string) $share->getId();
 
             $driveId = empty($share->getParentReference()) || empty($share->getParentReference()->getDriveId()) ?
                 throw new InvalidResponseException(
-                    "Invalid driveId '" . print_r($share->getParentReference(), true) . "'"
+                    "Invalid driveId '" . print_r($share->getParentReference(), true) . "'",
                 )
-                : (string)$share->getParentReference()->getDriveId();
+                : (string) $share->getParentReference()->getDriveId();
 
             if (!is_iterable($share->getPermissions())) {
                 throw new InvalidResponseException("Invalid permissions provided");
@@ -1106,7 +1106,7 @@ class Ocis
                         $driveId,
                         $this->connectionConfig,
                         $this->serviceUrl,
-                        $this->accessToken
+                        $this->accessToken,
                     );
                 } else {
                     $shares[] = new ShareLink(
@@ -1115,7 +1115,7 @@ class Ocis
                         $driveId,
                         $this->connectionConfig,
                         $this->serviceUrl,
-                        $this->accessToken
+                        $this->accessToken,
                     );
                 }
             }

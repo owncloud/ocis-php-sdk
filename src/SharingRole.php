@@ -38,8 +38,8 @@ class SharingRole
     {
         return ($data === null || $data === '') ?
         throw new InvalidResponseException(
-            "Invalid $dataKey returned for user '" . print_r($data, true) . "'"
-        ) : (string)$data;
+            "Invalid $dataKey returned for user '" . print_r($data, true) . "'",
+        ) : (string) $data;
     }
 
     /**
@@ -71,7 +71,7 @@ class SharingRole
      */
     public function getWeight(): int
     {
-        return (int)$this->validateData($this->weight, "weight");
+        return (int) $this->validateData($this->weight, "weight");
     }
 
 

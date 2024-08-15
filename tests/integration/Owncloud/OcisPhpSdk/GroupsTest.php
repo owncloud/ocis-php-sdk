@@ -22,7 +22,7 @@ class GroupsTest extends OcisPhpSdkTestCase
         $userName = $users[0]->getDisplayName();
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
-            "philosophy haters group"
+            "philosophy haters group",
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($users[0]);
@@ -34,13 +34,13 @@ class GroupsTest extends OcisPhpSdkTestCase
                 $group->getMembers(),
                 "The group " . $group->getDisplayName()
                 . " should have 1 member but found "
-                . count($group->getMembers()) . " members"
+                . count($group->getMembers()) . " members",
             );
             $this->assertSame(
                 $userName,
                 $group->getMembers()[0]->getDisplayName(),
                 $userName . " user be the first member" . $group->getDisplayName() . " group but found "
-                . $group->getMembers()[0]->getDisplayName()
+                . $group->getMembers()[0]->getDisplayName(),
             );
         }
     }
@@ -55,7 +55,7 @@ class GroupsTest extends OcisPhpSdkTestCase
         $users = $ocis->getUsers();
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
-            "philosophy haters group"
+            "philosophy haters group",
         );
         $this->createdGroups = [$philosophyHatersGroup];
         foreach ($users as $user) {
@@ -75,13 +75,13 @@ class GroupsTest extends OcisPhpSdkTestCase
             count($createdGroup[0]->getMembers()),
             "Expected " . ($initialMemberCount - 1)
             . " group member(s) but got "
-            . count($createdGroup[0]->getMembers())
+            . count($createdGroup[0]->getMembers()),
         );
         $this->assertSame(
             $adminUserName,
             $createdGroup[0]->getMembers()[0]->getDisplayName(),
             "Username of group member should be "
-            . $adminUserName . " but found " . $createdGroup[0]->getMembers()[0]->getDisplayName()
+            . $adminUserName . " but found " . $createdGroup[0]->getMembers()[0]->getDisplayName(),
         );
     }
 
@@ -96,7 +96,7 @@ class GroupsTest extends OcisPhpSdkTestCase
         $users = $ocis->getUsers();
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
-            "philosophy haters group"
+            "philosophy haters group",
         );
         $this->createdGroups = [$philosophyHatersGroup];
         foreach ($users as $user) {
@@ -125,7 +125,7 @@ class GroupsTest extends OcisPhpSdkTestCase
         $users = $ocis->getUsers('admin');
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
-            "philosophy haters group"
+            "philosophy haters group",
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->removeUser($users[0]);
@@ -140,7 +140,7 @@ class GroupsTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
-            "philosophy haters group"
+            "philosophy haters group",
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $user = new User(
@@ -149,7 +149,7 @@ class GroupsTest extends OcisPhpSdkTestCase
                 "display_name" => "displayname",
                 "mail" => "mail@mail.com",
                 "on_premises_sam_account_name" => "sd",
-            ]
+            ],
         );
         $sdkUser = new \Owncloud\OcisPhpSdk\User($user);
         $groups = $ocis->getGroups(search:"philosophyhaters");
@@ -186,24 +186,24 @@ class GroupsTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $philosophyHatersGroup =  $ocis->createGroup(
             "philosophyhaters",
-            "philosophy haters group"
+            "philosophy haters group",
         );
         $physicsLoversGroup = $ocis->createGroup(
             "physicslovers",
-            "physics lover group"
+            "physics lover group",
         );
         $philosophyHatersGroup->delete();
         $this->createdGroups = [$physicsLoversGroup];
         $this->assertCount(
             1,
             $ocis->getGroups(),
-            "Expected one group but found " . count($ocis->getGroups())
+            "Expected one group but found " . count($ocis->getGroups()),
         );
         $this->assertSame(
             "physicslovers",
             $ocis->getGroups()[0]->getDisplayName(),
             "Group should be deleted but exists "
-            . $ocis->getGroups()[0]->getDisplayName()
+            . $ocis->getGroups()[0]->getDisplayName(),
         );
 
     }
@@ -221,14 +221,14 @@ class GroupsTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $groups,
-            "Expected one group but found " . count($groups)
+            "Expected one group but found " . count($groups),
         );
         foreach ($groups as $group) {
             $this->assertInstanceOf(
                 Group::class,
                 $group,
                 "Expected class " . Group::class
-                . " but got " . get_class($group)
+                . " but got " . get_class($group),
             );
             $this->assertIsString($group->getId());
             $this->assertIsString($group->getDisplayName());

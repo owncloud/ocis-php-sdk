@@ -90,7 +90,7 @@ class OcisPhpSdkTestCase extends TestCase
         }
         $guzzleClient = new Client([
             'base_uri' => $this->ocisUrl,
-            'verify' => false
+            'verify' => false,
         ]);
         $this->guzzleClient = $guzzleClient;
         return $this->guzzleClient;
@@ -99,15 +99,15 @@ class OcisPhpSdkTestCase extends TestCase
     protected function getAccessToken(string $username, string $password): string
     {
         $guzzleClient = $this->getGuzzleClient();
-        $response = $guzzleClient->post((string)$this->tokenUrl, [
+        $response = $guzzleClient->post((string) $this->tokenUrl, [
             'form_params' => [
                 'grant_type' => 'password',
                 'client_id' => self::CLIENT_ID,
                 'client_secret' => self::CLIENT_SECRET,
                 'username' => $username,
                 'password' => $password,
-                'scope' => 'openid profile email offline_access'
-            ]
+                'scope' => 'openid profile email offline_access',
+            ],
         ]);
         $accessTokenResponse = json_decode($response->getBody()->getContents(), true);
         if ($accessTokenResponse === null) {
@@ -183,7 +183,7 @@ class OcisPhpSdkTestCase extends TestCase
         return $ocis->getMyDrives(
             DriveOrder::NAME,
             OrderDirection::ASC,
-            DriveType::PERSONAL
+            DriveType::PERSONAL,
         )[0];
     }
 
@@ -224,7 +224,7 @@ class OcisPhpSdkTestCase extends TestCase
         $response = self::getWrapperGuzzleClient()->request(
             'PUT',
             '/config',
-            ['body' => '{"' . $key . '": "' . $value . '"}']
+            ['body' => '{"' . $key . '": "' . $value . '"}'],
         );
         if ($response->getStatusCode() !== 200) {
             throw new \Exception('Failed to set OCIS setting');
@@ -235,7 +235,7 @@ class OcisPhpSdkTestCase extends TestCase
     {
         $response = self::getWrapperGuzzleClient()->request(
             'DELETE',
-            '/rollback'
+            '/rollback',
         );
         if ($response->getStatusCode() !== 200) {
             throw new \Exception('Failed to reset OCIS settings');
@@ -252,7 +252,7 @@ class OcisPhpSdkTestCase extends TestCase
      * @throws \Exception
      */
     protected static function getPermissionsRoleIdByName(
-        string $permissionsRole
+        string $permissionsRole,
     ): string {
         switch ($permissionsRole) {
             case 'Viewer':

@@ -51,23 +51,23 @@ class NotificationTest extends OcisPhpSdkTestCase
         $this->assertContainsOnlyInstancesOf(
             Notification::class,
             $notifications,
-            "Array is not instance of " . Notification::class
+            "Array is not instance of " . Notification::class,
         );
         $this->assertCount(
             1,
             $notifications,
-            "Expected one notification but received " . count($notifications)
+            "Expected one notification but received " . count($notifications),
         );
         $this->assertSame(
             $sharerUser[0]->getDisplayName() .
             " shared to-share-test.txt with you",
             $notifications[0]->getMessage(),
-            "Wrong Notification received"
+            "Wrong Notification received",
         );
         $this->assertMatchesRegularExpression(
             '/' . $this->getUUIDv4Regex() . '/i',
             $notifications[0]->getId(),
-            "Incorrect Format of Notifications received"
+            "Incorrect Format of Notifications received",
         );
     }
 
@@ -79,7 +79,7 @@ class NotificationTest extends OcisPhpSdkTestCase
         $this->assertCount(
             count($notifications) - 1,
             $notificationsAfterDeletion,
-            "Notification should be deleted but exists"
+            "Notification should be deleted but exists",
         );
         $this->assertNotEquals($notifications, $notificationsAfterDeletion, "Deleted notification still exists");
     }
