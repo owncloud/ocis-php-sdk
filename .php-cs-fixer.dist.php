@@ -5,5 +5,5 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 $config->setFinder($finder);
-$config->setRules(['@PSR12' => true]);
+$config->setRules(['@PER-CS2.0' => true]);
 return $config;
