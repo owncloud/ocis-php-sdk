@@ -351,7 +351,7 @@ class Ocis
     public function getAllDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        DriveType      $type = null
+        ?DriveType      $type = null
     ): array {
         if (array_key_exists('drivesGetDrivesApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesGetDrivesApi'];
@@ -412,7 +412,7 @@ class Ocis
     public function getMyDrives(
         DriveOrder     $orderBy = DriveOrder::NAME,
         OrderDirection $orderDirection = OrderDirection::ASC,
-        DriveType      $type = null
+        ?DriveType      $type = null
     ): array {
         $apiInstance = new MeDrivesApi(
             $this->guzzle,
@@ -461,7 +461,7 @@ class Ocis
     }
 
     private function getListDrivesFilterString(
-        DriveType $type = null
+        ?DriveType $type = null
     ): ?string {
         if ($type !== null) {
             $filter = 'driveType eq \'' . $type->value . '\'';
@@ -525,7 +525,7 @@ class Ocis
     public function createDrive(
         string $name,
         int $quota = 0,
-        string $description = null
+        ?string $description = null
     ): Drive {
         if ($quota < 0) {
             throw new \InvalidArgumentException('Quota cannot be less than 0');
