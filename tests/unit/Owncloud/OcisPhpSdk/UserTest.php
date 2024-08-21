@@ -6,11 +6,12 @@ use OpenAPI\Client\Model\User;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\User as SdkUser;
 use PHPUnit\Framework\TestCase;
+use OpenAPI\Client\Model\ObjectIdentity;
 
 class UserTest extends TestCase
 {
     /**
-     * @return array<int, array<int, array<string, string>>>
+     * @return array<int,array<int,array<string,array<int,ObjectIdentity>|string>>>
      */
     public static function validUserData(): array
     {
@@ -21,6 +22,9 @@ class UserTest extends TestCase
                     "display_name" => "displayname",
                     "mail" => "mail@mail.com",
                     "on_premises_sam_account_name" => "sd",
+                    "surname" => "ds",
+                    "given_name" => "ds",
+                    "identities" => [new ObjectIdentity(['issuer' => "idp", "issuer_assigned_id" => 'idpId'])],
                 ],
             ],
             [
@@ -29,6 +33,9 @@ class UserTest extends TestCase
                     "display_name" => "0",
                     "mail" => "0@mail.com",
                     "on_premises_sam_account_name" => "sd",
+                    "surname" => "ds",
+                    "given_name" => "ds",
+                    "identities" => [new ObjectIdentity(['issuer' => "idp", "issuer_assigned_id" => 'idpId'])],
                 ],
             ],
         ];
@@ -48,6 +55,7 @@ class UserTest extends TestCase
         $this->assertSame($data["display_name"], $user->getDisplayName());
         $this->assertSame($data["mail"], $user->getMail());
         $this->assertSame($data["on_premises_sam_account_name"], $user->getOnPremisesSamAccountName());
+        $this->assertSame($data["identities"], $user->getIdentities());
     }
     /**
      * @return array<int, array<int, array<string, string|null>>>
