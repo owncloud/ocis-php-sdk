@@ -503,7 +503,7 @@ class DriveTest extends OcisPhpSdkTestCase
         $katherineDrives = $katherineOcis->getMyDrives();
         $projectDriveFound = false;
 
-        foreach($katherineDrives as $drive) {
+        foreach ($katherineDrives as $drive) {
             if ($drive->getType() === DriveType::PROJECT) {
                 $projectDriveFound = true;
                 $this->assertThat(

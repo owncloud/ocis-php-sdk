@@ -152,7 +152,7 @@ class GroupsTest extends OcisPhpSdkTestCase
             ]
         );
         $sdkUser = new \Owncloud\OcisPhpSdk\User($user);
-        $groups = $ocis->getGroups(search:"philosophyhaters");
+        $groups = $ocis->getGroups(search: "philosophyhaters");
         $this->assertGreaterThanOrEqual(1, $groups);
         $groups[0]->addUser($sdkUser);
     }
@@ -167,7 +167,7 @@ class GroupsTest extends OcisPhpSdkTestCase
         $physicsLoversGroup =  $ocis->createGroup("physicslovers", "physics lovers group");
         $this->createdGroups = [$physicsLoversGroup];
         $users = $marieOcis->getUsers('marie');
-        $groups = $marieOcis->getGroups(search:"physicslovers");
+        $groups = $marieOcis->getGroups(search: "physicslovers");
         $this->assertGreaterThanOrEqual(1, $groups);
         if (getenv('OCIS_VERSION') === "stable") {
             $this->expectException(UnauthorizedException::class);

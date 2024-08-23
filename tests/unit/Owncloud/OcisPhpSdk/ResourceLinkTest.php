@@ -130,7 +130,7 @@ class ResourceLinkTest extends TestCase
         $permissionMock = $this->createMock(Permission::class);
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password: self::PASSWORD);
         $link->getPermissionId();
     }
 
@@ -142,7 +142,7 @@ class ResourceLinkTest extends TestCase
         $permissionMock->method('getId')->willReturn('uuid-of-the-permission');
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
-        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password: self::PASSWORD);
         $link->getType();
     }
 
@@ -157,7 +157,7 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password: self::PASSWORD);
         $link->getWebUrl();
     }
 
@@ -173,7 +173,7 @@ class ResourceLinkTest extends TestCase
         $drivesPermissionsApi = $this->createMock(DrivesPermissionsApi::class);
         $drivesPermissionsApi->method('createLink')->willReturn($permissionMock);
 
-        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password:self::PASSWORD);
+        $link = $this->createResource($drivesPermissionsApi)->createSharingLink(password: self::PASSWORD);
         $link->getType();
     }
 }

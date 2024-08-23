@@ -173,7 +173,7 @@ class Group
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
-        foreach($this->members as $memberIndex => $member) {
+        foreach ($this->members as $memberIndex => $member) {
             if ($member->getId() === $user->getId()) {
                 unset($this->members[$memberIndex]);
             }
