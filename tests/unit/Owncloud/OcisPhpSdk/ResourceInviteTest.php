@@ -31,7 +31,7 @@ class ResourceInviteTest extends TestCase
                 'display_name' => 'Albert Einstein',
                 'mail' => 'einstein@owncloud.np',
                 'on_premises_sam_account_name' => 'albert-einstein',
-            ]
+            ],
         );
         $einstein = new User($openAPIUser);
 
@@ -39,7 +39,7 @@ class ResourceInviteTest extends TestCase
             [
                 'id' => 'uuid-of-smart-people-group',
                 'display_name' => 'smart-people',
-            ]
+            ],
         );
         $accessToken = "acstok";
         $smartPeopleGroup = new Group($openAPIGroup, "url", [], $accessToken);
@@ -55,12 +55,12 @@ class ResourceInviteTest extends TestCase
                             new DriveRecipient(
                                 [
                                     'object_id' => 'uuid-of-einstein',
-                                ]
+                                ],
                             ),
                         ],
                         'roles' => ['uuid-of-the-role'],
-                    ]
-                )
+                    ],
+                ),
             ],
             // set expiry time
             [
@@ -73,13 +73,13 @@ class ResourceInviteTest extends TestCase
                                 [
                                     'object_id' => 'uuid-of-smart-people-group',
                                     'at_libre_graph_recipient_type' => 'group',
-                                ]
+                                ],
                             ),
                         ],
                         'roles' => ['uuid-of-the-role'],
-                        'expiration_date_time' => new \DateTimeImmutable('2022-12-31 01:02:03.456789Z')
-                    ]
-                )
+                        'expiration_date_time' => new \DateTimeImmutable('2022-12-31 01:02:03.456789Z'),
+                    ],
+                ),
             ],
             // set expiry time, with conversion to UTC/Z timezone
             [
@@ -91,13 +91,13 @@ class ResourceInviteTest extends TestCase
                             new DriveRecipient(
                                 [
                                     'object_id' => 'uuid-of-einstein',
-                                ]
+                                ],
                             ),
                         ],
                         'roles' => ['uuid-of-the-role'],
-                        'expiration_date_time' => new \DateTimeImmutable('2021-01-01 12:00:43.123456Z')
-                    ]
-                )
+                        'expiration_date_time' => new \DateTimeImmutable('2021-01-01 12:00:43.123456Z'),
+                    ],
+                ),
             ],
         ];
     }
@@ -108,7 +108,7 @@ class ResourceInviteTest extends TestCase
     public function testInvite(
         User|Group $recipient,
         ?\DateTimeImmutable $expiration,
-        DriveItemInvite $expectedInviteData
+        DriveItemInvite $expectedInviteData,
     ): void {
         $permission = $this->createMock(Permission::class);
         $permission->method('getId')
@@ -129,20 +129,20 @@ class ResourceInviteTest extends TestCase
             200 => [
                 '{http://owncloud.org/ns}id' => 'uuid-of-the-resource',
                 '{http://owncloud.org/ns}spaceid' => 'uuid-of-the-drive',
-            ]
+            ],
         ];
 
         $resource = new OcisResource(
             $resourceMetadata,
             $connectionConfig,
             'http://ocis',
-            $accessToken
+            $accessToken,
         );
 
         $openAPIRole = new UnifiedRoleDefinition(
             [
                 'id' => 'uuid-of-the-role',
-                'display_name' => 'Manager'
+                'display_name' => 'Manager',
             ],
         );
         $role = new SharingRole($openAPIRole);
@@ -163,7 +163,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => 'Manager',
                     'description' => 'description',
                     'weight' => 'at_libre_graph_weight',
-                ],"Invalid id returned for user ''"
+                ],"Invalid id returned for user ''",
             ],
             [
                 [
@@ -171,7 +171,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => 'Manager',
                     'description' => 'description',
                     'weight' => 2,
-                ],"Invalid id returned for user ''"
+                ],"Invalid id returned for user ''",
             ],
             [
                 [
@@ -179,7 +179,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => '',
                     'description' => 'description',
                     'weight' => 4,
-                ],"Invalid display name returned for user ''"
+                ],"Invalid display name returned for user ''",
             ],
             [
                 [
@@ -187,7 +187,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => null,
                     'description' => 'description',
                     'weight' => 6,
-                ],"Invalid display name returned for user ''"
+                ],"Invalid display name returned for user ''",
             ],
             [
                 [
@@ -195,7 +195,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => 'Manager',
                     'description' => '',
                     'weight' => 5,
-                ],"Invalid description returned for user ''"
+                ],"Invalid description returned for user ''",
             ],
             [
                 [
@@ -203,7 +203,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => 'Manager',
                     'description' => null,
                     'weight' => 24,
-                ],"Invalid description returned for user ''"
+                ],"Invalid description returned for user ''",
             ],
             [
                 [
@@ -211,7 +211,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => 'Manager',
                     'description' => 'description',
                     'weight' => '',
-                ],"Invalid weight returned for user ''"
+                ],"Invalid weight returned for user ''",
             ],
             [
                 [
@@ -219,7 +219,7 @@ class ResourceInviteTest extends TestCase
                     'display_name' => 'Manager',
                     'description' => 'description',
                     'weight' => null,
-                ],"Invalid weight returned for user ''"
+                ],"Invalid weight returned for user ''",
             ],
         ];
     }

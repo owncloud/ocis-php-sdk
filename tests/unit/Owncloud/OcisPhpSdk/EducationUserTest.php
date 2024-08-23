@@ -21,7 +21,7 @@ class EducationUserTest extends TestCase
                 "display_name" => "displayname",
                 "mail" => "mail@mail.com",
                 "on_premises_sam_account_name" => "sd",
-            ]))
+            ])),
         ]);
         /** @phan-suppress-next-line PhanUndeclaredMethod */
         $user = $ocis->getEducationUsers();

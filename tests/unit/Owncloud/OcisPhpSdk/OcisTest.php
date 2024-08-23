@@ -25,9 +25,9 @@ class OcisTest extends TestCase
     {
         $this->assertSame(
             [
-                'headers' => ['Authorization' => 'Bearer token']
+                'headers' => ['Authorization' => 'Bearer token'],
             ],
-            Ocis::createGuzzleConfig([], 'token')
+            Ocis::createGuzzleConfig([], 'token'),
         );
     }
 
@@ -36,9 +36,9 @@ class OcisTest extends TestCase
         $this->assertEquals(
             [
                 'headers' => ['Authorization' => 'Bearer token'],
-                'verify' => false
+                'verify' => false,
             ],
-            Ocis::createGuzzleConfig(['verify' => false], 'token')
+            Ocis::createGuzzleConfig(['verify' => false], 'token'),
         );
     }
 
@@ -48,10 +48,10 @@ class OcisTest extends TestCase
             [
                 'headers' => [
                     'Authorization' => 'Bearer token',
-                    'X-something' => 'X-Data'
-                ]
+                    'X-something' => 'X-Data',
+                ],
             ],
-            Ocis::createGuzzleConfig(['headers' => ['X-something' => 'X-Data']], 'token')
+            Ocis::createGuzzleConfig(['headers' => ['X-something' => 'X-Data']], 'token'),
         );
     }
 
@@ -75,7 +75,7 @@ class OcisTest extends TestCase
         $ocis = new Ocis(
             'https://localhost:9200',
             'doesNotMatter',
-            ['drivesApi' => $createDriveMock]
+            ['drivesApi' => $createDriveMock],
         );
         $ocis->createDrive('driveName');
     }
@@ -86,7 +86,7 @@ class OcisTest extends TestCase
         $this->expectExceptionMessage(
             "[0] cURL error 6: Could not resolve host: localhost-does-not-exist " .
             "(see https://curl.haxx.se/libcurl/c/libcurl-errors.html) " .
-            "for https://localhost-does-not-exist:9200/graph/v1.0/drives"
+            "for https://localhost-does-not-exist:9200/graph/v1.0/drives",
         );
         $ocis = new Ocis('https://localhost-does-not-exist:9200', 'doesNotMatter');
         $ocis->createDrive('driveName');
@@ -102,7 +102,7 @@ class OcisTest extends TestCase
         $ocis = new Ocis(
             'https://localhost:9200',
             'doesNotMatter',
-            ['drivesApi' => $createDriveMock]
+            ['drivesApi' => $createDriveMock],
         );
         $ocis->createDrive('driveName');
     }
@@ -123,7 +123,7 @@ class OcisTest extends TestCase
             'https://localhost:9200',
             'tokenWhenCreated',
             /* @phpstan-ignore-next-line */
-            [ 'guzzle' => $this->setUpMocksForOcisVersion(), 'drivesGetDrivesApi' => $drivesGetDrivesApi]
+            [ 'guzzle' => $this->setUpMocksForOcisVersion(), 'drivesGetDrivesApi' => $drivesGetDrivesApi],
         );
         $drives = $ocis->getAllDrives();
         foreach ($drives as $drive) {
@@ -139,7 +139,7 @@ class OcisTest extends TestCase
     {
         $ocis = $this->setupMocksForNotificationTests(
             '{"ocs":{"data":[{"notification_id":"123"},{"notification_id":"456"}]}}',
-            'tokenWhenCreated'
+            'tokenWhenCreated',
         );
         $notifications = $ocis->getNotifications();
         $this->assertSame('tokenWhenCreated', $notifications[0]->getAccessToken());
@@ -176,7 +176,7 @@ class OcisTest extends TestCase
 
     private function setupMocksForNotificationTests(
         string $responseContent,
-        string $token = 'doesNotMatter'
+        string $token = 'doesNotMatter',
     ): Ocis {
         $streamMock = $this->createMock(StreamInterface::class);
         $streamMock->method('getContents')->willReturn($responseContent);
@@ -195,7 +195,7 @@ class OcisTest extends TestCase
         return [
             [""],
             ["data,"],
-            ["{data:}"]
+            ["{data:}"],
         ];
     }
 
@@ -206,7 +206,7 @@ class OcisTest extends TestCase
     {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
-            'Notification response is invalid. Content: "' . $responseContent . '"'
+            'Notification response is invalid. Content: "' . $responseContent . '"',
         );
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $ocis->getNotifications();
@@ -221,7 +221,7 @@ class OcisTest extends TestCase
             ['{"ocs":{"meta":{"message":"","status":"","statuscode":200}}}'],
             ['{"ocs": null}'],
             ['{}'],
-            ['{"ocs":{"meta":{"message":"","status":"","statuscode":200},"data":"string"}}']
+            ['{"ocs":{"meta":{"message":"","status":"","statuscode":200},"data":"string"}}'],
         ];
     }
 
@@ -229,11 +229,11 @@ class OcisTest extends TestCase
      * @dataProvider invalidOcsNotificationResponse
      */
     public function testGetNotificationInvalidOcsData(
-        string $responseContent
+        string $responseContent,
     ): void {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
-            'Notification response is invalid. Content: "' . $responseContent . '"'
+            'Notification response is invalid. Content: "' . $responseContent . '"',
         );
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $ocis->getNotifications();
@@ -247,7 +247,7 @@ class OcisTest extends TestCase
         return [
             ['{"ocs":{"data":[{"notification_id":""}]}}'],
             ['{"ocs":{"data":[{"notification_id":123}]}}'],
-            ['{"ocs":{"data":[{"notificationId":"123"}]}}']
+            ['{"ocs":{"data":[{"notificationId":"123"}]}}'],
         ];
     }
 
@@ -255,11 +255,11 @@ class OcisTest extends TestCase
      * @dataProvider invalidOrMissingIdInOcsNotificationResponse
      */
     public function testGetNotificationMissingOrInvalidId(
-        string $responseContent
+        string $responseContent,
     ): void {
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage(
-            'Id is invalid or missing in notification response. Content: "' . $responseContent . '"'
+            'Id is invalid or missing in notification response. Content: "' . $responseContent . '"',
         );
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $ocis->getNotifications();
@@ -291,97 +291,97 @@ class OcisTest extends TestCase
         return [
             [
                 [],
-                true
+                true,
             ],
             [
                 ['verify' => false],
-                true
+                true,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data']],
-                true
+                true,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data', 'X-some-other' => 'X-Data']],
-                true
+                true,
             ],
             [
                 ['headers' => 'string'],
-                false
+                false,
             ],
             [
                 ['headers' => null],
-                false
+                false,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => false],
-                true
+                true,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => 'false'],
-                false
+                false,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => 'true'],
-                false
+                false,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => '1'],
-                false
+                false,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => '0'],
-                false
+                false,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => 1],
-                false
+                false,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => 0],
-                false
+                false,
             ],
             [
                 ['headers' => ['X-something' => 'X-Data'], 'verify' => true],
-                true
+                true,
             ],
             [
                 ['crud' => 'some value'],
-                false
+                false,
             ],
             [
                 ['crud' => 'some value', 'verify' => false],
-                false
+                false,
             ],
             [
                 ['webfinger' => true],
-                true
+                true,
             ]
             ,
             [
                 ['webfinger' => false],
-                true
+                true,
             ],
             [
                 ['webfinger' => 'true'],
-                false
+                false,
             ],
             [
                 ['webfinger' => null],
-                false
+                false,
             ],
             [
                 ['guzzle' => new Client()],
-                true
+                true,
             ],
             [
                 ['guzzle' => null],
-                false
+                false,
             ],
             [
                 ['guzzle' => 'Guzzle'],
-                false
-            ]
+                false,
+            ],
         ];
     }
 
@@ -391,7 +391,7 @@ class OcisTest extends TestCase
      */
     public function testIsConnectionConfigValid(
         array $connectionConfig,
-        bool $expectedResult
+        bool $expectedResult,
     ): void {
         $this->assertSame($expectedResult, Ocis::isConnectionConfigValid($connectionConfig));
     }

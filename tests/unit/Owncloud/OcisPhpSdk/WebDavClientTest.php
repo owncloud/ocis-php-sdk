@@ -22,8 +22,8 @@ class WebDavClientTest extends TestCase
                 [
                     CURLOPT_HTTPAUTH => CURLAUTH_BEARER,
                     CURLOPT_XOAUTH2_BEARER => 'token',
-                    CURLOPT_HTTPHEADER => ['X-Header: X-value', 'Y-Header: Y-value']
-                ]
+                    CURLOPT_HTTPHEADER => ['X-Header: X-value', 'Y-Header: Y-value'],
+                ],
             ],
             [
                 ['verify' => false],
@@ -32,8 +32,8 @@ class WebDavClientTest extends TestCase
                     CURLOPT_HTTPAUTH => CURLAUTH_BEARER,
                     CURLOPT_XOAUTH2_BEARER => 'token',
                     CURLOPT_SSL_VERIFYPEER => false,
-                    CURLOPT_SSL_VERIFYHOST => false
-                ]
+                    CURLOPT_SSL_VERIFYHOST => false,
+                ],
             ],
             [
                 ['proxy' => 'http://proxy'],
@@ -41,8 +41,8 @@ class WebDavClientTest extends TestCase
                 [
                     CURLOPT_HTTPAUTH => CURLAUTH_BEARER,
                     CURLOPT_XOAUTH2_BEARER => 'token',
-                    CURLOPT_PROXY => 'http://proxy'
-                ]
+                    CURLOPT_PROXY => 'http://proxy',
+                ],
             ],
             [
                 ['proxy' => ['http' => 'http://proxy', 'https' => 'https://sslproxy']],
@@ -50,8 +50,8 @@ class WebDavClientTest extends TestCase
                 [
                     CURLOPT_HTTPAUTH => CURLAUTH_BEARER,
                     CURLOPT_XOAUTH2_BEARER => 'token',
-                    CURLOPT_PROXY => 'https://sslproxy'
-                ]
+                    CURLOPT_PROXY => 'https://sslproxy',
+                ],
             ],
             [
                 ['proxy' => ['http' => 'http://proxy', 'https' => 'https://sslproxy']],
@@ -59,35 +59,35 @@ class WebDavClientTest extends TestCase
                 [
                     CURLOPT_HTTPAUTH => CURLAUTH_BEARER,
                     CURLOPT_XOAUTH2_BEARER => 'token',
-                    CURLOPT_PROXY => 'http://proxy'
-                ]
+                    CURLOPT_PROXY => 'http://proxy',
+                ],
             ],
             [
                 ['proxy' =>
                     [
                         'http' => 'http://proxy',
                         'https' => 'https://sslproxy',
-                        'no' => ['no-proxy', 'also-no-proxy']]
+                        'no' => ['no-proxy', 'also-no-proxy']],
                 ],
                 'http://no-proxy',
                 [
                     CURLOPT_HTTPAUTH => CURLAUTH_BEARER,
                     CURLOPT_XOAUTH2_BEARER => 'token',
-                ]
+                ],
             ],
             [
                 ['proxy' =>
                     [
                         'http' => 'http://proxy',
                         'https' => 'https://sslproxy',
-                        'no' => ['no-proxy', 'also-no-proxy']]
+                        'no' => ['no-proxy', 'also-no-proxy']],
                 ],
                 'https://also-no-proxy',
                 [
                     CURLOPT_HTTPAUTH => CURLAUTH_BEARER,
                     CURLOPT_XOAUTH2_BEARER => 'token',
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -106,7 +106,7 @@ class WebDavClientTest extends TestCase
 
         $curlSettings = $webDavClient->createCurlSettings(
             $connectionConfig,
-            $accessToken
+            $accessToken,
         );
         $this->assertSame($expectedCurlSettingsArray, $curlSettings);
     }

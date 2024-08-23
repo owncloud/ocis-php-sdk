@@ -58,7 +58,7 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         SharingLinkType $type,
         bool $validForFile,
         bool $validForFolder,
-        string $issue
+        string $issue,
     ): void {
         if ($issue !== '') {
             $this->markTestSkipped($issue);
@@ -88,14 +88,14 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
             \DateTimeImmutable::class,
             $createdLinkExpirationDateTime,
             "Expected class to be 'DateTimeImmutable' but found "
-            . print_r($createdLinkExpirationDateTime, true)
+            . print_r($createdLinkExpirationDateTime, true),
         );
         $this->assertSame(
             $tomorrow->modify(
-                "+1 day -1 second"
+                "+1 day -1 second",
             )->getTimestamp(),
             $createdLinkExpirationDateTime->getTimestamp(),
-            "Link expiration timestamp mismatch"
+            "Link expiration timestamp mismatch",
         );
         $createdShares = $this->ocis->getSharedByMe();
         $createdSharesExpirationDateTime = $createdShares[0]->getExpiration();
@@ -103,14 +103,14 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
             \DateTimeImmutable::class,
             $createdSharesExpirationDateTime,
             "Expected class to be 'DateTimeImmutable' but found "
-            . print_r($createdSharesExpirationDateTime, true)
+            . print_r($createdSharesExpirationDateTime, true),
         );
         $this->assertSame(
             $tomorrow->modify(
-                "+1 day -1 second"
+                "+1 day -1 second",
             )->getTimestamp(),
             $createdSharesExpirationDateTime->getTimestamp(),
-            "Link expiration timestamp mismatch"
+            "Link expiration timestamp mismatch",
         );
     }
 
@@ -130,42 +130,42 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
             \DateTimeImmutable::class,
             $createdLinkExpirationDateTime,
             "Expected class to be 'DateTimeImmutable' but found "
-            . print_r($createdLinkExpirationDateTime, true)
+            . print_r($createdLinkExpirationDateTime, true),
         );
         $this->assertSame(
             "Thu, 01 Jan 2060 21:59:59 +0000",
             $createdLinkExpirationDateTime->format('r'),
-            "Expected expiration datetime of shared resource doesn't match"
+            "Expected expiration datetime of shared resource doesn't match",
         );
         $this->assertSame(
             "Z",
             $createdLinkExpirationDateTime->getTimezone()->getName(),
-            "Expected timezone to be Z but found " . $createdLinkExpirationDateTime->getTimezone()->getName()
+            "Expected timezone to be Z but found " . $createdLinkExpirationDateTime->getTimezone()->getName(),
         );
 
         $createdShares = $this->ocis->getSharedByMe();
         $this->assertCount(
             1,
             $createdShares,
-            "Expected count of created share to be 1 but found " . count($createdShares)
+            "Expected count of created share to be 1 but found " . count($createdShares),
         );
         $createdSharesExpirationDateTime = $createdShares[0]->getExpiration();
         $this->assertInstanceOf(
             \DateTimeImmutable::class,
             $createdSharesExpirationDateTime,
             "Expected class to be 'DateTimeImmutable' but found "
-            . print_r($createdSharesExpirationDateTime, true)
+            . print_r($createdSharesExpirationDateTime, true),
         );
         // The returned expiry is in UTC timezone (2 hours earlier than the expiry time in Kyiv)
         $this->assertSame(
             "Thu, 01 Jan 2060 21:59:59 +0000",
             $createdSharesExpirationDateTime->format('r'),
-            "Expected expiration datetime of created share of the resource doesn't match"
+            "Expected expiration datetime of created share of the resource doesn't match",
         );
         $this->assertSame(
             "Z",
             $createdSharesExpirationDateTime->getTimezone()->getName(),
-            "Expected timezone to be Z but found " . $createdSharesExpirationDateTime->getTimezone()->getName()
+            "Expected timezone to be Z but found " . $createdSharesExpirationDateTime->getTimezone()->getName(),
         );
     }
 
@@ -179,12 +179,12 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $this->assertEquals(
             $expectedExpirationDate,
             $link->getExpiration(),
-            "Expiration DateTime mismatch with original sharing link"
+            "Expiration DateTime mismatch with original sharing link",
         );
         $this->assertEquals(
             $expectedExpirationDate,
             $linkFromSharedByMe->getExpiration(),
-            "Expiration DateTime mismatch with link from shared-by-me"
+            "Expiration DateTime mismatch with link from shared-by-me",
         );
     }
 

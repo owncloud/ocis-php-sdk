@@ -64,7 +64,7 @@ class Notification
         array $connectionConfig,
         string $serviceUrl,
         string $id,
-        $notificationContent
+        $notificationContent,
     ) {
         $this->id = $id;
         $this->app = $notificationContent->app;
@@ -167,13 +167,13 @@ class Notification
         $guzzle = new \GuzzleHttp\Client(
             Ocis::createGuzzleConfig(
                 $this->connectionConfig,
-                $this->accessToken
-            )
+                $this->accessToken,
+            ),
         );
         try {
             $guzzle->delete(
                 $this->serviceUrl . '/ocs/v2.php/apps/notifications/api/v1/notifications/',
-                ['body' => json_encode(["ids" => [$this->id]])]
+                ['body' => json_encode(["ids" => [$this->id]])],
             );
         } catch (GuzzleException $e) {
             throw ExceptionHelper::getHttpErrorException($e);

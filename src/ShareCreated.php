@@ -45,14 +45,14 @@ class ShareCreated extends Share
                 $this->driveId,
                 $this->resourceId,
                 $this->getPermissionId(),
-                $apiPermission
+                $apiPermission,
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
         if ($apiPermission instanceof OdataError) {
             throw new InvalidResponseException(
-                "updatePermission returned an OdataError - " . $apiPermission->getError()
+                "updatePermission returned an OdataError - " . $apiPermission->getError(),
             );
         }
         $this->apiPermission = $apiPermission;
@@ -74,7 +74,7 @@ class ShareCreated extends Share
         $receiver = $this->apiPermission->getGrantedToV2();
         if ($receiver === null) {
             throw new InvalidResponseException(
-                "could not determine the receiver, getGrantedToV2 returned 'null'"
+                "could not determine the receiver, getGrantedToV2 returned 'null'",
             );
         }
         $user = $receiver->getUser();
@@ -89,7 +89,7 @@ class ShareCreated extends Share
         }
         throw new InvalidResponseException(
             "could not determine the receiver, neither group nor user was returned - " .
-            print_r($receiver, true)
+            print_r($receiver, true),
         );
     }
 }

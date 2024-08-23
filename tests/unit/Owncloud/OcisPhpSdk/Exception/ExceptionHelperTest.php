@@ -60,7 +60,7 @@ class ExceptionHelperTest extends TestCase
         string $originalExceptionToUse,
         string $exceptionMessage,
         int    $exceptionStatusCode,
-        string $expectedExceptionClass
+        string $expectedExceptionClass,
     ): void {
         $expectedExceptionMessage = $exceptionMessage;
         if ($originalExceptionToUse === "GuzzleHttpRequestException") {
