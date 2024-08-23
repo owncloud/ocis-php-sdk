@@ -2,8 +2,8 @@
 
 namespace Owncloud\OcisPhpSdk;
 
-use  OpenAPI\Client\Model\User;
-use  OpenAPI\Client\Model\EducationUser;
+use OpenAPI\Client\Model\User;
+use OpenAPI\Client\Model\EducationUser;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
 class BaseUser
