@@ -292,7 +292,7 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
             $shares,
             "Expected count of shared resources to be 6 but found " . count($shares)
         );
-        for($i = 0; $i < 6; $i++) {
+        for ($i = 0; $i < 6; $i++) {
             $this->assertInstanceOf(
                 ShareCreated::class,
                 $shares[$i],

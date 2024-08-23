@@ -5,5 +5,10 @@ $finder = PhpCsFixer\Finder::create()
 
 $config = new PhpCsFixer\Config();
 $config->setFinder($finder);
-$config->setRules(['@PSR12' => true]);
+$config->setRules(
+    [
+        '@PSR12' => true,
+        'single_space_around_construct' => true,
+    ]
+);
 return $config;

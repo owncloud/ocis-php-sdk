@@ -318,7 +318,7 @@ class Ocis
      */
     public function getOcisVersion(): string
     {
-        if(($this->ocisVersion)) {
+        if (($this->ocisVersion)) {
             return $this->ocisVersion;
         } else {
             $response = $this->guzzle->get($this->serviceUrl . '/ocs/v1.php/cloud/capabilities');
@@ -1099,7 +1099,7 @@ class Ocis
                 throw new InvalidResponseException("Invalid permissions provided");
             }
             foreach ($share->getPermissions() as $apiSharePermission) {
-                if($apiSharePermission->getLink() === null) {
+                if ($apiSharePermission->getLink() === null) {
                     $shares[] = new ShareCreated(
                         $apiSharePermission,
                         $resourceId,

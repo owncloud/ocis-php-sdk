@@ -391,7 +391,7 @@ class OcisTest extends OcisPhpSdkTestCase
      */
     public static function groupNameList(): array
     {
-        return[
+        return [
             [["philosophyhaters", "physicslovers"]],
         ];
     }

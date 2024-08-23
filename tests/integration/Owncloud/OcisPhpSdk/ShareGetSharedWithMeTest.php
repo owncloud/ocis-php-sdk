@@ -150,7 +150,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             $receivedShares,
             "Expected two shares but found " . count($receivedShares)
         );
-        for($i = 0; $i < 2; $i++) {
+        for ($i = 0; $i < 2; $i++) {
             $this->assertThat(
                 $receivedShares[$i]->getName(),
                 $this->logicalOr(
