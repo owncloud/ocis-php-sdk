@@ -17,12 +17,12 @@ class OcisWebfingerTest extends TestCase
         $tokenHeader = [
             "alg" => "PS256",
             "kid" => "private-key",
-            "typ" => "JWT"
+            "typ" => "JWT",
         ];
         $tokenPayload = [
             "iss" => "https://sso.example.com",
             // this will generate a token that will contain `-` and `_` after base64Url encoding
-            "special" => "????>>>????>>>"
+            "special" => "????>>>????>>>",
         ];
 
         $base64EncodedToken = base64_encode((string)json_encode($tokenHeader)) . "." .
@@ -73,8 +73,8 @@ class OcisWebfingerTest extends TestCase
             /* @phpstan-ignore-next-line because receiving a MockObject */
             [
                 'webfinger' => true,
-                'guzzle' => $this->getGuzzleMock()
-            ]
+                'guzzle' => $this->getGuzzleMock(),
+            ],
         );
         $this->assertSame("https://abc.drive.example.com", $ocis->getServiceUrl());
     }
@@ -117,7 +117,7 @@ class OcisWebfingerTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(
-            'Could not decode token. ' . $expectedExceptionMessage
+            'Could not decode token. ' . $expectedExceptionMessage,
         );
         /** @phan-suppress-next-line PhanNoopNew we expect an exception, so do not assign the result */
         new Ocis(
@@ -126,8 +126,8 @@ class OcisWebfingerTest extends TestCase
             /* @phpstan-ignore-next-line because receiving a MockObject */
             [
                 'webfinger' => true,
-                'guzzle' => $this->getGuzzleMock()
-            ]
+                'guzzle' => $this->getGuzzleMock(),
+            ],
         );
     }
 
@@ -170,8 +170,8 @@ class OcisWebfingerTest extends TestCase
             /* @phpstan-ignore-next-line because receiving a MockObject */
             [
                 'webfinger' => true,
-                'guzzle' => $this->getGuzzleMock($responseContent)
-            ]
+                'guzzle' => $this->getGuzzleMock($responseContent),
+            ],
         );
     }
 }

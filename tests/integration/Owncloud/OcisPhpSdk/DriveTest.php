@@ -90,7 +90,7 @@ class DriveTest extends OcisPhpSdkTestCase
         $this->assertContainsOnlyInstancesOf(
             SharingRole::class,
             $role,
-            "Array contains not only 'SharingRole' items"
+            "Array contains not only 'SharingRole' items",
         );
     }
 
@@ -119,7 +119,7 @@ class DriveTest extends OcisPhpSdkTestCase
                 "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
                 "description" => "Allows managing a space",
                 "displayName" => "Manager",
-                "@libre.graph.weight" => 3
+                "@libre.graph.weight" => 3,
             ];
 
             $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
@@ -147,7 +147,7 @@ class DriveTest extends OcisPhpSdkTestCase
             Permission::class,
             $driveInvitation,
             "Expected class to be 'Permission' but found "
-            . get_class($driveInvitation)
+            . get_class($driveInvitation),
         );
         $this->assertNull($driveInvitation->getExpirationDateTime(), "Expiration date for sharing drive wasn't found to be null");
         $receivedInvitationDrive = $marieOcis->getDriveById($this->drive->getId());
@@ -155,12 +155,12 @@ class DriveTest extends OcisPhpSdkTestCase
             $this->drive->getId(),
             $receivedInvitationDrive->getId(),
             "Expected driveId to be " . $this->drive->getId()
-            . " but found " . $receivedInvitationDrive->getId()
+            . " but found " . $receivedInvitationDrive->getId(),
         );
         $this->assertSame(
             $this->drive->getName(),
             $receivedInvitationDrive->getName(),
-            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedInvitationDrive->getName()
+            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedInvitationDrive->getName(),
         );
     }
 
@@ -335,7 +335,7 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $philosophyHatersGroup =  $this->ocis->createGroup(
             'philosophyhaters',
-            'philosophy haters group'
+            'philosophy haters group',
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($marie);
@@ -348,7 +348,7 @@ class DriveTest extends OcisPhpSdkTestCase
                 "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
                 "description" => "Allows managing a space",
                 "displayName" => "Manager",
-                "@libre.graph.weight" => 3
+                "@libre.graph.weight" => 3,
             ];
 
             $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
@@ -377,12 +377,12 @@ class DriveTest extends OcisPhpSdkTestCase
             $this->drive->getId(),
             $receivedInvitationDrive->getId(),
             "Expected driveId to be " . $this->drive->getId()
-            . " but found " . $receivedInvitationDrive->getId()
+            . " but found " . $receivedInvitationDrive->getId(),
         );
         $this->assertSame(
             $this->drive->getName(),
             $receivedInvitationDrive->getName(),
-            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedInvitationDrive->getName()
+            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedInvitationDrive->getName(),
         );
     }
 
@@ -412,7 +412,7 @@ class DriveTest extends OcisPhpSdkTestCase
                 "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
                 "description" => "Allows managing a space",
                 "displayName" => "Manager",
-                "@libre.graph.weight" => 3
+                "@libre.graph.weight" => 3,
             ];
 
             $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
@@ -440,13 +440,13 @@ class DriveTest extends OcisPhpSdkTestCase
         $this->assertSame(
             $this->drive->getName(),
             $receivedInvitationDrive->getName(),
-            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedInvitationDrive->getName()
+            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $receivedInvitationDrive->getName(),
         );
         $this->assertSame(
             'myfolder',
             $receivedInvitationDrive->getResources()[0]->getName(),
             "Expected resource name to be myfolder"
-            . " but found " . $receivedInvitationDrive->getResources()[0]->getName()
+            . " but found " . $receivedInvitationDrive->getResources()[0]->getName(),
         );
     }
 
@@ -476,7 +476,7 @@ class DriveTest extends OcisPhpSdkTestCase
                 "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
                 "description" => "Allows managing a space",
                 "displayName" => "Manager",
-                "@libre.graph.weight" => 3
+                "@libre.graph.weight" => 3,
             ];
 
             $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
@@ -514,7 +514,7 @@ class DriveTest extends OcisPhpSdkTestCase
                     ),
                     "Expected drivename to be either:"
                 . "'katherine Project Drive' or 'test drive' but found "
-                . $drive->getName()
+                . $drive->getName(),
                 );
             }
         }
@@ -559,14 +559,14 @@ class DriveTest extends OcisPhpSdkTestCase
             $this->drive->getId(),
             $marieReceivedProjectDrive->getId(),
             "Expected driveId to be " . $this->drive->getId()
-            . " but found " . $marieReceivedProjectDrive->getId()
+            . " but found " . $marieReceivedProjectDrive->getId(),
         );
         $marieReceivedProjectDrive->invite($katherine, $managerRole);
         $katherineReceivedProjectDrive = $katherineOcis->getDriveById($this->drive->getId());
         $this->assertSame(
             $this->drive->getName(),
             $katherineReceivedProjectDrive->getName(),
-            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $katherineReceivedProjectDrive->getName()
+            "Expected shared drive name to be " . $this->drive->getName() . " but found " . $katherineReceivedProjectDrive->getName(),
         );
     }
 

@@ -112,7 +112,7 @@ class UserTest extends TestCase
         $this->expectException(InvalidResponseException::class);
         $errorKey = $data["errorKey"];
         $this->expectExceptionMessage(
-            "Invalid $errorKey returned for user '" . print_r($data[$data["key"] ?? ""], true) . "'"
+            "Invalid $errorKey returned for user '" . print_r($data[$data["key"] ?? ""], true) . "'",
         );
         $libUser = new User(
             [
@@ -120,7 +120,7 @@ class UserTest extends TestCase
                 "display_name" => $data["display_name"],
                 "mail" => $data["mail"],
                 "on_premises_sam_account_name" => $data["on_premises_sam_account_name"],
-            ]
+            ],
         );
         $user = new SdkUser($libUser);
         $user->getDisplayName();

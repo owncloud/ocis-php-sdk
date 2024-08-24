@@ -13,7 +13,7 @@ class TooEarlyException extends \Exception
         parent::__construct(
             'Too early',
             $code,
-            $previous
+            $previous,
         );
     }
 }

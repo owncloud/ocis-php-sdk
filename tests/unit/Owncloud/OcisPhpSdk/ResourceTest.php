@@ -29,7 +29,7 @@ class ResourceTest extends TestCase
     {
         return [
             ['{DAV:}collection', 'folder'],
-            [null, 'file']
+            [null, 'file'],
         ];
     }
 
@@ -44,7 +44,7 @@ class ResourceTest extends TestCase
             $metadata,
             [],
             '',
-            $accessToken
+            $accessToken,
         );
     }
     /**
@@ -122,7 +122,7 @@ class ResourceTest extends TestCase
         int|string $actualSize,
         int|string $expectedSize,
         null|string $data,
-        string $sizeKey
+        string $sizeKey,
     ): void {
         $metadata = [];
         $metadata[200]['{DAV:}resourcetype'] = new ResourceType($data);

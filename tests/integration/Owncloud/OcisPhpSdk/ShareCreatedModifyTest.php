@@ -57,7 +57,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
                 ShareCreated::class,
                 $share,
                 "Expected class to be 'ShareCreated' but found "
-                . get_class($share)
+                . get_class($share),
             );
             if ($share->getReceiver()->getDisplayName() === 'Albert Einstein') {
                 $share->delete();
@@ -68,17 +68,17 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->assertCount(
             1,
             $this->ocis->getSharedByMe(),
-            "Expected count of Shared resource doesn't match"
+            "Expected count of Shared resource doesn't match",
         );
         $this->assertCount(
             0,
             $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis),
-            "Failed to unshare resource to Einstein"
+            "Failed to unshare resource to Einstein",
         );
         $this->assertCount(
             1,
             $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis),
-            "Expected shared resource for marie be 1 but found " . count($this->marieOcis->getSharedWithMe())
+            "Expected shared resource for marie be 1 but found " . count($this->marieOcis->getSharedWithMe()),
         );
     }
 
@@ -86,7 +86,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
     {
         $philosophyHatersGroup =  $this->ocis->createGroup(
             'philosophyhaters',
-            'philosophy haters group'
+            'philosophy haters group',
         );
         $this->createdGroups = [$philosophyHatersGroup];
         $philosophyHatersGroup->addUser($this->einstein);
@@ -100,7 +100,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
                 ShareCreated::class,
                 $share,
                 "Expected class to be 'ShareCreated' but found "
-                . get_class($share)
+                . get_class($share),
             );
             if ($share->getReceiver()->getDisplayName() === 'philosophyhaters') {
                 $share->delete();
@@ -110,17 +110,17 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->assertCount(
             2,
             $this->ocis->getSharedByMe(),
-            "Expected shared resource count to be 2 but found " . count($this->ocis->getSharedByMe())
+            "Expected shared resource count to be 2 but found " . count($this->ocis->getSharedByMe()),
         );
         $this->assertCount(
             1,
             $this->getSharedWithMeWaitTillShareIsAccepted($this->einsteinOcis),
-            "Shared resources was unshared to the group"
+            "Shared resources was unshared to the group",
         );
         $this->assertCount(
             1,
             $this->getSharedWithMeWaitTillShareIsAccepted($this->marieOcis),
-            "Expected shared resource count to be 1 but found " . count($this->marieOcis->getSharedWithMe())
+            "Expected shared resource count to be 1 but found " . count($this->marieOcis->getSharedWithMe()),
         );
     }
 
@@ -138,7 +138,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
     {
         $this->expectException(NotFoundException::class);
         $permission = new Permission([
-            'id' => 'does not exist'
+            'id' => 'does not exist',
         ]);
         $token = $this->getAccessToken('admin', 'admin');
         $share = new ShareCreated(
@@ -147,7 +147,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
             $this->fileToShare->getSpaceId(),
             ['verify' => false],
             $this->ocisUrl,
-            $token
+            $token,
         );
         $share->delete();
     }
@@ -162,13 +162,13 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
             \DateTimeImmutable::class,
             $expirationDateTime,
             "Expected class to be 'DateTimeImmutable' but found "
-            . print_r($expirationDateTime, true)
+            . print_r($expirationDateTime, true),
         );
         $this->assertSame(
             $tomorrow->getTimestamp(),
             $expirationDateTime->getTimestamp(),
             "Expected timestamp of shared resource to be " . $tomorrow->getTimestamp() . " but found "
-            . $expirationDateTime->getTimestamp()
+            . $expirationDateTime->getTimestamp(),
         );
     }
 
@@ -183,13 +183,13 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
             \DateTimeImmutable::class,
             $expirationDateTime,
             "Expected class to be 'DateTimeImmutable' but found "
-            . print_r($expirationDateTime, true)
+            . print_r($expirationDateTime, true),
         );
         $this->assertSame(
             $tomorrow->getTimestamp(),
             $expirationDateTime->getTimestamp(),
             "Expected timestamp of shared resource to be " . $tomorrow->getTimestamp() . " but found "
-            . $expirationDateTime->getTimestamp()
+            . $expirationDateTime->getTimestamp(),
         );
     }
 
@@ -204,7 +204,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $this->assertEquals(
             $shareFromInvite->getExpiration(),
             $sharedByMeShares[0]->getExpiration(),
-            "Expected DateTime of shared resources from Sharer and Receiver doesn't match"
+            "Expected DateTime of shared resources from Sharer and Receiver doesn't match",
         );
     }
 

@@ -18,12 +18,12 @@ class UsersTest extends OcisPhpSdkTestCase
             'Owncloud\OcisPhpSdk\User',
             $users,
             null,
-            "Array contains not only 'User' items"
+            "Array contains not only 'User' items",
         );
         $this->assertGreaterThanOrEqual(
             3,
             count($users),
-            "Expected at least 3 users, but found " . count($users)
+            "Expected at least 3 users, but found " . count($users),
         );
     }
 
@@ -37,17 +37,17 @@ class UsersTest extends OcisPhpSdkTestCase
             'Owncloud\OcisPhpSdk\User',
             $users,
             null,
-            "Array contains not only 'User' items"
+            "Array contains not only 'User' items",
         );
         $this->assertGreaterThanOrEqual(
             1,
             count($users),
-            "Expected at least 1 user, but found " . count($users)
+            "Expected at least 1 user, but found " . count($users),
         );
         $this->assertSame(
             'Marie Curie',
             $users[0]->getDisplayName(),
-            "Username should be 'Marie Curie' but found " . $users[0]->getDisplayName()
+            "Username should be 'Marie Curie' but found " . $users[0]->getDisplayName(),
         );
     }
 
@@ -63,17 +63,17 @@ class UsersTest extends OcisPhpSdkTestCase
             'Owncloud\OcisPhpSdk\User',
             $users,
             null,
-            "Array contains not only 'User' items"
+            "Array contains not only 'User' items",
         );
         $this->assertGreaterThanOrEqual(
             1,
             count($users),
-            "Expected at least 1 user, but found " . count($users)
+            "Expected at least 1 user, but found " . count($users),
         );
         $this->assertSame(
             'Albert Einstein',
             $users[0]->getDisplayName(),
-            "Username should be 'Albert Einstein' but found " . $users[0]->getDisplayName()
+            "Username should be 'Albert Einstein' but found " . $users[0]->getDisplayName(),
         );
     }
 

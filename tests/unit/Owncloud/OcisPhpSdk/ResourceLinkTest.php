@@ -32,8 +32,8 @@ class ResourceLinkTest extends TestCase
                         'type' => SharingLinkType::VIEW,
                         'password' => self::PASSWORD,
                         'expiration_date_time' => null,
-                        'display_name' => null
-                    ]
+                        'display_name' => null,
+                    ],
                 ),
             ],
             // create a link setting all data
@@ -47,8 +47,8 @@ class ResourceLinkTest extends TestCase
                         'type' => SharingLinkType::EDIT,
                         'password' => self::PASSWORD,
                         'expiration_date_time' => new \DateTime('2022-12-31 01:02:03.456789Z'),
-                        'display_name' => 'the name of the link'
-                    ]
+                        'display_name' => 'the name of the link',
+                    ],
                 ),
             ],
             // set expiry time, with conversion to UTC/Z timezone
@@ -62,8 +62,8 @@ class ResourceLinkTest extends TestCase
                         'type' => SharingLinkType::EDIT,
                         'password' => self::PASSWORD,
                         'expiration_date_time' => new \DateTime('2020-12-31 23:00:43.123456Z'),
-                        'display_name' => null
-                    ]
+                        'display_name' => null,
+                    ],
                 ),
             ],
         ];
@@ -83,7 +83,7 @@ class ResourceLinkTest extends TestCase
             $resourceMetadata,
             $connectionConfig, // @phpstan-ignore-line 'drivesPermissionsApi' is a MockObject
             'http://ocis',
-            $accessToken
+            $accessToken,
         );
     }
     /**
@@ -94,7 +94,7 @@ class ResourceLinkTest extends TestCase
         ?\DateTimeImmutable $expiration,
         ?string $password,
         ?string $displayName,
-        DriveItemCreateLink $expectedCreateLinkData
+        DriveItemCreateLink $expectedCreateLinkData,
     ): void {
         $permissionMock = $this->createMock(Permission::class);
         $permissionMock->method('getId')
