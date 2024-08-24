@@ -19,7 +19,7 @@ class ExceptionHelper
      * that is more specific to the HTTP error
      */
     public static function getHttpErrorException(
-        GuzzleException|ApiException|SabreClientHttpException|SabreClientException|HttpException $e
+        GuzzleException|ApiException|SabreClientHttpException|SabreClientException|HttpException $e,
     ): BadRequestException|
     NotFoundException|
     ForbiddenException|
@@ -53,41 +53,41 @@ class ExceptionHelper
             400 => new BadRequestException(
                 $message,
                 $e->getCode(),
-                $e
+                $e,
             ),
             401 => new UnauthorizedException(
                 $message,
                 $e->getCode(),
-                $e
+                $e,
             ),
             403 => new ForbiddenException(
                 $message,
                 $e->getCode(),
-                $e
+                $e,
             ),
             404 => new NotFoundException(
                 $message,
                 $e->getCode(),
-                $e
+                $e,
             ),
             409 => new ConflictException(
                 $message,
                 $e->getCode(),
-                $e
+                $e,
             ),
             425 => new TooEarlyException(
                 $e->getCode(),
-                $e
+                $e,
             ),
             500 => new InternalServerErrorException(
                 $message,
                 $e->getCode(),
-                $e
+                $e,
             ),
             default => new HttpException(
                 $message,
                 $e->getCode(),
-                $e
+                $e,
             ),
         };
     }
@@ -101,7 +101,7 @@ class ExceptionHelper
      */
     public static function getExceptionFromOdataError(
         OdataError $odataError,
-        string $methodName
+        string $methodName,
     ): BadRequestException|
     NotFoundException|
     ForbiddenException|
@@ -116,7 +116,7 @@ class ExceptionHelper
         if (is_numeric($errorCode)) {
             $genericHttpException = new HttpException(
                 $errorMessage,
-                (int) $errorCode
+                (int) $errorCode,
             );
             return self::getHttpErrorException($genericHttpException);
         }
@@ -128,7 +128,7 @@ class ExceptionHelper
             "$methodName returned an OdataError with code '" .
             $errorCode .
             "' and message '" . $errorMessage . "'",
-            500
+            500,
         );
     }
 }

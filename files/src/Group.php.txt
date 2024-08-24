@@ -55,7 +55,7 @@ class Group
         OpenApiGroup $openApiGroup,
         string $serviceUrl,
         array $connectionConfig,
-        string &$accessToken
+        string &$accessToken,
     ) {
         $this->id = $openApiGroup->getId();
         $this->displayName = $openApiGroup->getDisplayName();
@@ -72,7 +72,7 @@ class Group
         $this->graphApiConfig = Configuration::getDefaultConfiguration()
             ->setHost($this->serviceUrl . '/graph');
         $this->guzzle = new Client(
-            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken),
         );
     }
 
@@ -84,7 +84,7 @@ class Group
     {
         return (($this->id === null) || ($this->id === '')) ?
         throw new InvalidResponseException(
-            "Invalid id returned for group '" . print_r($this->id, true) . "'"
+            "Invalid id returned for group '" . print_r($this->id, true) . "'",
         ) : (string)$this->id;
     }
 
@@ -103,7 +103,7 @@ class Group
     {
         return (($this->displayName === null) || ($this->displayName === '')) ?
         throw new InvalidResponseException(
-            "Invalid displayName returned for group '" . print_r($this->displayName, true) . "'"
+            "Invalid displayName returned for group '" . print_r($this->displayName, true) . "'",
         ) : $this->displayName;
     }
 
@@ -141,8 +141,8 @@ class Group
         $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
         $memberRef = new MemberReference(
             [
-                "at_odata_id" => $this->graphApiConfig->getHost(). "/v1.0/users/" . $user->getId()
-            ]
+                "at_odata_id" => $this->graphApiConfig->getHost(). "/v1.0/users/" . $user->getId(),
+            ],
         );
         try {
             $apiInstance->addMember($this->getId(), $memberRef);

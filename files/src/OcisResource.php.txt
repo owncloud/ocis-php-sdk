@@ -68,7 +68,7 @@ class OcisResource
         array $metadata,
         array $connectionConfig,
         string $serviceUrl,
-        string &$accessToken
+        string &$accessToken,
     ) {
         $this->metadata = $metadata;
         $this->accessToken = &$accessToken;
@@ -104,7 +104,7 @@ class OcisResource
         }
         if ($metadata === []) {
             throw new InvalidResponseException(
-                'Could not find property "' . $property->getKey() . '" in response'
+                'Could not find property "' . $property->getKey() . '" in response',
             );
         }
         if ($metadata[$property->getKey()] === null && $property->getKey() !== "tags") {
@@ -134,7 +134,7 @@ class OcisResource
     public function getRoles(): array
     {
         $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
         );
 
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
@@ -142,7 +142,7 @@ class OcisResource
         } else {
             $apiInstance = new DrivesPermissionsApi(
                 $guzzle,
-                $this->graphApiConfig
+                $this->graphApiConfig,
             );
         }
         try {
@@ -152,7 +152,7 @@ class OcisResource
         }
         if ($collectionOfPermissions instanceof OdataError) {
             throw new InvalidResponseException(
-                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError(),
             );
         }
         $apiRoles = $collectionOfPermissions->getAtLibreGraphPermissionsRolesAllowedValues() ?? [];
@@ -199,11 +199,11 @@ class OcisResource
             $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
         } else {
             $guzzle = new Client(
-                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
             );
             $apiInstance = new DrivesPermissionsApi(
                 $guzzle,
-                $this->graphApiConfig
+                $this->graphApiConfig,
             );
         }
 
@@ -215,7 +215,7 @@ class OcisResource
         }
         if ($permissions instanceof OdataError) {
             throw new InvalidResponseException(
-                "invite returned an OdataError - " . $permissions->getError()
+                "invite returned an OdataError - " . $permissions->getError(),
             );
         }
         $permissionsValue = $permissions->getValue();
@@ -225,7 +225,7 @@ class OcisResource
             !($permissionsValue[0] instanceof Permission)
         ) {
             throw new InvalidResponseException(
-                "invite returned invalid data " . print_r($permissionsValue, true)
+                "invite returned invalid data " . print_r($permissionsValue, true),
             );
         }
 
@@ -235,7 +235,7 @@ class OcisResource
             $this->getSpaceId(),
             $this->connectionConfig,
             $this->serviceUrl,
-            $this->accessToken
+            $this->accessToken,
         );
     }
 
@@ -254,17 +254,17 @@ class OcisResource
         SharingLinkType $type = SharingLinkType::VIEW,
         ?\DateTimeImmutable $expiration = null,
         ?string $password = null,
-        ?string $displayName = null
+        ?string $displayName = null,
     ): ShareLink {
         if (array_key_exists('drivesPermissionsApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesPermissionsApi'];
         } else {
             $guzzle = new Client(
-                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+                Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
             );
             $apiInstance = new DrivesPermissionsApi(
                 $guzzle,
-                $this->graphApiConfig
+                $this->graphApiConfig,
             );
         }
         if ($expiration !== null) {
@@ -277,7 +277,7 @@ class OcisResource
             'type' => $type,
             'password' => $password,
             'expiration_date_time' => $expirationMutable,
-            'display_name' => $displayName
+            'display_name' => $displayName,
         ]);
         try {
             $permission = $apiInstance->createLink($this->getSpaceId(), $this->getId(), $createLinkData);
@@ -286,7 +286,7 @@ class OcisResource
         }
         if ($permission instanceof OdataError) {
             throw new InvalidResponseException(
-                "createLink returned an OdataError - " . $permission->getError()
+                "createLink returned an OdataError - " . $permission->getError(),
             );
         }
 
@@ -296,7 +296,7 @@ class OcisResource
             $this->getSpaceId(),
             $this->connectionConfig,
             $this->serviceUrl,
-            $this->accessToken
+            $this->accessToken,
         );
 
     }
@@ -392,7 +392,7 @@ class OcisResource
             return "file";
         }
         throw new InvalidResponseException(
-            "Received invalid data for the key \"resourcetype\" in the response array"
+            "Received invalid data for the key \"resourcetype\" in the response array",
         );
     }
 
@@ -500,7 +500,7 @@ class OcisResource
         $privateLink = $this->getMetadata(ResourceMetadata::PRIVATELINK);
         if (!is_string($privateLink)) {
             throw new InvalidResponseException(
-                'Invalid private link in response from server: ' . print_r($privateLink, true)
+                'Invalid private link in response from server: ' . print_r($privateLink, true),
             );
         }
         return rawurldecode($privateLink);

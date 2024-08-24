@@ -38,7 +38,7 @@ class SharingRole
     {
         return ($data === null || $data === '') ?
         throw new InvalidResponseException(
-            "Invalid $dataKey returned for user '" . print_r($data, true) . "'"
+            "Invalid $dataKey returned for user '" . print_r($data, true) . "'",
         ) : (string)$data;
     }
 

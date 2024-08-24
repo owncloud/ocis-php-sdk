@@ -65,7 +65,7 @@ class Drive
         array $connectionConfig,
         string $serviceUrl,
         string &$accessToken,
-        string $ocisVersion
+        string $ocisVersion,
     ) {
         $this->apiDrive = $apiDrive;
         $this->accessToken = &$accessToken;
@@ -111,7 +111,7 @@ class Drive
             return $driveType;
         }
         throw new InvalidResponseException(
-            'Invalid DriveType returned by apiDrive: "' . print_r($driveTypeString, true) . '"'
+            'Invalid DriveType returned by apiDrive: "' . print_r($driveTypeString, true) . '"',
         );
     }
 
@@ -153,7 +153,7 @@ class Drive
             return $date;
         }
         throw new InvalidResponseException(
-            'Invalid LastModifiedDateTime returned: "' . print_r($date, true) . '"'
+            'Invalid LastModifiedDateTime returned: "' . print_r($date, true) . '"',
         );
     }
 
@@ -172,7 +172,7 @@ class Drive
             return $quota;
         }
         throw new InvalidResponseException(
-            'Invalid quota returned: "' . print_r($quota, true) . '"'
+            'Invalid quota returned: "' . print_r($quota, true) . '"',
         );
     }
 
@@ -191,11 +191,11 @@ class Drive
         }
 
         $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
         );
         return new DrivesRootApi(
             $guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
     }
 
@@ -214,7 +214,7 @@ class Drive
         $root = $this->apiDrive->getRoot();
         if (!($root instanceof DriveItem)) {
             throw new InvalidResponseException(
-                'Could not get root of drive "' . print_r($root, true) . '"'
+                'Could not get root of drive "' . print_r($root, true) . '"',
             );
         }
         $deleted = $root->getDeleted();
@@ -244,15 +244,15 @@ class Drive
     {
         $connectionConfig = array_merge(
             $this->connectionConfig,
-            ['headers' => ['Purge' => 'T']]
+            ['headers' => ['Purge' => 'T']],
         );
         $guzzle = new Client(
-            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken),
         );
 
         $apiInstance = new DrivesApi(
             $guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiInstance->deleteDrive($this->getId());
@@ -277,11 +277,11 @@ class Drive
     public function disable(): void
     {
         $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
         );
         $apiInstance = new DrivesApi(
             $guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiInstance->deleteDrive($this->getId());
@@ -306,15 +306,15 @@ class Drive
     {
         $connectionConfig = array_merge(
             $this->connectionConfig,
-            ['headers' => ['Restore' => 'true']]
+            ['headers' => ['Restore' => 'true']],
         );
         $guzzle = new Client(
-            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($connectionConfig, $this->accessToken),
         );
 
         $apiInstance = new DrivesApi(
             $guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiInstance->updateDrive($this->getId(), new DriveUpdate(['name' => $this->getName()]));
@@ -396,7 +396,7 @@ class Drive
                     $response,
                     $this->connectionConfig,
                     $this->serviceUrl,
-                    $this->accessToken
+                    $this->accessToken,
                 );
             }
             unset($resources[0]); // skip first propfind response, because its the parent folder
@@ -443,7 +443,7 @@ class Drive
         $webDavClient = $this->createWebDavClient();
         return $webDavClient->sendRequest(
             "GET",
-            $this->webDavUrl . rawurlencode(ltrim($path, "/"))
+            $this->webDavUrl . rawurlencode(ltrim($path, "/")),
         )->getBodyAsStream();
     }
 
@@ -587,11 +587,11 @@ class Drive
     private function updateDriveObject(): void
     {
         $guzzle = new Client(
-            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken)
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
         );
         $apiInstance = new DrivesApi(
             $guzzle,
-            $this->graphApiConfig
+            $this->graphApiConfig,
         );
         try {
             $apiDrive = $apiInstance->getDrive($this->getId());
@@ -601,7 +601,7 @@ class Drive
 
         if ($apiDrive instanceof OdataError) {
             throw new InvalidResponseException(
-                "getDrive returned an OdataError - " . $apiDrive->getError()
+                "getDrive returned an OdataError - " . $apiDrive->getError(),
             );
         }
 
@@ -653,7 +653,7 @@ class Drive
         }
         if ($permissions instanceof OdataError) {
             throw new InvalidResponseException(
-                "invite returned an OdataError - " . $permissions->getError()
+                "invite returned an OdataError - " . $permissions->getError(),
             );
         }
         $permissionsValue = $permissions->getValue();
@@ -663,7 +663,7 @@ class Drive
             !($permissionsValue[0] instanceof Permission)
         ) {
             throw new InvalidResponseException(
-                "invite returned invalid data " . print_r($permissionsValue, true)
+                "invite returned invalid data " . print_r($permissionsValue, true),
             );
         }
 
@@ -691,7 +691,7 @@ class Drive
         $apiRoles = $this->sendGetPermissionsRequest()->getAtLibreGraphPermissionsRolesAllowedValues();
         if (empty($apiRoles)) {
             throw new InvalidResponseException(
-                'Drive has no roles'
+                'Drive has no roles',
             );
         }
         $roles = [];
@@ -719,7 +719,7 @@ class Drive
         try {
             $this->getDrivesRootApi()->deletePermissionSpaceRoot(
                 $this->getId(),
-                $permissionId
+                $permissionId,
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
@@ -754,7 +754,7 @@ class Drive
 
         if ($collectionOfPermissions instanceof OdataError) {
             throw new InvalidResponseException(
-                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError()
+                "listPermissions returned an OdataError - " . $collectionOfPermissions->getError(),
             );
         }
         return $collectionOfPermissions;
@@ -774,7 +774,7 @@ class Drive
         $permissions = $this->sendGetPermissionsRequest()->getValue();
         if (empty($permissions)) {
             throw new InvalidResponseException(
-                'Expected Collection of Permission but got empty array.'
+                'Expected Collection of Permission but got empty array.',
             );
         }
         return $permissions;
@@ -797,14 +797,14 @@ class Drive
             $permission = $this->getDrivesRootApi()->updatePermissionSpaceRoot(
                 $this->getId(),
                 $permissionId,
-                $apiPermission
+                $apiPermission,
             );
         } catch (ApiException $e) {
             throw ExceptionHelper::getHttpErrorException($e);
         }
         if ($permission instanceof OdataError) {
             throw new InvalidResponseException(
-                "updatePermission returned an OdataError - " . $permission->getError()
+                "updatePermission returned an OdataError - " . $permission->getError(),
             );
         }
         $this->updateDriveObject();
