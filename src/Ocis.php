@@ -326,13 +326,15 @@ class Ocis
 
             $body = simplexml_load_string($responseContent);
             if (!isset($body->data->version->productversion)) {
-                throw new InvalidResponseException('Missing productversion element in XML response');
+                throw new InvalidResponseException('Missing product version element in XML response');
             }
             $version = (string)$body->data->version->productversion;
             $pattern = '(\d\.\d\.\d)';
-            preg_match($pattern, $version, $matches);
-            $this->ocisVersion = $matches[0];
-            return $this->ocisVersion;
+            if (preg_match($pattern, $version, $matches)) {
+                return $this->ocisVersion = $matches[0];
+            } else {
+                throw new InvalidResponseException('Ocis version format is invalid');
+            }
         }
     }
 
