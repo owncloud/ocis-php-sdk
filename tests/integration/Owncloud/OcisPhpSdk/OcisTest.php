@@ -7,10 +7,20 @@ require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
+use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\HttpException;
+use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
+use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
+use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Group;
+use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Sabre\HTTP\ClientException;
+use Sabre\HTTP\ClientHttpException;
 
 class OcisTest extends OcisPhpSdkTestCase
 {
@@ -743,5 +753,32 @@ class OcisTest extends OcisPhpSdkTestCase
         $this->expectException(NotFoundException::class);
         $ocis = $this->getOcis('admin', 'admin');
         $ocis->getResourceById('not-existing-id');
+    }
+
+    /**
+     * @throws UnauthorizedException
+     * @throws TooEarlyException
+     * @throws ClientException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     * @throws \DOMException
+     * @throws ClientHttpException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws ConflictException
+     * @throws InternalServerErrorException
+     */
+    public function testSearchByName(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->uploadFile('somefile.txt', 'some content');
+        $resources = $ocis->searchByPattern('*some*');
+        $this->assertCount(
+            1,
+            $resources,
+            "Expected one resource but found " . count($resources),
+        );
     }
 }

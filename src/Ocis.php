@@ -23,11 +23,13 @@ use OpenAPI\Client\Model\ObjectIdentity;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ClientException as SabreClientException;
@@ -1202,5 +1204,43 @@ class Ocis
             }
         }
         return $shares;
+    }
+
+    /**
+     * @return array<OcisResource>
+     * @throws SabreClientException
+     * @throws UnauthorizedException
+     * @throws TooEarlyException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     * @throws \DOMException
+     * @throws SabreClientHttpException
+     * @throws BadRequestException
+     * @throws ConflictException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     */
+    public function searchByPattern(string $pattern = null, string $limit = null): array
+    {
+        $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl()]);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+
+        $properties = [];
+        foreach (ResourceMetadata::cases() as $property) {
+            $properties[] = $property->value;
+        }
+        $responses = $webDavClient->sendReportRequest('/remote.php/dav/spaces', $properties, $pattern, $limit);
+        $resources = [];
+        foreach ($responses as $response) {
+            $resources[] = new OcisResource(
+                $response,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken,
+            );
+        }
+
+        return $resources;
     }
 }
