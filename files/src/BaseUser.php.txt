@@ -4,6 +4,7 @@ namespace Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Model\User;
 use OpenAPI\Client\Model\EducationUser;
+use OpenAPI\Client\Model\ObjectIdentity;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 
 class BaseUser
@@ -12,6 +13,12 @@ class BaseUser
     private ?string $displayName;
     private ?string $mail;
     private ?string $onPremisesSamAccountName;
+    private ?string $surname;
+    private ?string $givenName;
+    /**
+     * @var array<ObjectIdentity>|null
+     */
+    private ?array $identities;
 
     /**
      * @param User|EducationUser $user
@@ -25,6 +32,9 @@ class BaseUser
         $this->displayName = $user->getDisplayName();
         $this->mail = $user->getMail();
         $this->onPremisesSamAccountName = $user->getOnPremisesSamAccountName();
+        $this->surname = $user->getSurname();
+        $this->givenName = $user->getGivenName();
+        $this->identities = $user->getIdentities();
     }
 
     /**
@@ -68,5 +78,30 @@ class BaseUser
     public function getOnPremisesSamAccountName(): string|null
     {
         return $this->onPremisesSamAccountName;
+    }
+
+    /**
+     * Get the value of surname
+     */
+    public function getSurname(): string|null
+    {
+        return $this->surname;
+    }
+
+    /**
+     * Get the value of givenName
+     */
+    public function getGivenName(): string|null
+    {
+        return $this->givenName;
+    }
+
+    /**
+     * Get the value of identities
+     * @return array<ObjectIdentity>|null
+     */
+    public function getIdentities(): ?array
+    {
+        return $this->identities;
     }
 }

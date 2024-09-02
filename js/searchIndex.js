@@ -26,6 +26,21 @@ Search.appendIndex(
             "summary": "Get\u0020the\u0020value\u0020of\u0020onPremisesSamAccountName",
             "url": "classes/Owncloud-OcisPhpSdk-BaseUser.html#method_getOnPremisesSamAccountName"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\BaseUser\u003A\u003AgetSurname\u0028\u0029",
+            "name": "getSurname",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020surname",
+            "url": "classes/Owncloud-OcisPhpSdk-BaseUser.html#method_getSurname"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\BaseUser\u003A\u003AgetGivenName\u0028\u0029",
+            "name": "getGivenName",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020givenName",
+            "url": "classes/Owncloud-OcisPhpSdk-BaseUser.html#method_getGivenName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\BaseUser\u003A\u003AgetIdentities\u0028\u0029",
+            "name": "getIdentities",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020identities",
+            "url": "classes/Owncloud-OcisPhpSdk-BaseUser.html#method_getIdentities"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive",
             "name": "Drive",
             "summary": "Class\u0020representing\u0020a\u0020single\u0020drive\/space\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
@@ -266,6 +281,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-EducationUser.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationUser.html#method___construct"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser\u003A\u003AgetPrimaryRole\u0028\u0029",
+            "name": "getPrimaryRole",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020primaryRole",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationUser.html#method_getPrimaryRole"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\BadRequestException",
             "name": "BadRequestException",
             "summary": "Exception\u0020for\u0020HTTP\u0020400\u0020errors",
@@ -456,6 +481,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getServiceUrl"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AsetEducationGuzzleClient\u0028\u0029",
+            "name": "setEducationGuzzleClient",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_setEducationGuzzleClient"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AisDrivesGetDrivesApi\u0028\u0029",
             "name": "isDrivesGetDrivesApi",
             "summary": "",
@@ -515,6 +545,11 @@ Search.appendIndex(
             "name": "getUserById",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getUserById"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AcreateEducationUser\u0028\u0029",
+            "name": "createEducationUser",
+            "summary": "Create\u0020a\u0020new\u0020education\u0020user\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_createEducationUser"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetEducationUsers\u0028\u0029",
             "name": "getEducationUsers",
