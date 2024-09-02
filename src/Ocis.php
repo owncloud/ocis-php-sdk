@@ -1207,6 +1207,8 @@ class Ocis
     }
 
     /**
+     * Search resource globally
+     *
      * @return array<OcisResource>
      * @throws SabreClientException
      * @throws UnauthorizedException
@@ -1221,16 +1223,12 @@ class Ocis
      * @throws NotFoundException
      * @throws InternalServerErrorException
      */
-    public function searchByPattern(string $pattern = null, string $limit = null): array
+    public function searchResource(string $pattern, ?string $limit = null): array
     {
         $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl()]);
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
 
-        $properties = [];
-        foreach (ResourceMetadata::cases() as $property) {
-            $properties[] = $property->value;
-        }
-        $responses = $webDavClient->sendReportRequest('/remote.php/dav/spaces', $properties, $pattern, $limit);
+        $responses = $webDavClient->sendReportRequest($pattern, $limit, '/remote.php/dav/spaces');
         $resources = [];
         foreach ($responses as $response) {
             $resources[] = new OcisResource(
@@ -1242,5 +1240,6 @@ class Ocis
         }
 
         return $resources;
+
     }
 }

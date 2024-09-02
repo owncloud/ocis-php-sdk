@@ -16,7 +16,6 @@ use Sabre\HTTP\ResponseInterface;
 use Sabre\HTTP\ClientException as SabreClientException;
 use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
-use Sabre\Xml\Service;
 
 /**
  * @ignore This is only used for internal purposes and should not show up in the documentation
@@ -154,62 +153,40 @@ class WebDavClient extends Client
     }
 
     /**
-     * @param string $url
-     * @param null $properties
-     * @param null $pattern
-     * @param null $limit
-     * @return array
-     * @throws BadRequestException
-     * @throws ConflictException
-     * @throws TooEarlyException
-     * @throws ForbiddenException
+     * @param string $pattern
+     * @param string|null $limit
+     * @param string|null $url
+     * @return array<string, array<int, array<string, string|null|object>>>
      * @throws HttpException
-     * @throws InternalServerErrorException
-     * @throws NotFoundException
      * @throws SabreClientException
      * @throws SabreClientHttpException
-     * @throws UnauthorizedException
      * @throws \DOMException
      */
-    public function sendReportRequest(string $url = '', array $properties = [], string $pattern = null, string $limit = null): array
+    public function sendReportRequest(string $pattern, ?string $limit, ?string $url = ''): array
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
         $root = $dom->createElementNS('DAV:', 'oc:search-files');
-        $prop = $dom->createElement('d:prop');
 
-        foreach ($properties as $property) {
-            list(
-                $namespace,
-                $elementName,
-            ) = Service::parseClarkNotation($property);
+        $search = $dom->createElement('oc:search');
+        $patternElement = $dom->createElement('oc:pattern', $pattern);
+        $search->appendChild($patternElement);
 
-            if ('DAV:' === $namespace) {
-                $element = $dom->createElement('d:'.$elementName);
-            } else {
-                $element = $dom->createElementNS($namespace, 'x:'.$elementName);
-            }
-
-            $prop->appendChild($element);
+        if (!is_null($limit)) {
+            $limitElement = $dom->createElement('oc:limit', $limit);
+            $search->appendChild($limitElement);
         }
-        $root->appendChild($prop);
-        // Add the search criteria if provided
-        if (!is_null($pattern)) {
-            $search = $dom->createElement('oc:search');
-            $patternElement = $dom->createElement('oc:pattern', htmlspecialchars($pattern));
-            $search->appendChild($patternElement);
 
-            if (!is_null($limit)) {
-                $limitElement = $dom->createElement('oc:limit', $limit);
-                $search->appendChild($limitElement);
-            }
-
-            $root->appendChild($search);
-        }
+        $root->appendChild($search);
         $dom->appendChild($root);
         $body = $dom->saveXML();
 
+        $url = $url ?? '';
         $url = $this->getAbsoluteUrl($url);
+
+        if (!$body) {
+            throw new \RuntimeException('Failed to generate XML.');
+        }
 
         $request = new HTTP\Request('REPORT', $url, [
             'Content-Type' => 'application/xml',
@@ -218,8 +195,9 @@ class WebDavClient extends Client
         $response = $this->send($request);
 
         if ((int) $response->getStatus() >= 400) {
-            throw ExceptionHelper::getHttpErrorException($response);
+            throw new HttpException($response->getStatusText(), $response->getStatus());
         }
+
         return $this->parseMultiStatus($response->getBodyAsString());
     }
 }

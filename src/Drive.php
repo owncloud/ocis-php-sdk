@@ -856,6 +856,42 @@ class Drive
     }
 
     /**
+     * Search resource within a drive
+     *
+     * @return array<OcisResource>
+     * @throws SabreClientException
+     * @throws UnauthorizedException
+     * @throws TooEarlyException
+     * @throws ForbiddenException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     * @throws \DOMException
+     * @throws SabreClientHttpException
+     * @throws BadRequestException
+     * @throws ConflictException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     */
+    public function searchResource(string $pattern, ?string $limit = null): array
+    {
+        $pattern .= " scope:" . $this->getId();
+        $webDavClient = $this->createWebDavClient();
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+
+        $responses = $webDavClient->sendReportRequest($pattern, $limit, '/remote.php/dav/spaces');
+        $resources = [];
+        foreach ($responses as $response) {
+            $resources[] = new OcisResource(
+                $response,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken,
+            );
+        }
+        return $resources;
+    }
+
+    /**
      * @param array<string> $tags
      * @todo This function is not implemented yet! Place, name and signature of the function might change!
      */

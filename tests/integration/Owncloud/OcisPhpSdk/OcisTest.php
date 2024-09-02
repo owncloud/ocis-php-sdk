@@ -16,7 +16,6 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Group;
-use Owncloud\OcisPhpSdk\OcisResource;
 use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Sabre\HTTP\ClientException;
@@ -773,12 +772,27 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $ocis = $this->getOcis('admin', 'admin');
         $personalDrive = $this->getPersonalDrive($ocis);
-        $personalDrive->uploadFile('somefile.txt', 'some content');
-        $resources = $ocis->searchByPattern('*some*');
+        $personalDrive->createFolder('myfolder');
+        $personalDrive->uploadFile('myfolder/somefile.txt', 'some content');
+        $personalDrive->uploadFile('somefile.txt', 'root content');
+        $this->createdResources[$personalDrive->getId()][] = '/myfolder';
+        $this->createdResources[$personalDrive->getId()][] = 'somefile.txt';
+
+        $maxAttempts = 2;
+        $attempt = 0;
+        do {
+            $resources = $ocis->searchResource('*some*');
+            if (count($resources) >= 2) {
+                break;
+            }
+            sleep(2);
+            $attempt++;
+        } while ($attempt < $maxAttempts);
+
         $this->assertCount(
-            1,
+            2,
             $resources,
-            "Expected one resource but found " . count($resources),
+            "Expected two resource but found " . count($resources),
         );
     }
 }
