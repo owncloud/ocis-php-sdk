@@ -18,6 +18,8 @@ use OpenAPI\Client\Api\EducationUserApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\Drive as ApiDrive;
+use OpenAPI\Client\Model\EducationUser as EducationUserModel;
+use OpenAPI\Client\Model\ObjectIdentity;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
@@ -60,6 +62,7 @@ class Ocis
     private string $accessToken;
     private Configuration $graphApiConfig;
     private Client $guzzle;
+    private ?Client $educationGuzzle = null;
     private string $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
 
     /**
@@ -95,6 +98,7 @@ class Ocis
         string $serviceUrl,
         string $accessToken,
         array $connectionConfig = [],
+        ?string $educationAccessToken = null,
     ) {
         if (!self::isConnectionConfigValid($connectionConfig)) {
             throw new \InvalidArgumentException('Connection configuration is not valid');
@@ -115,11 +119,19 @@ class Ocis
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
             $this->serviceUrl . '/graph',
         );
+        if ($educationAccessToken !== null) {
+            $this->setEducationGuzzleClient($educationAccessToken);
+        }
     }
 
     public function getServiceUrl(): string
     {
         return $this->serviceUrl;
+    }
+
+    public function setEducationGuzzleClient(string $accessToken): void
+    {
+        $this->educationGuzzle = new Client(self::createGuzzleConfig($this->connectionConfig, $accessToken));
     }
 
     /**
@@ -725,6 +737,59 @@ class Ocis
     }
 
     /**
+     * Create a new education user (if the user has the permission to do so)
+     *
+     * @return EducationUser
+     */
+    public function createEducationUser(
+        string $displayName,
+        string $onPremisesSAMAccountName,
+        ?string $surname = null,
+        ?string $givenName = null,
+        ?string $mail = null,
+        ?string $primaryRole = null,
+        ?string $issuer = null,
+        ?string $issuerAssignedId = null,
+        ?EducationUserApi $apiInstance = null,
+    ): EducationUser {
+        if (!isset($this->educationGuzzle)) {
+            throw new \InvalidArgumentException(
+                "This function cannot be used because no authentication token was provided for the educationUser endpoints.",
+            );
+        }
+        if (!isset($apiInstance)) {
+            $apiInstance = new EducationUserApi(
+                $this->educationGuzzle,
+                $this->graphApiConfig,
+            );
+        }
+        $identities = new ObjectIdentity(["issuer" => $issuer,"issuer_assigned_id" => $issuerAssignedId]);
+        $educationUser = new EducationUserModel([
+            "display_name" => $displayName,
+            "surname" => $surname,
+            "given_name" => $givenName,
+            "mail" => $mail,
+            "on_premises_sam_account_name" => $onPremisesSAMAccountName,
+            "primary_role" => $primaryRole,
+            "identities" => $identities,
+        ]);
+
+        try {
+            $apiUser = $apiInstance->createEducationUser($educationUser);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiUser instanceof OdataError) {
+            throw new InvalidResponseException(
+                "create user returned an OdataError - " . $apiUser->getError(),
+            );
+        }
+
+        return new EducationUser($apiUser);
+    }
+
+    /**
      * retrieve education users known by the system
      *
      * @param array<string>|null $search
@@ -737,13 +802,20 @@ class Ocis
      * @throws UnauthorizedException
      * @throws InternalServerErrorException
      */
-    public function getEducationUsers(?array $search = null): array
+    public function getEducationUsers(?array $search = null, ?EducationUserApi $apiInstance = null): array
     {
+        if (!isset($this->educationGuzzle)) {
+            throw new \InvalidArgumentException(
+                "This function cannot be used because no authentication token was provided for the educationUser endpoints.",
+            );
+        }
+        if (!isset($apiInstance)) {
+            $apiInstance = new EducationUserApi(
+                $this->educationGuzzle,
+                $this->graphApiConfig,
+            );
+        }
         $users = [];
-        $apiInstance = new EducationUserApi(
-            $this->guzzle,
-            $this->graphApiConfig,
-        );
         try {
             $collectionOfApiUsers = $apiInstance->listEducationUsers($search);
         } catch (ApiException $e) {
@@ -771,12 +843,19 @@ class Ocis
      * @throws NotFoundException
      * @throws InternalServerErrorException
      */
-    public function getEducationUserById(string $userId): EducationUser
+    public function getEducationUserById(string $userId, ?EducationUserApi $apiInstance = null): EducationUser
     {
-        $apiInstance = new EducationUserApi(
-            $this->guzzle,
-            $this->graphApiConfig,
-        );
+        if (!isset($this->educationGuzzle)) {
+            throw new \InvalidArgumentException(
+                "This function cannot be used because no authentication token was provided for the educationUser endpoints.",
+            );
+        }
+        if (!isset($apiInstance)) {
+            $apiInstance = new EducationUserApi(
+                $this->educationGuzzle,
+                $this->graphApiConfig,
+            );
+        }
         try {
             $apiUser = $apiInstance->getEducationUser($userId);
         } catch (ApiException $e) {
