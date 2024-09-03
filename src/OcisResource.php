@@ -558,4 +558,31 @@ class OcisResource
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
         return $webDavClient->sendRequest("GET", $fileId);
     }
+
+    /**
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
+     * @throws InvalidResponseException
+     * @throws HttpException
+     */
+    public function getPreview(string $width, string $height): string
+    {
+        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        $urlParameters = [
+            'scalingup' => 0,
+            'preview' => '1',
+            'a' => '1',
+            'processor' => 'fit',
+            'c' => $this->getEtag(),
+            'x' => $width,
+            'y' => $height,
+        ];
+        $urlParameters = $this->getId() . '?' . http_build_query($urlParameters, '', '&');
+
+        return $webDavClient->sendRequest("GET", $urlParameters)->getBodyAsString();
+    }
 }
