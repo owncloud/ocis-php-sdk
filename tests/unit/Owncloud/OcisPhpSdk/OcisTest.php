@@ -55,6 +55,22 @@ class OcisTest extends TestCase
         );
     }
 
+    public function testCheckInvalidGuzzleClient(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Invalid guzzle client.");
+        $ocis = new Ocis('https://localhost:9200');
+    }
+
+    public function testCreateDriveWithNoAccessToken(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $ocis = new Ocis('https://localhost:9200');
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("This function cannot be used because no access token was provided.");
+        $ocis->createDrive('driveName', 10);
+    }
+
     public function testCreateDriveWithInvalidQuota(): void
     {
         $this->expectException(\InvalidArgumentException::class);
