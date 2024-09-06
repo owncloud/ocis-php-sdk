@@ -701,6 +701,11 @@ Search.appendIndex(
             "summary": "returns\u0020a\u0020stream\u0020to\u0020get\u0020the\u0020content\u0020of\u0020this\u0020resource",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getContentStream"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AgetPreview\u0028\u0029",
+            "name": "getPreview",
+            "summary": "the\u0020aspect\u002Dratio\u0020of\u0020previews\u0020will\u0020be\u0020preserved\u0020even\u0020if\u0020not\u0020matching\u0020sizes\u0020are\u0020requested",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getPreview"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OrderDirection",
             "name": "OrderDirection",
             "summary": "Possible\u0020order\u0020direction\u0020values\u0020for\u0020sorting\u0020responses",
