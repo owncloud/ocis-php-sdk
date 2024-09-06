@@ -202,4 +202,32 @@ class Group
             throw ExceptionHelper::getHttpErrorException($e);
         }
     }
+
+    /**
+     * Rename group
+     *
+     * @param string $name
+     *
+     * @return bool
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InternalServerErrorException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     */
+    public function rename(string $name): bool
+    {
+        $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
+        $groupProperties = new OpenApiGroup([
+            "display_name" => $name,
+        ], );
+        try {
+            $apiInstance->updateGroup($this->getId(), $groupProperties);
+            return true;
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+    }
 }
