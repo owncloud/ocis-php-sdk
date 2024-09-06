@@ -401,6 +401,11 @@ Search.appendIndex(
             "summary": "delete\u0020an\u0020existing\u0020group\u0020\u0028if\u0020the\u0020user\u0020has\u0020the\u0020permission\u0020to\u0020do\u0020so\u0029",
             "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_delete"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Group\u003A\u003Arename\u0028\u0029",
+            "name": "rename",
+            "summary": "Rename\u0020group",
+            "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_rename"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Notification",
             "name": "Notification",
             "summary": "Class\u0020representing\u0020a\u0020single\u0020notification\u0020emitted\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
