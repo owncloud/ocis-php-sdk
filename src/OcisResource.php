@@ -82,6 +82,13 @@ class OcisResource
         $this->connectionConfig = $connectionConfig;
     }
 
+    private function createWebDavClient(): WebDavClient
+    {
+        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        return $webDavClient;
+    }
+
     /**
      * @param ResourceMetadata $property
      * @phpstan-ignore-next-line Because this method returns different array depending on the property
@@ -554,24 +561,17 @@ class OcisResource
      */
     private function getFileResponseInterface(string $fileId): ResponseInterface
     {
-        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
-        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        $webDavClient = $this->createWebDavClient();
         return $webDavClient->sendRequest("GET", $fileId);
     }
 
     /**
-     * @throws UnauthorizedException
-     * @throws ForbiddenException
-     * @throws BadRequestException
-     * @throws NotFoundException
-     * @throws InternalServerErrorException
-     * @throws InvalidResponseException
-     * @throws HttpException
+     * the aspect-ratio of previews will be preserved even if not matching sizes are requested
+     *
      */
-    public function getPreview(string $width, string $height): string
+    public function getPreview(int $width, int $height): string
     {
-        $webDavClient = new WebDavClient(['baseUri' => $this->serviceUrl . '/dav/spaces/']);
-        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+        $webDavClient = $this->createWebDavClient();
         $urlParameters = [
             'scalingup' => 0,
             'preview' => '1',
