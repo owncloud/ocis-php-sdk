@@ -263,4 +263,34 @@ class GroupsTest extends OcisPhpSdkTestCase
         $ocis->deleteGroupByID("thisgroupdoesnotexist");
     }
 
+    public function testRenameGroup(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $philosophyHatersGroup =  $ocis->createGroup("philosophyhaters", "philosophy haters group");
+        $this->createdGroups = [$philosophyHatersGroup];
+        $groups = $ocis->getGroups("philosophyhaters");
+        $isGroupRenamed = $groups[0]->rename("researchers");
+
+        $this->assertTrue($isGroupRenamed, "Group rename failed");
+
+        $groupsAfterRename = $ocis->getGroups();
+        $this->assertCount(
+            1,
+            $groupsAfterRename,
+            "Expected one group but found " . count($groupsAfterRename),
+        );
+
+        $this->assertSame(
+            "researchers",
+            $groupsAfterRename[0]->getDisplayName(),
+            "Expected group name to be researchers but found " . $groupsAfterRename[0]->getDisplayName(),
+        );
+        $this->assertNotSame(
+            "philosophyhaters",
+            $groupsAfterRename[0]->getDisplayName(),
+            "Expected group name to be rename in researchers but found " . $groupsAfterRename[0]->getDisplayName(),
+        );
+
+    }
+
 }
