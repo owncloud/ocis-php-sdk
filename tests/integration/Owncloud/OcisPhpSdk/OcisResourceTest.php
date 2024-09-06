@@ -501,4 +501,33 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             $newResource->getRoles();
         }
     }
+
+    public function testResourcePreview(): void
+    {
+        $path =  __DIR__ . "/../";
+        $imageData = \file_get_contents($path . '/filesForUpload/testavatar.jpg');
+
+        if ($imageData === false) {
+            throw new \InvalidArgumentException('Failed to read the file for upload.');
+        }
+        $this->personalDrive->uploadFile('testavatar.jpg', $imageData);
+        sleep(2);
+        $this->createdResources[$this->personalDrive->getId()][] = 'testavatar.jpg';
+        $resources = $this->personalDrive->getResources();
+        foreach ($resources as $resource) {
+            if ($resource->getName() === 'testavatar.jpg') {
+                $previewImageData = $resource->getPreview(32, 32);
+                $isPreviewValid = imagecreatefromstring($previewImageData);
+                $this->assertInstanceOf(\GdImage::class, $isPreviewValid, "The response contains invalid image data");
+
+                $imageInfo = getimagesizefromstring($previewImageData);
+                if ($imageInfo === false) {
+                    throw new \InvalidArgumentException('Preview image data has invalid data');
+                }
+                // ocis auto adjust size
+                $this->assertEquals(32, $imageInfo[0], "Expected width of preview image 32 but found {$imageInfo[0]}");
+                $this->assertEquals(16, $imageInfo[1], "Expected height of preview image 16 but found {$imageInfo[1]}");
+            }
+        }
+    }
 }
