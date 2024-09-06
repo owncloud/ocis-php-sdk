@@ -1203,4 +1203,49 @@ class Ocis
         }
         return $shares;
     }
+
+    /**
+     * Search resource globally or within drive/folder
+     *
+     * @param string $pattern The search pattern where it can be of format:
+     *   - `mediatype:<pattern>`: Search by media type (e.g., `mediatype:*png*`).
+     *   - `name:*<pattern>`: Search by resource name (e.g., `name:*der2`).
+     *   - `<pattern>`: General search pattern (e.g., `fold*`, `*der1`, `subfolder`, `*fo*`).
+     * oCIS has huge tests coverage where supported pattern can be found https://github.com/owncloud/ocis
+     *
+     * @param int|null $limit
+     * @param string|null $scopeId scopeId could be driveId or folderId
+     *
+     * @return array<OcisResource>
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws HttpException
+     * @throws InternalServerErrorException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws SabreClientException
+     * @throws SabreClientHttpException
+     * @throws UnauthorizedException
+     * @throws \DOMException
+     */
+    public function searchResource(string $pattern, ?int $limit = null, ?string $scopeId = null): array
+    {
+        $pattern .= !is_null($scopeId) ? " scope:" . $scopeId : '';
+
+        $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl()]);
+        $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
+
+        $responses = $webDavClient->sendReportRequest($pattern, $limit, '/remote.php/dav/spaces');
+        $resources = [];
+        foreach ($responses as $response) {
+            $resources[] = new OcisResource(
+                $response,
+                $this->connectionConfig,
+                $this->serviceUrl,
+                $this->accessToken,
+            );
+        }
+
+        return $resources;
+    }
 }

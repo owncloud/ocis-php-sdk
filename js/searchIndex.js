@@ -591,6 +591,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getSharedByMe"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AsearchResource\u0028\u0029",
+            "name": "searchResource",
+            "summary": "Search\u0020resource\u0020globally\u0020or\u0020within\u0020drive\/folder",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_searchResource"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AFUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "name": "FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
             "summary": "",
