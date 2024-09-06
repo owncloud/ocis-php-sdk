@@ -696,38 +696,4 @@ class DriveTest extends OcisPhpSdkTestCase
             $receivedInvitationDrive->setPermissionRole($permissionId, $role);
         }
     }
-
-    /**
-     * @throws ForbiddenException
-     * @throws InvalidResponseException
-     * @throws BadRequestException
-     * @throws UnauthorizedException
-     * @throws HttpException
-     * @throws NotFoundException
-     * @throws InternalServerErrorException
-     * @throws \Exception
-     */
-    public function testSearchResourceInsideDrive(): void
-    {
-        $this->drive->createFolder('myfolder');
-        $this->drive->uploadFile('myfolder/somefile.txt', 'some content');
-        $this->drive->uploadFile('somefile.txt', 'root content');
-
-        $maxAttempts = 2;
-        $attempt = 0;
-        do {
-            $resources = $this->drive->searchResource('*some*');
-            if (count($resources) >= 2) {
-                break;
-            }
-            sleep(2);
-            $attempt++;
-        } while ($attempt < $maxAttempts);
-
-        $this->assertCount(
-            2,
-            $resources,
-            "Expected two resource but found " . count($resources),
-        );
-    }
 }

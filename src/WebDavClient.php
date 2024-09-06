@@ -154,15 +154,14 @@ class WebDavClient extends Client
 
     /**
      * @param string $pattern
-     * @param string|null $limit
+     * @param int|null $limit
      * @param string|null $url
      * @return array<string, array<int, array<string, string|null|object>>>
      * @throws HttpException
      * @throws SabreClientException
      * @throws SabreClientHttpException
-     * @throws \DOMException
      */
-    public function sendReportRequest(string $pattern, ?string $limit, ?string $url = ''): array
+    public function sendReportRequest(string $pattern, ?int $limit, ?string $url = ''): array
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
@@ -173,7 +172,7 @@ class WebDavClient extends Client
         $search->appendChild($patternElement);
 
         if (!is_null($limit)) {
-            $limitElement = $dom->createElement('oc:limit', $limit);
+            $limitElement = $dom->createElement('oc:limit', (string)$limit);
             $search->appendChild($limitElement);
         }
 

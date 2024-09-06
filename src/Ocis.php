@@ -23,13 +23,11 @@ use OpenAPI\Client\Model\ObjectIdentity;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Quota;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
-use Owncloud\OcisPhpSdk\Exception\ConflictException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
 use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
-use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Sabre\HTTP\ClientException as SabreClientException;
@@ -1207,24 +1205,33 @@ class Ocis
     }
 
     /**
-     * Search resource globally
+     * Search resource globally or within drive/folder
+     *
+     * @param string $pattern The search pattern where it can be of format:
+     *   - `mediatype:<pattern>`: Search by media type (e.g., `mediatype:*png*`).
+     *   - `name:*<pattern>`: Search by resource name (e.g., `name:*der2`).
+     *   - `<pattern>`: General search pattern (e.g., `fold*`, `*der1`, `subfolder`, `*fo*`).
+     * oCIS has huge tests coverage where supported pattern can be found https://github.com/owncloud/ocis
+     *
+     * @param int|null $limit
+     * @param string|null $scopeId scopeId could be driveId or folderId
      *
      * @return array<OcisResource>
-     * @throws SabreClientException
-     * @throws UnauthorizedException
-     * @throws TooEarlyException
-     * @throws ForbiddenException
-     * @throws InvalidResponseException
-     * @throws HttpException
-     * @throws \DOMException
-     * @throws SabreClientHttpException
      * @throws BadRequestException
-     * @throws ConflictException
-     * @throws NotFoundException
+     * @throws ForbiddenException
+     * @throws HttpException
      * @throws InternalServerErrorException
+     * @throws InvalidResponseException
+     * @throws NotFoundException
+     * @throws SabreClientException
+     * @throws SabreClientHttpException
+     * @throws UnauthorizedException
+     * @throws \DOMException
      */
-    public function searchResource(string $pattern, ?string $limit = null): array
+    public function searchResource(string $pattern, ?int $limit = null, ?string $scopeId = null): array
     {
+        $pattern .= !is_null($scopeId) ? " scope:" . $scopeId : '';
+
         $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl()]);
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
 
@@ -1240,6 +1247,5 @@ class Ocis
         }
 
         return $resources;
-
     }
 }
