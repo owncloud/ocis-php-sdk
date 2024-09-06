@@ -10,6 +10,7 @@ use Owncloud\OcisPhpSdk\Exception\InternalServerErrorException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 use Sabre\DAV\Client;
+use Sabre\HTTP;
 use Sabre\HTTP\Request;
 use Sabre\HTTP\ResponseInterface;
 use Sabre\HTTP\ClientException as SabreClientException;
@@ -149,5 +150,53 @@ class WebDavClient extends Client
         foreach ($curlSettings as $setting => $value) {
             $this->addCurlSetting($setting, $value);
         }
+    }
+
+    /**
+     * @param string $pattern
+     * @param int|null $limit
+     * @param string|null $url
+     * @return array<string, array<int, array<string, string|null|object>>>
+     * @throws HttpException
+     * @throws SabreClientException
+     * @throws SabreClientHttpException
+     */
+    public function sendReportRequest(string $pattern, ?int $limit, ?string $url = ''): array
+    {
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = true;
+        $root = $dom->createElementNS('DAV:', 'oc:search-files');
+
+        $search = $dom->createElement('oc:search');
+        $patternElement = $dom->createElement('oc:pattern', $pattern);
+        $search->appendChild($patternElement);
+
+        if (!is_null($limit)) {
+            $limitElement = $dom->createElement('oc:limit', (string)$limit);
+            $search->appendChild($limitElement);
+        }
+
+        $root->appendChild($search);
+        $dom->appendChild($root);
+        $body = $dom->saveXML();
+
+        $url = $url ?? '';
+        $url = $this->getAbsoluteUrl($url);
+
+        if (!$body) {
+            throw new \RuntimeException('Failed to generate XML.');
+        }
+
+        $request = new HTTP\Request('REPORT', $url, [
+            'Content-Type' => 'application/xml',
+        ], $body);
+
+        $response = $this->send($request);
+
+        if ((int) $response->getStatus() >= 400) {
+            throw new HttpException($response->getStatusText(), $response->getStatus());
+        }
+
+        return $this->parseMultiStatus($response->getBodyAsString());
     }
 }

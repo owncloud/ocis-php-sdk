@@ -744,4 +744,72 @@ class OcisTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('admin', 'admin');
         $ocis->getResourceById('not-existing-id');
     }
+
+    /**
+     * @return array<int, array<int, string>>
+    */
+    public static function seachPattern(): array
+    {
+        return [
+            ["*some*"],
+            ["so*"],
+        ];
+    }
+    /**
+     * @dataProvider seachPattern
+     */
+    public function testSearchGloballyByRegularPattern(string $pattern): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('myfolder');
+        $personalDrive->uploadFile('myfolder/somebook.txt', 'some content');
+        $personalDrive->uploadFile('somefile.txt', 'root content');
+        $personalDrive->uploadFile('myfile.txt', 'my file content');
+        $this->createdResources[$personalDrive->getId()] = [
+            '/myfolder', 'somefile.txt', 'myfile.txt',
+        ];
+
+        sleep(2);
+        $resources = $ocis->searchResource($pattern);
+
+        $this->assertCount(
+            2,
+            $resources,
+            "Expected two resource but found " . count($resources),
+        );
+        foreach ($resources as $resource) {
+            $this->assertThat(
+                $resource->getName(),
+                $this->logicalOr(
+                    $this->equalTo("somebook.txt"),
+                    $this->equalTo("somefile.txt"),
+                ),
+                "Expected resource name be somebook.txt or somefile.txt but found " . $resource->getName(),
+            );
+        }
+    }
+
+    public function testSearchWithInScope(): void
+    {
+        $ocis = $this->getOcis('admin', 'admin');
+        $drive = $ocis->createDrive('first test drive');
+        $this->createdDrives[] = $drive->getId();
+        $personalDrive = $this->getPersonalDrive($ocis);
+        $personalDrive->createFolder('myfolder');
+        $personalDrive->uploadFile('myfolder/somebook.txt', 'some content');
+        $drive->uploadFile('somefile.txt', 'root content');
+        $drive->uploadFile('myfile.txt', 'my file content');
+        $this->createdResources[$personalDrive->getId()] = ['/myfolder'];
+
+        sleep(2);
+        $resources = $ocis->searchResource('*some*', null, $drive->getId());
+
+        $this->assertCount(
+            1,
+            $resources,
+            "Expected one resource but found " . count($resources),
+        );
+        $this->assertSame('somefile.txt', $resources[0]->getName(), "Expected resource name be somefile.txt but found " . $resources[0]->getName());
+    }
 }
