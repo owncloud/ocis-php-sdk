@@ -62,13 +62,43 @@ class OcisTest extends TestCase
         $ocis = new Ocis('https://localhost:9200');
     }
 
-    public function testCreateDriveWithNoAccessToken(): void
+    /**
+     * @return array<array{string, array<mixed>}>
+     */
+    public static function noAccessTokenCaseDataProvider(): array
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $ocis = new Ocis('https://localhost:9200');
+        return [
+            ['getAllDrives', []],
+            ['getMyDrives', []],
+            ['getDriveById', ['1']],
+            ['getGroups', []],
+            ['createDrive', ['driveName']],
+            ['getResourceById', ['1']],
+            ['getUsers', ['einstein']],
+            ['getUserById', ['einsteinId']],
+            ['createGroup', ['philosophyhaters']],
+            ['getGroupById', ['1']],
+            ['deleteGroupByID', ['1']],
+            ['getSharedWithMe', []],
+            ['getSharedByMe', []],
+            ['searchResource', ['*hello*']],
+            ['getNotifications', []],
+        ];
+    }
+
+    /**
+     * @param array<mixed> $parameter
+     * @dataProvider noAccessTokenCaseDataProvider
+     */
+    public function testWithNoAccessToken(string $method, array $parameter): void
+    {
+        $ocis = new Ocis(
+            serviceUrl: 'https://localhost:9200',
+            educationAccessToken: "doesNotMatter",
+        );
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("This function cannot be used because no access token was provided.");
-        $ocis->createDrive('driveName', 10);
+        $ocis->$method(...$parameter);
     }
 
     public function testCreateDriveWithInvalidQuota(): void
