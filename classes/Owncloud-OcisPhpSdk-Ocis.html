@@ -378,12 +378,6 @@ NOTE: if this function is used by a normal user a search string with at least 3 
 </dt>
 <dd>Update the access token. Call this function after refreshing the access token.</dd>
 
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_setEducationGuzzleClient">setEducationGuzzleClient()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-
     </dl>
 
 
@@ -483,15 +477,15 @@ NOTE: if this function is used by a normal user a search string with at least 3 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">97</span>
+    <span class="phpdocumentor-element-found-in__line">98</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.97" class="phpdocumentor-element-found-in__source" data-line="97" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.98" class="phpdocumentor-element-found-in__source" data-line="98" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serviceUrl</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$accessToken</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$connectionConfig</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$educationAccessToken</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serviceUrl</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$accessToken</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$connectionConfig</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$educationAccessToken</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -508,8 +502,8 @@ NOTE: if this function is used by a normal user a search string with at least 3 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$accessToken</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
+                : <span class="phpdocumentor-signature__argument__return-type">string|null</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
@@ -641,9 +635,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">540</span>
+    <span class="phpdocumentor-element-found-in__line">572</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.540" class="phpdocumentor-element-found-in__source" data-line="540" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.572" class="phpdocumentor-element-found-in__source" data-line="572" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Create a new drive (if the user has the permission to do so)</p>
@@ -778,9 +772,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">744</span>
+    <span class="phpdocumentor-element-found-in__line">782</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.744" class="phpdocumentor-element-found-in__source" data-line="744" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.782" class="phpdocumentor-element-found-in__source" data-line="782" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Create a new education user (if the user has the permission to do so)</p>
@@ -884,9 +878,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1053</span>
+    <span class="phpdocumentor-element-found-in__line">1081</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1053" class="phpdocumentor-element-found-in__source" data-line="1053" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1081" class="phpdocumentor-element-found-in__source" data-line="1081" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Create a new group (if the user has the permission to do so)</p>
@@ -1012,9 +1006,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1088</span>
+    <span class="phpdocumentor-element-found-in__line">1117</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1088" class="phpdocumentor-element-found-in__source" data-line="1088" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1117" class="phpdocumentor-element-found-in__source" data-line="1117" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">delete an existing group (if the user has the permission to do so)</p>
@@ -1121,9 +1115,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">366</span>
+    <span class="phpdocumentor-element-found-in__line">395</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.366" class="phpdocumentor-element-found-in__source" data-line="366" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.395" class="phpdocumentor-element-found-in__source" data-line="395" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Get all available drives</p>
@@ -1248,9 +1242,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">500</span>
+    <span class="phpdocumentor-element-found-in__line">531</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.500" class="phpdocumentor-element-found-in__source" data-line="500" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.531" class="phpdocumentor-element-found-in__source" data-line="531" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Retrieve a drive by its unique id</p>
@@ -1361,9 +1355,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">846</span>
+    <span class="phpdocumentor-element-found-in__line">876</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.846" class="phpdocumentor-element-found-in__source" data-line="846" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.876" class="phpdocumentor-element-found-in__source" data-line="876" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -1480,9 +1474,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">805</span>
+    <span class="phpdocumentor-element-found-in__line">839</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.805" class="phpdocumentor-element-found-in__source" data-line="805" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.839" class="phpdocumentor-element-found-in__source" data-line="839" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">retrieve education users known by the system</p>
@@ -1600,9 +1594,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">882</span>
+    <span class="phpdocumentor-element-found-in__line">908</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.882" class="phpdocumentor-element-found-in__source" data-line="882" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.908" class="phpdocumentor-element-found-in__source" data-line="908" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -1712,9 +1706,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">601</span>
+    <span class="phpdocumentor-element-found-in__line">634</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.601" class="phpdocumentor-element-found-in__source" data-line="601" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.634" class="phpdocumentor-element-found-in__source" data-line="634" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Get list of groups (if the user has the permission to do so)</p>
@@ -1847,9 +1841,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">427</span>
+    <span class="phpdocumentor-element-found-in__line">457</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.427" class="phpdocumentor-element-found-in__source" data-line="427" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.457" class="phpdocumentor-element-found-in__source" data-line="457" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Get all drives that the current user is a regular member of</p>
@@ -1974,9 +1968,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">936</span>
+    <span class="phpdocumentor-element-found-in__line">963</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.936" class="phpdocumentor-element-found-in__source" data-line="936" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.963" class="phpdocumentor-element-found-in__source" data-line="963" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Retrieve all unread notifications of the current user</p>
@@ -2085,9 +2079,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">331</span>
+    <span class="phpdocumentor-element-found-in__line">360</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.331" class="phpdocumentor-element-found-in__source" data-line="331" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.360" class="phpdocumentor-element-found-in__source" data-line="360" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">returns the current oCIS version in semantic versioning format ( e.g. &quot;5.0.5&quot; )</p>
@@ -2140,9 +2134,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">647</span>
+    <span class="phpdocumentor-element-found-in__line">681</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.647" class="phpdocumentor-element-found-in__source" data-line="647" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.681" class="phpdocumentor-element-found-in__source" data-line="681" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -2244,9 +2238,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">127</span>
+    <span class="phpdocumentor-element-found-in__line">131</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.127" class="phpdocumentor-element-found-in__source" data-line="127" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.131" class="phpdocumentor-element-found-in__source" data-line="131" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -2283,9 +2277,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1144</span>
+    <span class="phpdocumentor-element-found-in__line">1175</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1144" class="phpdocumentor-element-found-in__source" data-line="1144" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1175" class="phpdocumentor-element-found-in__source" data-line="1175" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -2385,9 +2379,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1108</span>
+    <span class="phpdocumentor-element-found-in__line">1138</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1108" class="phpdocumentor-element-found-in__source" data-line="1108" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1138" class="phpdocumentor-element-found-in__source" data-line="1138" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -2487,9 +2481,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">719</span>
+    <span class="phpdocumentor-element-found-in__line">756</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.719" class="phpdocumentor-element-found-in__source" data-line="719" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.756" class="phpdocumentor-element-found-in__source" data-line="756" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -2599,9 +2593,9 @@ guzzle is a guzzle client instance that can be injected e.g. to be used for unit
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">685</span>
+    <span class="phpdocumentor-element-found-in__line">721</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.685" class="phpdocumentor-element-found-in__source" data-line="685" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.721" class="phpdocumentor-element-found-in__source" data-line="721" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">retrieve users known by the system
@@ -2713,9 +2707,9 @@ NOTE: if this function is used by a normal user a search string with at least 3 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">170</span>
+    <span class="phpdocumentor-element-found-in__line">169</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.170" class="phpdocumentor-element-found-in__source" data-line="170" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.169" class="phpdocumentor-element-found-in__source" data-line="169" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -2762,9 +2756,9 @@ NOTE: if this function is used by a normal user a search string with at least 3 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">175</span>
+    <span class="phpdocumentor-element-found-in__line">174</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.175" class="phpdocumentor-element-found-in__source" data-line="175" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.174" class="phpdocumentor-element-found-in__source" data-line="174" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
     
@@ -2811,9 +2805,9 @@ NOTE: if this function is used by a normal user a search string with at least 3 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1231</span>
+    <span class="phpdocumentor-element-found-in__line">1263</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1231" class="phpdocumentor-element-found-in__source" data-line="1231" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.1263" class="phpdocumentor-element-found-in__source" data-line="1263" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Search resource globally or within drive/folder</p>
@@ -2975,9 +2969,9 @@ oCIS has huge tests coverage where supported pattern can be found https://github
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">240</span>
+    <span class="phpdocumentor-element-found-in__line">267</span>
 
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.240" class="phpdocumentor-element-found-in__source" data-line="240" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
+            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.267" class="phpdocumentor-element-found-in__source" data-line="267" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
     </aside>
 
         <p class="phpdocumentor-summary">Update the access token. Call this function after refreshing the access token.</p>
@@ -3017,51 +3011,6 @@ oCIS has huge tests coverage where supported pattern can be found https://github
                                              
                                     </dd>
                                             </dl>
-
-    
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_setEducationGuzzleClient">
-        setEducationGuzzleClient()
-        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_setEducationGuzzleClient" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="src/Ocis.php"><a href="files/src-ocis.html"><abbr title="src/Ocis.php">Ocis.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">132</span>
-
-            <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#source-view.132" class="phpdocumentor-element-found-in__source" data-line="132" data-modal="source-view" data-src="files/src/Ocis.php.txt"></a>
-    </aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setEducationGuzzleClient</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$accessToken</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$accessToken</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
 
     
 
@@ -3212,7 +3161,6 @@ oCIS has huge tests coverage where supported pattern can be found https://github
                                             <li class=""><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_isDrivesRootApi">isDrivesRootApi()</a></li>
                                             <li class=""><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_searchResource">searchResource()</a></li>
                                             <li class=""><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_setAccessToken">setAccessToken()</a></li>
-                                            <li class=""><a href="classes/Owncloud-OcisPhpSdk-Ocis.html#method_setEducationGuzzleClient">setEducationGuzzleClient()</a></li>
                                     </ul>
             </li>
                     </ul>

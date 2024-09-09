@@ -59,7 +59,8 @@ class Ocis
     public const ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE =
         'This method is not implemented in this ocis version';
     private string $serviceUrl;
-    private string $accessToken;
+    private ?string $accessToken;
+    private ?string $educationAccessToken;
     private Configuration $graphApiConfig;
     private Client $guzzle;
     private ?Client $educationGuzzle = null;
@@ -96,7 +97,7 @@ class Ocis
      */
     public function __construct(
         string $serviceUrl,
-        string $accessToken,
+        ?string $accessToken = null,
         array $connectionConfig = [],
         ?string $educationAccessToken = null,
     ) {
@@ -104,10 +105,16 @@ class Ocis
             throw new \InvalidArgumentException('Connection configuration is not valid');
         }
         $this->accessToken = $accessToken;
+        $this->educationAccessToken = $educationAccessToken;
         if (array_key_exists('guzzle', $connectionConfig)) {
             $this->guzzle = $connectionConfig['guzzle'];
         } else {
-            $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $this->accessToken));
+            $token = $accessToken ?? $educationAccessToken;
+            if ($token !== null) {
+                $this->guzzle = new Client(self::createGuzzleConfig($connectionConfig, $token));
+            } else {
+                throw new \InvalidArgumentException('Invalid guzzle client.');
+            }
         }
         if (array_key_exists('webfinger', $connectionConfig) && $connectionConfig['webfinger'] === true) {
             $this->serviceUrl = $this->getServiceUrlFromWebfinger($serviceUrl);
@@ -119,19 +126,11 @@ class Ocis
         $this->graphApiConfig = Configuration::getDefaultConfiguration()->setHost(
             $this->serviceUrl . '/graph',
         );
-        if ($educationAccessToken !== null) {
-            $this->setEducationGuzzleClient($educationAccessToken);
-        }
     }
 
     public function getServiceUrl(): string
     {
         return $this->serviceUrl;
-    }
-
-    public function setEducationGuzzleClient(string $accessToken): void
-    {
-        $this->educationGuzzle = new Client(self::createGuzzleConfig($this->connectionConfig, $accessToken));
     }
 
     /**
@@ -233,6 +232,34 @@ class Ocis
     }
 
     /**
+     * check for access token.
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkIfAccessTokenExists(): void
+    {
+        if ($this->accessToken === null) {
+            throw new \InvalidArgumentException(
+                "This function cannot be used because no access token was provided.",
+            );
+        }
+    }
+
+    /**
+     * check for access token of education user.
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function checkIfEducationAccessTokenExists(): void
+    {
+        if ($this->educationAccessToken === null) {
+            throw new \InvalidArgumentException(
+                "This function cannot be used because no authentication token was provided for the educationUser endpoints.",
+            );
+        }
+    }
+
+    /**
      * Update the access token. Call this function after refreshing the access token.
      *
      * @throws \InvalidArgumentException
@@ -255,6 +282,8 @@ class Ocis
      */
     private function getServiceUrlFromWebfinger(string $webfingerUrl): string
     {
+        $this->checkIfAccessTokenExists();
+        // @phpstan-ignore-next-line access token if empty is caught by previous step.
         $tokenDataArray = explode(".", $this->accessToken);
         if (!array_key_exists(1, $tokenDataArray)) {
             throw new \InvalidArgumentException(
@@ -371,6 +400,7 @@ class Ocis
         if (array_key_exists('drivesGetDrivesApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesGetDrivesApi'];
         } else {
+            $this->checkIfAccessTokenExists();
             $apiInstance = new DrivesGetDrivesApi(
                 $this->guzzle,
                 $this->graphApiConfig,
@@ -429,6 +459,7 @@ class Ocis
         OrderDirection $orderDirection = OrderDirection::ASC,
         ?DriveType      $type = null,
     ): array {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new MeDrivesApi(
             $this->guzzle,
             $this->graphApiConfig,
@@ -499,6 +530,7 @@ class Ocis
      */
     public function getDriveById(string $driveId): Drive
     {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new DrivesApi(
             $this->guzzle,
             $this->graphApiConfig,
@@ -548,6 +580,7 @@ class Ocis
         if (array_key_exists('drivesApi', $this->connectionConfig)) {
             $apiInstance = $this->connectionConfig['drivesApi'];
         } else {
+            $this->checkIfAccessTokenExists();
             $apiInstance = new DrivesApi(
                 $this->guzzle,
                 $this->graphApiConfig,
@@ -603,6 +636,7 @@ class Ocis
         OrderDirection $orderBy = OrderDirection::ASC,
         bool $expandMembers = false,
     ) {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
         $orderByString = $orderBy->value === OrderDirection::ASC->value ? "displayName" : "displayName desc";
         try {
@@ -647,6 +681,8 @@ class Ocis
     public function getResourceById(string $fileId): OcisResource
     {
         $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl() . '/dav/spaces/']);
+        $this->checkIfAccessTokenExists();
+        //@phpstan-ignore-next-line
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
         try {
             $properties = [];
@@ -684,6 +720,7 @@ class Ocis
      */
     public function getUsers(?string $search = null): array
     {
+        $this->checkIfAccessTokenExists();
         $users = [];
         $apiInstance = new UsersApi(
             $this->guzzle,
@@ -718,6 +755,7 @@ class Ocis
      */
     public function getUserById(string $userId): User
     {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new UserApi(
             $this->guzzle,
             $this->graphApiConfig,
@@ -752,14 +790,10 @@ class Ocis
         ?string $issuerAssignedId = null,
         ?EducationUserApi $apiInstance = null,
     ): EducationUser {
-        if (!isset($this->educationGuzzle)) {
-            throw new \InvalidArgumentException(
-                "This function cannot be used because no authentication token was provided for the educationUser endpoints.",
-            );
-        }
+        $this->checkIfEducationAccessTokenExists();
         if (!isset($apiInstance)) {
             $apiInstance = new EducationUserApi(
-                $this->educationGuzzle,
+                $this->guzzle,
                 $this->graphApiConfig,
             );
         }
@@ -804,14 +838,10 @@ class Ocis
      */
     public function getEducationUsers(?array $search = null, ?EducationUserApi $apiInstance = null): array
     {
-        if (!isset($this->educationGuzzle)) {
-            throw new \InvalidArgumentException(
-                "This function cannot be used because no authentication token was provided for the educationUser endpoints.",
-            );
-        }
+        $this->checkIfEducationAccessTokenExists();
         if (!isset($apiInstance)) {
             $apiInstance = new EducationUserApi(
-                $this->educationGuzzle,
+                $this->guzzle,
                 $this->graphApiConfig,
             );
         }
@@ -845,11 +875,7 @@ class Ocis
      */
     public function getEducationUserById(string $userId, ?EducationUserApi $apiInstance = null): EducationUser
     {
-        if (!isset($this->educationGuzzle)) {
-            throw new \InvalidArgumentException(
-                "This function cannot be used because no authentication token was provided for the educationUser endpoints.",
-            );
-        }
+        $this->checkIfEducationAccessTokenExists();
         if (!isset($apiInstance)) {
             $apiInstance = new EducationUserApi(
                 $this->educationGuzzle,
@@ -881,6 +907,7 @@ class Ocis
      */
     public function getGroupById(string $groupId): Group
     {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new GroupApi(
             $this->guzzle,
             $this->graphApiConfig,
@@ -935,6 +962,7 @@ class Ocis
      */
     public function getNotifications(): array
     {
+        $this->checkIfAccessTokenExists();
         try {
             $response = $this->guzzle->get(
                 $this->serviceUrl . $this->notificationsEndpoint,
@@ -1052,6 +1080,7 @@ class Ocis
     */
     public function createGroup(string $groupName, string $description = ""): Group
     {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new GroupsApi($this->guzzle, $this->graphApiConfig);
         $group = new OpenAPIGroup(["display_name" => $groupName, "description" => $description]);
         try {
@@ -1087,6 +1116,7 @@ class Ocis
      */
     public function deleteGroupByID(string $groupId): void
     {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new GroupApi($this->guzzle, $this->graphApiConfig);
         try {
             $apiInstance->deleteGroup($groupId);
@@ -1107,6 +1137,7 @@ class Ocis
      */
     public function getSharedWithMe(): array
     {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new MeDriveApi(
             $this->guzzle,
             $this->graphApiConfig,
@@ -1143,6 +1174,7 @@ class Ocis
      */
     public function getSharedByMe(): array
     {
+        $this->checkIfAccessTokenExists();
         $apiInstance = new MeDriveApi(
             $this->guzzle,
             $this->graphApiConfig,
@@ -1233,6 +1265,8 @@ class Ocis
         $pattern .= !is_null($scopeId) ? " scope:" . $scopeId : '';
 
         $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl()]);
+        $this->checkIfAccessTokenExists();
+        //@phpstan-ignore-next-line
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
 
         $responses = $webDavClient->sendReportRequest($pattern, $limit, '/remote.php/dav/spaces');

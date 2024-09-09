@@ -486,11 +486,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getServiceUrl"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AsetEducationGuzzleClient\u0028\u0029",
-            "name": "setEducationGuzzleClient",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_setEducationGuzzleClient"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AisDrivesGetDrivesApi\u0028\u0029",
             "name": "isDrivesGetDrivesApi",
             "summary": "",
