@@ -63,7 +63,6 @@ class Ocis
     private ?string $educationAccessToken;
     private Configuration $graphApiConfig;
     private Client $guzzle;
-    private ?Client $educationGuzzle = null;
     private string $notificationsEndpoint = '/ocs/v2.php/apps/notifications/api/v1/notifications?format=json';
 
     /**
@@ -819,8 +818,8 @@ class Ocis
                 "create user returned an OdataError - " . $apiUser->getError(),
             );
         }
-
-        return new EducationUser($apiUser);
+        // @phan-suppress-next-line PhanTypeMismatchArgumentNullable
+        return new EducationUser($apiUser, $this->serviceUrl, $this->connectionConfig, $this->educationAccessToken);
     }
 
     /**
@@ -859,7 +858,7 @@ class Ocis
         }
         $apiUsers = $collectionOfApiUsers->getValue() ?? [];
         foreach ($apiUsers as $apiUser) {
-            $users[] = new EducationUser($apiUser);
+            $users[] = new EducationUser($apiUser, $this->serviceUrl, $this->connectionConfig, $this->educationAccessToken);
         }
         return $users;
     }
@@ -878,7 +877,7 @@ class Ocis
         $this->checkIfEducationAccessTokenExists();
         if (!isset($apiInstance)) {
             $apiInstance = new EducationUserApi(
-                $this->educationGuzzle,
+                $this->guzzle,
                 $this->graphApiConfig,
             );
         }
@@ -893,7 +892,7 @@ class Ocis
                 "getUser returned an OdataError - " . $apiUser->getError(),
             );
         }
-        return new EducationUser($apiUser);
+        return new EducationUser($apiUser, $this->serviceUrl, $this->connectionConfig, $this->educationAccessToken);
     }
 
     /**

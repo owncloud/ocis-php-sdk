@@ -278,7 +278,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser",
             "name": "EducationUser",
-            "summary": "",
+            "summary": "Class\u0020representing\u0020a\u0020file\u0020or\u0020folder\u0020inside\u0020a\u0020Drive\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
             "url": "classes/Owncloud-OcisPhpSdk-EducationUser.html"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser\u003A\u003A__construct\u0028\u0029",
@@ -290,6 +290,11 @@ Search.appendIndex(
             "name": "getPrimaryRole",
             "summary": "Get\u0020the\u0020value\u0020of\u0020primaryRole",
             "url": "classes/Owncloud-OcisPhpSdk-EducationUser.html#method_getPrimaryRole"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser\u003A\u003Adelete\u0028\u0029",
+            "name": "delete",
+            "summary": "delete\u0020education\u0020user",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationUser.html#method_delete"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\BadRequestException",
             "name": "BadRequestException",
