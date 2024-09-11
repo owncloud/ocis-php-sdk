@@ -5,6 +5,8 @@ namespace integration\Owncloud\OcisPhpSdk;
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
+use Owncloud\OcisPhpSdk\Exception\NotFoundException;
+use Owncloud\OcisPhpSdk\User;
 
 class UsersTest extends OcisPhpSdkTestCase
 {
@@ -83,5 +85,52 @@ class UsersTest extends OcisPhpSdkTestCase
         $ocis = $this->getOcis('einstein', 'relativity');
         $this->expectException(ForbiddenException::class);
         $ocis->getUsers();
+    }
+
+    public function testGetAUserUsingID(): void
+    {
+        $this->initUser('marie', 'radioactivity');
+        $this->initUser('einstein', 'relativity');
+        $this->initUser('moss', 'vista');
+        $ocis = $this->getOcis('admin', 'admin');
+        $users = $ocis->getUsers('Albert');
+        foreach ($users as $user) {
+            if ($user->getDisplayName() === 'Albert Einstein') {
+                $einsteinUser = $ocis->getUserById($user->getId());
+                $this->assertInstanceOf(
+                    User::class,
+                    $einsteinUser,
+                    "Expected class to be User but found "
+                    . print_r($einsteinUser, true),
+                );
+                $this->assertSame(
+                    $user->getDisplayName(),
+                    $einsteinUser->getDisplayName(),
+                    "Expected display name to be Albert Einstein but found "
+                    . $einsteinUser->getDisplayName(),
+                );
+                $this->assertSame(
+                    $user->getOnPremisesSamAccountName(),
+                    $einsteinUser->getOnPremisesSamAccountName(),
+                    "Expected PremisesSamAccountName to be same but found "
+                    . $einsteinUser->getOnPremisesSamAccountName(),
+                );
+                $this->assertEquals(
+                    $user->getIdentities(),
+                    $einsteinUser->getIdentities(),
+                    "Expected Identity to be same but found "
+                    . print_r($user->getIdentities(), true),
+                );
+            }
+        }
+    }
+
+    public function testGetAUserUsingInvalidUserID(): void
+    {
+        $this->initUser('marie', 'radioactivity');
+        $this->initUser('einstein', 'relativity');
+        $ocis = $this->getOcis('admin', 'admin');
+        $this->expectException(NotFoundException::class);
+        $ocis->getUserById($this->getUUIDv4Regex());
     }
 }
