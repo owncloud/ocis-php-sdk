@@ -781,12 +781,12 @@ class Ocis
     public function createEducationUser(
         string $displayName,
         string $onPremisesSAMAccountName,
+        string $issuer,
+        string $issuerAssignedId,
+        string $primaryRole,
         ?string $surname = null,
         ?string $givenName = null,
         ?string $mail = null,
-        ?string $primaryRole = null,
-        ?string $issuer = null,
-        ?string $issuerAssignedId = null,
         ?EducationUserApi $apiInstance = null,
     ): EducationUser {
         $this->checkIfEducationAccessTokenExists();
@@ -804,7 +804,7 @@ class Ocis
             "mail" => $mail,
             "on_premises_sam_account_name" => $onPremisesSAMAccountName,
             "primary_role" => $primaryRole,
-            "identities" => $identities,
+            "identities" => [$identities],
         ]);
 
         try {

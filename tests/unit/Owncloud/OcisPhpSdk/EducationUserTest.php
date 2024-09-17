@@ -116,6 +116,9 @@ class EducationUserTest extends TestCase
         $user = $ocis->createEducationUser(
             displayName: 'demo',
             onPremisesSAMAccountName: 'demo',
+            issuer: 'idp.school.com',
+            issuerAssignedId: 'de.mo',
+            primaryRole: 'student',
             /** @phan-suppress-next-line PhanTypeMismatchArgument*/
             apiInstance: $educationApi,
         );
@@ -150,7 +153,7 @@ class EducationUserTest extends TestCase
             new EU($data),
         );
         $ocis = new Ocis(serviceUrl: 'a', accessToken: 'a');
-        $user = $ocis->createEducationUser(displayName: 'demo', onPremisesSAMAccountName: 'demo');
+        $user = $ocis->createEducationUser(displayName: 'demo', onPremisesSAMAccountName: 'demo', issuer: 'idp.school.com', issuerAssignedId: 'de.mo', primaryRole: 'student');
         $this->expectException(InvalidResponseException::class);
     }
 
@@ -170,7 +173,7 @@ class EducationUserTest extends TestCase
             new EU($data),
         );
         $ocis = new Ocis(serviceUrl: 'a', accessToken: 'a');
-        $user = $ocis->createEducationUser(displayName: 'demo', onPremisesSAMAccountName: 'demo');
+        $user = $ocis->createEducationUser(displayName: 'demo', onPremisesSAMAccountName: 'demo', issuer: 'idp.school.com', issuerAssignedId: 'de.mo', primaryRole: 'student');
         $this->expectException(InvalidResponseException::class);
     }
 
@@ -190,7 +193,7 @@ class EducationUserTest extends TestCase
             new EU($data),
         );
         $ocis = new Ocis(serviceUrl: 'a', accessToken: 'a');
-        $user = $ocis->createEducationUser(displayName: 'demo', onPremisesSAMAccountName: 'demo');
+        $user = $ocis->createEducationUser(displayName: 'demo', onPremisesSAMAccountName: 'demo', issuer: 'idp.school.com', issuerAssignedId: 'de.mo', primaryRole: 'student');
         $this->expectException(InvalidResponseException::class);
     }
 }
