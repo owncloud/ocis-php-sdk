@@ -796,7 +796,7 @@ class Ocis
                 $this->graphApiConfig,
             );
         }
-        $identities = new ObjectIdentity(["issuer" => $issuer,"issuer_assigned_id" => $issuerAssignedId]);
+        $identity = new ObjectIdentity(["issuer" => $issuer,"issuer_assigned_id" => $issuerAssignedId]);
         $educationUser = new EducationUserModel([
             "display_name" => $displayName,
             "surname" => $surname,
@@ -804,7 +804,7 @@ class Ocis
             "mail" => $mail,
             "on_premises_sam_account_name" => $onPremisesSAMAccountName,
             "primary_role" => $primaryRole,
-            "identities" => [$identities],
+            "identities" => [$identity],
         ]);
 
         try {
