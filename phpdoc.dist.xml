@@ -19,6 +19,12 @@
             <visibility>public</visibility>
             <include-source>true</include-source>
             <default-package-name>OcisPhpSdk</default-package-name>
+            <ignore-tags>
+                <ignore-tag>phpstan-import-type</ignore-tag>
+                <ignore-tag>phpstan-var</ignore-tag>
+                <ignore-tag>phpstan-param</ignore-tag>
+                <ignore-tag>phpstan-type</ignore-tag>
+            </ignore-tags>
         </api>
 
     </version>
