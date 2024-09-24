@@ -148,32 +148,6 @@
 
 
 
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/Owncloud-OcisPhpSdk-Ocis.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">phpstan-type</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>ConnectionConfig array{
-'headers'?:array&lt;string, mixed&gt;,
-'proxy'?:array{'http'?:string, 'https'?:string, 'no'?:array<string>}|string,
-'verify'?:bool,
-'webfinger'?:bool,
-'guzzle'?:Client,
-'drivesApi'?:DrivesApi,
-'drivesGetDrivesApi'?:DrivesGetDrivesApi,
-'drivesPermissionsApi'?:DrivesPermissionsApi,
-'drivesRootApi'?:DrivesRootApi
-}</p>
-</section>
-
-                                    </dd>
-                                            </dl>
 
 
 
@@ -531,27 +505,6 @@ NOTE: if this function is used by a normal user a search string with at least 3 
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">phpstan-param</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>ConnectionConfig $connectionConfig
-valid config keys are: headers, proxy, verify, webfinger, guzzle
-headers has to be an array in the form like
-[
-'User-Agent' =&gt; 'testing/1.0',
-'Accept'     =&gt; 'application/json',
-'X-Foo'      =&gt; ['Bar', 'Baz']
-]
-proxy is an array or a string that defines the proxy configuration, the schema is the same as for guzzle 7
-https://docs.guzzlephp.org/en/stable/request-options.html#proxy
-verify is a boolean to disable SSL checking
-webfinger is a boolean to enable webfinger discovery, in that case $serviceUrl is the webfinger url
-guzzle is a guzzle client instance that can be injected e.g. to be used for unit tests</p>
-</section>
-
-                                    </dd>
-                                                <dt class="phpdocumentor-tag-list__entry">
                     <span class="phpdocumentor-tag__name">throws</span>
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
