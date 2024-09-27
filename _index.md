@@ -50,16 +50,29 @@ composer require owncloud/ocis-php-sdk
 ```
 
 ## Getting started
-Create an Ocis object using the service Url and an access token:
+Ocis has two types of access token, one which is used to interact with drive, group, user, shares etc.(OICD access token) and another which can be used to interact with education endpoints (education access token).
+
+Create an Ocis object using the service Url and an OIDC access token:
 ```php
 $ocis = new Ocis('https://example.ocis.com', $accessToken);
 ```
+Or create an Ocis object to interact with education endpoints using the service Url and an education access token:
+```php
+$ocis = new Ocis('https://education.ocis.com', null, [], $educationAccessToken);
+```
 
-Acquiring an access token is out of scope of this SDK, but you can find [examples for that below](#acquiring-an-access-token).
+At least one access token should be provided to use the SKD.
 
-Also refreshing tokens is not part of the SDK, but after you got a new token, you can update the Ocis object:
+Acquiring an OICD access token is out of scope of this SDK, but you can find [examples for that below](#acquiring-an-access-token).
+
+Also refreshing OICD tokens is not part of the SDK, but after you got a new token, you can update the Ocis object:
 ```php
 $ocis->setAccessToken($newAccessToken);
+```
+
+Education access token is set when starting the ocis graph server. You can get it using following snippet
+```php
+$educationAccessToken = getenv("GRAPH_HTTP_API_TOKEN")
 ```
 
 ## Drives (spaces)
@@ -165,6 +178,21 @@ $users = $ocis->getUsers("einstein")[0];
 
 // share the resource with the users
 $resources[0]->invite($users, $editorRole);
+```
+
+## Education User
+
+Education Users can only be created, listed and deleted using education access token. If you want to use other APIs you need to use the OICD access token.
+
+```php
+// create education user
+$educationUsers = $ocis->createEducationUser()
+// list all education user
+$educationUsers = $ocis->getEducationUsers()
+// list education user by id
+$educationUsers = $ocis->getEducationUserById()
+// delete education user
+$educationUser[0]->delete()
 ```
 
 ## Requirements
