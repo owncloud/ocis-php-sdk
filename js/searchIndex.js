@@ -601,16 +601,6 @@ Search.appendIndex(
             "summary": "Search\u0020resource\u0020globally\u0020or\u0020within\u0020drive\/folder",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_searchResource"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AFUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
-            "name": "FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#constant_FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE"
-        },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE",
-            "name": "ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#constant_ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE"
-        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource",
             "name": "OcisResource",
             "summary": "Class\u0020representing\u0020a\u0020file\u0020or\u0020folder\u0020inside\u0020a\u0020Drive\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
