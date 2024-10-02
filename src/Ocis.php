@@ -54,8 +54,16 @@ use OpenAPI\Client\Model\Group as OpenAPIGroup;
 class Ocis
 {
     private const DECODE_TOKEN_ERROR_MESSAGE = 'Could not decode token.';
+    /**
+     * @ignore this const is only for internal use and should not show up in the documentation
+     *         it is made public to allow other classes to show the same error message
+     */
     public const FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE =
         'This function is not implemented yet! Place, name and signature of the function might change!';
+    /**
+     * @ignore this const is only for internal use and should not show up in the documentation
+     *         it is made public to allow other classes to show the same error message
+     */
     public const ENDPOINT_NOT_IMPLEMENTED_ERROR_MESSAGE =
         'This method is not implemented in this ocis version';
     private string $serviceUrl;
