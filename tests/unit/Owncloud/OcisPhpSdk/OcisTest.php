@@ -108,6 +108,17 @@ class OcisTest extends TestCase
         $ocis->createDrive('driveName', -1);
     }
 
+    public function testGetOcisVersion(): void
+    {
+        $ocis = new Ocis(
+            'https://localhost:9200',
+            'tokenWhenCreated',
+            /* @phpstan-ignore-next-line */
+            [ 'guzzle' => $this->setUpMocksForOcisVersion()],
+        );
+        $this->assertSame('6.4.0', $ocis->getOcisVersion());
+    }
+
     public function testCreateDriveReturnsOdataError(): void
     {
         $this->expectException(InvalidResponseException::class);
@@ -204,7 +215,7 @@ class OcisTest extends TestCase
                 <ocs>
                   <data>
                     <version>
-                      <productversion>6.0.0</productversion>
+                      <productversion>6.4.0+55cf2d17f7</productversion>
                     </version>
                   </data>
                 </ocs>
