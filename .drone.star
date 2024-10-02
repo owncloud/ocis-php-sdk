@@ -231,13 +231,9 @@ def buildOcis(branch):
             "name": "build-ocis-%s" % branch,
             "image": OC_CI_GOLANG,
             "commands": [
-                ". ./.drone.env",
                 "cd repo_ocis/ocis",
                 "retry -t 3 'make build'",
                 "cp bin/ocis %s" % dir["base"],
-                "pwd",
-                "cd ../..",
-                "ls -al",
             ],
             "environment": {
                 "HTTP_PROXY": {
@@ -252,7 +248,6 @@ def buildOcis(branch):
             "name": "build-ociswrapper",
             "image": OC_CI_GOLANG,
             "commands": [
-                ". ./.drone.env",
                 "make -C repo_ocis/tests/ociswrapper build",
                 "cp repo_ocis/tests/ociswrapper/bin/ociswrapper %s/" % dir["base"],
             ],
