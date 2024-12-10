@@ -478,14 +478,23 @@ class Drive
      * List the metadata of a specific resource in the current drive
      * @param string $path
      *
-     * @return OcisResource
-     * @throws HttpException
+     * @return array<string, mixed>
      */
-    public function getResourceMetadata(string $path = "/"): OcisResource
+    public function getResourceMetadata(string $path = "/"): array
     {
         $resources = $this->makePropfindRequest($path);
-
-        return $resources[0];
+        $metadata = [];
+        foreach (ResourceMetadata::cases() as $property) {
+            try {
+                $metadata[$property->getKey()] = $resources[0]->getMetadata($property);
+            } catch (InvalidResponseException $e) {
+                if ($e->getMessage() === 'Could not find property "' . $property->getKey() . '" in response') {
+                    // Skip this property if an exception is thrown
+                    continue;
+                }
+            }
+        }
+        return $metadata;
     }
 
     /**
