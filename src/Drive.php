@@ -383,27 +383,9 @@ class Drive
      */
     public function getResources(string $path = "/"): array
     {
-        $resources = [];
-        $webDavClient = $this->createWebDavClient();
-        try {
-            $properties = [];
-            foreach (ResourceMetadata::cases() as $property) {
-                $properties[] = $property->value;
-            }
-            $responses = $webDavClient->propFindUnfiltered(rawurlencode(ltrim($path, "/")), $properties, 1);
-            foreach ($responses as $response) {
-                $resources[] = new OcisResource(
-                    $response,
-                    $this->connectionConfig,
-                    $this->serviceUrl,
-                    $this->accessToken,
-                );
-            }
-            unset($resources[0]); // skip first propfind response, because its the parent folder
-        } catch (SabreClientHttpException|SabreClientException $e) {
-            throw ExceptionHelper::getHttpErrorException($e);
-        }
+        $resources = $this->makePropfindRequest($path);
 
+        unset($resources[0]); // skip first propfind response, because its the parent folder
         // make sure there is again an element with index 0
         return array_values($resources);
     }
@@ -463,11 +445,47 @@ class Drive
     }
 
     /**
-     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     * send propfind request
+     * @param string $path
+     *
+     * @return array<OcisResource>
      */
-    public function getResourceMetadata(string $path = "/"): \stdClass
+    public function makePropfindRequest(string $path = "/"): array
     {
-        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        $resources = [];
+        $webDavClient = $this->createWebDavClient();
+        try {
+            $properties = [];
+            foreach (ResourceMetadata::cases() as $property) {
+                $properties[] = $property->value;
+            }
+            $responses = $webDavClient->propFindUnfiltered(rawurlencode(ltrim($path, "/")), $properties, 1);
+            foreach ($responses as $response) {
+                $resources[] = new OcisResource(
+                    $response,
+                    $this->connectionConfig,
+                    $this->serviceUrl,
+                    $this->accessToken,
+                );
+            }
+            return $resources;
+        } catch (SabreClientHttpException|SabreClientException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+    }
+
+    /**
+     * List the metadata of a specific resource in the current drive
+     * @param string $path
+     *
+     * @return OcisResource
+     * @throws HttpException
+     */
+    public function getResourceMetadata(string $path = "/"): OcisResource
+    {
+        $resources = $this->makePropfindRequest($path);
+
+        return $resources[0];
     }
 
     /**
