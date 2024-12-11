@@ -534,13 +534,14 @@ class OcisResourceTest extends OcisPhpSdkTestCase
     public function testGetResourcesMetadata(): void
     {
         $this->personalDrive->uploadFile('/newResource.txt', 'new content');
+        $this->createdResources[$this->personalDrive->getId()][] = 'newResource.txt';
         $resourceMetadata = $this->personalDrive->getResourceMetadata('/newResource.txt');
         $driveResources = $this->personalDrive->getResources();
         foreach ($driveResources as $driveResource) {
             if ($driveResource->getName() === $resourceMetadata['name']) {
-                $this->assertSame($driveResource->getId(), $resourceMetadata['id'], "Expected resource id to match, but they are different");
-                $this->assertSame($driveResource->getSize(), $resourceMetadata['filesize'], "Expected resource size to match, but they are different.");
-                $this->assertSame($driveResource->getParent(), $resourceMetadata['file-parent'], "Expected resource parent to match, but they are different.");
+                $this->assertEquals($driveResource->getId(), $resourceMetadata['id'], "Expected resource id to match, but they are different");
+                $this->assertEquals($driveResource->getSize(), $resourceMetadata['filesize'], "Expected resource size to match, but they are different.");
+                $this->assertEquals($driveResource->getParent(), $resourceMetadata['file-parent'], "Expected resource parent to match, but they are different.");
                 return;
             }
         }
