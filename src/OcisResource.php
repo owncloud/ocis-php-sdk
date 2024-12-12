@@ -95,7 +95,7 @@ class OcisResource
      * @return array|string
      * @throws InvalidResponseException
      */
-    public function getMetadata(ResourceMetadata $property): array|string
+    private function getMetadata(ResourceMetadata $property): array|string
     {
         $metadata = [];
         // for metadata accept status codes of 200 and 425 (too early) status codes

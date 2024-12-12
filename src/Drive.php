@@ -475,26 +475,15 @@ class Drive
     }
 
     /**
-     * List the metadata of a specific resource in the current drive
+     * get a specific resource in the current drive
      * @param string $path
      *
-     * @return array<string, mixed>
+     * @return OcisResource
      */
-    public function getResourceMetadata(string $path = "/"): array
+    public function getResource(string $path = "/"): OcisResource
     {
         $resources = $this->makePropfindRequest($path);
-        $metadata = [];
-        foreach (ResourceMetadata::cases() as $property) {
-            try {
-                $metadata[$property->getKey()] = $resources[0]->getMetadata($property);
-            } catch (InvalidResponseException $e) {
-                if ($e->getMessage() === 'Could not find property "' . $property->getKey() . '" in response') {
-                    // Skip this property if an exception is thrown
-                    continue;
-                }
-            }
-        }
-        return $metadata;
+        return $resources[0];
     }
 
     /**
