@@ -450,7 +450,7 @@ class Drive
      *
      * @return array<OcisResource>
      */
-    public function makePropfindRequest(string $path = "/"): array
+    private function makePropfindRequest(string $path = "/"): array
     {
         $resources = [];
         $webDavClient = $this->createWebDavClient();

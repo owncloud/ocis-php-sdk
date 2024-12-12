@@ -531,20 +531,60 @@ class OcisResourceTest extends OcisPhpSdkTestCase
         }
     }
 
-    public function testGetResourcesMetadata(): void
+    public function testFileGetResourcesMetadata(): void
     {
-        $this->personalDrive->uploadFile('/newResource.txt', 'new content');
-        $this->createdResources[$this->personalDrive->getId()][] = 'newResource.txt';
-        $resourceMetadata = $this->personalDrive->getResourceMetadata('/newResource.txt');
+        $resourceMetadata = $this->personalDrive->getResourceMetadata('/somefile.txt');
         $driveResources = $this->personalDrive->getResources();
         foreach ($driveResources as $driveResource) {
             if ($driveResource->getName() === $resourceMetadata['name']) {
-                $this->assertEquals($driveResource->getId(), $resourceMetadata['id'], "Expected resource id to match, but they are different");
-                $this->assertEquals($driveResource->getSize(), $resourceMetadata['filesize'], "Expected resource size to match, but they are different.");
-                $this->assertEquals($driveResource->getParent(), $resourceMetadata['file-parent'], "Expected resource parent to match, but they are different.");
+                $this->assertEquals($driveResource->getId(), $resourceMetadata['id'], "Expected file id to match, but they are different");
+                $this->assertEquals($driveResource->getSize(), $resourceMetadata['filesize'], "Expected file size to match, but they are different.");
+                $this->assertEquals($driveResource->getParent(), $resourceMetadata['file-parent'], "Expected file parent to match, but they are different.");
                 return;
             }
         }
-        $this->fail("Could not found resource 'newResource.txt' inside the drive");
+        $this->fail("Could not find file 'somefile.txt' personal the drive");
+    }
+
+    public function testEmptyFolderGetResourcesMetadata(): void
+    {
+        $resourceMetadata = $this->personalDrive->getResourceMetadata('/subfolder');
+        $driveResources = $this->personalDrive->getResources();
+        foreach ($driveResources as $driveResource) {
+            if ($driveResource->getName() === $resourceMetadata['name']) {
+                $this->assertEquals($driveResource->getId(), $resourceMetadata['id'], "Expected folder id to match, but they are different");
+                $this->assertEquals($driveResource->getSize(), $resourceMetadata['foldersize'], "Expected folder size to match, but they are different.");
+                $this->assertEquals($driveResource->getParent(), $resourceMetadata['file-parent'], "Expected folder parent to match, but they are different.");
+                return;
+            }
+        }
+        $this->fail("Could not find folder 'subfolder' inside personal drive");
+    }
+
+    /**
+     * @dataProvider invalidResources
+     */
+    public function testNonExistingResourceGetResourcesMetadata(string $invalidResources): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->personalDrive->getResourceMetadata($invalidResources);
+    }
+
+    public function testFolderGetResourcesMetadata(): void
+    {
+        $this->personalDrive->uploadFile('/subfolder/uploaded.txt', 'some content');
+        $this->personalDrive->uploadFile('/subfolder/uploaded.txt', 'new content');
+        $this->personalDrive->createFolder('/subfolder/innerfolder');
+        $resourceMetadata = $this->personalDrive->getResourceMetadata('/subfolder');
+        $driveResources = $this->personalDrive->getResources();
+        foreach ($driveResources as $driveResource) {
+            if ($driveResource->getName() === $resourceMetadata['name']) {
+                $this->assertEquals($driveResource->getId(), $resourceMetadata['id'], "Expected folder id to match, but they are different");
+                $this->assertEquals($driveResource->getSize(), $resourceMetadata['foldersize'], "Expected folder size to match, but they are different.");
+                $this->assertEquals($driveResource->getParent(), $resourceMetadata['file-parent'], "Expected folder parent to match, but they are different.");
+                return;
+            }
+        }
+        $this->fail("Could not find folder 'subfolder' inside personal drive");
     }
 }
