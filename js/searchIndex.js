@@ -161,10 +161,10 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_createFolder"
         },                {
-            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetResourceMetadata\u0028\u0029",
-            "name": "getResourceMetadata",
-            "summary": "",
-            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_getResourceMetadata"
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetResource\u0028\u0029",
+            "name": "getResource",
+            "summary": "get\u0020a\u0020specific\u0020resource\u0020in\u0020the\u0020current\u0020drive",
+            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_getResource"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetResourceMetadataById\u0028\u0029",
             "name": "getResourceMetadataById",
