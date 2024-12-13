@@ -530,4 +530,64 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             }
         }
     }
+
+    public function testFileGetResource(): void
+    {
+        $resource = $this->personalDrive->getResource('/somefile.txt');
+        $driveResources = $this->personalDrive->getResources();
+        foreach ($driveResources as $driveResource) {
+            if ($driveResource->getName() === 'somefile.txt') {
+                $this->assertSame($driveResource->getName(), $resource->getName(), "Expected file name to match, but they are different");
+                $this->assertSame($driveResource->getId(), $resource->getId(), "Expected file id to match, but they are different");
+                $this->assertSame($driveResource->getSize(), $resource->getSize(), "Expected file size to match, but they are different.");
+                $this->assertSame($driveResource->getParent(), $resource->getParent(), "Expected file parent to match, but they are different.");
+                return;
+            }
+        }
+        $this->fail("Could not find file 'somefile.txt' personal the drive");
+    }
+
+    public function testEmptyFolderGetResources(): void
+    {
+        $resource = $this->personalDrive->getResource('/subfolder');
+        $driveResources = $this->personalDrive->getResources();
+        foreach ($driveResources as $driveResource) {
+            if ($driveResource->getName() === 'subfolder') {
+                $this->assertEquals($driveResource->getName(), $resource->getName(), "Expected folder name to match, but they are different");
+                $this->assertEquals($driveResource->getId(), $resource->getId(), "Expected folder id to match, but they are different");
+                $this->assertEquals($driveResource->getSize(), $resource->getSize(), "Expected folder size to match, but they are different.");
+                $this->assertEquals($driveResource->getParent(), $resource->getParent(), "Expected folder parent to match, but they are different.");
+                return;
+            }
+        }
+        $this->fail("Could not find folder 'subfolder' inside personal drive");
+    }
+
+    /**
+     * @dataProvider invalidResources
+     */
+    public function testNonExistingResourceGetResources(string $invalidResources): void
+    {
+        $this->expectException(NotFoundException::class);
+        $this->personalDrive->getResource($invalidResources);
+    }
+
+    public function testFolderGetResources(): void
+    {
+        $this->personalDrive->uploadFile('/subfolder/uploaded.txt', 'some content');
+        $this->personalDrive->uploadFile('/subfolder/uploaded.txt', 'new content');
+        $this->personalDrive->createFolder('/subfolder/innerfolder');
+        $resource = $this->personalDrive->getResource('/subfolder');
+        $driveResources = $this->personalDrive->getResources();
+        foreach ($driveResources as $driveResource) {
+            if ($driveResource->getName() === 'subfolder') {
+                $this->assertEquals($driveResource->getName(), $resource->getName(), "Expected folder name to match, but they are different");
+                $this->assertEquals($driveResource->getId(), $resource->getId(), "Expected folder id to match, but they are different");
+                $this->assertEquals($driveResource->getSize(), $resource->getSize(), "Expected folder size to match, but they are different.");
+                $this->assertEquals($driveResource->getParent(), $resource->getParent(), "Expected folder parent to match, but they are different.");
+                return;
+            }
+        }
+        $this->fail("Could not find folder 'subfolder' inside personal drive");
+    }
 }
