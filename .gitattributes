@@ -1,0 +1,14 @@
+.phan/ export-ignore
+docs/ export-ignore
+tests/ export-ignore
+.drone.env export-ignore
+.drone.star export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore
+.php-cs-fixer.dist.php export-ignore
+Makefile export-ignore
+docs-hugo-header.md export-ignore
+phpdoc.dist.xml export-ignore
+phpstan.neon export-ignore
+phpunit.xml export-ignore
+sonar-project.properties export-ignore
