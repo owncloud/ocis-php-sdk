@@ -101,10 +101,18 @@ class OcisResource
         // for metadata accept status codes of 200 and 425 (too early) status codes
         // any other status code is regarded as an error
         foreach ([200, 425] as $statusCode) {
-            if (
-                array_key_exists($statusCode, $this->metadata) &&
-                array_key_exists($property->value, $this->metadata[$statusCode])
-            ) {
+            if (!array_key_exists($statusCode, $this->metadata)) {
+                continue;
+            }
+
+            if ($property->getKey() === "id" && !array_key_exists($property->value, $this->metadata[$statusCode])) {
+                $fileIdKey = ResourceMetadata::FILEID;
+                if (array_key_exists($fileIdKey->value, $this->metadata[$statusCode])) {
+                    $metadata[$property->getKey()] = $this->metadata[$statusCode][$fileIdKey->value];
+                    break;
+                }
+            }
+            if (array_key_exists($property->value, $this->metadata[$statusCode])) {
                 $metadata[$property->getKey()] = $this->metadata[$statusCode][$property->value];
                 break;
             }
@@ -123,7 +131,7 @@ class OcisResource
         if ($metadata[$property->getKey()] === null) {
             return (string)$metadata[$property->getKey()];
         }
-        /** @phpstan-ignore-next-line because next line might return mixed data*/
+
         return $metadata[$property->getKey()];
     }
 

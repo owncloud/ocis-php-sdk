@@ -770,6 +770,14 @@ class OcisTest extends OcisPhpSdkTestCase
             '/myfolder', 'somefile.txt', 'myfile.txt',
         ];
 
+        $expectedResource = [];
+        foreach ($personalDrive->getResources() as $driveResource) {
+            $resourceName = $driveResource->getName();
+            if (in_array($resourceName, ["somefile.txt", "somebook.txt"], true)) {
+                $expectedResource[$resourceName] = $driveResource->getId();
+            }
+        }
+
         sleep(2);
         $resources = $ocis->searchResource($pattern);
 
@@ -779,14 +787,23 @@ class OcisTest extends OcisPhpSdkTestCase
             "Expected two resource but found " . count($resources),
         );
         foreach ($resources as $resource) {
+            $resourceName = $resource->getName();
             $this->assertThat(
-                $resource->getName(),
+                $resourceName,
                 $this->logicalOr(
                     $this->equalTo("somebook.txt"),
                     $this->equalTo("somefile.txt"),
                 ),
-                "Expected resource name be somebook.txt or somefile.txt but found " . $resource->getName(),
+                "Expected resource name be somebook.txt or somefile.txt but found " . $resourceName,
             );
+
+            if (isset($expectedResource[$resourceName])) {
+                $this->assertSame(
+                    $expectedResource[$resourceName],
+                    $resource->getId(),
+                    "Expected resource id to be " . $expectedResource[$resourceName] . " but found " . $resource->getId(),
+                );
+            }
         }
     }
 
@@ -811,5 +828,16 @@ class OcisTest extends OcisPhpSdkTestCase
             "Expected one resource but found " . count($resources),
         );
         $this->assertSame('somefile.txt', $resources[0]->getName(), "Expected resource name be somefile.txt but found " . $resources[0]->getName());
+
+        foreach ($drive->getResources() as $driveResource) {
+            if ($driveResource->getName() === "somefile.txt") {
+                $this->assertSame(
+                    $driveResource->getId(),
+                    $resources[0]->getId(),
+                    "Expected resource id to be " . $driveResource->getId() . " but found "
+                    . $resources[0]->getId(),
+                );
+            }
+        }
     }
 }

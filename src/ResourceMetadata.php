@@ -8,6 +8,7 @@ namespace Owncloud\OcisPhpSdk;
 enum ResourceMetadata: string
 {
     case ID = "{http://owncloud.org/ns}id";
+    case FILEID = "{http://owncloud.org/ns}fileid";
     case SPACEID = "{http://owncloud.org/ns}spaceid";
     case FILEPARENT = "{http://owncloud.org/ns}file-parent";
     case NAME = "{http://owncloud.org/ns}name";
@@ -29,6 +30,7 @@ enum ResourceMetadata: string
     {
         return match ($this) {
             self::ID => 'id',
+            self::FILEID => 'fileid',
             self::SPACEID => 'spaceid',
             self::FILEPARENT => 'file-parent',
             self::NAME => 'name',
