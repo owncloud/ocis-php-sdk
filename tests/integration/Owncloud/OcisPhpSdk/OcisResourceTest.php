@@ -495,6 +495,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                 $newResource = $resource;
             }
         }
+        sleep(1);
         $this->personalDrive->deleteResource('/newResource.txt');
         $this->expectException(NotFoundException::class);
         if ($newResource !== null) {
