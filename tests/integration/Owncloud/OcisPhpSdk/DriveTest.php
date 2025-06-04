@@ -3,7 +3,6 @@
 namespace integration\Owncloud\OcisPhpSdk;
 
 use OpenAPI\Client\Model\Permission;
-use OpenAPI\Client\Model\UnifiedRoleDefinition;
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
@@ -81,11 +80,6 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testGetDriveRole(): void
     {
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->expectException(EndPointNotImplementedException::class);
-            $this->expectExceptionMessage("This method is not implemented in this ocis version");
-        }
         $role = $this->drive->getRoles();
         $this->assertContainsOnlyInstancesOf(
             SharingRole::class,
@@ -113,19 +107,7 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $managerRole = null;
 
-        if (getenv('OCIS_VERSION') === "stable") {
-            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
-            $role = [
-                "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
-                "description" => "Allows managing a space",
-                "displayName" => "Manager",
-                "@libre.graph.weight" => 3,
-            ];
-
-            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
-        } else {
-            $shareRoles = $this->drive->getRoles();
-        }
+        $shareRoles = $this->drive->getRoles();
         foreach ($shareRoles as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
                 $managerRole = $role;
@@ -134,12 +116,6 @@ class DriveTest extends OcisPhpSdkTestCase
         }
 
         $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
-
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->expectException(EndPointNotImplementedException::class);
-            $this->expectExceptionMessage("This method is not implemented in this ocis version");
-        }
 
         $driveInvitation = $this->drive->invite($marie, $managerRole);
 
@@ -183,33 +159,29 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $managerRole = null;
 
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped('Ocis version < 6.0.0 does not support creation of drive share invite so delete drive share test has been skipped');
-        } else {
-            foreach ($this->drive->getRoles() as $role) {
-                if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
-                    $managerRole = $role;
-                    break;
-                }
+        foreach ($this->drive->getRoles() as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                $managerRole = $role;
+                break;
             }
-
-            $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
-
-            $this->drive->invite($marie, $managerRole);
-            $permissions = $this->drive->getPermissions();
-            $permissionId = null;
-            foreach ($permissions as $permission) {
-                $grantedToV2 = $permission->getGrantedToV2();
-                if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
-                    $permissionId = $permission->getId();
-                }
-            }
-
-            $this->assertIsString($permissionId, "Permission not found of user Marie Curie");
-
-            $isDriveShareDeleted = $this->drive->deletePermission($permissionId);
-            $this->assertTrue($isDriveShareDeleted);
         }
+
+        $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
+
+        $this->drive->invite($marie, $managerRole);
+        $permissions = $this->drive->getPermissions();
+        $permissionId = null;
+        foreach ($permissions as $permission) {
+            $grantedToV2 = $permission->getGrantedToV2();
+            if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                $permissionId = $permission->getId();
+            }
+        }
+
+        $this->assertIsString($permissionId, "Permission not found of user Marie Curie");
+
+        $isDriveShareDeleted = $this->drive->deletePermission($permissionId);
+        $this->assertTrue($isDriveShareDeleted);
     }
 
     /**
@@ -231,39 +203,35 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $managerRole = null;
 
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped('Ocis version < 6.0.0 does not support creation of drive share invite so set role of shared drive test has been skipped');
-        } else {
-            $driveRoles = $this->drive->getRoles();
-            foreach ($driveRoles as $role) {
-                if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
-                    $managerRole = $role;
-                    break;
-                }
+        $driveRoles = $this->drive->getRoles();
+        foreach ($driveRoles as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                $managerRole = $role;
+                break;
             }
-            $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
-            $this->drive->invite($marie, $managerRole);
-            $nonManagerRoleFound = false;
-            foreach ($driveRoles as $role) {
-                if ($role->getId() !== self::getPermissionsRoleIdByName('Manager')) {
-                    $nonManagerRoleFound = true;
-                    $permissions = $this->drive->getPermissions();
-                    $permissionId = null;
-                    foreach ($permissions as $permission) {
-                        $grantedToV2 = $permission->getGrantedToV2();
-                        if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
-                            $permissionId = $permission->getId();
-                        }
-                    }
-
-                    $this->assertIsString($permissionId, "Permission not found of user Marie Curie");
-                    $isRoleSet = $this->drive->setPermissionRole($permissionId, $role);
-
-                    $this->assertTrue($isRoleSet, "Failed to set role");
-                }
-            }
-            $this->assertTrue($nonManagerRoleFound, "Only the Manager role exists. setPermissionRole was never called");
         }
+        $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
+        $this->drive->invite($marie, $managerRole);
+        $nonManagerRoleFound = false;
+        foreach ($driveRoles as $role) {
+            if ($role->getId() !== self::getPermissionsRoleIdByName('Manager')) {
+                $nonManagerRoleFound = true;
+                $permissions = $this->drive->getPermissions();
+                $permissionId = null;
+                foreach ($permissions as $permission) {
+                    $grantedToV2 = $permission->getGrantedToV2();
+                    if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                        $permissionId = $permission->getId();
+                    }
+                }
+
+                $this->assertIsString($permissionId, "Permission not found of user Marie Curie");
+                $isRoleSet = $this->drive->setPermissionRole($permissionId, $role);
+
+                $this->assertTrue($isRoleSet, "Failed to set role");
+            }
+        }
+        $this->assertTrue($nonManagerRoleFound, "Only the Manager role exists. setPermissionRole was never called");
     }
 
     /**
@@ -285,35 +253,31 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $managerRole = null;
 
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped('Ocis version < 6.0.0 does not support creation of drive share invite so set expiration date of shared drive test has been skipped');
-        } else {
-            foreach ($this->drive->getRoles() as $role) {
-                if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
-                    $managerRole = $role;
-                    break;
-                }
+        foreach ($this->drive->getRoles() as $role) {
+            if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
+                $managerRole = $role;
+                break;
             }
-            $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
-            $tomorrow = new \DateTimeImmutable('tomorrow');
-
-            $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
-
-            $this->drive->invite($marie, $managerRole, $tomorrow);
-            $permissions = $this->drive->getPermissions();
-            $permissionId = null;
-            foreach ($permissions as $permission) {
-                $grantedToV2 = $permission->getGrantedToV2();
-                if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
-                    $permissionId = $permission->getId();
-                }
-            }
-
-            $this->assertIsString($permissionId, "Permission not found of user Marie Curie");
-
-            $isExpirationDateUpdated = $this->drive->setPermissionExpiration($permissionId, $oneYearTime);
-            $this->assertTrue($isExpirationDateUpdated, "Expected expiration date to be updated");
         }
+        $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
+        $tomorrow = new \DateTimeImmutable('tomorrow');
+
+        $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
+
+        $this->drive->invite($marie, $managerRole, $tomorrow);
+        $permissions = $this->drive->getPermissions();
+        $permissionId = null;
+        foreach ($permissions as $permission) {
+            $grantedToV2 = $permission->getGrantedToV2();
+            if ($grantedToV2 && $grantedToV2->getUser() && $grantedToV2->getUser()->getDisplayName() === 'Marie Curie') {
+                $permissionId = $permission->getId();
+            }
+        }
+
+        $this->assertIsString($permissionId, "Permission not found of user Marie Curie");
+
+        $isExpirationDateUpdated = $this->drive->setPermissionExpiration($permissionId, $oneYearTime);
+        $this->assertTrue($isExpirationDateUpdated, "Expected expiration date to be updated");
     }
 
     /**
@@ -342,19 +306,7 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $managerRole = null;
 
-        if (getenv('OCIS_VERSION') === "stable") {
-            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
-            $role = [
-                "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
-                "description" => "Allows managing a space",
-                "displayName" => "Manager",
-                "@libre.graph.weight" => 3,
-            ];
-
-            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
-        } else {
-            $shareRoles = $this->drive->getRoles();
-        }
+        $shareRoles = $this->drive->getRoles();
         foreach ($shareRoles as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
                 $managerRole = $role;
@@ -363,12 +315,6 @@ class DriveTest extends OcisPhpSdkTestCase
         }
 
         $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
-
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->expectException(EndPointNotImplementedException::class);
-            $this->expectExceptionMessage("This method is not implemented in this ocis version");
-        }
 
         $this->drive->invite($philosophyHatersGroup, $managerRole);
         $receivedInvitationDrive = $marieOcis->getDriveById($this->drive->getId());
@@ -406,19 +352,7 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $managerRole = null;
 
-        if (getenv('OCIS_VERSION') === "stable") {
-            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
-            $role = [
-                "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
-                "description" => "Allows managing a space",
-                "displayName" => "Manager",
-                "@libre.graph.weight" => 3,
-            ];
-
-            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
-        } else {
-            $shareRoles = $this->drive->getRoles();
-        }
+        $shareRoles = $this->drive->getRoles();
         foreach ($shareRoles as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
                 $managerRole = $role;
@@ -427,12 +361,6 @@ class DriveTest extends OcisPhpSdkTestCase
         }
 
         $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
-
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->expectException(EndPointNotImplementedException::class);
-            $this->expectExceptionMessage("This method is not implemented in this ocis version");
-        }
 
         $this->drive->invite($marie, $managerRole);
         $receivedInvitationDrive = $marieOcis->getDriveById($this->drive->getId());
@@ -470,19 +398,7 @@ class DriveTest extends OcisPhpSdkTestCase
 
         $managerRole = null;
 
-        if (getenv('OCIS_VERSION') === "stable") {
-            // ocis version < 6.0.0 doesn't support root endpoint so mocking getRoles values
-            $role = [
-                "id" => "312c0871-5ef7-4b3a-85b6-0e4074c64049",
-                "description" => "Allows managing a space",
-                "displayName" => "Manager",
-                "@libre.graph.weight" => 3,
-            ];
-
-            $shareRoles = [new SharingRole(new UnifiedRoleDefinition($role))];
-        } else {
-            $shareRoles = $this->drive->getRoles();
-        }
+        $shareRoles = $this->drive->getRoles();
         foreach ($shareRoles as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
                 $managerRole = $role;
@@ -491,12 +407,6 @@ class DriveTest extends OcisPhpSdkTestCase
         }
 
         $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
-
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->expectException(EndPointNotImplementedException::class);
-            $this->expectExceptionMessage("This method is not implemented in this ocis version");
-        }
 
         $this->drive->invite($katherine, $managerRole);
 
@@ -540,10 +450,6 @@ class DriveTest extends OcisPhpSdkTestCase
         $katherine = $this->ocis->getUsers('katherine')[0];
         $marie = $this->ocis->getUsers('marie')[0];
         $managerRole = null;
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped("This method is not implemented in this ocis version");
-        }
         $shareRoles = $this->drive->getRoles();
         foreach ($shareRoles as $role) {
             if ($role->getId() === self::getPermissionsRoleIdByName('Manager')) {
@@ -587,10 +493,6 @@ class DriveTest extends OcisPhpSdkTestCase
         $this->initUser('katherine', 'gemini');
         $katherine = $this->ocis->getUsers('katherine')[0];
         $marie = $this->ocis->getUsers('marie')[0];
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped("This method is not implemented in this ocis version");
-        }
         $shareRoles = $this->drive->getRoles();
         $viewerRole = null;
         foreach ($shareRoles as $role) {
@@ -623,10 +525,6 @@ class DriveTest extends OcisPhpSdkTestCase
         $marieOcis = $this->initUser('marie', 'radioactivity');
         $marie = $this->ocis->getUsers('marie')[0];
 
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped("This method is not implemented in this ocis version");
-        }
         $shareRoles = $this->drive->getRoles();
         $managerRole = null;
         foreach ($shareRoles as $role) {
@@ -669,10 +567,6 @@ class DriveTest extends OcisPhpSdkTestCase
     {
         $marieOcis = $this->initUser('marie', 'radioactivity');
         $marie = $this->ocis->getUsers('marie')[0];
-        // ocis stable doesn't support root endpoint
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped("This method is not implemented in this ocis version");
-        }
         $shareRoles = $this->drive->getRoles();
         $spaceViewerRole = null;
         foreach ($shareRoles as $role) {
