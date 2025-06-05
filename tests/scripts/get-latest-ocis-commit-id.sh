@@ -11,7 +11,7 @@ if [[ "$1" == "master" ]]; then
   # Update the OCIS_COMMITID in the drone.env file
   sed -i "s/^OCIS_COMMITID=.*/OCIS_COMMITID=$latest_commit_id/" "$env_file"
   cat ./.drone.env
-elif [[ "$1" == "stable-5.0" ]]; then
+elif [[ "$1" == "stable-7.1" ]]; then
   sed -i "s/^OCIS_STABLE_COMMITID=.*/OCIS_STABLE_COMMITID=$latest_commit_id/" "$env_file"
   cat ./.drone.env
 else
