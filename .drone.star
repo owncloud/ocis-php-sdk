@@ -168,7 +168,7 @@ def phpIntegrationTest(ctx, phpVersions, coverage):
 def ocisService():
     environment = {
         "OCIS_URL": "https://ocis:9200",
-        "OCIS_LOG_LEVEL": "error",
+        "OCIS_LOG_LEVEL": "debug",
         "IDM_ADMIN_PASSWORD": "admin",  # override the random admin password from `ocis init`
         "PROXY_AUTOPROVISION_ACCOUNTS": "true",
         "PROXY_ROLE_ASSIGNMENT_DRIVER": "oidc",
