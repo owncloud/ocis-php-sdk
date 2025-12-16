@@ -61,7 +61,7 @@ Or create an Ocis object to interact with education endpoints using the service 
 $ocis = new Ocis('https://education.ocis.com', null, [], $educationAccessToken);
 ```
 
-At least one access token should be provided to use the SKD.
+At least one access token should be provided to use the SDK.
 
 Acquiring an OICD access token is out of scope of this SDK, but you can find [examples for that below](#acquiring-an-access-token).
 
