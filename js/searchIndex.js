@@ -916,6 +916,31 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-User.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\WebDavClient",
+            "name": "WebDavClient",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-WebDavClient.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\WebDavClient\u003A\u003AsendRequest\u0028\u0029",
+            "name": "sendRequest",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-WebDavClient.html#method_sendRequest"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\WebDavClient\u003A\u003AcreateCurlSettings\u0028\u0029",
+            "name": "createCurlSettings",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-WebDavClient.html#method_createCurlSettings"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\WebDavClient\u003A\u003AsetCustomSetting\u0028\u0029",
+            "name": "setCustomSetting",
+            "summary": "set\u0020curl\u0020settings\nenable\u0020exceptions\u0020for\u0020send\u0020method",
+            "url": "classes/Owncloud-OcisPhpSdk-WebDavClient.html#method_setCustomSetting"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\WebDavClient\u003A\u003AsendReportRequest\u0028\u0029",
+            "name": "sendReportRequest",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-WebDavClient.html#method_sendReportRequest"
+        },                {
             "fqsen": "\\OpenAPI\\Client\\Model\\Quota",
             "name": "Quota",
             "summary": "Quota\u0020Class\u0020Doc\u0020Comment",

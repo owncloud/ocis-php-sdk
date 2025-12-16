@@ -18,8 +18,7 @@ use Sabre\HTTP\ClientHttpException as SabreClientHttpException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 
 /**
- * @ignore This is only used for internal purposes and should not show up in the documentation
- * @phpstan-import-type ConnectionConfig from Ocis
+ * @phpstan-import-type ConnectionConfig from ocis
  */
 class WebDavClient extends Client
 {
