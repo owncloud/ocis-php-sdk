@@ -19,7 +19,7 @@ use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
 
 /**
- * Class representing a file or folder inside a Drive in ownCloud Infinite Scale
+ * Class representing an education user in ownCloud Infinite Scale
  *
  * @phpstan-import-type ConnectionConfig from Ocis
  */
