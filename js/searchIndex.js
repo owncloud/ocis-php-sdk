@@ -278,7 +278,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser",
             "name": "EducationUser",
-            "summary": "Class\u0020representing\u0020a\u0020file\u0020or\u0020folder\u0020inside\u0020a\u0020Drive\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
+            "summary": "Class\u0020representing\u0020an\u0020education\u0020user\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
             "url": "classes/Owncloud-OcisPhpSdk-EducationUser.html"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser\u003A\u003A__construct\u0028\u0029",
