@@ -108,6 +108,26 @@ class DriveTest extends OcisPhpSdkTestCase
     }
 
     /**
+     * @dataProvider getTestStrings
+     */
+    public function testSetDescription(string $description): void
+    {
+        $this->drive->setDescription($description);
+        $this->assertEquals($this->drive->getDescription(), $description, "Failed to set description $description");
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function getTestStrings(): array
+    {
+        return [
+            [''],
+            ['test string'],
+          ];
+    }
+
+    /**
      * @throws ForbiddenException
      * @throws InvalidResponseException
      * @throws BadRequestException
