@@ -324,11 +324,33 @@ class Drive
     }
 
     /**
-     * @todo This function is not implemented yet! Place, name and signature of the function might change!
+     * Sets name of the space.
+     *
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws BadRequestException
+     * @throws HttpException
+     * @throws NotFoundException
+     * @throws InternalServerErrorException
      */
     public function setName(string $name): Drive
     {
-        throw new NotImplementedException(Ocis::FUNCTION_NOT_IMPLEMENTED_YET_ERROR_MESSAGE);
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
+        );
+
+        $apiInstance = new DrivesApi(
+            $guzzle,
+            $this->graphApiConfig,
+        );
+
+        try {
+            $apiInstance->updateDrive($this->getId(), new DriveUpdate(['name' => $name]));
+            $this->apiDrive->setName($name);
+            return $this;
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
     }
 
     /**
