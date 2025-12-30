@@ -2,7 +2,10 @@
 
 namespace unit\Owncloud\OcisPhpSdk;
 
+use DateTime;
+use Owncloud\OcisPhpSdk\Exception\DateException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Helper\DateHelper;
 use Owncloud\OcisPhpSdk\OcisResource;
 use PHPUnit\Framework\TestCase;
 use Sabre\DAV\Xml\Property\ResourceType;
@@ -342,5 +345,53 @@ class ResourceTest extends TestCase
             }
             $this->assertNull($result);
         }
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function relativeDates(): array
+    {
+        return [
+            ['2d', '2026-01-03'],
+            ['2w', '2026-01-15'],
+            ['2m', '2026-03-01'],
+            ['2y', '2028-01-01'],
+        ];
+    }
+
+    /**
+     * @dataProvider relativeDates
+     */
+    public function testParseDeletionDate(string $relativeDate, string $expectedAbsoluteDate): void
+    {
+        $createdDate = new DateTime("2026-01-01");
+        $parsedDate = DateHelper::getAbsoluteDateFromRelativeDate($relativeDate, $createdDate);
+        $this->assertEquals($expectedAbsoluteDate, $parsedDate);
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function invalidRelativeDates(): array
+    {
+        return [
+            ['2h'],
+            ['-2w'],
+            ['lm'],
+            ['0d'],
+            ['2'],
+            ['w'],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidRelativeDates
+     */
+    public function testParseDeletionDateInvalidRelativeDates(string $relativeDate): void
+    {
+        $createdDate = new DateTime("2026-01-01");
+        $this->expectException(DateException::class);
+        DateHelper::getAbsoluteDateFromRelativeDate($relativeDate, $createdDate);
     }
 }
