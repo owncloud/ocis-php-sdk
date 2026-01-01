@@ -9,6 +9,7 @@ use OpenAPI\Client\Api\DrivesApi;
 use OpenAPI\Client\Api\DrivesGetDrivesApi;
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\Api\DrivesRootApi;
+use OpenAPI\Client\Api\EducationSchoolApi;
 use OpenAPI\Client\Api\GroupApi;
 use OpenAPI\Client\Api\MeDriveApi;
 use OpenAPI\Client\Api\MeDrivesApi;
@@ -901,6 +902,83 @@ class Ocis
             );
         }
         return new EducationUser($apiUser, $this->serviceUrl, $this->connectionConfig, $this->educationAccessToken);
+    }
+
+    /**
+     * Retrieve all schools
+     *
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws InternalServerErrorException
+     *
+     * @return array<EducationSchool>
+     */
+    public function getEducationSchools(?EducationSchoolApi $apiInstance = null): array
+    {
+        $this->checkIfEducationAccessTokenExists();
+        if (!isset($apiInstance)) {
+            $apiInstance =  new EducationSchoolApi(
+                $this->guzzle,
+                $this->graphApiConfig,
+            );
+        }
+        $schools = [];
+        try {
+            $collectionOfApiSchools = $apiInstance->listSchools();
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($collectionOfApiSchools instanceof OdataError) {
+            throw new InvalidResponseException(
+                "listSchools returned an OdataError - " . $collectionOfApiSchools->getError(),
+            );
+        }
+        $apiSchools = $collectionOfApiSchools->getValue() ?? [];
+        foreach ($apiSchools as $apiUser) {
+            $schools[] = new EducationSchool($apiUser, $this->serviceUrl, $this->connectionConfig, $this->educationAccessToken);
+        }
+        return $schools;
+    }
+
+    /**
+     * Retrieve a school by its unique id
+     *
+     * @throws BadRequestException
+     * @throws ForbiddenException
+     * @throws NotFoundException
+     * @throws UnauthorizedException
+     * @throws HttpException
+     * @throws InvalidResponseException
+     * @throws InternalServerErrorException
+     *
+     * @return EducationSchool
+     */
+    public function getEducationSchoolById(string $schoolId, ?EducationSchoolApi $apiInstance = null): EducationSchool
+    {
+        $this->checkIfAccessTokenExists();
+        if (!isset($apiInstance)) {
+            $apiInstance =  new EducationSchoolApi(
+                $this->guzzle,
+                $this->graphApiConfig,
+            );
+        }
+        try {
+            $apiSchool = $apiInstance->getSchool($schoolId);
+        } catch (ApiException $e) {
+            throw ExceptionHelper::getHttpErrorException($e);
+        }
+
+        if ($apiSchool instanceof OdataError) {
+            throw new InvalidResponseException(
+                "getSchool returned an OdataError - " . $apiSchool->getError(),
+            );
+        }
+        return new EducationSchool($apiSchool, $this->serviceUrl, $this->connectionConfig, $this->educationAccessToken);
     }
 
     /**
