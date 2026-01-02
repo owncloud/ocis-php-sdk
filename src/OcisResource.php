@@ -2,9 +2,11 @@
 
 namespace Owncloud\OcisPhpSdk;
 
+use DateTime;
 use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesApi; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use OpenAPI\Client\Api\DrivesPermissionsApi;
+use OpenAPI\Client\Api\TagsApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\DriveItemCreateLink;
@@ -13,7 +15,10 @@ use OpenAPI\Client\Model\DriveRecipient;
 use OpenAPI\Client\Model\OdataError;
 use OpenAPI\Client\Model\Permission;
 use OpenAPI\Client\Model\SharingLinkType;
+use OpenAPI\Client\Model\TagAssignment;
+use OpenAPI\Client\Model\TagUnassignment;
 use Owncloud\OcisPhpSdk\Exception\BadRequestException;
+use Owncloud\OcisPhpSdk\Exception\DateException;
 use Owncloud\OcisPhpSdk\Exception\ExceptionHelper;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\HttpException;
@@ -22,6 +27,7 @@ use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
 use Owncloud\OcisPhpSdk\Exception\UnauthorizedException;
+use Owncloud\OcisPhpSdk\Helper\DateHelper;
 use Sabre\DAV\Xml\Property\ResourceType;
 use Sabre\HTTP\ResponseInterface;
 
@@ -592,5 +598,73 @@ class OcisResource
         $urlParameters = $this->getId() . '?' . http_build_query($urlParameters, '', '&');
 
         return $webDavClient->sendRequest("GET", $urlParameters)->getBodyAsString();
+    }
+
+    /**
+     * @param array<int,string> $tags
+     * @return void
+     * @throws ApiException
+     * @throws InvalidResponseException
+     */
+    public function setTags(array $tags): void
+    {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
+        );
+        $apiInstance = new TagsApi(
+            $guzzle,
+            $this->graphApiConfig,
+        );
+        $tag_assignment = new TagAssignment(["resource_id" => $this->getId(), "tags" => $tags]);
+        $apiInstance->assignTags($tag_assignment);
+    }
+
+    /**
+     * @param array<int,string> $tags
+     * @return void
+     * @throws ApiException
+     * @throws InvalidResponseException
+     */
+    public function removeTags(array $tags): void
+    {
+        $guzzle = new Client(
+            Ocis::createGuzzleConfig($this->connectionConfig, $this->accessToken),
+        );
+        $apiInstance = new TagsApi(
+            $guzzle,
+            $this->graphApiConfig,
+        );
+        $tag_unassignment = new TagUnassignment(["resource_id" => $this->getId(), "tags" => $tags]);
+        $apiInstance->unassignTags($tag_unassignment);
+    }
+
+    /**
+     * @param string|DateTime $date
+     * @return void
+     * @throws ApiException
+     * @throws InvalidResponseException
+     * @throws DateException
+     * @throws \Exception
+     */
+    public function setLifecycleDelete(string|DateTime $date): void
+    {
+        $modifiedDate = (new DateTime($this->getLastModifiedTime()))->setTime(0, 0, 0);
+        if ($date instanceof DateTime) {
+            $date->setTime(0, 0, 0);
+            $deletionDate = $date->format('Y-m-d');
+        } else {
+            $deletionDate = DateHelper::getAbsoluteDateFromRelativeDate($date, $modifiedDate);
+        }
+
+        DateHelper::validateDeletionDate($deletionDate);
+        $lifecycleDeletePrefix = "lifecycle:delete@";
+        $tags = $this->getTags();
+        foreach ($tags as $tag) {
+            if (str_contains($tag, $lifecycleDeletePrefix)) {
+                $this->removeTags([$tag]);
+            }
+        }
+        $lifecycleTag = $lifecycleDeletePrefix . $deletionDate;
+        $this->setTags([$lifecycleTag]);
     }
 }
