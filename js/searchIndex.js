@@ -306,6 +306,11 @@ Search.appendIndex(
             "summary": "Exception\u0020for\u0020HTTP\u0020409\u0020errors",
             "url": "classes/Owncloud-OcisPhpSdk-Exception-ConflictException.html"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\DateException",
+            "name": "DateException",
+            "summary": "Exception\u0020for\u0020HTTP\u0020409\u0020errors",
+            "url": "classes/Owncloud-OcisPhpSdk-Exception-DateException.html"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Exception\\EndPointNotImplementedException",
             "name": "EndPointNotImplementedException",
             "summary": "Exception\u0020for\u0020endpoint\u0020that\u0020are\u0020not\u0020available\u0020in\u0020Ocis\u0020version",
@@ -410,6 +415,21 @@ Search.appendIndex(
             "name": "rename",
             "summary": "Rename\u0020group",
             "url": "classes/Owncloud-OcisPhpSdk-Group.html#method_rename"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Helper\\DateHelper",
+            "name": "DateHelper",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Helper-DateHelper.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Helper\\DateHelper\u003A\u003AvalidateDeletionDate\u0028\u0029",
+            "name": "validateDeletionDate",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Helper-DateHelper.html#method_validateDeletionDate"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Helper\\DateHelper\u003A\u003AgetAbsoluteDateFromRelativeDate\u0028\u0029",
+            "name": "getAbsoluteDateFromRelativeDate",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Helper-DateHelper.html#method_getAbsoluteDateFromRelativeDate"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Notification",
             "name": "Notification",
@@ -705,6 +725,21 @@ Search.appendIndex(
             "name": "getPreview",
             "summary": "the\u0020aspect\u002Dratio\u0020of\u0020previews\u0020will\u0020be\u0020preserved\u0020even\u0020if\u0020not\u0020matching\u0020sizes\u0020are\u0020requested",
             "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_getPreview"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AsetTags\u0028\u0029",
+            "name": "setTags",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_setTags"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AremoveTags\u0028\u0029",
+            "name": "removeTags",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_removeTags"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\OcisResource\u003A\u003AsetLifecycleDelete\u0028\u0029",
+            "name": "setLifecycleDelete",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-OcisResource.html#method_setLifecycleDelete"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\OrderDirection",
             "name": "OrderDirection",
@@ -1145,6 +1180,11 @@ Search.appendIndex(
             "name": "Exception",
             "summary": "",
             "url": "namespaces/owncloud-ocisphpsdk-exception.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Helper",
+            "name": "Helper",
+            "summary": "",
+            "url": "namespaces/owncloud-ocisphpsdk-helper.html"
         },                {
             "fqsen": "\\OpenAPI\\Client\\Model",
             "name": "Model",
