@@ -86,6 +86,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_getName"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetDescription\u0028\u0029",
+            "name": "getDescription",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_getDescription"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AgetQuota\u0028\u0029",
             "name": "getQuota",
             "summary": "",
@@ -118,7 +123,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AsetName\u0028\u0029",
             "name": "setName",
-            "summary": "",
+            "summary": "Sets\u0020name\u0020of\u0020the\u0020space.",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_setName"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AsetQuota\u0028\u0029",
@@ -128,7 +133,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AsetDescription\u0028\u0029",
             "name": "setDescription",
-            "summary": "",
+            "summary": "Sets\u0020description\u0020of\u0020the\u0020space.",
             "url": "classes/Owncloud-OcisPhpSdk-Drive.html#method_setDescription"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Drive\u003A\u003AsetImage\u0028\u0029",
