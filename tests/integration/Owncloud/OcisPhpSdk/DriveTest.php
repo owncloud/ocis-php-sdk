@@ -22,11 +22,12 @@ class DriveTest extends OcisPhpSdkTestCase
 {
     private Drive $drive;
     private Ocis $ocis;
+    private string $driveName = 'test drive';
     public function setUp(): void
     {
         parent::setUp();
         $this->ocis = $this->getOcis('admin', 'admin');
-        $this->drive = $this->ocis->createDrive('test drive');
+        $this->drive = $this->ocis->createDrive($this->driveName);
         $this->createdDrives[] = $this->drive->getId();
     }
 
@@ -86,6 +87,44 @@ class DriveTest extends OcisPhpSdkTestCase
             $role,
             "Array contains not only 'SharingRole' items",
         );
+    }
+
+    public function testSetValidName(): void
+    {
+        $name = 'test name';
+        $this->assertEquals($this->drive->getName(), $this->driveName);
+        $this->drive->setName($name);
+        $this->assertEquals($this->drive->getName(), $name, "Failed to set name $name");
+    }
+
+    public function testSetInvalidName(): void
+    {
+        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/11887');
+        /* @phpstan-ignore-next-line */
+        $this->expectException(BadRequestException::class);
+        $this->expectExceptionMessage('spacename must not be empty');
+
+        $this->drive->setName('');
+    }
+
+    /**
+     * @dataProvider descriptionStrings
+     */
+    public function testSetDescription(string $description): void
+    {
+        $this->drive->setDescription($description);
+        $this->assertEquals($this->drive->getDescription(), $description, "Failed to set description $description");
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function descriptionStrings(): array
+    {
+        return [
+            [''],
+            ['test string'],
+          ];
     }
 
     /**
