@@ -281,6 +281,41 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-DriveType.html#enumcase_MOUNTPOINT"
         },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationSchool",
+            "name": "EducationSchool",
+            "summary": "Class\u0020representing\u0020an\u0020Education\u0020School\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationSchool.html"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationSchool\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationSchool.html#method___construct"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationSchool\u003A\u003AgetId\u0028\u0029",
+            "name": "getId",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020id",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationSchool.html#method_getId"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationSchool\u003A\u003AgetDisplayName\u0028\u0029",
+            "name": "getDisplayName",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020displayName",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationSchool.html#method_getDisplayName"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationSchool\u003A\u003AgetNumber\u0028\u0029",
+            "name": "getNumber",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020number",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationSchool.html#method_getNumber"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationSchool\u003A\u003AgetTerminationDate\u0028\u0029",
+            "name": "getTerminationDate",
+            "summary": "Get\u0020the\u0020value\u0020of\u0020terminationDate",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationSchool.html#method_getTerminationDate"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationSchool\u003A\u003AaddUser\u0028\u0029",
+            "name": "addUser",
+            "summary": "Add\u0020education\u0020user\u0020to\u0020a\u0020school",
+            "url": "classes/Owncloud-OcisPhpSdk-EducationSchool.html#method_addUser"
+        },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\EducationUser",
             "name": "EducationUser",
             "summary": "Class\u0020representing\u0020an\u0020education\u0020user\u0020in\u0020ownCloud\u0020Infinite\u0020Scale",
@@ -590,6 +625,16 @@ Search.appendIndex(
             "name": "getEducationUserById",
             "summary": "",
             "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getEducationUserById"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetEducationSchools\u0028\u0029",
+            "name": "getEducationSchools",
+            "summary": "Retrieve\u0020all\u0020schools",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getEducationSchools"
+        },                {
+            "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetEducationSchoolById\u0028\u0029",
+            "name": "getEducationSchoolById",
+            "summary": "Retrieve\u0020a\u0020school\u0020by\u0020its\u0020unique\u0020id",
+            "url": "classes/Owncloud-OcisPhpSdk-Ocis.html#method_getEducationSchoolById"
         },                {
             "fqsen": "\\Owncloud\\OcisPhpSdk\\Ocis\u003A\u003AgetGroupById\u0028\u0029",
             "name": "getGroupById",
