@@ -4,17 +4,21 @@ namespace integration\Owncloud\OcisPhpSdk;
 
 require_once __DIR__ . '/OcisPhpSdkTestCase.php';
 
+use DateTime;
 use Owncloud\OcisPhpSdk\Drive;
 use Owncloud\OcisPhpSdk\DriveOrder;
 use Owncloud\OcisPhpSdk\DriveType;
 use Owncloud\OcisPhpSdk\Exception\ConflictException;
+use Owncloud\OcisPhpSdk\Exception\DateException;
 use Owncloud\OcisPhpSdk\Exception\ForbiddenException;
 use Owncloud\OcisPhpSdk\Exception\NotFoundException;
 use Owncloud\OcisPhpSdk\Exception\TooEarlyException;
+use Owncloud\OcisPhpSdk\Helper\DateHelper;
 use Owncloud\OcisPhpSdk\Ocis;
 use Owncloud\OcisPhpSdk\OcisResource; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use Owncloud\OcisPhpSdk\OrderDirection;
 use Owncloud\OcisPhpSdk\SharingRole;
+use TypeError;
 
 class OcisResourceTest extends OcisPhpSdkTestCase
 {
@@ -590,5 +594,244 @@ class OcisResourceTest extends OcisPhpSdkTestCase
             }
         }
         $this->fail("Could not find folder 'subfolder' inside personal drive");
+    }
+
+    /**
+     * @dataProvider resources
+     */
+    public function testSetLifeCycleDeleteForAbsoluteDate(string $resourceName, string $type): void
+    {
+        $resource = $this->personalDrive->getResource($resourceName);
+        $deleteDate = new DateTime("3026-01-01");
+        $resource->setLifecycleDelete($deleteDate);
+
+        $expectedLifecycleTag = "lifecycle:delete@3026-01-01";
+        $resourceAfterSettingLifecycleTag = $this->personalDrive->getResource($resourceName);
+        $this->assertCount(
+            1,
+            array_filter($resourceAfterSettingLifecycleTag->getTags(), fn ($tag) => $tag === $expectedLifecycleTag),
+            "Expected $type $resourceName should contain exactly one lifecycle tag $expectedLifecycleTag.",
+        );
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function resourcesWithRelativeDates(): array
+    {
+        return [
+            ['somefile.txt', 'file', '2d'],
+            ['somefile.txt', 'file', '2w'],
+            ['somefile.txt', 'file', '2m'],
+            ['somefile.txt', 'file', '2y'],
+            ['secondfolder', 'folder', '2d'],
+            ['secondfolder', 'folder', '2w'],
+            ['secondfolder', 'folder', '2m'],
+            ['secondfolder', 'folder', '2y'],
+        ];
+    }
+
+    /**
+     * @dataProvider resourcesWithRelativeDates
+     */
+    public function testSetLifeCycleDeleteForRelativeDate(string $resourceName, string $type, string $relativeDeletionDate): void
+    {
+        $resource = $this->personalDrive->getResource($resourceName);
+        $resource->setLifecycleDelete($relativeDeletionDate);
+
+        $lastModifiedDate = (new DateTime($resource->getLastModifiedTime()))->setTime(0, 0, 0);
+        $deletionDate = DateHelper::getAbsoluteDateFromRelativeDate($relativeDeletionDate, $lastModifiedDate);
+        $expectedLifecycleTag = "lifecycle:delete@$deletionDate";
+        $resourceAfterSettingLifecycleTag = $this->personalDrive->getResource($resourceName);
+        $this->assertCount(
+            1,
+            array_filter($resourceAfterSettingLifecycleTag->getTags(), fn ($tag) => $tag === $expectedLifecycleTag),
+            "Expected $type $resourceName should contain exactly one lifecycle tag $expectedLifecycleTag.",
+        );
+    }
+
+    public function testSetLifecycleDeleteTagWithInvalidAbsoluteDate(): void
+    {
+        $testResource = '/somefile.txt';
+        $resource = $this->personalDrive->getResource($testResource);
+        $deleteDate = new DateTime("2025-01-01");
+        $this->expectException(DateException::class);
+        $resource->setLifecycleDelete($deleteDate);
+    }
+
+    /**
+     * @return array<int, array<int, string|int|null|bool>>
+     */
+    public static function invalidRelativeDates(): array
+    {
+        return [
+            ['2h'],
+            ['-2w'],
+            ['lm'],
+            ['0d'],
+            ['2'],
+            [""],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidRelativeDates
+     */
+    public function testSetLifecycleDeleteTagWithInvalidRelativeDate(string $date): void
+    {
+        $resource = $this->personalDrive->getResource('/somefile.txt');
+        $this->expectException(DateException::class);
+        $resource->setLifecycleDelete($date);
+    }
+
+    /**
+     * @return array<int, array<int, int|null|bool>>
+     */
+    public static function invalidAgrumentTypes(): array
+    {
+        return [
+            [null],
+            [0],
+            [-1],
+            [true],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidAgrumentTypes
+     */
+    public function testSetLifecycleDeleteTagWithInvalidArgumentTypes(mixed $date): void
+    {
+        $resource = $this->personalDrive->getResource('/somefile.txt');
+        if ($date === null) {
+            $this->expectException(TypeError::class);
+        } else {
+            $this->expectException(DateException::class);
+        }
+        /**
+         * setLifecycleDelete only accepts either string or DateTime
+         * but we are intentionally passing invalid types (int, bool or null)
+         * Here, we get TypeError before our test runs,
+         * so ignoring next line
+         *
+         * @phpstan-ignore-next-line
+         * @phan-suppress-next-line PhanTypeMismatchArgumentNullable
+         */
+        $resource->setLifecycleDelete($date);
+    }
+
+    /**
+     * @dataProvider resources
+     */
+    public function testOveridingExistingSetLifeCycleDeleteTagForAbsoluteDate(string $resourceName, string $type): void
+    {
+        $resource = $this->personalDrive->getResource($resourceName);
+        $deleteDate = new DateTime("3026-01-01");
+        $resource->setLifecycleDelete($deleteDate);
+
+        $resourceAfterSettingLifecycleTag = $this->personalDrive->getResource($resourceName);
+        $overrideDeleteDate = new DateTime("3026-01-10");
+        $resourceAfterSettingLifecycleTag->setLifecycleDelete($overrideDeleteDate);
+
+        $resourceAfterOverridingLifecycleTag = $this->personalDrive->getResource($resourceName);
+        $lifecycleTagBeforeOverriding = "lifecycle:delete@3026-01-01";
+        $lifecycleTagAfterOverriding = "lifecycle:delete@3026-01-10";
+
+        $this->assertCount(
+            0,
+            array_filter($resourceAfterOverridingLifecycleTag->getTags(), fn ($tag) => $tag === $lifecycleTagBeforeOverriding),
+            "Expected $type $resourceName should not contain lifecycle tag '$lifecycleTagBeforeOverriding'.",
+        );
+        $this->assertCount(
+            1,
+            array_filter($resourceAfterOverridingLifecycleTag->getTags(), fn ($tag) => $tag === $lifecycleTagAfterOverriding),
+            "Expected $type $resourceName should contain exactly one lifecycle tag $lifecycleTagAfterOverriding.",
+        );
+    }
+
+    /**
+     * @dataProvider resources
+     */
+    public function testOveridingExistingSetLifeCycleDeleteTagForRelativeDate(string $resourceName, string $type): void
+    {
+        $resource = $this->personalDrive->getResource($resourceName);
+        $relativeDeletionDate = "2w";
+        $resource->setLifecycleDelete($relativeDeletionDate);
+        $lastModifiedDate = (new DateTime($resource->getLastModifiedTime()))->setTime(0, 0, 0);
+        $deletionDateBeforeOverriding = DateHelper::getAbsoluteDateFromRelativeDate($relativeDeletionDate, $lastModifiedDate);
+
+        $resourceAfterSettingLifecycleTag = $this->personalDrive->getResource($resourceName);
+        $overrideRelativeDeletionDate = "2m";
+        $resourceAfterSettingLifecycleTag->setLifecycleDelete($overrideRelativeDeletionDate);
+        $deletionDateAfterOverriding = DateHelper::getAbsoluteDateFromRelativeDate($overrideRelativeDeletionDate, $lastModifiedDate);
+
+        $resourceAfterOverridingLifecycleTag = $this->personalDrive->getResource($resourceName);
+        $lifecycleTagBeforeOverriding = "lifecycle:delete@$deletionDateBeforeOverriding";
+        $lifecycleTagAfterOverriding = "lifecycle:delete@$deletionDateAfterOverriding";
+
+        $this->assertCount(
+            0,
+            array_filter($resourceAfterOverridingLifecycleTag->getTags(), fn ($tag) => $tag === $lifecycleTagBeforeOverriding),
+            "Expected $type $resourceName should not contain lifecycle tag '$lifecycleTagBeforeOverriding'.",
+        );
+        $this->assertCount(
+            1,
+            array_filter($resourceAfterOverridingLifecycleTag->getTags(), fn ($tag) => $tag === $lifecycleTagAfterOverriding),
+            "Expected $type $resourceName should contain exactly one lifecycle tag $lifecycleTagAfterOverriding.",
+        );
+    }
+
+    /**
+     * @dataProvider resources
+     */
+    public function testSetTags(string $resourceName, string $type): void
+    {
+        $resource = $this->personalDrive->getResource($resourceName);
+        $tags = ["tag1", "tag2"];
+        $resource->setTags($tags);
+        $resourceAfterSettingTags = $this->personalDrive->getResource($resourceName);
+        $assignedTags = $resourceAfterSettingTags->getTags();
+        $this->assertCount(
+            2,
+            $assignedTags,
+            "Expected $type $resourceName should contain exactly 2 tags, but got " . count($assignedTags),
+        );
+        $this->assertEqualsCanonicalizing(
+            $tags,
+            $assignedTags,
+            sprintf(
+                "Expected $type $resourceName to have tags [%s], but got [%s].",
+                implode(', ', $tags),
+                implode(', ', $assignedTags),
+            ),
+        );
+    }
+
+    /**
+     * @dataProvider resources
+     */
+    public function testRemoveTags(string $resourceName, string $type): void
+    {
+        $resource = $this->personalDrive->getResource($resourceName);
+        $tags = ["tag1", "tag2", "tag3"];
+        $resource->setTags($tags);
+        $resourceAfterSettingTags = $this->personalDrive->getResource($resourceName);
+        $tagsToRemove = ["tag1", "tag2"];
+        $resourceAfterSettingTags->removeTags($tagsToRemove);
+        $resourceAfterRemovingTags = $this->personalDrive->getResource($resourceName);
+        $assignedTags = $resourceAfterRemovingTags->getTags();
+        $this->assertCount(
+            1,
+            $assignedTags,
+            "Expected $type $resourceName should contain exactly one tag, but got " . count($assignedTags),
+        );
+        $this->assertContains(
+            "tag3",
+            $assignedTags,
+            sprintf(
+                "Expected $type $resourceName should contain tag 'tag3', but got [%s]",
+                implode(', ', $assignedTags),
+            ),
+        );
     }
 }

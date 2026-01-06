@@ -2,10 +2,14 @@
 
 namespace unit\Owncloud\OcisPhpSdk;
 
+use DateTime;
+use Owncloud\OcisPhpSdk\Exception\DateException;
 use Owncloud\OcisPhpSdk\Exception\InvalidResponseException;
+use Owncloud\OcisPhpSdk\Helper\DateHelper;
 use Owncloud\OcisPhpSdk\OcisResource;
 use PHPUnit\Framework\TestCase;
 use Sabre\DAV\Xml\Property\ResourceType;
+use TypeError;
 
 class ResourceTest extends TestCase
 {
@@ -342,5 +346,156 @@ class ResourceTest extends TestCase
             }
             $this->assertNull($result);
         }
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function relativeDates(): array
+    {
+        return [
+            ['2d', '2026-01-03'],
+            ['2w', '2026-01-15'],
+            ['2m', '2026-03-01'],
+            ['2y', '2028-01-01'],
+        ];
+    }
+
+    /**
+     * @dataProvider relativeDates
+     */
+    public function testParseDeletionDate(string $relativeDate, string $expectedAbsoluteDate): void
+    {
+        $createdDate = new DateTime("2026-01-01");
+        $parsedDate = DateHelper::getAbsoluteDateFromRelativeDate($relativeDate, $createdDate);
+        $this->assertEquals($expectedAbsoluteDate, $parsedDate);
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function invalidRelativeDates(): array
+    {
+        return [
+            ['2h'],
+            ['-2w'],
+            ['lm'],
+            ['0d'],
+            ['2'],
+            ['w'],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidRelativeDates
+     */
+    public function testParseDeletionDateInvalidRelativeDates(string $relativeDate): void
+    {
+        $createdDate = new DateTime("2026-01-01");
+        $this->expectException(DateException::class);
+        DateHelper::getAbsoluteDateFromRelativeDate($relativeDate, $createdDate);
+    }
+
+    /**
+     * @return array<int, array<int, string|DateTime>>
+     */
+    public static function deletionDates(): array
+    {
+        return [
+            ['3026-01-01'],
+            [new DateTime('3026-01-01')],
+            [(new DateTime('tomorrow'))->setTime(0, 0, 0)],
+        ];
+    }
+
+    /**
+     * @dataProvider deletionDates
+     */
+    public function testValidateDeletionDate(string|DateTime $deletionDate): void
+    {
+        DateHelper::validateDeletionDate($deletionDate);
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @return array<int, array<int, string|DateTime>>
+     */
+    public static function invalidDeletionDates(): array
+    {
+        return [
+            ['2026-01-01'],
+            [new DateTime('2026-01-01')],
+            [(new DateTime('yesterday'))->setTime(0, 0, 0)],
+            [(new DateTime('today'))->setTime(0, 0, 0)],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidDeletionDates
+     */
+    public function testValidateDeletionDateWithIndalidDeletionDate(string|DateTime $deletionDate): void
+    {
+        $this->expectException(DateException::class);
+        DateHelper::validateDeletionDate($deletionDate);
+    }
+
+    /**
+     * @return array<int, array<int, string>>
+     */
+    public static function invalidDateFormats(): array
+    {
+        return [
+            ['2026-1-1'],
+            ['06-01-2026'],
+            ['2026-13-01'],
+            ['2026-01-35'],
+            [''],
+            ['abc'],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidDateFormats
+     */
+    public function testValidateDeletionDateWithInvalidDateFormats(string|DateTime $deletionDate): void
+    {
+        $this->expectException(DateException::class);
+        DateHelper::validateDeletionDate($deletionDate);
+    }
+
+    /**
+     * @return array<int, array<int, int|null|bool>>
+     */
+    public static function invalidDateArgumentTypes(): array
+    {
+        return [
+            [1],
+            [-1],
+            [null],
+            [true],
+        ];
+    }
+
+    /**
+     * @dataProvider invalidDateArgumentTypes
+     */
+    public function testValidateDeletionDateWithInvalidArgumentTypes(mixed $deletionDate): void
+    {
+        if ($deletionDate === null) {
+            $this->expectException(TypeError::class);
+        } else {
+            $this->expectException(DateException::class);
+        }
+        /**
+         * validateDeletionDate only accepts either string or DateTime
+         * but we are intentionally passing invalid types (int, bool or null)
+         * Here, we get TypeError before our test runs,
+         * so ignoring next line
+         *
+         * @phpstan-ignore-next-line
+         * @phan-suppress-next-line PhanTypeMismatchArgumentNullable
+         * @phan-suppress-next-line PhanTypeMismatchArgument
+         */
+        DateHelper::validateDeletionDate($deletionDate);
     }
 }
