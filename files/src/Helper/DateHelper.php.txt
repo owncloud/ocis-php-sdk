@@ -58,7 +58,7 @@ class DateHelper
             'w' => "+$num weeks",
             'm' => "+$num months",
             'y' => "+$num years",
-            default => throw new \RuntimeException("Invalid unit after validation: '$unit'"),
+            default => throw new DateException("Invalid unit for relative date after validation: '$unit'"),
         };
         $absoluteDate = (clone $baseDate)->modify($modifyStr);
         return $absoluteDate->format('Y-m-d');
