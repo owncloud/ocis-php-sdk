@@ -99,14 +99,14 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testSetInvalidName(): void
     {
-        $this->markTestSkipped('https://github.com/owncloud/ocis/issues/11887');
-        /* @phpstan-ignore-next-line */
+        if (getenv('OCIS_VERSION') === "stable") {
+            $this->markTestSkipped('https://github.com/owncloud/ocis/issues/11887');
+        }
         $this->expectException(BadRequestException::class);
         $this->expectExceptionMessage('spacename must not be empty');
 
         $this->drive->setName('');
     }
-
     /**
      * @dataProvider descriptionStrings
      */
