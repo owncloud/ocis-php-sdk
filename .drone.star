@@ -3,6 +3,7 @@ MINIO_MC = "minio/mc:RELEASE.2020-12-18T10-53-53Z"
 OC_CI_ALPINE = "owncloudci/alpine:latest"
 OC_CI_DRONE_SKIP_PIPELINE = "owncloudci/drone-skip-pipeline"
 OC_CI_GOLANG = "owncloudci/golang:1.24"
+OC_CI_GOLANG_MASTER = "owncloudci/golang:1.25"
 OC_CI_NODEJS = "owncloudci/nodejs:20"
 OC_CI_PHP = "owncloudci/php:%s"
 OC_CI_WAIT_FOR = "owncloudci/wait-for:latest"
@@ -207,10 +208,14 @@ def buildOcis(branch):
     ocis_commit_id = getCommitId(branch)
     ocis_branch = getBranchName(branch)
     ocis_repo_url = "https://github.com/owncloud/ocis.git"
+    if branch == "master":
+        goImage = OC_CI_GOLANG_MASTER
+    else:
+        goImage = OC_CI_GOLANG
     return [
         {
             "name": "clone-ocis-%s" % branch,
-            "image": OC_CI_GOLANG,
+            "image": goImage,
             "commands": [
                 "source .drone.env",
                 "git clone -b %s --single-branch %s repo_ocis" % (ocis_branch, ocis_repo_url),
@@ -229,7 +234,7 @@ def buildOcis(branch):
         },
         {
             "name": "build-ocis-%s" % branch,
-            "image": OC_CI_GOLANG,
+            "image": goImage,
             "commands": [
                 "cd repo_ocis/ocis",
                 "retry -t 3 'make build'",
@@ -246,7 +251,7 @@ def buildOcis(branch):
         },
         {
             "name": "build-ociswrapper",
-            "image": OC_CI_GOLANG,
+            "image": goImage,
             "commands": [
                 "make -C repo_ocis/tests/ociswrapper build",
                 "cp repo_ocis/tests/ociswrapper/bin/ociswrapper %s/" % dir["base"],
