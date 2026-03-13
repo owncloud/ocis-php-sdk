@@ -99,9 +99,6 @@ class DriveTest extends OcisPhpSdkTestCase
 
     public function testSetInvalidName(): void
     {
-        if (getenv('OCIS_VERSION') === "stable") {
-            $this->markTestSkipped('https://github.com/owncloud/ocis/issues/11887');
-        }
         $this->expectException(BadRequestException::class);
         $this->expectExceptionMessage('spacename must not be empty');
 
@@ -624,7 +621,11 @@ class DriveTest extends OcisPhpSdkTestCase
         $this->assertNotEmpty($shareRoles, "no roles found for the drive that was shared with Marie Curie");
 
         foreach ($shareRoles as $role) {
-            $this->expectException(InternalServerErrorException::class);
+            if (getenv('OCIS_VERSION') === "stable") {
+                $this->expectException(InternalServerErrorException::class);
+            } else {
+                $this->expectException(ForbiddenException::class);
+            }
             $this->expectExceptionMessage("error committing share to storage grant");
             $receivedInvitationDrive->setPermissionRole($permissionId, $role);
         }
