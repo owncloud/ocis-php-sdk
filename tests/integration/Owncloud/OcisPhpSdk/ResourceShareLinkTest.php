@@ -91,11 +91,6 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
             . print_r($createdLinkExpirationDateTime, true),
         );
         $expirationDate = $tomorrow->getTimestamp();
-        if (getenv('OCIS_VERSION') === "stable") {
-            $expirationDate = $tomorrow->modify(
-                "+1 day -1 second",
-            )->getTimestamp();
-        }
         $this->assertSame(
             $expirationDate,
             $createdLinkExpirationDateTime->getTimestamp(),
@@ -129,9 +124,6 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $link = $this->fileToShare->createSharingLink(SharingLinkType::VIEW, $expiry, self::VALID_LINK_PASSWORD);
         $createdLinkExpirationDateTime = $link->getExpiration();
         $expectedDate = "Thu, 01 Jan 2060 10:00:00 +0000";
-        if (getenv('OCIS_VERSION') === "stable") {
-            $expectedDate = "Thu, 01 Jan 2060 21:59:59 +0000";
-        }
         $this->assertInstanceOf(
             \DateTimeImmutable::class,
             $createdLinkExpirationDateTime,
@@ -182,9 +174,6 @@ class ResourceShareLinkTest extends OcisPhpSdkTestCase
         $expectedExpirationDate = $tomorrow;
         $link->setExpiration($tomorrow);
         $linkFromSharedByMe = $this->ocis->getSharedByMe()[0];
-        if (getenv('OCIS_VERSION') === "stable") {
-            $expectedExpirationDate = $tomorrow->modify("+1 day -1 second");
-        }
         $this->assertEquals(
             $expectedExpirationDate,
             $link->getExpiration(),
