@@ -1,0 +1,111 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+env:
+  COMPOSER_HOME: ${{ github.workspace }}/.cache/composer
+  DEFAULT_PHP_VERSION: '8.1'
+
+jobs:
+  php-checks:
+    name: PHP checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2.37.0
+        with:
+          php-version: ${{ env.DEFAULT_PHP_VERSION }}
+          tools: composer:72a8f8e653710e18d83e5dd531eb5a71fc3223e6 # v2.9.5
+
+      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: .cache/composer
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - run: composer install
+
+      - name: codeStyle
+        run: make test-php-style
+
+      - name: phpStan
+        run: make test-php-phpstan
+
+      - name: phpPhan
+        run: make test-php-phan
+
+  php-unit-tests:
+    name: php unit tests ${{ matrix.php-version }} with coverage
+    runs-on: ubuntu-latest
+    needs: php-checks
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version : ['8.1', '8.2', '8.3']
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - uses: shivammathur/setup-php@accd6127cb78bee3e8082180cb391013d204ef9f # v2.37.0
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: composer:72a8f8e653710e18d83e5dd531eb5a71fc3223e6 # v2.9.5
+          coverage: xdebug
+
+      - uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: .cache/composer
+          key: composer-${{ hashFiles('composer.lock') }}
+
+      - run: composer install
+
+      - name: unitTests-${{ matrix.php-version }}
+        run: make test-php-unit
+
+      - name: coverage rename
+        run: mv tests/output/clover.xml tests/output/clover-unitTests-${{ matrix.php-version }}.xml
+
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: coverage-unitTests-${{ matrix.php-version }}
+          path: tests/output/clover-unitTests-${{ matrix.php-version }}.xml
+
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    needs: php-unit-tests
+
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: docs generate
+        run: docker run --rm -v ${{ github.workspace }}:/data phpdoc/phpdoc@sha256:2b36e4f74937e40246d54ed12dfa4f988f21ed8d19e46f426ac3dc32eac2ff1d # v3.9.1
+
+      - name: publish api docs
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        if: github.event_name != 'pull_request'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs
+          publish_branch: docs
+          force_orphan: true
+
+      - name: compile docs hugo
+        run: |
+          mkdir docs-hugo
+          cat docs-hugo-header.md README.md > docs-hugo/_index.md
+
+      - name: publish docs hugo
+        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4.0.0
+        if: github.event_name != 'pull_request'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs-hugo
+          publish_branch: docs-hugo
+          force_orphan: true
