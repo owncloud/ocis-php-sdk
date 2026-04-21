@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use OpenAPI\Client\Api\DrivesApi; // @phan-suppress-current-line PhanUnreferencedUseNormal it's used in a comment
 use OpenAPI\Client\Api\DrivesPermissionsApi;
 use OpenAPI\Client\Api\TagsApi;
+use OpenAPI\Client\Api\DrivesRootApi;
 use OpenAPI\Client\ApiException;
 use OpenAPI\Client\Configuration;
 use OpenAPI\Client\Model\DriveItemCreateLink;
