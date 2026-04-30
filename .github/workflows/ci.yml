@@ -14,6 +14,7 @@ on:
 env:
   COMPOSER_HOME: ${{ github.workspace }}/.cache/composer
   DEFAULT_PHP_VERSION: '8.1'
+  COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   php-checks:
@@ -187,6 +188,7 @@ jobs:
     name: php integration tests (${{ matrix.php-version}}-${{ matrix.branch }}${{ matrix.branch == 'master' && matrix.php-version == '8.1' && '-with-coverage' || '' }})
     runs-on: ubuntu-latest
     needs: build-ocis
+    if: always() && (success() || github.event_name == 'schedule')
     strategy:
       fail-fast: false
       matrix:
