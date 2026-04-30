@@ -14,6 +14,7 @@ on:
 env:
   COMPOSER_HOME: ${{ github.workspace }}/.cache/composer
   DEFAULT_PHP_VERSION: '8.1'
+  COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   php-checks:
