@@ -25,7 +25,7 @@
         "friendsofphp/php-cs-fixer": "^3.26",
         "phan/phan": "^5.4",
         "phpunit/phpunit": "^10.5",
-        "phpstan/phpstan": "^1.10",
+        "phpstan/phpstan": "^1.10 || ^2.0",
         "ext-gd": "*"
     }
 }
