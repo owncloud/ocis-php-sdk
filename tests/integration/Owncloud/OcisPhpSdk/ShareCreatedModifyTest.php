@@ -198,7 +198,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
         $tomorrow = new \DateTimeImmutable('tomorrow');
         $shareFromInvite = $this->fileToShare->invite($this->einstein, $this->viewerRole, $tomorrow);
 
-        $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
+        $oneYearTime = new \DateTimeImmutable('+1 year');
         $shareFromInvite->setExpiration($oneYearTime);
         $sharedByMeShares = $this->ocis->getSharedByMe();
         $this->assertEquals(
