@@ -298,7 +298,7 @@ class DriveTest extends OcisPhpSdkTestCase
         $this->assertInstanceOf(SharingRole::class, $managerRole, "manager role not found");
         $tomorrow = new \DateTimeImmutable('tomorrow');
 
-        $oneYearTime = new \DateTimeImmutable(date('Y-m-d', strtotime('+1 year')));
+        $oneYearTime = new \DateTimeImmutable('+1 year');
 
         $this->drive->invite($marie, $managerRole, $tomorrow);
         $permissions = $this->drive->getPermissions();
