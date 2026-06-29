@@ -58,7 +58,9 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
                 break;
             }
         }
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($this->fileEditorRole, 'File Editor is not set');
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($this->folderEditorRole, 'Folder Editor is not set');
 
     }
@@ -78,6 +80,7 @@ class ShareGetSharedWithMeTest extends OcisPhpSdkTestCase
             strlen($receivedShare->getRemoteItemId()),
             "Expected the length of remote item id to be greater than 1",
         );
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($receivedShare->getId(), "Expected received share id to not be null");
         $this->assertGreaterThanOrEqual(
             1,

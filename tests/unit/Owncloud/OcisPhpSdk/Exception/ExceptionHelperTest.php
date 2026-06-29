@@ -65,7 +65,7 @@ class ExceptionHelperTest extends TestCase
         $expectedExceptionMessage = $exceptionMessage;
         if ($originalExceptionToUse === "GuzzleHttpRequestException") {
             $request = $this->createMock(RequestInterface::class);
-            assert($request instanceof RequestInterface);
+            $this->assertInstanceOf(RequestInterface::class, $request);
             $response = new Response($exceptionStatusCode);
             $originalException = new RequestException($exceptionMessage, $request, $response);
         } elseif ($originalExceptionToUse === "SabreClientHttpException") {

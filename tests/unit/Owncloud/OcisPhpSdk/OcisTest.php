@@ -124,7 +124,6 @@ class OcisTest extends TestCase
         $this->expectException(InvalidResponseException::class);
         $this->expectExceptionMessage("Drive could not be created. 'something went wrong");
         $createDriveMock = $this->createMock(DrivesApi::class);
-        assert($createDriveMock instanceof DrivesApi);
         $error = (new OdataError())
                 ->setError(new OdataErrorMain(['message' => 'something went wrong']));
         $createDriveMock->method('createDrive')
@@ -153,7 +152,6 @@ class OcisTest extends TestCase
     {
         $this->expectException(ForbiddenException::class);
         $createDriveMock = $this->createMock(DrivesApi::class);
-        assert($createDriveMock instanceof DrivesApi);
         $createDriveMock->method('createDrive')
             ->willThrowException(new ApiException('forbidden', 403));
         $ocis = new Ocis(
@@ -173,7 +171,6 @@ class OcisTest extends TestCase
         $driveCollectionMock->method('getValue')
             ->willReturn($driveMock);
         $drivesGetDrivesApi = $this->createMock(DrivesGetDrivesApi::class);
-        assert($drivesGetDrivesApi instanceof DrivesGetDrivesApi);
         $drivesGetDrivesApi->method('listAllDrives')
             ->willReturn($driveCollectionMock);
         $ocis = new Ocis(
@@ -327,16 +324,27 @@ class OcisTest extends TestCase
         $responseContent = '{"ocs":{"data":[{"notification_id":"123"}]}}';
         $ocis = $this->setupMocksForNotificationTests($responseContent);
         $notifications = $ocis->getNotifications();
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getId());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getApp());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getUser());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getDatetime());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getObjectId());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getObjectType());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getSubject());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getSubjectRich());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getMessage());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsString($notifications[0]->getMessageRich());
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsArray($notifications[0]->getMessageRichParameters());
     }
 

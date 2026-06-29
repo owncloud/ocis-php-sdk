@@ -166,6 +166,7 @@ class OcisResourceTest extends OcisPhpSdkTestCase
                 $resource->getTags(),
                 "Expected resource tag be empty array but found " . count($resource->getTags()) . " elements",
             );
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsInt(
                 $resource->getSize(),
                 "Expected resource size be of type integer but found " . getType($resource->getSize()),
@@ -715,7 +716,6 @@ class OcisResourceTest extends OcisPhpSdkTestCase
          * so ignoring next line
          *
          * @phpstan-ignore-next-line
-         * @phan-suppress-next-line PhanTypeMismatchArgumentNullable
          */
         $resource->setLifecycleDelete($date);
     }

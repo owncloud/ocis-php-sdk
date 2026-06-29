@@ -44,6 +44,7 @@ class ShareCreatedModifyTest extends OcisPhpSdkTestCase
                 break;
             }
         }
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($this->viewerRole, 'Viewer role is not set');
     }
 

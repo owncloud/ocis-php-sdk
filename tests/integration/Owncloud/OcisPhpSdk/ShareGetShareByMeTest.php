@@ -42,7 +42,9 @@ class ShareGetShareByMeTest extends OcisPhpSdkTestCase
                 break;
             }
         }
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($this->editorRole, 'Editor role is not set');
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($this->sharedResource, 'Resource is not set');
     }
 
