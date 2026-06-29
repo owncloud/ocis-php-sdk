@@ -33,12 +33,16 @@ class ExceptionHelper
             $rawResponseBody = $e->getResponseBody();
             if (is_string($rawResponseBody)) {
                 $responseBody = json_decode($rawResponseBody, true);
-                if (is_array($responseBody)) {
+                if (is_array($responseBody) && isset($responseBody['error']) && is_array($responseBody['error'])) {
                     if (isset($responseBody['error']['code'])) {
-                        $message = $responseBody['error']['code'] . " - ";
+                        // @phpstan-ignore cast.string
+                        $code = (string) $responseBody['error']['code'];
+                        $message = $code . " - ";
                     }
                     if (isset($responseBody['error']['message'])) {
-                        $message .= $responseBody['error']['message'];
+                        // @phpstan-ignore cast.string
+                        $errorMessage = (string) $responseBody['error']['message'];
+                        $message .= $errorMessage;
                     }
                 }
             }
