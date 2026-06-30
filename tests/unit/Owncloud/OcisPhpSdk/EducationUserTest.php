@@ -14,7 +14,7 @@ use OpenAPI\Client\Model\ObjectIdentity;
 class EducationUserTest extends TestCase
 {
     /**
-     * @return array<int, array<int, array<string, array<int, string>|string>>>
+     * @return array<int, array<int, array<string, array<int, string|object>|string>>>
      */
     public static function educationUserData(): array
     {
