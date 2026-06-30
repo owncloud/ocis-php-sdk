@@ -115,6 +115,7 @@ class GroupTest extends TestCase
         $group = new SdkGroup($libGroup, "url", [], $accessToken);
         $group->getId();
         $group->getDisplayName();
+        // @phpstan-ignore method.resultUnused
         $group->getMembers();
     }
 }

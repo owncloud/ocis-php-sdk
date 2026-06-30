@@ -725,6 +725,7 @@ class Drive
         if (
             $permissionsValue === null ||
             !array_key_exists(0, $permissionsValue) ||
+            // @phpstan-ignore instanceof.alwaysTrue
             !($permissionsValue[0] instanceof Permission)
         ) {
             throw new InvalidResponseException(

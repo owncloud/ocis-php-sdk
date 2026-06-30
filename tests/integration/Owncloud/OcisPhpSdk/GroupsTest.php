@@ -221,9 +221,13 @@ class GroupsTest extends OcisPhpSdkTestCase
                 "Expected class " . Group::class
                 . " but got " . get_class($group),
             );
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsString($group->getId());
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsString($group->getDisplayName());
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsArray($group->getGroupTypes());
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsArray($group->getMembers());
         }
     }

@@ -230,6 +230,7 @@ class ResourceTest extends TestCase
         $metadata[200]['{http://owncloud.org/ns}favorite'] = $value;
         $resource = $this->createOcisResource($metadata);
         $result = $resource->isFavorited();
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertIsBool($result);
         $this->assertSame($result, (bool)$value);
     }
@@ -493,8 +494,6 @@ class ResourceTest extends TestCase
          * so ignoring next line
          *
          * @phpstan-ignore-next-line
-         * @phan-suppress-next-line PhanTypeMismatchArgumentNullable
-         * @phan-suppress-next-line PhanTypeMismatchArgument
          */
         DateHelper::validateDeletionDate($deletionDate);
     }

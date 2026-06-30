@@ -18,10 +18,14 @@ class OcisTest extends OcisPhpSdkTestCase
     {
         $ocis = $this->getOcis('admin', 'admin');
         $drives = $ocis->getMyDrives();
+        // @phpstan-ignore method.alreadyNarrowedType
+        $this->assertIsArray(
+            $drives,
+            "Drives variable is expected to be an array but found to be " . gettype($drives),
+        );
         $this->assertTrue(
-            (is_array($drives) && count($drives) > 1),
-            "Drives variable is expected to be an array but found to be " . gettype($drives) .
-        " and to have more than one element but found " . count($drives),
+            count($drives) > 1,
+            "drives expected to have more than one element but found " . count($drives),
         );
     }
 
@@ -420,18 +424,22 @@ class OcisTest extends OcisPhpSdkTestCase
                 $group,
                 "Expected class to be 'Group' but found " . get_class($group),
             );
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsString(
                 $group->getId(),
                 "Expected groupId to be string but found " . gettype($group->getId()),
             );
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsString(
                 $group->getDisplayName(),
                 "Expected groupname type to be string but found " . gettype($group->getDisplayName()),
             );
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsArray(
                 $group->getGroupTypes(),
                 "Expected grouptype to be Array but found " . gettype($group->getGroupTypes()),
             );
+            // @phpstan-ignore method.alreadyNarrowedType
             $this->assertIsArray(
                 $group->getMembers(),
                 "Expected group members type to be Array but found " . gettype($group->getMembers()),

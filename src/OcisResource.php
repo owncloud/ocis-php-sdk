@@ -97,8 +97,7 @@ class OcisResource
 
     /**
      * @param ResourceMetadata $property
-     * @phpstan-ignore-next-line Because this method returns different array depending on the property
-     * @return array|string
+     * @return mixed[]|string
      * @throws InvalidResponseException
      */
     private function getMetadata(ResourceMetadata $property): array|string
@@ -243,6 +242,7 @@ class OcisResource
         if (
             $permissionsValue === null ||
             !array_key_exists(0, $permissionsValue) ||
+            // @phpstan-ignore instanceof.alwaysTrue
             !($permissionsValue[0] instanceof Permission)
         ) {
             throw new InvalidResponseException(
@@ -459,6 +459,7 @@ class OcisResource
         if ($this->getType() === "file") {
             $contentType = $this->getMetadata(ResourceMetadata::CONTENTTYPE);
             if (is_array($contentType)) {
+                // @phpstan-ignore argument.type
                 return implode($contentType);
             }
             return $contentType;
@@ -503,6 +504,7 @@ class OcisResource
         if ($this->getType() === "file" && $this->getSize() > 0) {
             $checkSum = $this->getMetadata(ResourceMetadata::CHECKSUMS);
             if (is_array($checkSum)) {
+                // @phpstan-ignore return.type
                 return $checkSum;
             }
         }

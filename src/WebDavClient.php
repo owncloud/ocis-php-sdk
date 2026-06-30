@@ -67,6 +67,7 @@ class WebDavClient extends Client
         $settings = [];
         if (isset($connectionConfig['headers'])) {
             foreach ($connectionConfig['headers'] as $header => $value) {
+                // @phpstan-ignore binaryOp.invalid
                 $settings[CURLOPT_HTTPHEADER][] = $header . ': ' . $value;
             }
         }
@@ -100,10 +101,7 @@ class WebDavClient extends Client
 
             if (is_string($connectionConfig['proxy'])) {
                 $settings[CURLOPT_PROXY] = $connectionConfig['proxy'];
-            } elseif (
-                array_key_exists('proxy', $connectionConfig) &&
-                is_array($connectionConfig['proxy'])
-            ) {
+            } elseif (is_array($connectionConfig['proxy'])) {
                 if (isset($connectionConfig['proxy'][$scheme])) {
                     $host = parse_url($this->baseUri, PHP_URL_HOST);
                     if (isset($connectionConfig['proxy']['no']) &&

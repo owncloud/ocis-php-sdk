@@ -59,7 +59,9 @@ class ResourceInviteTest extends OcisPhpSdkTestCase
                 $this->editorRole = $role;
             }
         }
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($this->viewerRole, 'Viewer role is empty');
+        // @phpstan-ignore method.alreadyNarrowedType
         $this->assertNotNull($this->editorRole, 'Editor role is empty');
     }
 

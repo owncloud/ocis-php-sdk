@@ -242,6 +242,7 @@ class Ocis
     /**
      * check for access token.
      *
+     * @phpstan-assert string $this->accessToken
      * @throws \InvalidArgumentException
      */
     private function checkIfAccessTokenExists(): void
@@ -256,6 +257,7 @@ class Ocis
     /**
      * check for access token of education user.
      *
+     * @phpstan-assert string $this->educationAccessToken
      * @throws \InvalidArgumentException
      */
     private function checkIfEducationAccessTokenExists(): void
@@ -291,7 +293,6 @@ class Ocis
     private function getServiceUrlFromWebfinger(string $webfingerUrl): string
     {
         $this->checkIfAccessTokenExists();
-        // @phpstan-ignore-next-line access token if empty is caught by previous step.
         $tokenDataArray = explode(".", $this->accessToken);
         if (!array_key_exists(1, $tokenDataArray)) {
             throw new \InvalidArgumentException(
@@ -436,6 +437,7 @@ class Ocis
         $apiDrives = $allDrivesList->getValue();
         $apiDrives = $apiDrives ?? [];
         foreach ($apiDrives as $apiDrive) {
+            $this->checkIfAccessTokenExists();
             $drive = new Drive(
                 $apiDrive,
                 $this->connectionConfig,
@@ -608,6 +610,7 @@ class Ocis
         }
 
         if ($newlyCreatedDrive instanceof ApiDrive) {
+            $this->checkIfAccessTokenExists();
             return new Drive(
                 $newlyCreatedDrive,
                 $this->connectionConfig,
@@ -690,7 +693,6 @@ class Ocis
     {
         $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl() . '/dav/spaces/']);
         $this->checkIfAccessTokenExists();
-        //@phpstan-ignore-next-line
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
         try {
             $properties = [];
@@ -960,7 +962,7 @@ class Ocis
      */
     public function getEducationSchoolById(string $schoolId, ?EducationSchoolApi $apiInstance = null): EducationSchool
     {
-        $this->checkIfAccessTokenExists();
+        $this->checkIfEducationAccessTokenExists();
         if (!isset($apiInstance)) {
             $apiInstance =  new EducationSchoolApi(
                 $this->guzzle,
@@ -1101,7 +1103,7 @@ class Ocis
             }
             $id = $ocsData["notification_id"];
             /**
-             * @phpstan-var object{
+             * @phpstan-var stdClass&object{
              *    app: string,
              *    user: string,
              *    datetime: string,
@@ -1351,7 +1353,6 @@ class Ocis
 
         $webDavClient = new WebDavClient(['baseUri' => $this->getServiceUrl()]);
         $this->checkIfAccessTokenExists();
-        //@phpstan-ignore-next-line
         $webDavClient->setCustomSetting($this->connectionConfig, $this->accessToken);
 
         $responses = $webDavClient->sendReportRequest($pattern, $limit, '/remote.php/dav/spaces');
