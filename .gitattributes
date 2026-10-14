@@ -1,5 +1,4 @@
 .phan/ export-ignore
-docs/ export-ignore
 tests/ export-ignore
 .drone.env export-ignore
 .drone.star export-ignore
