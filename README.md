@@ -6,6 +6,28 @@
 
 A PHP SDK for interacting with ownCloud Infinite Scale. It wraps the Libre Graph API and provides high-level PHP classes for managing drives, files, users, groups, shares, notifications, and application roles on an oCIS instance, with support for both OIDC and education-specific access tokens.
 
+<!-- The following block renders as a styled alert box (purple "Important" banner with icon) on GitHub. Plain Markdown renderers show it as a blockquote. -->
+> [!IMPORTANT]
+> This repository generates its own documentation set that is embedded into the
+> [oCIS developer documentation](https://github.com/owncloud/docs.owncloud.com/tree/main/content/ocis)
+> at build time. The final result is published in the official
+> [ownCloud documentation](https://doc.owncloud.com).
+>
+> **Whenever SDK-related content in this repository changes, the documentation must be regenerated and committed.**
+> Run the following command in your local repo's root:
+>
+> ```bash
+> docker run --rm -v ${PWD}:/data --user $(id -u):$(id -g) phpdoc/phpdoc:3
+> ```
+>
+> If you get errors about files or folders that cannot be created, omit `--user $(id -u):$(id -g)`.
+>
+> After generating the docs (~121 files, ~2.4 MB in total, only a fraction may be changed), commit, push, and merge the changes upstream.
+> Omitting this step means documentation updates will not be published.
+>
+> Note that the file `.nojekyll` in the `docs/` folder is intentional to tell github not to render the result and present the files as files.
+
+
 ## Getting Started
 
 Follow the steps below to install and use the oCIS PHP SDK.
