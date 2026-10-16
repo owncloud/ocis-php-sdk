@@ -30,7 +30,7 @@ jobs:
           php-version: ${{ env.DEFAULT_PHP_VERSION }}
           tools: composer:72a8f8e653710e18d83e5dd531eb5a71fc3223e6 # v2.9.5
 
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .cache/composer
           key: composer-${{ hashFiles('composer.json') }}
@@ -65,7 +65,7 @@ jobs:
           tools: composer:72a8f8e653710e18d83e5dd531eb5a71fc3223e6 # v2.9.5
           coverage: xdebug
 
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .cache/composer
           key: composer-${{ hashFiles('composer.json') }}
@@ -130,7 +130,7 @@ jobs:
 
       - name: cache ocis
         id: ocis-cache
-        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |
             ${{ github.workspace }}/ocis
@@ -219,7 +219,7 @@ jobs:
           tools: composer:72a8f8e653710e18d83e5dd531eb5a71fc3223e6 # v2.9.5
           coverage: xdebug
 
-      - uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: .cache/composer
           key: composer-${{ hashFiles('composer.json') }}
