@@ -1,4 +1,4 @@
-# agents.md -- oCIS PHP SDK
+# AGENTS.md -- oCIS PHP SDK
 
 ## Repository Overview
 
